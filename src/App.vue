@@ -33,7 +33,6 @@ export default {
     this.socket = io();
 
     this.socket.on('connect', () => {
-      console.log('Socket connected:', this.socket.id);
       this.connectionStatus = '';
       this.roomKey = '';
       this.player = null;
@@ -41,7 +40,6 @@ export default {
     });
 
     this.socket.on('waiting-for-player', ({ roomKey, player }) => {
-      console.log(`Waiting for player: room=${roomKey}, player=${player}`);
       this.roomKey = roomKey;
       this.player = player;
       this.connectionStatus = `Room ${roomKey} created. Waiting for another player...`;
@@ -49,7 +47,6 @@ export default {
     });
 
     this.socket.on('room-started', ({ roomKey, player, gameState }) => {
-      console.log(`Room started: room=${roomKey}, player=${player}, gameState.players=${JSON.stringify(gameState.players)}`);
       this.roomKey = roomKey;
       this.player = player;
       this.gameState = gameState;
@@ -58,7 +55,6 @@ export default {
     });
 
     this.socket.on('room-error', ({ message }) => {
-      console.log(`Room error: ${message}`);
       this.connectionStatus = message;
       this.roomKey = '';
       this.player = null;
@@ -92,7 +88,6 @@ export default {
     });
 
     this.socket.on('invalid-move', ({ message }) => {
-      console.log(`Invalid move: ${message}`);
       alert(message);
     });
   },

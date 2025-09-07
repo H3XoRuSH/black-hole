@@ -116,15 +116,12 @@ io.on('connection', (socket) => {
 
   // Handle room joining
   socket.on('join-room', ({ roomKey }) => {
-    console.log(`Join attempt: room=${roomKey}, socket=${socket.id}`);
     if (!rooms.has(roomKey)) {
-      console.log(`Room ${roomKey} does not exist`);
       socket.emit('room-error', { message: 'Room does not exist.' });
       return;
     }
     const room = rooms.get(roomKey);
     if (room.gameState.players.length >= 2) {
-      console.log(`Room ${roomKey} is full`);
       socket.emit('room-error', { message: 'Room is full.' });
       return;
     }
@@ -134,7 +131,6 @@ io.on('connection', (socket) => {
     room.gameState.players.forEach(player => {
       io.to(player.id).emit('room-started', { roomKey, player: player.player, gameState: room.gameState });
     });
-    console.log(`Player 2 (${socket.id}) joined room: ${roomKey}, emitting room-started to players: ${room.gameState.players.map(p => p.id).join(', ')}`);
   });
 
   // Handle player move
@@ -196,21 +192,17 @@ io.on('connection', (socket) => {
         players: room.gameState.players.map(p => ({ ...p, ready: false })), // Reset ready flags
       };
       io.to(roomKey).emit('game-state', { ...room.gameState, scores: { player1: 0, player2: 0 }, winner: '' });
-      console.log(`New game started in room: ${roomKey}`);
     }
   });
 
   // Handle disconnection
   socket.on('disconnect', () => {
-    console.log('Player disconnected:', socket.id);
     for (const [roomKey, room] of rooms) {
       const playerIndex = room.gameState.players.findIndex(p => p.id === socket.id);
       if (playerIndex !== -1) {
-        console.log(`Player ${room.gameState.players[playerIndex].player} disconnected from room: ${roomKey}`);
         // Notify all clients (including disconnecting client) and delete the room
         io.in(roomKey).emit('player-disconnected', { message: 'A player has disconnected. Returning to lobby.' });
         rooms.delete(roomKey);
-        console.log(`Room ${roomKey} deleted due to player disconnection`);
         break;
       }
     }

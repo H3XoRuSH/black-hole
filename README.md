@@ -1,6 +1,6 @@
 # black-hole
 
-This template should help get you started developing with Vue 3 in Vite.
+Inspired by Black Hole pen-and-paper game.
 
 ## Recommended IDE Setup
 
@@ -16,14 +16,9 @@ See [Vite Configuration Reference](https://vite.dev/config/).
 npm install
 ```
 
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
+### Compile
 
 ```sh
 npm run build
+npm start
 ```

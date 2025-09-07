@@ -2,7 +2,7 @@
   <div class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
     <h1 class="text-3xl sm:text-4xl font-bold mb-6 sm:mb-8 text-gray-800">Black Hole Lobby</h1>
     <div v-if="connectionStatus" class="mb-4 sm:mb-6 text-center text-red-600 text-sm sm:text-base">{{ connectionStatus
-      }}</div>
+    }}</div>
     <div v-if="roomKey" class="mb-4 sm:mb-6 text-center text-gray-600 text-sm sm:text-base">
       Room Key: <span class="font-bold">{{ roomKey }}</span>
     </div>
