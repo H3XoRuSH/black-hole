@@ -5,5 +5,12 @@
     "description": "A strategic 2-player game of gravity and calculation. Place your numbered tiles on the triangular grid and try to keep your highest numbers away from the final empty circle!",
     "route": "/black-hole/lobby",
     "status": "active"
+  },
+  {
+    "id": "connect-four",
+    "name": "Connect Four",
+    "description": "A classic 2-player connection game. Drop colored discs into a 7x6 grid, and be the first to form a horizontal, vertical, or diagonal line of four of your own discs!",
+    "route": "/connect-four/lobby",
+    "status": "active"
   }
 ]

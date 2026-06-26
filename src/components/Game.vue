@@ -1,39 +1,17 @@
 <template>
-  <div v-if="isValidGame">
-    <!-- Fixed Header -->
-    <div
-      class="h-32 sm:h-40 md:h-48 flex-shrink-0 flex flex-col items-center justify-center px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-6">
-      <h1 class="text-xl sm:text-2xl md:text-3xl font-bold mb-1 sm:mb-2">Black Hole</h1>
-      <div class="text-sm sm:text-base md:text-lg text-center">
-        <span :class="gameState.currentPlayer === 1 ? 'text-blue-600 font-bold' : 'text-blue-600'">Player 1
-          (Blue)</span>
-        <span class="mx-1 sm:mx-2">vs</span>
-        <span :class="gameState.currentPlayer === 2 ? 'text-red-600 font-bold' : 'text-red-600'">Player 2 (Red)</span>
-      </div>
-      <div class="text-xs sm:text-sm text-gray-600 mt-1 sm:mt-2 text-center px-2">
-        <span v-if="!gameOver">
-          <span class="block sm:inline">Current Turn:
-            <span class="font-bold" :class="currentPlayerClass">
-              Player {{ gameState.currentPlayer }}
-            </span>
-          </span>
-          <span class="block sm:inline mt-1 sm:mt-0 sm:ml-1">
-            (P1: {{ player1Turns }}/{{ gameState.maxTurnsPerPlayer }} | P2: {{ player2Turns }}/{{
-              gameState.maxTurnsPerPlayer }})
-          </span>
-        </span>
-        <span v-else class="font-bold text-base sm:text-lg" :class="winnerTextClass">
-          Game Over! {{ gameState.winner }}
-        </span>
-      </div>
-      <div class="text-xs sm:text-sm text-gray-600 mt-1">
-        You are Player {{ player }}
-      </div>
-    </div>
+  <div v-if="isValidGame" class="flex-grow flex flex-col items-center justify-between min-h-screen p-4 sm:p-6 md:p-8 select-none">
+    <GameHeader
+      title="Black Hole"
+      :current-player="gameState.currentPlayer"
+      :player="player"
+      :game-over="gameOver"
+      :winner="gameState.winner"
+      :extra-info="`P1: ${player1Turns}/${gameState.maxTurnsPerPlayer} | P2: ${player2Turns}/${gameState.maxTurnsPerPlayer}`"
+    />
 
     <!-- Content Area -->
-    <div class="flex-grow flex flex-col items-center justify-center overflow-auto">
-      <div v-for="row in 6" :key="row" class="flex justify-center mb-4" :class="{ 'mb-0': row === 6 }">
+    <div class="flex-grow flex flex-col items-center justify-center overflow-auto py-4">
+      <div v-for="row in 6" :key="row" class="flex justify-center mb-2.5" :class="{ 'mb-0': row === 6 }">
         <div v-for="col in row" :key="`${row}-${col}`"
           class="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 xl:w-18 xl:h-18 rounded-full border-2 cursor-pointer transition-all duration-200 mx-1 sm:mx-2 flex items-center justify-center font-bold text-xs sm:text-sm md:text-base"
           :class="getCircleStyle(row, col)" @click="clickCircle(row, col)">
@@ -42,18 +20,18 @@
           <span v-else>{{ getCircleText(row, col) }}</span>
         </div>
       </div>
-    </div>
 
-    <!-- Fixed Footer -->
-    <div class="h-48 flex-shrink-0 flex flex-col items-center justify-center px-8 py-3 sm:py-4 md:py-6">
-      <div v-if="gameOver" class="text-sm text-gray-600 mt-2 mb-4">
-        <p>Player 1 Score: {{ gameState.scores?.player1 || 0 }}</p>
-        <p>Player 2 Score: {{ gameState.scores?.player2 || 0 }}</p>
+      <!-- Scores & Actions -->
+      <div v-if="gameOver" class="flex flex-col items-center mt-6 transition-all duration-300">
+        <div class="text-sm text-gray-600 mb-4 text-center">
+          <p>Player 1 Score: {{ gameState.scores?.player1 || 0 }}</p>
+          <p>Player 2 Score: {{ gameState.scores?.player2 || 0 }}</p>
+        </div>
+        <button @click="newGame" :disabled="ready"
+          class="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+          {{ ready ? 'Waiting for opponent...' : 'Play Again' }}
+        </button>
       </div>
-      <button v-if="gameOver" @click="newGame" :disabled="ready"
-        class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed">
-        {{ ready ? 'Waiting for Other Player' : 'New Game' }}
-      </button>
     </div>
   </div>
   <div v-else class="h-full flex flex-col items-center justify-center px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-6">
@@ -63,8 +41,12 @@
 
 <script>
 import { useRouter } from 'vue-router';
+import GameHeader from './GameHeader.vue';
 
 export default {
+  components: {
+    GameHeader,
+  },
   props: {
     socket: Object,
     player: Number,
@@ -224,13 +206,6 @@ export default {
         this.otherPlayerReady = true;
       }
     });
-
-    this.socket.on('player-disconnected', () => {
-      this.ready = false;
-      this.otherPlayerReady = false;
-      this.isLeavingDueToDisconnect = true;
-      this.router.push('/black-hole/lobby');
-    });
   },
   beforeUnmount() {
     if (this.roomKey) {
@@ -238,7 +213,6 @@ export default {
     }
     this.socket.off('game-state');
     this.socket.off('player-ready');
-    this.socket.off('player-disconnected');
     window.removeEventListener('beforeunload', this.handleBeforeUnload);
   },
   beforeRouteLeave(to, from, next) {
