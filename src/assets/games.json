@@ -1,0 +1,9 @@
+[
+  {
+    "id": "black-hole",
+    "name": "Black Hole",
+    "description": "A strategic 2-player game of gravity and calculation. Place your numbered tiles on the triangular grid and try to keep your highest numbers away from the final empty circle!",
+    "route": "/black-hole/lobby",
+    "status": "active"
+  }
+]

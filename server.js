@@ -195,6 +195,19 @@ io.on('connection', (socket) => {
     }
   });
 
+  // Handle leaving the room explicitly (component navigation)
+  socket.on('leave-room', ({ roomKey }) => {
+    if (rooms.has(roomKey)) {
+      const room = rooms.get(roomKey);
+      const playerIndex = room.gameState.players.findIndex(p => p.id === socket.id);
+      if (playerIndex !== -1) {
+        socket.to(roomKey).emit('player-disconnected', { message: 'A player has left the game. Returning to lobby.' });
+        socket.leave(roomKey);
+        rooms.delete(roomKey);
+      }
+    }
+  });
+
   // Handle disconnection
   socket.on('disconnect', () => {
     for (const [roomKey, room] of rooms) {
