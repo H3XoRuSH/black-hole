@@ -10,22 +10,47 @@
     />
 
     <!-- Content Area -->
-    <div class="flex-grow flex flex-col items-center justify-center overflow-auto py-4">
-      <div v-for="row in 6" :key="row" class="flex justify-center mb-2.5" :class="{ 'mb-0': row === 6 }">
-        <div v-for="col in row" :key="`${row}-${col}`"
-          class="w-10 h-10 sm:w-12 sm:h-12 md:w-14 md:h-14 lg:w-16 lg:h-16 xl:w-18 xl:h-18 rounded-full border-2 cursor-pointer transition-all duration-200 mx-1 sm:mx-2 flex items-center justify-center font-bold text-xs sm:text-sm md:text-base"
-          :class="getCircleStyle(row, col)" @click="clickCircle(row, col)">
-          <img v-if="showBlackHoleIcon(row, col)" src="/icon.png" alt="Black Hole"
-            class="w-full h-full object-contain p-1">
-          <span v-else>{{ getCircleText(row, col) }}</span>
+    <div class="flex-grow flex flex-col items-center justify-center overflow-auto py-4 w-full">
+      <!-- Cosmic Board Card -->
+      <div 
+        class="bg-slate-900/95 backdrop-blur-md border border-slate-800 rounded-3xl shadow-2xl p-4 sm:p-5 transition-all duration-500 flex flex-col items-center"
+        :class="boardTurnClass">
+        <!-- Triangular Grid -->
+        <div v-for="row in 6" :key="row" class="flex justify-center mb-2.5" :class="{ 'mb-0': row === 6 }">
+          <div v-for="col in row" :key="`${row}-${col}`"
+            class="w-9 h-9 sm:w-11 sm:h-11 md:w-12 md:h-12 lg:w-13 lg:h-13 xl:w-14 xl:h-14 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-200 mx-1 sm:mx-2 relative group"
+            :class="getCircleStyle(row, col)" @click="clickCircle(row, col)">
+            
+            <!-- Slow spinning Vortex for Black Hole -->
+            <img v-if="showBlackHoleIcon(row, col)" src="/icon.png" alt="Black Hole"
+              class="w-[85%] h-[85%] object-contain p-0.5 animate-[spin_8s_linear_infinite]">
+            
+            <!-- Placed token text -->
+            <span v-else>{{ getCircleText(row, col) }}</span>
+            
+            <!-- Hover Turn Preview -->
+            <div v-if="showHoverPreview(row, col)" 
+              class="absolute inset-0 rounded-full border border-dashed flex items-center justify-center opacity-0 group-hover:opacity-40 transition-opacity duration-200 pointer-events-none"
+              :class="player === 1 ? 'border-blue-400 text-blue-400' : 'border-red-400 text-red-400'">
+              {{ nextTurnNumber }}
+            </div>
+          </div>
         </div>
       </div>
 
       <!-- Scores & Actions -->
       <div v-if="gameOver" class="flex flex-col items-center mt-6 transition-all duration-300">
-        <div class="text-sm text-gray-600 mb-4 text-center">
-          <p>Player 1 Score: {{ gameState.scores?.player1 || 0 }}</p>
-          <p>Player 2 Score: {{ gameState.scores?.player2 || 0 }}</p>
+        <div class="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl px-6 py-3 shadow-sm mb-4 text-center">
+          <div class="text-sm font-semibold text-gray-700 space-y-1">
+            <p class="flex items-center justify-between space-x-8">
+              <span class="text-blue-600">Player 1 Score:</span>
+              <span class="font-mono font-bold">{{ gameState.scores?.player1 || 0 }}</span>
+            </p>
+            <p class="flex items-center justify-between space-x-8">
+              <span class="text-red-600">Player 2 Score:</span>
+              <span class="font-mono font-bold">{{ gameState.scores?.player2 || 0 }}</span>
+            </p>
+          </div>
         </div>
         <button @click="newGame" :disabled="ready"
           class="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
@@ -102,6 +127,17 @@ export default {
       const taken = Object.keys(this.gameState.circles);
       return this.allPositions.filter(pos => !taken.includes(pos));
     },
+    nextTurnNumber() {
+      return Math.floor(this.gameState.totalMoves / 2) + 1;
+    },
+    boardTurnClass() {
+      if (this.gameOver) return 'border-slate-850 shadow-slate-900/50';
+      if (this.gameState.currentPlayer === 1) {
+        return 'border-blue-600/30 shadow-[0_0_35px_rgba(59,130,246,0.18)]';
+      } else {
+        return 'border-red-600/30 shadow-[0_0_35px_rgba(239,68,68,0.18)]';
+      }
+    },
     winnerTextClass() {
       if (!this.gameOver) return '';
       const winnerText = this.gameState.winner.toLowerCase();
@@ -121,6 +157,12 @@ export default {
       }
       this.socket.emit('make-move', { roomKey: this.roomKey, row, col });
     },
+    showHoverPreview(row, col) {
+      if (this.gameOver || this.player !== this.gameState.currentPlayer || this.gameState.players.length < 2) {
+        return false;
+      }
+      return !this.getCircleData(row, col);
+    },
     getCircleData(row, col) {
       return this.gameState.circles[`${row}-${col}`] || null;
     },
@@ -129,7 +171,7 @@ export default {
       const data = this.getCircleData(row, col);
 
       if (this.gameOver && this.remainingPositions.includes(key)) {
-        return 'bg-black border-black text-white';
+        return 'bg-slate-950 border-purple-500 border-2 shadow-[0_0_25px_rgba(147,51,234,0.75)]';
       }
 
       if (this.gameOver && this.remainingPositions.length === 1) {
@@ -139,19 +181,19 @@ export default {
         if (neighbors.includes(key)) {
           return data
             ? (data.player === 1
-              ? 'bg-blue-500 border-black border-4 xs:border-2 text-white'
-              : 'bg-red-500 border-black border-4 xs:border-2 text-white')
-            : 'bg-white border-black border-4 text-gray-400';
+              ? 'bg-gradient-to-tr from-blue-600 via-blue-500 to-cyan-400 border-amber-400 border-[3px] shadow-[0_0_15px_rgba(251,191,36,0.85)] text-white scale-105'
+              : 'bg-gradient-to-tr from-red-600 via-red-500 to-rose-400 border-amber-400 border-[3px] shadow-[0_0_15px_rgba(251,191,36,0.85)] text-white scale-105')
+            : 'bg-slate-950/40 border-amber-400/60 border-2';
         }
       }
 
       if (data) {
         return data.player === 1
-          ? 'bg-blue-500 border-blue-600 text-white'
-          : 'bg-red-500 border-red-600 text-white';
+          ? 'bg-gradient-to-tr from-blue-600 via-blue-500 to-cyan-400 border-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.55)] text-white'
+          : 'bg-gradient-to-tr from-red-600 via-red-500 to-rose-400 border-red-400 shadow-[0_0_10px_rgba(239,68,68,0.55)] text-white';
       }
 
-      return 'bg-white border-gray-400 hover:bg-gray-50 text-gray-400';
+      return 'bg-slate-950/40 border-2 border-slate-700/60 text-slate-500 hover:border-slate-500/80 hover:bg-slate-800/40';
     },
     getCircleText(row, col) {
       const data = this.getCircleData(row, col);
