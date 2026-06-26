@@ -23,6 +23,7 @@ export default {
       socket: null,
       player: null,
       roomKey: '',
+      gameId: 'black-hole',
       connectionStatus: 'Connecting to server...',
       gameState: {
         circles: {},
@@ -35,6 +36,18 @@ export default {
       },
     };
   },
+  watch: {
+    $route(to) {
+      // If we navigate to an unrelated route, clean up room and connection state
+      const isLobby = to.path === `/${this.gameId}/lobby`;
+      const isGame = this.roomKey && to.path === `/${this.gameId}/game/${this.roomKey}`;
+      if (!isLobby && !isGame) {
+        this.roomKey = '';
+        this.player = null;
+        this.connectionStatus = '';
+      }
+    }
+  },
   mounted() {
     // Connect to Socket.IO server
     this.socket = io();
@@ -44,7 +57,8 @@ export default {
       this.roomKey = '';
       this.player = null;
       // Only redirect to menu on reconnect if we are not already on the menu or lobby pages
-      if (router.currentRoute.value.path !== '/menu' && router.currentRoute.value.path !== '/black-hole/lobby') {
+      const isLobby = router.currentRoute.value.path.endsWith('/lobby');
+      if (router.currentRoute.value.path !== '/menu' && !isLobby) {
         router.isLeavingDueToDisconnect = true;
         router.push('/menu').finally(() => {
           router.isLeavingDueToDisconnect = false;
@@ -52,22 +66,24 @@ export default {
       }
     });
 
-    this.socket.on('waiting-for-player', ({ roomKey, player }) => {
+    this.socket.on('waiting-for-player', ({ roomKey, player, gameId }) => {
       this.roomKey = roomKey;
       this.player = player;
+      this.gameId = gameId || 'black-hole';
       this.connectionStatus = 'Waiting for another player...';
       router.isLeavingDueToDisconnect = true;
-      router.push('/black-hole/lobby').finally(() => {
+      router.push(`/${this.gameId}/lobby`).finally(() => {
         router.isLeavingDueToDisconnect = false;
       });
     });
 
-    this.socket.on('room-started', ({ roomKey, player, gameState }) => {
+    this.socket.on('room-started', ({ roomKey, player, gameId, gameState }) => {
       this.roomKey = roomKey;
       this.player = player;
+      this.gameId = gameId || 'black-hole';
       this.gameState = gameState;
       this.connectionStatus = '';
-      router.push(`/black-hole/game/${roomKey}`);
+      router.push(`/${this.gameId}/game/${roomKey}`);
     });
 
     this.socket.on('room-error', ({ message }) => {
@@ -84,12 +100,12 @@ export default {
         winner: '',
       };
       router.isLeavingDueToDisconnect = true;
-      router.push('/black-hole/lobby').finally(() => {
+      router.push(`/${this.gameId}/lobby`).finally(() => {
         router.isLeavingDueToDisconnect = false;
       });
     });
 
-    this.socket.on('player-disconnected', ({ message }) => {
+    this.socket.on('player-disconnected', ({ message, gameId }) => {
       console.log(`Player disconnected: ${message}`);
       this.connectionStatus = message;
       this.roomKey = '';
@@ -103,8 +119,9 @@ export default {
         scores: { player1: 0, player2: 0 },
         winner: '',
       };
+      const targetGameId = gameId || this.gameId || 'black-hole';
       router.isLeavingDueToDisconnect = true;
-      router.push('/black-hole/lobby').finally(() => {
+      router.push(`/${targetGameId}/lobby`).finally(() => {
         router.isLeavingDueToDisconnect = false;
       });
     });

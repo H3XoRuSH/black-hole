@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-    <h1 class="text-3xl sm:text-4xl font-bold mb-6 sm:mb-8 text-gray-800">Black Hole</h1>
+    <h1 class="text-3xl sm:text-4xl font-bold mb-6 sm:mb-8 text-gray-800">{{ gameName }}</h1>
     
     <div v-if="connectionStatus" class="mb-4 text-center text-red-600 text-sm sm:text-base max-w-md bg-red-50 border border-red-200 px-4 py-2.5 rounded-lg">
       {{ connectionStatus }}
@@ -51,6 +51,14 @@ export default {
     connectionStatus: String,
     roomKey: String,
     player: Number,
+    gameId: {
+      type: String,
+      default: 'black-hole'
+    },
+    gameName: {
+      type: String,
+      default: 'Black Hole'
+    }
   },
   data() {
     return {
@@ -68,7 +76,7 @@ export default {
   methods: {
     createRoom() {
       console.log('Creating room, current roomKey:', this.roomKey, 'player:', this.player);
-      this.socket.emit('create-room');
+      this.socket.emit('create-room', { gameId: this.gameId });
     },
     joinRoom() {
       console.log('Joining room, input:', this.roomInput, 'roomKey:', this.roomKey, 'player:', this.player);
@@ -77,13 +85,14 @@ export default {
         return;
       }
       const roomKey = this.roomInput.toUpperCase();
-      this.socket.emit('join-room', { roomKey });
+      this.socket.emit('join-room', { roomKey, gameId: this.gameId });
       this.roomInput = ''; // Clear input after attempt
     },
   },
   beforeRouteLeave(to, from, next) {
     // Only tell the server to clear the room if we are NOT navigating to the game itself
-    if (this.roomKey && !to.path.startsWith('/black-hole/game')) {
+    const gamePathPrefix = `/${this.gameId}/game`;
+    if (this.roomKey && !to.path.startsWith(gamePathPrefix)) {
       this.socket.emit('leave-room', { roomKey: this.roomKey });
     }
     next();
