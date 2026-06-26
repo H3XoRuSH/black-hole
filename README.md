@@ -1,24 +1,39 @@
-# black-hole
+# Gab's Arcade
 
-Inspired by Black Hole pen-and-paper game.
+Note: This is previously just black hole game.
 
-## Recommended IDE Setup
+A real-time, multiplayer online arcade featuring classic strategic board and pen-and-paper games.
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Playable Games
 
-## Customize configuration
+*   **Black Hole**: A strategic 2-player game of calculation and gravity. Place numbered tiles on a triangular grid and try to keep your highest numbers away from the final empty circle (the black hole)!
+*   **Connect Four**: The classic connection game. Take turns dropping colored discs into a 7x6 vertical grid to align four in a row horizontally, vertically, or diagonally.
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## Tech Stack
 
-## Project Setup
+*   **Frontend**: Vue 3, Vite, TailwindCSS
+*   **Backend**: Node.js, Express, Socket.io
+*   **Routing**: Vue Router
 
+## Getting Started
+
+### 1. Setup Dependencies
 ```sh
 npm install
 ```
 
-### Compile
+### 2. Run the Servers (Local Development)
+Start the Express / Socket.io game server:
+```sh
+npm start
+```
+In a separate terminal, start the Vite development server for client-side hot-reloading:
+```sh
+npm run dev
+```
 
+### 3. Production Build
+Compile production assets:
 ```sh
 npm run build
-npm start
 ```
