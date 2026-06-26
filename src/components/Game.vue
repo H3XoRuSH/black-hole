@@ -55,12 +55,6 @@
         {{ ready ? 'Waiting for Other Player' : 'New Game' }}
       </button>
     </div>
-
-    <!-- Room Key Display (Bottom Right) -->
-    <div
-      class="fixed bottom-4 right-4 bg-white bg-opacity-80 border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 shadow-md">
-      Room: {{ roomKey }}
-    </div>
   </div>
   <div v-else class="h-full flex flex-col items-center justify-center px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-6">
     <p class="text-lg sm:text-xl text-gray-600">Invalid game state. Redirecting to lobby...</p>
@@ -85,6 +79,7 @@ export default {
     return {
       ready: false,
       otherPlayerReady: false,
+      isLeavingDueToDisconnect: false,
       gameState: this.initialGameState || {
         circles: {},
         currentPlayer: 1,
@@ -202,17 +197,25 @@ export default {
       this.ready = true;
       this.socket.emit('new-game', { roomKey: this.roomKey });
     },
+    handleBeforeUnload(event) {
+      if (!this.gameOver && this.gameState.players.length === 2) {
+        event.preventDefault();
+        event.returnValue = ''; // Standard browser exit prompt
+      }
+    },
   },
   mounted() {
     if (!this.isValidGame) {
-      this.router.push('/lobby');
+      this.router.push('/black-hole/lobby');
       return;
     }
+
+    window.addEventListener('beforeunload', this.handleBeforeUnload);
 
     this.socket.on('game-state', (newState) => {
       this.gameState = newState;
       if (this.gameState.players.length < 2 && !this.gameOver) {
-        this.router.push('/lobby');
+        this.router.push('/black-hole/lobby');
       }
     });
 
@@ -225,13 +228,34 @@ export default {
     this.socket.on('player-disconnected', () => {
       this.ready = false;
       this.otherPlayerReady = false;
-      this.router.push('/lobby');
+      this.isLeavingDueToDisconnect = true;
+      this.router.push('/black-hole/lobby');
     });
   },
   beforeUnmount() {
+    if (this.roomKey) {
+      this.socket.emit('leave-room', { roomKey: this.roomKey });
+    }
     this.socket.off('game-state');
     this.socket.off('player-ready');
     this.socket.off('player-disconnected');
+    window.removeEventListener('beforeunload', this.handleBeforeUnload);
+  },
+  beforeRouteLeave(to, from, next) {
+    if (this.isLeavingDueToDisconnect || this.router.isLeavingDueToDisconnect) {
+      next();
+      return;
+    }
+    if (!this.gameOver && this.gameState.players.length === 2) {
+      const answer = window.confirm('Are you sure you want to leave the ongoing game? This will disconnect you and end the game.');
+      if (answer) {
+        next();
+      } else {
+        next(false);
+      }
+    } else {
+      next();
+    }
   },
 };
 </script>

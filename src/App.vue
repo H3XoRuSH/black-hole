@@ -1,16 +1,23 @@
 <template>
-  <div class="flex flex-col min-h-screen bg-gray-100">
-    <router-view :socket="socket" :player="player" :room-key="roomKey" :connection-status="connectionStatus"
-      :initial-game-state="gameState" @update-connection-status="connectionStatus = $event"
-      @update-player="player = $event" @update-room-key="roomKey = $event"></router-view>
+  <div class="flex flex-col md:flex-row min-h-screen bg-gray-100 overflow-hidden">
+    <Sidebar :room-key="roomKey" />
+    <div class="flex-grow flex flex-col min-h-screen overflow-auto">
+      <router-view :socket="socket" :player="player" :room-key="roomKey" :connection-status="connectionStatus"
+        :initial-game-state="gameState" @update-connection-status="connectionStatus = $event"
+        @update-player="player = $event" @update-room-key="roomKey = $event"></router-view>
+    </div>
   </div>
 </template>
 
 <script>
 import { io } from 'socket.io-client';
 import router from './router';
+import Sidebar from './components/Sidebar.vue';
 
 export default {
+  components: {
+    Sidebar,
+  },
   data() {
     return {
       socket: null,
@@ -36,14 +43,23 @@ export default {
       this.connectionStatus = '';
       this.roomKey = '';
       this.player = null;
-      router.push('/lobby');
+      // Only redirect to menu on reconnect if we are not already on the menu or lobby pages
+      if (router.currentRoute.value.path !== '/menu' && router.currentRoute.value.path !== '/black-hole/lobby') {
+        router.isLeavingDueToDisconnect = true;
+        router.push('/menu').finally(() => {
+          router.isLeavingDueToDisconnect = false;
+        });
+      }
     });
 
     this.socket.on('waiting-for-player', ({ roomKey, player }) => {
       this.roomKey = roomKey;
       this.player = player;
-      this.connectionStatus = `Room ${roomKey} created. Waiting for another player...`;
-      router.push('/lobby');
+      this.connectionStatus = 'Waiting for another player...';
+      router.isLeavingDueToDisconnect = true;
+      router.push('/black-hole/lobby').finally(() => {
+        router.isLeavingDueToDisconnect = false;
+      });
     });
 
     this.socket.on('room-started', ({ roomKey, player, gameState }) => {
@@ -51,7 +67,7 @@ export default {
       this.player = player;
       this.gameState = gameState;
       this.connectionStatus = '';
-      router.push(`/game/${roomKey}`);
+      router.push(`/black-hole/game/${roomKey}`);
     });
 
     this.socket.on('room-error', ({ message }) => {
@@ -67,7 +83,10 @@ export default {
         scores: { player1: 0, player2: 0 },
         winner: '',
       };
-      router.push('/lobby');
+      router.isLeavingDueToDisconnect = true;
+      router.push('/black-hole/lobby').finally(() => {
+        router.isLeavingDueToDisconnect = false;
+      });
     });
 
     this.socket.on('player-disconnected', ({ message }) => {
@@ -84,7 +103,10 @@ export default {
         scores: { player1: 0, player2: 0 },
         winner: '',
       };
-      router.push('/lobby');
+      router.isLeavingDueToDisconnect = true;
+      router.push('/black-hole/lobby').finally(() => {
+        router.isLeavingDueToDisconnect = false;
+      });
     });
 
     this.socket.on('invalid-move', ({ message }) => {
