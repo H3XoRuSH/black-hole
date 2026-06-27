@@ -1,11 +1,11 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import Menu from '../components/Menu.vue';
 import Lobby from '../components/Lobby.vue';
 import Game from '../components/Game.vue';
 import ConnectFour from '../components/ConnectFour.vue';
 import DotsAndBoxes from '../components/DotsAndBoxes.vue';
 
-const routes = [
+const routes: Array<RouteRecordRaw> = [
   {
     path: '/menu',
     name: 'Menu',
@@ -23,7 +23,7 @@ const routes = [
     path: '/black-hole/game/:roomKey',
     name: 'Game',
     component: Game,
-    props: true, // Pass route params as props
+    props: true,
     meta: { title: "Black Hole - Gab's Arcade" },
   },
   {
@@ -37,7 +37,7 @@ const routes = [
     path: '/connect-four/game/:roomKey',
     name: 'ConnectFourGame',
     component: ConnectFour,
-    props: true, // Pass route params as props
+    props: true,
     meta: { title: "Connect Four - Gab's Arcade" },
   },
   {
@@ -51,12 +51,12 @@ const routes = [
     path: '/dots-and-boxes/game/:roomKey',
     name: 'DotsAndBoxesGame',
     component: DotsAndBoxes,
-    props: true, // Pass route params as props
+    props: true,
     meta: { title: "Dots and Boxes - Gab's Arcade" },
   },
   {
     path: '/:pathMatch(.*)*',
-    redirect: '/menu', // Redirect unmatched routes to menu
+    redirect: '/menu',
   },
 ];
 
@@ -66,7 +66,7 @@ const router = createRouter({
 });
 
 router.afterEach((to) => {
-  document.title = to.meta.title || "Gab's Arcade";
+  document.title = (to.meta.title as string) || "Gab's Arcade";
 });
 
 export default router;

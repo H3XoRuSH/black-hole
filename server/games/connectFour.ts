@@ -1,48 +1,76 @@
-export const checkConnectFourWinner = (board) => {
+import { Player, Room } from './blackHole.js';
+
+export interface ConnectFourGameState {
+  board: (number | null)[][];
+  currentPlayer: number;
+  totalMoves: number;
+  winner: string;
+  players: Player[];
+}
+
+export const checkConnectFourWinner = (board: (number | null)[][]): number => {
   const rows = 6;
   const cols = 7;
-  // Check horizontal
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols - 3; c++) {
       const p = board[r][c];
-      if (p && p === board[r][c + 1] && p === board[r][c + 2] && p === board[r][c + 3]) {
+      if (
+        p &&
+        p === board[r][c + 1] &&
+        p === board[r][c + 2] &&
+        p === board[r][c + 3]
+      ) {
         return p;
       }
     }
   }
-  // Check vertical
   for (let r = 0; r < rows - 3; r++) {
     for (let c = 0; c < cols; c++) {
       const p = board[r][c];
-      if (p && p === board[r + 1][c] && p === board[r + 2][c] && p === board[r + 3][c]) {
+      if (
+        p &&
+        p === board[r + 1][c] &&
+        p === board[r + 2][c] &&
+        p === board[r + 3][c]
+      ) {
         return p;
       }
     }
   }
-  // Check positive diagonal (bottom-left to top-right)
   for (let r = 3; r < rows; r++) {
     for (let c = 0; c < cols - 3; c++) {
       const p = board[r][c];
-      if (p && p === board[r - 1][c + 1] && p === board[r - 2][c + 2] && p === board[r - 3][c + 3]) {
+      if (
+        p &&
+        p === board[r - 1][c + 1] &&
+        p === board[r - 2][c + 2] &&
+        p === board[r - 3][c + 3]
+      ) {
         return p;
       }
     }
   }
-  // Check negative diagonal (top-left to bottom-right)
   for (let r = 0; r < rows - 3; r++) {
     for (let c = 0; c < cols - 3; c++) {
       const p = board[r][c];
-      if (p && p === board[r + 1][c + 1] && p === board[r + 2][c + 2] && p === board[r + 3][c + 3]) {
+      if (
+        p &&
+        p === board[r + 1][c + 1] &&
+        p === board[r + 2][c + 2] &&
+        p === board[r + 3][c + 3]
+      ) {
         return p;
       }
     }
   }
-  return 0; // No winner
+  return 0;
 };
 
-export const createInitialState = (playerId) => {
+export const createInitialState = (playerId: string): ConnectFourGameState => {
   return {
-    board: Array(6).fill(null).map(() => Array(7).fill(null)),
+    board: Array(6)
+      .fill(null)
+      .map(() => Array(7).fill(null)),
     currentPlayer: 1,
     totalMoves: 0,
     winner: '',
@@ -50,24 +78,29 @@ export const createInitialState = (playerId) => {
   };
 };
 
-export const resetState = (players) => {
+export const resetState = (players: Player[]): ConnectFourGameState => {
   return {
-    board: Array(6).fill(null).map(() => Array(7).fill(null)),
+    board: Array(6)
+      .fill(null)
+      .map(() => Array(7).fill(null)),
     currentPlayer: 1,
     totalMoves: 0,
     winner: '',
-    players: players.map(p => ({ ...p, ready: false })),
+    players: players.map((p) => ({ ...p, ready: false })),
   };
 };
 
-export const makeMove = (room, socket, data) => {
+export const makeMove = (
+  room: Room,
+  socket: any,
+  data: { col: number }
+): boolean => {
   const { col } = data;
-  const gameState = room.gameState;
+  const gameState = room.gameState as ConnectFourGameState;
   if (col < 0 || col > 6 || gameState.winner) {
     socket.emit('invalid-move', { message: 'Invalid move or game is over.' });
     return false;
   }
-  // Find lowest available row in this column
   let rowToPlace = -1;
   for (let r = 5; r >= 0; r--) {
     if (gameState.board[r][col] === null) {
@@ -79,20 +112,17 @@ export const makeMove = (room, socket, data) => {
     socket.emit('invalid-move', { message: 'Column is full.' });
     return false;
   }
-  // Place piece
   gameState.board[rowToPlace][col] = gameState.currentPlayer;
   gameState.totalMoves++;
-  
-  // Check winner
+
   const winnerPlayer = checkConnectFourWinner(gameState.board);
   if (winnerPlayer) {
     gameState.winner = `Player ${winnerPlayer} wins!`;
   } else if (gameState.totalMoves >= 42) {
     gameState.winner = 'Tie game!';
   }
-  
-  // Switch player
+
   gameState.currentPlayer = gameState.currentPlayer === 1 ? 2 : 1;
-  gameState.players.forEach(p => (p.ready = false));
+  gameState.players.forEach((p) => (p.ready = false));
   return true;
 };

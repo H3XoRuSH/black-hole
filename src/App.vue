@@ -1,27 +1,56 @@
 <template>
-  <div class="flex flex-col md:flex-row min-h-screen bg-gray-100 overflow-hidden">
+  <div
+    class="flex flex-col md:flex-row min-h-screen bg-gray-100 overflow-hidden"
+  >
     <Sidebar :room-key="roomKey" />
     <div class="flex-grow flex flex-col min-h-screen overflow-auto">
-      <router-view :socket="socket" :player="player" :room-key="roomKey" :connection-status="connectionStatus"
-        :initial-game-state="gameState" @update-connection-status="connectionStatus = $event"
-        @update-player="player = $event" @update-room-key="roomKey = $event"></router-view>
+      <router-view
+        :socket="socket"
+        :player="player"
+        :room-key="roomKey"
+        :connection-status="connectionStatus"
+        :initial-game-state="gameState"
+        @update-connection-status="connectionStatus = $event"
+        @update-player="player = $event"
+        @update-room-key="roomKey = $event"
+      ></router-view>
     </div>
   </div>
 </template>
 
-<script>
-import { io } from 'socket.io-client';
+<script lang="ts">
+import { defineComponent } from 'vue';
+import { io, Socket } from 'socket.io-client';
 import router from './router';
 import Sidebar from './components/Sidebar.vue';
 
-export default {
+interface Player {
+  id: string;
+  player: number;
+  ready: boolean;
+}
+
+interface GameState {
+  circles?: Record<string, { player: number; turn: number }>;
+  currentPlayer: number;
+  totalMoves: number;
+  maxTurnsPerPlayer?: number;
+  players: Player[];
+  scores?: { player1: number; player2: number };
+  winner: string;
+  board?: (number | null)[][];
+  lines?: Record<string, number>;
+  boxes?: Record<string, number>;
+}
+
+export default defineComponent({
   components: {
     Sidebar,
   },
   data() {
     return {
-      socket: null,
-      player: null,
+      socket: null as Socket | null,
+      player: null as number | null,
       roomKey: '',
       gameId: 'black-hole',
       connectionStatus: 'Connecting to server...',
@@ -33,20 +62,21 @@ export default {
         players: [],
         scores: { player1: 0, player2: 0 },
         winner: '',
-      },
+      } as GameState,
     };
   },
   watch: {
     $route(to) {
       // If we navigate to an unrelated route, clean up room and connection state
       const isLobby = to.path === `/${this.gameId}/lobby`;
-      const isGame = this.roomKey && to.path === `/${this.gameId}/game/${this.roomKey}`;
+      const isGame =
+        this.roomKey && to.path === `/${this.gameId}/game/${this.roomKey}`;
       if (!isLobby && !isGame) {
         this.roomKey = '';
         this.player = null;
         this.connectionStatus = '';
       }
-    }
+    },
   },
   mounted() {
     // Connect to Socket.IO server
@@ -135,5 +165,5 @@ export default {
       this.socket.disconnect();
     }
   },
-};
+});
 </script>
