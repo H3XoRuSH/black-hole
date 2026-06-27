@@ -82,47 +82,6 @@
           </svg>
           <span>Main Menu</span>
         </router-link>
-
-        <div
-          class="pt-5 pb-1 px-3 text-[10px] font-bold tracking-widest text-gray-400 uppercase"
-        >
-          Games
-        </div>
-
-        <div v-for="game in games" :key="game.id">
-          <router-link
-            v-if="game.status === 'active'"
-            :to="game.route"
-            @click="isOpen = false"
-            class="flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium transition-colors duration-150 hover:bg-gray-200"
-            :class="
-              isGameRouteActive(game.route)
-                ? 'bg-gray-200 text-gray-950 font-semibold'
-                : 'text-gray-600'
-            "
-          >
-            <div class="flex items-center space-x-3">
-              <div
-                class="w-2.5 h-2.5 rounded-full border border-gray-400 bg-gray-300"
-              ></div>
-              <span>{{ game.name }}</span>
-            </div>
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-          </router-link>
-
-          <div
-            v-else
-            class="flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium text-gray-400 cursor-not-allowed select-none"
-          >
-            <div class="flex items-center space-x-3">
-              <div
-                class="w-2.5 h-2.5 rounded-full border border-gray-300 bg-gray-150 border-dashed"
-              ></div>
-              <span>{{ game.name }}</span>
-            </div>
-            <span class="text-[9px] font-semibold text-gray-400">soon</span>
-          </div>
-        </div>
       </nav>
     </div>
 
@@ -156,7 +115,6 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import gamesData from '../assets/games.json';
 
 export default defineComponent({
   props: {
@@ -165,7 +123,6 @@ export default defineComponent({
   data() {
     return {
       isOpen: false,
-      games: gamesData,
     };
   },
   computed: {
@@ -176,10 +133,6 @@ export default defineComponent({
   methods: {
     isRouteActive(path: string) {
       return this.$route.path === path;
-    },
-    isGameRouteActive(route: string) {
-      const prefix = route.split('/').slice(0, 2).join('/');
-      return this.$route.path.startsWith(prefix);
     },
   },
 });

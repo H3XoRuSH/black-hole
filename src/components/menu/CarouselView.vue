@@ -25,14 +25,14 @@
               </p>
             </div>
 
-            <router-link :to="game.route"
-              class="w-full text-white font-bold py-3.5 px-4 rounded-xl transition-all duration-200 text-center block shadow-md hover:shadow-lg hover:brightness-90 active:scale-[0.98]"
+            <button @click="$emit('select-game', game.id)"
+              class="w-full text-white font-bold py-3.5 px-4 rounded-xl transition-all duration-200 text-center block shadow-md hover:shadow-lg hover:brightness-90 active:scale-[0.98] cursor-pointer"
               :style="{
                 backgroundColor: game.color,
                 boxShadow: `0 4px 12px ${game.color}40`,
               }">
-              Enter Game Lobby
-            </router-link>
+              Host Game
+            </button>
           </div>
         </div>
       </div>

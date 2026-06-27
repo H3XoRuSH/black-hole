@@ -17,14 +17,14 @@
           {{ game.description }}
         </p>
       </div>
-      <router-link :to="game.route"
-        class="flex-shrink-0 text-white font-bold py-2 px-4 rounded-lg text-xs sm:text-sm transition-all duration-200 text-center block shadow-sm hover:brightness-90 active:scale-95"
+      <button @click="$emit('select-game', game.id)"
+        class="flex-shrink-0 text-white font-bold py-2 px-4 rounded-lg text-xs sm:text-sm transition-all duration-200 text-center block shadow-sm hover:brightness-90 active:scale-95 cursor-pointer border-none"
         :style="{
           backgroundColor: game.color,
           boxShadow: `0 2px 6px ${game.color}30`,
         }">
-        Play
-      </router-link>
+        Host
+      </button>
     </div>
   </div>
 </template>

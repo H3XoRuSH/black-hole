@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="flex flex-col md:flex-row h-dvh md:h-screen bg-gray-100 overflow-hidden"
-  >
-    <Sidebar :room-key="roomKey" />
+  <div class="h-dvh md:h-screen bg-gray-100 overflow-hidden flex flex-col min-h-0">
     <div class="flex-grow flex flex-col min-h-0 overflow-y-auto">
       <router-view
         :socket="socket"
@@ -23,7 +20,6 @@ import { defineComponent } from 'vue';
 import { io, Socket } from 'socket.io-client';
 import routerImport from './router/index.js';
 const router = routerImport as any;
-import Sidebar from './components/Sidebar.vue';
 
 interface Player {
   id: string;
@@ -45,9 +41,6 @@ interface GameState {
 }
 
 export default defineComponent({
-  components: {
-    Sidebar,
-  },
   data() {
     return {
       socket: null as Socket | null,

@@ -1,74 +1,88 @@
 <template>
-  <div
-    class="flex flex-col items-center justify-center min-h-full bg-gray-100 p-4"
-  >
-    <h1 class="text-3xl sm:text-4xl font-bold mb-6 sm:mb-8 text-gray-800">
-      {{ gameName }}
-    </h1>
+  <div class="flex flex-col items-center justify-center min-h-full bg-gray-100 p-4 select-none">
+    <!-- Header Section -->
+    <header class="text-center mb-8 max-w-md w-full">
+      <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-2">
+        {{ gameName }}
+      </h1>
+      <p class="text-gray-500 text-sm">Game Lobby</p>
+    </header>
 
-    <div
-      v-if="connectionStatus"
-      class="mb-4 text-center text-red-600 text-sm sm:text-base max-w-md bg-red-50 border border-red-200 px-4 py-2.5 rounded-lg"
-    >
-      {{ connectionStatus }}
-    </div>
-    <div
-      v-if="roomKey"
-      class="mb-4 sm:mb-6 text-center text-gray-600 text-sm sm:text-base"
-    >
-      Room Key: <span class="font-bold">{{ roomKey }}</span>
-    </div>
-
-    <div
-      class="w-full max-w-md bg-white rounded-xl shadow-md border border-gray-200 p-6 sm:p-8"
-    >
-      <!-- Host Section -->
-      <div class="text-center mb-4">
-        <p class="text-xs text-gray-500 uppercase tracking-wider font-bold">
-          Host a Game
+    <!-- Main Card -->
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-sm border border-gray-200/80 p-8 text-center">
+      <div v-if="roomKey">
+        <p class="text-xs text-gray-500 uppercase tracking-wider font-bold mb-3">
+          Share this Room Code with your friend
         </p>
-      </div>
-      <div class="mb-6">
-        <button
-          @click="createRoom"
-          :disabled="isCreateDisabled"
-          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 shadow-sm disabled:bg-gray-300 disabled:cursor-not-allowed cursor-pointer"
+
+        <!-- Large Room Code Display with Copy Ability -->
+        <div
+          @click="copyRoomKey"
+          class="relative group cursor-pointer inline-flex items-center justify-center space-x-3 bg-indigo-50 hover:bg-indigo-100/70 border border-indigo-100 rounded-2xl py-5 px-8 transition-all duration-200 w-full mb-6"
         >
-          Create New Room
-        </button>
+          <span class="text-4xl sm:text-5xl font-extrabold font-mono tracking-widest text-indigo-600">
+            {{ roomKey }}
+          </span>
+          <div class="p-1.5 bg-white text-indigo-500 rounded-lg shadow-sm border border-indigo-50 group-hover:scale-110 transition-transform duration-200">
+            <!-- Copy Icon -->
+            <svg v-if="!copied" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+            </svg>
+            <!-- Check Icon -->
+            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+
+          <!-- Copy Tooltip -->
+          <span class="absolute -bottom-7 left-1/2 -translate-x-1/2 text-[10px] font-semibold uppercase tracking-wider text-gray-400 group-hover:text-indigo-500 transition-colors duration-200">
+            {{ copied ? 'Copied to Clipboard!' : 'Click code to copy' }}
+          </span>
+        </div>
+
+        <!-- Waiting Status -->
+        <div class="flex flex-col items-center justify-center mt-8 space-y-4">
+          <div class="flex space-x-2.5">
+            <span class="w-3.5 h-3.5 bg-indigo-600 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
+            <span class="w-3.5 h-3.5 bg-indigo-600 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
+            <span class="w-3.5 h-3.5 bg-indigo-600 rounded-full animate-bounce" style="animation-delay: 0.3s"></span>
+          </div>
+          <p class="text-sm font-medium text-gray-600">
+            {{ connectionStatus || 'Waiting for another player to join...' }}
+          </p>
+        </div>
       </div>
 
-      <!-- Divider -->
-      <div class="relative my-6">
-        <div class="absolute inset-0 flex items-center">
-          <div class="w-full border-t border-gray-200"></div>
+      <!-- If no room key (e.g. direct url navigation or player disconnected) -->
+      <div v-else class="py-4">
+        <div v-if="connectionStatus" class="mb-6">
+          <div class="inline-flex p-3 bg-red-50 text-red-600 rounded-full mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-gray-800 mb-2">Connection Lost</h3>
+          <p class="text-sm text-gray-600 leading-relaxed">{{ connectionStatus }}</p>
         </div>
-        <div class="relative flex justify-center text-xs uppercase">
-          <span class="bg-white px-3 text-gray-400 font-medium">Or</span>
+        <div v-else class="mb-6">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 mb-4 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <p class="text-sm text-gray-500">No active game room detected.</p>
         </div>
+        <router-link to="/menu" class="inline-block bg-gray-800 hover:bg-gray-900 text-white font-bold py-2.5 px-6 rounded-xl transition-all duration-200 mt-2">
+          Back to Main Menu
+        </router-link>
       </div>
 
-      <!-- Join Section -->
-      <div class="text-center mb-4">
-        <p class="text-xs text-gray-500 uppercase tracking-wider font-bold">
-          Join an Existing Room
-        </p>
-      </div>
-      <div class="flex flex-col space-y-3">
-        <input
-          v-model="roomInput"
-          type="text"
-          placeholder="ENTER 6-DIGIT CODE"
-          class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-center font-mono tracking-widest text-lg placeholder:font-sans placeholder:tracking-normal placeholder:text-sm text-gray-700 uppercase"
-          :disabled="isJoinDisabled"
-        />
-        <button
-          @click="joinRoom"
-          :disabled="isJoinDisabled"
-          class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 shadow-sm disabled:bg-gray-300 disabled:cursor-not-allowed cursor-pointer"
+      <!-- Leave / Cancel Button (only shown if room exists) -->
+      <div v-if="roomKey" class="mt-8 pt-6 border-t border-gray-100">
+        <router-link
+          to="/menu"
+          class="inline-block w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-xl transition-all duration-200"
         >
-          Join Game
-        </button>
+          Cancel & Close Room
+        </router-link>
       </div>
     </div>
   </div>
@@ -98,43 +112,21 @@ export default defineComponent({
   },
   data() {
     return {
-      roomInput: '',
+      copied: false,
     };
   },
-  computed: {
-    isCreateDisabled(): boolean {
-      return !!this.roomKey && this.player === 1;
-    },
-    isJoinDisabled(): boolean {
-      return !!this.roomKey && this.player === 1;
-    },
-  },
   methods: {
-    createRoom() {
-      console.log(
-        'Creating room, current roomKey:',
-        this.roomKey,
-        'player:',
-        this.player
-      );
-      this.socket.emit('create-room', { gameId: this.gameId });
-    },
-    joinRoom() {
-      console.log(
-        'Joining room, input:',
-        this.roomInput,
-        'roomKey:',
-        this.roomKey,
-        'player:',
-        this.player
-      );
-      if (!this.roomInput) {
-        this.$emit('update-connection-status', 'Please enter a room key.');
-        return;
+    async copyRoomKey() {
+      if (!this.roomKey) return;
+      try {
+        await navigator.clipboard.writeText(this.roomKey);
+        this.copied = true;
+        setTimeout(() => {
+          this.copied = false;
+        }, 2000);
+      } catch (err) {
+        console.error('Failed to copy text: ', err);
       }
-      const roomKey = this.roomInput.toUpperCase();
-      this.socket.emit('join-room', { roomKey, gameId: this.gameId });
-      this.roomInput = ''; // Clear input after attempt
     },
   },
   beforeRouteLeave(to: any, from: any, next: any) {
