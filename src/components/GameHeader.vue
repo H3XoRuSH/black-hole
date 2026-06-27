@@ -56,9 +56,6 @@
       <div v-else class="text-lg font-bold" :class="winnerTextClass">
         Game Over! {{ winner }}
       </div>
-      <div class="text-xs text-gray-500 mt-1">
-        You are Player {{ player }} ({{ player === 1 ? 'Blue' : 'Red' }})
-      </div>
     </div>
   </div>
 </template>
