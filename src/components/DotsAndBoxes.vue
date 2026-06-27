@@ -1,5 +1,8 @@
 <template>
-  <div v-if="isValidGame" class="flex-grow flex flex-col items-center justify-between min-h-screen p-4 sm:p-6 md:p-8 select-none">
+  <div
+    v-if="isValidGame"
+    class="flex-grow flex flex-col items-center justify-between min-h-screen p-4 sm:p-6 md:p-8 select-none"
+  >
     <!-- Game Header -->
     <GameHeader
       title="Dots and Boxes"
@@ -23,14 +26,14 @@
 
     <!-- Dots & Boxes Board Container -->
     <div class="flex-grow flex items-center justify-center py-4 w-full">
-      <div class="bg-slate-900 border border-slate-800 p-6 sm:p-8 rounded-2xl shadow-xl w-full max-w-[280px] xs:max-w-[340px] sm:max-w-[400px] md:max-w-[440px] aspect-square relative">
-        
+      <div
+        class="bg-slate-900 border border-slate-800 p-6 sm:p-8 rounded-2xl shadow-xl w-full max-w-[280px] xs:max-w-[340px] sm:max-w-[400px] md:max-w-[440px] aspect-square relative"
+      >
         <!-- Board Layout Area -->
         <div class="relative w-full h-full">
-          
           <!-- Render Boxes -->
-          <div 
-            v-for="box in boxes" 
+          <div
+            v-for="box in boxes"
             :key="`box-${box.key}`"
             :id="`box-${box.key}`"
             class="absolute flex items-center justify-center transition-all duration-300"
@@ -39,23 +42,25 @@
               left: `${box.c * 25}%`,
               width: '25%',
               height: '25%',
-              zIndex: 5
+              zIndex: 5,
             }"
           >
-            <div 
+            <div
               v-if="gameState.boxes[box.key]"
               class="w-[calc(100%-4px)] h-[calc(100%-4px)] flex items-center justify-center rounded-lg transition-all duration-300 transform scale-95"
               :class="getBoxClass(box.key)"
             >
-              <span class="text-xs sm:text-sm font-black uppercase select-none opacity-80">
+              <span
+                class="text-xs sm:text-sm font-black uppercase select-none opacity-80"
+              >
                 {{ gameState.boxes[box.key] === 1 ? 'P1' : 'P2' }}
               </span>
             </div>
           </div>
 
           <!-- Render Horizontal Lines -->
-          <div 
-            v-for="line in horizontalLines" 
+          <div
+            v-for="line in horizontalLines"
             :key="`line-${line.key}`"
             :id="`line-${line.key}`"
             class="absolute cursor-pointer group flex items-center justify-center"
@@ -65,19 +70,19 @@
               width: '25%',
               height: '16px',
               transform: 'translateY(-50%)',
-              zIndex: 10
+              zIndex: 10,
             }"
             @click="makeMove(line.key)"
           >
-            <div 
+            <div
               class="w-[calc(100%-8px)] h-1 sm:h-1.5 rounded transition-all duration-200"
               :class="getLineClass(line.key, 'h')"
             ></div>
           </div>
 
           <!-- Render Vertical Lines -->
-          <div 
-            v-for="line in verticalLines" 
+          <div
+            v-for="line in verticalLines"
             :key="`line-${line.key}`"
             :id="`line-${line.key}`"
             class="absolute cursor-pointer group flex items-center justify-center"
@@ -87,19 +92,19 @@
               width: '16px',
               height: '25%',
               transform: 'translateX(-50%)',
-              zIndex: 10
+              zIndex: 10,
             }"
             @click="makeMove(line.key)"
           >
-            <div 
+            <div
               class="w-1 sm:w-1.5 h-[calc(100%-8px)] rounded transition-all duration-200"
               :class="getLineClass(line.key, 'v')"
             ></div>
           </div>
 
           <!-- Render Dots -->
-          <div 
-            v-for="dot in dots" 
+          <div
+            v-for="dot in dots"
             :key="`dot-${dot.key}`"
             :id="`dot-${dot.key}`"
             class="absolute w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 rounded-full bg-slate-600 border border-slate-700 shadow-sm pointer-events-none"
@@ -107,19 +112,18 @@
               top: `${dot.r * 25}%`,
               left: `${dot.c * 25}%`,
               transform: 'translate(-50%, -50%)',
-              zIndex: 20
+              zIndex: 20,
             }"
           ></div>
-
         </div>
       </div>
     </div>
 
     <!-- Footer Controls -->
     <div class="w-full max-w-lg flex flex-col items-center justify-center py-4">
-      <button 
-        v-if="gameOver" 
-        @click="newGame" 
+      <button
+        v-if="gameOver"
+        @click="newGame"
         :disabled="ready"
         id="play-again-btn"
         class="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
@@ -129,24 +133,56 @@
     </div>
   </div>
   <div v-else class="h-full flex flex-col items-center justify-center p-6">
-    <p class="text-lg text-gray-500 font-medium">Invalid game state. Redirecting to lobby...</p>
+    <p class="text-lg text-gray-500 font-medium">
+      Invalid game state. Redirecting to lobby...
+    </p>
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent, PropType } from 'vue';
 import { useRouter } from 'vue-router';
+import { Socket } from 'socket.io-client';
 import GameHeader from './GameHeader.vue';
 
-export default {
+interface Player {
+  id: string;
+  player: number;
+  ready: boolean;
+}
+
+interface GameState {
+  lines: Record<string, number>;
+  boxes: Record<string, number>;
+  scores: { player1: number; player2: number };
+  currentPlayer: number;
+  totalMoves: number;
+  players: Player[];
+  winner: string;
+}
+
+export default defineComponent({
   name: 'DotsAndBoxes',
   components: {
     GameHeader,
   },
   props: {
-    socket: Object,
-    player: Number,
-    roomKey: String,
-    initialGameState: Object,
+    socket: {
+      type: Object as PropType<Socket>,
+      required: true,
+    },
+    player: {
+      type: Number,
+      required: true,
+    },
+    roomKey: {
+      type: String,
+      required: true,
+    },
+    initialGameState: {
+      type: Object as PropType<GameState>,
+      required: true,
+    },
   },
   setup() {
     const router = useRouter();
@@ -157,20 +193,27 @@ export default {
       ready: false,
       otherPlayerReady: false,
       isLeavingDueToDisconnect: false,
-      gameState: this.initialGameState || {
-        lines: {},
-        boxes: {},
-        scores: { player1: 0, player2: 0 },
-        currentPlayer: 1,
-        totalMoves: 0,
-        players: [],
-        winner: '',
-      },
+      gameState:
+        this.initialGameState ||
+        ({
+          lines: {},
+          boxes: {},
+          scores: { player1: 0, player2: 0 },
+          currentPlayer: 1,
+          totalMoves: 0,
+          players: [],
+          winner: '',
+        } as GameState),
     };
   },
   computed: {
     isValidGame() {
-      return this.roomKey && this.player && this.gameState.players && this.gameState.players.length >= 1;
+      return (
+        this.roomKey &&
+        this.player &&
+        this.gameState.players &&
+        this.gameState.players.length >= 1
+      );
     },
     gameOver() {
       return !!this.gameState.winner;
@@ -218,7 +261,11 @@ export default {
   },
   methods: {
     isMyTurn() {
-      return !this.gameOver && this.player === this.gameState.currentPlayer && this.gameState.players.length === 2;
+      return (
+        !this.gameOver &&
+        this.player === this.gameState.currentPlayer &&
+        this.gameState.players.length === 2
+      );
     },
     makeMove(lineKey) {
       if (!this.isMyTurn()) return;
@@ -233,16 +280,20 @@ export default {
       if (lineOwner === 2) {
         return 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]';
       }
-      
+
       // Interactive/hover state
       if (this.isMyTurn()) {
-        const hoverColorClass = this.player === 1 
-          ? 'bg-blue-500/10 group-hover:bg-blue-500/60'
-          : 'bg-rose-500/10 group-hover:bg-rose-500/60';
-        const scalingClass = direction === 'h' ? 'group-hover:scale-y-125' : 'group-hover:scale-x-125';
+        const hoverColorClass =
+          this.player === 1
+            ? 'bg-blue-500/10 group-hover:bg-blue-500/60'
+            : 'bg-rose-500/10 group-hover:bg-rose-500/60';
+        const scalingClass =
+          direction === 'h'
+            ? 'group-hover:scale-y-125'
+            : 'group-hover:scale-x-125';
         return `${hoverColorClass} ${scalingClass}`;
       }
-      
+
       return 'bg-slate-800/40';
     },
     getBoxClass(boxKey) {
@@ -303,7 +354,9 @@ export default {
       return;
     }
     if (!this.gameOver && this.gameState.players.length === 2) {
-      const answer = window.confirm('Are you sure you want to leave the ongoing game? This will disconnect you and end the game.');
+      const answer = window.confirm(
+        'Are you sure you want to leave the ongoing game? This will disconnect you and end the game.'
+      );
       if (answer) {
         next();
       } else {
@@ -313,5 +366,5 @@ export default {
       next();
     }
   },
-};
+});
 </script>

@@ -1,7 +1,19 @@
-export const createInitialState = (playerId) => {
+import { Player, Room } from './blackHole.js';
+
+export interface DotsAndBoxesGameState {
+  lines: Record<string, number>;
+  boxes: Record<string, number>;
+  scores: { player1: number; player2: number };
+  currentPlayer: number;
+  totalMoves: number;
+  winner: string;
+  players: Player[];
+}
+
+export const createInitialState = (playerId: string): DotsAndBoxesGameState => {
   return {
-    lines: {}, // 'h-r-c' or 'v-r-c' -> player number (1 or 2)
-    boxes: {}, // 'r-c' -> player number (1 or 2)
+    lines: {},
+    boxes: {},
     scores: { player1: 0, player2: 0 },
     currentPlayer: 1,
     totalMoves: 0,
@@ -10,7 +22,7 @@ export const createInitialState = (playerId) => {
   };
 };
 
-export const resetState = (players) => {
+export const resetState = (players: Player[]): DotsAndBoxesGameState => {
   return {
     lines: {},
     boxes: {},
@@ -18,13 +30,17 @@ export const resetState = (players) => {
     currentPlayer: 1,
     totalMoves: 0,
     winner: '',
-    players: players.map(p => ({ ...p, ready: false })),
+    players: players.map((p) => ({ ...p, ready: false })),
   };
 };
 
-export const makeMove = (room, socket, data) => {
-  const { lineKey } = data; // e.g. 'h-0-0' or 'v-1-2'
-  const gameState = room.gameState;
+export const makeMove = (
+  room: Room,
+  socket: any,
+  data: { lineKey: string }
+): boolean => {
+  const { lineKey } = data;
+  const gameState = room.gameState as DotsAndBoxesGameState;
 
   if (gameState.winner) {
     socket.emit('invalid-move', { message: 'Game is over.' });
@@ -48,12 +64,16 @@ export const makeMove = (room, socket, data) => {
 
   if (type === 'h') {
     if (r < 0 || r > 4 || c < 0 || c > 3) {
-      socket.emit('invalid-move', { message: 'Invalid horizontal line coordinates.' });
+      socket.emit('invalid-move', {
+        message: 'Invalid horizontal line coordinates.',
+      });
       return false;
     }
   } else if (type === 'v') {
     if (r < 0 || r > 3 || c < 0 || c > 4) {
-      socket.emit('invalid-move', { message: 'Invalid vertical line coordinates.' });
+      socket.emit('invalid-move', {
+        message: 'Invalid vertical line coordinates.',
+      });
       return false;
     }
   } else {
@@ -61,13 +81,12 @@ export const makeMove = (room, socket, data) => {
     return false;
   }
 
-  // Claim the line
   gameState.lines[lineKey] = gameState.currentPlayer;
   gameState.totalMoves++;
 
   let boxScored = false;
 
-  const checkAndScoreBox = (br, bc) => {
+  const checkAndScoreBox = (br: number, bc: number) => {
     const boxKey = `${br}-${bc}`;
     if (gameState.boxes[boxKey]) return;
 
@@ -100,7 +119,6 @@ export const makeMove = (room, socket, data) => {
     if (c < 4) checkAndScoreBox(r, c);
   }
 
-  // Check if game is over (16 boxes completed)
   const completedBoxes = Object.keys(gameState.boxes).length;
   if (completedBoxes === 16) {
     if (gameState.scores.player1 > gameState.scores.player2) {
@@ -112,7 +130,6 @@ export const makeMove = (room, socket, data) => {
     }
   }
 
-  // If no box was completed, switch player turn
   if (!boxScored) {
     gameState.currentPlayer = gameState.currentPlayer === 1 ? 2 : 1;
   }
