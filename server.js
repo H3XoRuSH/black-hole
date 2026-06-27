@@ -3,6 +3,9 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import * as blackHole from './server/games/blackHole.js';
+import * as connectFour from './server/games/connectFour.js';
+import * as dotsAndBoxes from './server/games/dotsAndBoxes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -32,106 +35,6 @@ const generateRoomKey = () => {
 // Store game states by room key
 const rooms = new Map(); // roomKey -> { gameState, players }
 
-// Helper functions
-const getNeighbors = (row, col) => {
-  const neighbors = [];
-  if (col > 1) neighbors.push(`${row}-${col - 1}`);
-  if (col < row) neighbors.push(`${row}-${col + 1}`);
-  if (row > 1) {
-    if (col <= row - 1) neighbors.push(`${row - 1}-${col}`);
-    if (col > 1) neighbors.push(`${row - 1}-${col - 1}`);
-  }
-  if (row < 6) {
-    neighbors.push(`${row + 1}-${col}`);
-    if (col <= row) neighbors.push(`${row + 1}-${col + 1}`);
-  }
-  return neighbors.filter(pos => allPositions().includes(pos));
-};
-
-const allPositions = () => {
-  const positions = [];
-  for (let row = 1; row <= 6; row++) {
-    for (let col = 1; col <= row; col++) {
-      positions.push(`${row}-${col}`);
-    }
-  }
-  return positions;
-};
-
-const calculateScores = (gameState) => {
-  const taken = Object.keys(gameState.circles);
-  const remaining = allPositions().filter(pos => !taken.includes(pos));
-  if (remaining.length !== 1) {
-    return { player1: 0, player2: 0 };
-  }
-  const blackCircle = remaining[0];
-  const [blackRow, blackCol] = blackCircle.split('-').map(Number);
-  const neighbors = getNeighbors(blackRow, blackCol);
-  let player1Sum = 0, player2Sum = 0;
-  neighbors.forEach(key => {
-    const data = gameState.circles[key];
-    if (data) {
-      if (data.player === 1) player1Sum += data.turn;
-      else if (data.player === 2) player2Sum += data.turn;
-    }
-  });
-  return { player1: player1Sum, player2: player2Sum };
-};
-
-const getWinner = (gameState) => {
-  if (gameState.totalMoves < gameState.maxTurnsPerPlayer * 2) return '';
-  const { player1, player2 } = calculateScores(gameState);
-  if (player1 < player2 || (player1 === 0 && player2 === 0)) {
-    return 'Player 1 wins!';
-  } else if (player2 < player1) {
-    return 'Player 2 wins!';
-  } else {
-    return 'Tie game!';
-  }
-};
-
-const checkConnectFourWinner = (board) => {
-  const rows = 6;
-  const cols = 7;
-  // Check horizontal
-  for (let r = 0; r < rows; r++) {
-    for (let c = 0; c < cols - 3; c++) {
-      const p = board[r][c];
-      if (p && p === board[r][c + 1] && p === board[r][c + 2] && p === board[r][c + 3]) {
-        return p;
-      }
-    }
-  }
-  // Check vertical
-  for (let r = 0; r < rows - 3; r++) {
-    for (let c = 0; c < cols; c++) {
-      const p = board[r][c];
-      if (p && p === board[r + 1][c] && p === board[r + 2][c] && p === board[r + 3][c]) {
-        return p;
-      }
-    }
-  }
-  // Check positive diagonal (bottom-left to top-right)
-  for (let r = 3; r < rows; r++) {
-    for (let c = 0; c < cols - 3; c++) {
-      const p = board[r][c];
-      if (p && p === board[r - 1][c + 1] && p === board[r - 2][c + 2] && p === board[r - 3][c + 3]) {
-        return p;
-      }
-    }
-  }
-  // Check negative diagonal (top-left to bottom-right)
-  for (let r = 0; r < rows - 3; r++) {
-    for (let c = 0; c < cols - 3; c++) {
-      const p = board[r][c];
-      if (p && p === board[r + 1][c + 1] && p === board[r + 2][c + 2] && p === board[r + 3][c + 3]) {
-        return p;
-      }
-    }
-  }
-  return 0; // No winner
-};
-
 // Socket.IO connection handling
 io.on('connection', (socket) => {
   console.log('A player connected:', socket.id);
@@ -142,19 +45,11 @@ io.on('connection', (socket) => {
     while (rooms.has(roomKey)) {
       roomKey = generateRoomKey(); // Ensure unique key
     }
-    const initialGameState = gameId === 'connect-four' ? {
-      board: Array(6).fill(null).map(() => Array(7).fill(null)),
-      currentPlayer: 1,
-      totalMoves: 0,
-      winner: '',
-      players: [{ id: socket.id, player: 1, ready: false }],
-    } : {
-      circles: {},
-      currentPlayer: 1,
-      totalMoves: 0,
-      maxTurnsPerPlayer: 10,
-      players: [{ id: socket.id, player: 1, ready: false }],
-    };
+    const initialGameState = gameId === 'connect-four'
+      ? connectFour.createInitialState(socket.id)
+      : gameId === 'dots-and-boxes'
+        ? dotsAndBoxes.createInitialState(socket.id)
+        : blackHole.createInitialState(socket.id);
 
     rooms.set(roomKey, {
       gameId,
@@ -203,62 +98,22 @@ io.on('connection', (socket) => {
     }
 
     if (room.gameId === 'connect-four') {
-      const { col } = data;
-      if (col < 0 || col > 6 || room.gameState.winner) {
-        socket.emit('invalid-move', { message: 'Invalid move or game is over.' });
-        return;
+      const success = connectFour.makeMove(room, socket, data);
+      if (success) {
+        io.to(roomKey).emit('game-state', room.gameState);
       }
-      // Find lowest available row in this column
-      let rowToPlace = -1;
-      for (let r = 5; r >= 0; r--) {
-        if (room.gameState.board[r][col] === null) {
-          rowToPlace = r;
-          break;
-        }
+    } else if (room.gameId === 'dots-and-boxes') {
+      const success = dotsAndBoxes.makeMove(room, socket, data);
+      if (success) {
+        io.to(roomKey).emit('game-state', room.gameState);
       }
-      if (rowToPlace === -1) {
-        socket.emit('invalid-move', { message: 'Column is full.' });
-        return;
-      }
-      // Place piece
-      room.gameState.board[rowToPlace][col] = room.gameState.currentPlayer;
-      room.gameState.totalMoves++;
-      
-      // Check winner
-      const winnerPlayer = checkConnectFourWinner(room.gameState.board);
-      if (winnerPlayer) {
-        room.gameState.winner = `Player ${winnerPlayer} wins!`;
-      } else if (room.gameState.totalMoves >= 42) {
-        room.gameState.winner = 'Tie game!';
-      }
-      
-      // Switch player
-      room.gameState.currentPlayer = room.gameState.currentPlayer === 1 ? 2 : 1;
-      room.gameState.players.forEach(p => (p.ready = false));
-      io.to(roomKey).emit('game-state', room.gameState);
     } else {
-      const { row, col } = data;
-      if (room.gameState.totalMoves >= room.gameState.maxTurnsPerPlayer * 2) {
-        socket.emit('invalid-move', { message: 'Game is over.' });
-        return;
+      const success = blackHole.makeMove(room, socket, data);
+      if (success) {
+        const scores = blackHole.calculateScores(room.gameState);
+        const winner = blackHole.getWinner(room.gameState);
+        io.to(roomKey).emit('game-state', { ...room.gameState, scores, winner });
       }
-      const key = `${row}-${col}`;
-      if (room.gameState.circles[key]) {
-        socket.emit('invalid-move', { message: 'Circle already taken.' });
-        return;
-      }
-
-      const playerTurnNumber = Math.floor(room.gameState.totalMoves / 2) + 1;
-      room.gameState.circles[key] = { player: room.gameState.currentPlayer, turn: playerTurnNumber };
-      room.gameState.totalMoves++;
-      room.gameState.currentPlayer = room.gameState.currentPlayer === 1 ? 2 : 1;
-
-      // Reset ready flags when a move is made
-      room.gameState.players.forEach(p => (p.ready = false));
-
-      const scores = calculateScores(room.gameState);
-      const winner = getWinner(room.gameState);
-      io.to(roomKey).emit('game-state', { ...room.gameState, scores, winner });
     }
   });
 
@@ -278,27 +133,19 @@ io.on('connection', (socket) => {
     player.ready = true;
     io.to(roomKey).emit('player-ready', { player: player.player });
 
-    // Check if both players are ready
     const allReady = room.gameState.players.every(p => p.ready);
     if (allReady && room.gameState.players.length === 2) {
       if (room.gameId === 'connect-four') {
-        room.gameState = {
-          board: Array(6).fill(null).map(() => Array(7).fill(null)),
-          currentPlayer: 1,
-          totalMoves: 0,
-          winner: '',
-          players: room.gameState.players.map(p => ({ ...p, ready: false })),
-        };
+        room.gameState = connectFour.resetState(room.gameState.players);
+        io.to(roomKey).emit('game-state', room.gameState);
+      } else if (room.gameId === 'dots-and-boxes') {
+        room.gameState = dotsAndBoxes.resetState(room.gameState.players);
         io.to(roomKey).emit('game-state', room.gameState);
       } else {
-        room.gameState = {
-          circles: {},
-          currentPlayer: 1,
-          totalMoves: 0,
-          maxTurnsPerPlayer: 10,
-          players: room.gameState.players.map(p => ({ ...p, ready: false })), // Reset ready flags
-        };
-        io.to(roomKey).emit('game-state', { ...room.gameState, scores: { player1: 0, player2: 0 }, winner: '' });
+        room.gameState = blackHole.resetState(room.gameState.players);
+        const scores = blackHole.calculateScores(room.gameState);
+        const winner = blackHole.getWinner(room.gameState);
+        io.to(roomKey).emit('game-state', { ...room.gameState, scores, winner });
       }
     }
   });

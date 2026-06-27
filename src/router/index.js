@@ -3,6 +3,7 @@ import Menu from '../components/Menu.vue';
 import Lobby from '../components/Lobby.vue';
 import Game from '../components/Game.vue';
 import ConnectFour from '../components/ConnectFour.vue';
+import DotsAndBoxes from '../components/DotsAndBoxes.vue';
 
 const routes = [
   {
@@ -38,6 +39,20 @@ const routes = [
     component: ConnectFour,
     props: true, // Pass route params as props
     meta: { title: "Connect Four - Gab's Arcade" },
+  },
+  {
+    path: '/dots-and-boxes/lobby',
+    name: 'DotsAndBoxesLobby',
+    component: Lobby,
+    props: { gameId: 'dots-and-boxes', gameName: 'Dots and Boxes' },
+    meta: { title: "Dots and Boxes - Gab's Arcade" },
+  },
+  {
+    path: '/dots-and-boxes/game/:roomKey',
+    name: 'DotsAndBoxesGame',
+    component: DotsAndBoxes,
+    props: true, // Pass route params as props
+    meta: { title: "Dots and Boxes - Gab's Arcade" },
   },
   {
     path: '/:pathMatch(.*)*',
