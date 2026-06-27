@@ -233,10 +233,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
-import { useRouter } from 'vue-router';
+import { defineComponent, PropType, ref } from 'vue';
 import { Socket } from 'socket.io-client';
 import GameHeader from './GameHeader.vue';
+import { useGame } from '../composables/useGame';
 
 interface Player {
   id: string;
@@ -297,14 +297,23 @@ export default defineComponent({
       required: true,
     },
   },
-  setup() {
-    const router = useRouter() as any;
-    return { router };
+  setup(props) {
+    const gameState = ref(props.initialGameState);
+
+    const game = useGame({
+      socket: props.socket,
+      player: props.player,
+      roomKey: props.roomKey,
+      gameState,
+      gameOver: () => gameState.value?.phase === 'game-over',
+      lobbyRoute: '/battleship/lobby',
+      registerLifecycle: false,
+    });
+
+    return { ...game, gameState };
   },
   data() {
     return {
-      isLeavingDueToDisconnect: false,
-      gameState: this.initialGameState,
       fleet: [
         { name: 'Cruiser', size: 3, coordinates: [] as [number, number][], placed: false },
         { name: 'Destroyer', size: 2, coordinates: [] as [number, number][], placed: false },
@@ -314,7 +323,6 @@ export default defineComponent({
       placementOrientation: 'H' as 'H' | 'V',
       hoverCoords: [] as [number, number][],
       activeMobileTab: 'target' as 'target' | 'fleet',
-      ready: false,
       isMobile: false,
     };
   },
@@ -448,11 +456,6 @@ export default defineComponent({
         row,
         col,
       });
-    },
-    newGame() {
-      if (this.socket) {
-        this.socket.emit('new-game', { roomKey: this.roomKey });
-      }
     },
     computeCoordinates(r: number, c: number, size: number, orientation: 'H' | 'V'): [number, number][] {
       const coords: [number, number][] = [];

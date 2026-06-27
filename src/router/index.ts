@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import Menu from '../components/Menu.vue';
 import Lobby from '../components/Lobby.vue';
-import Game from '../components/Game.vue';
+import BlackHole from '../components/BlackHole.vue';
 import ConnectFour from '../components/ConnectFour.vue';
 import DotsAndBoxes from '../components/DotsAndBoxes.vue';
 import Battleship from '../components/Battleship.vue';
@@ -23,7 +23,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/black-hole/game/:roomKey',
     name: 'Game',
-    component: Game,
+    component: BlackHole,
     props: true,
     meta: { title: 'Black Hole - Gab\'s Arcade' },
   },

@@ -81,10 +81,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
-import { useRouter } from 'vue-router';
+import { defineComponent, PropType, ref } from 'vue';
 import { Socket } from 'socket.io-client';
 import GameHeader from './GameHeader.vue';
+import { useGame } from '../composables/useGame';
 
 interface Player {
   id: string;
@@ -123,27 +123,32 @@ export default defineComponent({
       required: true,
     },
   },
-  setup() {
-    const router = useRouter() as any;
-    return { router };
+  setup(props) {
+    const gameState = ref<GameState>(
+      props.initialGameState || {
+        board: Array(6)
+          .fill(null)
+          .map(() => Array(7).fill(null)),
+        currentPlayer: 1,
+        totalMoves: 0,
+        players: [],
+        winner: '',
+      }
+    );
+
+    const game = useGame({
+      socket: props.socket as any,
+      player: props.player,
+      roomKey: props.roomKey,
+      gameState,
+      gameOver: () => !!gameState.value?.winner,
+      lobbyRoute: '/connect-four/lobby',
+    });
+
+    return { ...game, gameState };
   },
   data() {
-    return {
-      ready: false,
-      otherPlayerReady: false,
-      isLeavingDueToDisconnect: false,
-      gameState:
-        this.initialGameState
-        || ({
-          board: Array(6)
-            .fill(null)
-            .map(() => Array(7).fill(null)),
-          currentPlayer: 1,
-          totalMoves: 0,
-          players: [],
-          winner: '',
-        } as GameState),
-    };
+    return {};
   },
   computed: {
     isValidGame() {
@@ -189,69 +194,6 @@ export default defineComponent({
         return 'bg-gradient-to-tr from-red-600 via-red-500 to-rose-400 border-red-400 shadow-[0_0_10px_rgba(239,68,68,0.55)]';
       return '';
     },
-    newGame() {
-      this.ready = true;
-      this.socket.emit('new-game', { roomKey: this.roomKey });
-    },
-    handleBeforeUnload(event: BeforeUnloadEvent) {
-      if (!this.gameOver && this.gameState.players.length === 2) {
-        event.preventDefault();
-        event.returnValue = '';
-      }
-    },
-  },
-  mounted() {
-    if (!this.isValidGame) {
-      this.router.push('/connect-four/lobby');
-      return;
-    }
-
-    window.addEventListener('beforeunload', this.handleBeforeUnload);
-
-    this.socket.on('game-state', (newState: any) => {
-      this.gameState = newState;
-      if (this.gameState.totalMoves === 0) {
-        this.ready = false;
-        this.otherPlayerReady = false;
-      }
-      if (this.gameState.players.length < 2 && !this.gameOver) {
-        this.router.push('/connect-four/lobby');
-      }
-    });
-
-    this.socket.on('player-ready', (player: number) => {
-      if (player !== this.player) {
-        this.otherPlayerReady = true;
-      }
-    });
-  },
-  beforeUnmount() {
-    if (this.roomKey) {
-      this.socket.emit('leave-room', { roomKey: this.roomKey });
-    }
-    if (this.socket) {
-      this.socket.off('game-state');
-      this.socket.off('player-ready');
-    }
-    window.removeEventListener('beforeunload', this.handleBeforeUnload);
-  },
-  beforeRouteLeave(to: any, from: any, next: any) {
-    if (this.isLeavingDueToDisconnect || this.router.isLeavingDueToDisconnect) {
-      next();
-      return;
-    }
-    if (!this.gameOver && this.gameState.players.length === 2) {
-      const answer = window.confirm(
-        'Are you sure you want to leave the ongoing game? This will disconnect you and end the game.'
-      );
-      if (answer) {
-        next();
-      } else {
-        next(false);
-      }
-    } else {
-      next();
-    }
   },
 });
 </script>
