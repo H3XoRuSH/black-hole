@@ -137,7 +137,7 @@ export default defineComponent({
       this.roomInput = ''; // Clear input after attempt
     },
   },
-  beforeRouteLeave(to, from, next) {
+  beforeRouteLeave(to: any, from: any, next: any) {
     // Only tell the server to clear the room if we are NOT navigating to the game itself
     const gamePathPrefix = `/${this.gameId}/game`;
     if (this.roomKey && !to.path.startsWith(gamePathPrefix)) {

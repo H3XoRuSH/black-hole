@@ -66,7 +66,7 @@ export default defineComponent({
     };
   },
   watch: {
-    $route(to) {
+    $route(to: any) {
       // If we navigate to an unrelated route, clean up room and connection state
       const isLobby = to.path === `/${this.gameId}/lobby`;
       const isGame =
@@ -82,83 +82,112 @@ export default defineComponent({
     // Connect to Socket.IO server
     this.socket = io();
 
-    this.socket.on('connect', () => {
-      this.connectionStatus = '';
-      this.roomKey = '';
-      this.player = null;
-      // Only redirect to menu on reconnect if we are not already on the menu or lobby pages
-      const isLobby = router.currentRoute.value.path.endsWith('/lobby');
-      if (router.currentRoute.value.path !== '/menu' && !isLobby) {
+    if (this.socket) {
+      this.socket.on('connect', () => {
+        this.connectionStatus = '';
+        this.roomKey = '';
+        this.player = null;
+        // Only redirect to menu on reconnect if we are not already on the menu or lobby pages
+        const isLobby = router.currentRoute.value.path.endsWith('/lobby');
+        if (router.currentRoute.value.path !== '/menu' && !isLobby) {
+          router.isLeavingDueToDisconnect = true;
+          router.push('/menu').finally(() => {
+            router.isLeavingDueToDisconnect = false;
+          });
+        }
+      });
+
+      this.socket.on(
+        'waiting-for-player',
+        ({
+          roomKey,
+          player,
+          gameId,
+        }: {
+          roomKey: string;
+          player: number;
+          gameId: string;
+        }) => {
+          this.roomKey = roomKey;
+          this.player = player;
+          this.gameId = gameId || 'black-hole';
+          this.connectionStatus = 'Waiting for another player...';
+          router.isLeavingDueToDisconnect = true;
+          router.push(`/${this.gameId}/lobby`).finally(() => {
+            router.isLeavingDueToDisconnect = false;
+          });
+        }
+      );
+
+      this.socket.on(
+        'room-started',
+        ({
+          roomKey,
+          player,
+          gameId,
+          gameState,
+        }: {
+          roomKey: string;
+          player: number;
+          gameId: string;
+          gameState: any;
+        }) => {
+          this.roomKey = roomKey;
+          this.player = player;
+          this.gameId = gameId || 'black-hole';
+          this.gameState = gameState;
+          this.connectionStatus = '';
+          router.push(`/${this.gameId}/game/${roomKey}`);
+        }
+      );
+
+      this.socket.on('room-error', ({ message }: { message: string }) => {
+        this.connectionStatus = message;
+        this.roomKey = '';
+        this.player = null;
+        this.gameState = {
+          circles: {},
+          currentPlayer: 1,
+          totalMoves: 0,
+          maxTurnsPerPlayer: 10,
+          players: [],
+          scores: { player1: 0, player2: 0 },
+          winner: '',
+        };
         router.isLeavingDueToDisconnect = true;
-        router.push('/menu').finally(() => {
+        router.push(`/${this.gameId}/lobby`).finally(() => {
           router.isLeavingDueToDisconnect = false;
         });
-      }
-    });
-
-    this.socket.on('waiting-for-player', ({ roomKey, player, gameId }) => {
-      this.roomKey = roomKey;
-      this.player = player;
-      this.gameId = gameId || 'black-hole';
-      this.connectionStatus = 'Waiting for another player...';
-      router.isLeavingDueToDisconnect = true;
-      router.push(`/${this.gameId}/lobby`).finally(() => {
-        router.isLeavingDueToDisconnect = false;
       });
-    });
 
-    this.socket.on('room-started', ({ roomKey, player, gameId, gameState }) => {
-      this.roomKey = roomKey;
-      this.player = player;
-      this.gameId = gameId || 'black-hole';
-      this.gameState = gameState;
-      this.connectionStatus = '';
-      router.push(`/${this.gameId}/game/${roomKey}`);
-    });
+      this.socket.on(
+        'player-disconnected',
+        ({ message, gameId }: { message: string; gameId: string }) => {
+          console.log(`Player disconnected: ${message}`);
+          this.connectionStatus = message;
+          this.roomKey = '';
+          this.player = null;
+          this.gameState = {
+            circles: {},
+            currentPlayer: 1,
+            totalMoves: 0,
+            maxTurnsPerPlayer: 10,
+            players: [],
+            scores: { player1: 0, player2: 0 },
+            winner: '',
+          };
+          const targetGameId = gameId || this.gameId || 'black-hole';
+          router.isLeavingDueToDisconnect = true;
+          router.push(`/${targetGameId}/lobby`).finally(() => {
+            router.isLeavingDueToDisconnect = false;
+          });
+        }
+      );
 
-    this.socket.on('room-error', ({ message }) => {
-      this.connectionStatus = message;
-      this.roomKey = '';
-      this.player = null;
-      this.gameState = {
-        circles: {},
-        currentPlayer: 1,
-        totalMoves: 0,
-        maxTurnsPerPlayer: 10,
-        players: [],
-        scores: { player1: 0, player2: 0 },
-        winner: '',
-      };
-      router.isLeavingDueToDisconnect = true;
-      router.push(`/${this.gameId}/lobby`).finally(() => {
-        router.isLeavingDueToDisconnect = false;
+      this.socket.on('invalid-move', ({ message }: { message: string }) => {
+        alert(message);
       });
-    });
-
-    this.socket.on('player-disconnected', ({ message, gameId }) => {
-      console.log(`Player disconnected: ${message}`);
-      this.connectionStatus = message;
-      this.roomKey = '';
-      this.player = null;
-      this.gameState = {
-        circles: {},
-        currentPlayer: 1,
-        totalMoves: 0,
-        maxTurnsPerPlayer: 10,
-        players: [],
-        scores: { player1: 0, player2: 0 },
-        winner: '',
-      };
-      const targetGameId = gameId || this.gameId || 'black-hole';
-      router.isLeavingDueToDisconnect = true;
-      router.push(`/${targetGameId}/lobby`).finally(() => {
-        router.isLeavingDueToDisconnect = false;
-      });
-    });
-
-    this.socket.on('invalid-move', ({ message }) => {
-      alert(message);
-    });
+    }
   },
   beforeUnmount() {
     if (this.socket) {

@@ -235,7 +235,7 @@ export default defineComponent({
     },
   },
   methods: {
-    clickCircle(row, col) {
+    clickCircle(row: number, col: number) {
       if (
         this.gameOver ||
         this.player !== this.gameState.currentPlayer ||
@@ -245,7 +245,7 @@ export default defineComponent({
       }
       this.socket.emit('make-move', { roomKey: this.roomKey, row, col });
     },
-    showHoverPreview(row, col) {
+    showHoverPreview(row: number, col: number) {
       if (
         this.gameOver ||
         this.player !== this.gameState.currentPlayer ||
@@ -255,10 +255,10 @@ export default defineComponent({
       }
       return !this.getCircleData(row, col);
     },
-    getCircleData(row, col) {
+    getCircleData(row: number, col: number) {
       return this.gameState.circles[`${row}-${col}`] || null;
     },
-    getCircleStyle(row, col) {
+    getCircleStyle(row: number, col: number) {
       const key = `${row}-${col}`;
       const data = this.getCircleData(row, col);
 
@@ -287,15 +287,15 @@ export default defineComponent({
 
       return 'bg-slate-950/40 border-2 border-slate-700/60 text-slate-500 hover:border-slate-500/80 hover:bg-slate-800/40';
     },
-    getCircleText(row, col) {
+    getCircleText(row: number, col: number) {
       const data = this.getCircleData(row, col);
       return data?.turn || '';
     },
-    showBlackHoleIcon(row, col) {
+    showBlackHoleIcon(row: number, col: number) {
       const key = `${row}-${col}`;
       return this.gameOver && this.remainingPositions.includes(key);
     },
-    getNeighbors(row, col) {
+    getNeighbors(row: number, col: number) {
       const neighbors = [];
       if (col > 1) neighbors.push(`${row}-${col - 1}`);
       if (col < row) neighbors.push(`${row}-${col + 1}`);
@@ -313,7 +313,7 @@ export default defineComponent({
       this.ready = true;
       this.socket.emit('new-game', { roomKey: this.roomKey });
     },
-    handleBeforeUnload(event) {
+    handleBeforeUnload(event: BeforeUnloadEvent) {
       if (!this.gameOver && this.gameState.players.length === 2) {
         event.preventDefault();
         event.returnValue = ''; // Standard browser exit prompt
@@ -328,14 +328,14 @@ export default defineComponent({
 
     window.addEventListener('beforeunload', this.handleBeforeUnload);
 
-    this.socket.on('game-state', (newState) => {
+    this.socket.on('game-state', (newState: any) => {
       this.gameState = newState;
       if (this.gameState.players.length < 2 && !this.gameOver) {
         this.router.push('/black-hole/lobby');
       }
     });
 
-    this.socket.on('player-ready', (player) => {
+    this.socket.on('player-ready', (player: number) => {
       if (player !== this.player) {
         this.otherPlayerReady = true;
       }
@@ -349,7 +349,7 @@ export default defineComponent({
     this.socket.off('player-ready');
     window.removeEventListener('beforeunload', this.handleBeforeUnload);
   },
-  beforeRouteLeave(to, from, next) {
+  beforeRouteLeave(to: any, from: any, next: any) {
     if (this.isLeavingDueToDisconnect || this.router.isLeavingDueToDisconnect) {
       next();
       return;

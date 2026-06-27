@@ -154,12 +154,10 @@ io.on('connection', (socket: Socket) => {
         (p: any) => p.id === socket.id
       );
       if (playerIndex !== -1) {
-        socket
-          .to(roomKey)
-          .emit('player-disconnected', {
-            message: 'A player has left the game. Returning to lobby.',
-            gameId: room.gameId,
-          });
+        socket.to(roomKey).emit('player-disconnected', {
+          message: 'A player has left the game. Returning to lobby.',
+          gameId: room.gameId,
+        });
         socket.leave(roomKey);
         rooms.delete(roomKey);
       }

@@ -267,12 +267,12 @@ export default defineComponent({
         this.gameState.players.length === 2
       );
     },
-    makeMove(lineKey) {
+    makeMove(lineKey: string) {
       if (!this.isMyTurn()) return;
       if (this.gameState.lines[lineKey]) return; // already drawn
       this.socket.emit('make-move', { roomKey: this.roomKey, lineKey });
     },
-    getLineClass(lineKey, direction) {
+    getLineClass(lineKey: string, direction: string) {
       const lineOwner = this.gameState.lines[lineKey];
       if (lineOwner === 1) {
         return 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)]';
@@ -296,7 +296,7 @@ export default defineComponent({
 
       return 'bg-slate-800/40';
     },
-    getBoxClass(boxKey) {
+    getBoxClass(boxKey: string) {
       const boxOwner = this.gameState.boxes[boxKey];
       if (boxOwner === 1) {
         return 'bg-gradient-to-br from-blue-500/20 to-cyan-500/10 text-blue-400 border border-blue-500/30 shadow-[inset_0_0_10px_rgba(59,130,246,0.15)]';
@@ -310,7 +310,7 @@ export default defineComponent({
       this.ready = true;
       this.socket.emit('new-game', { roomKey: this.roomKey });
     },
-    handleBeforeUnload(event) {
+    handleBeforeUnload(event: BeforeUnloadEvent) {
       if (!this.gameOver && this.gameState.players.length === 2) {
         event.preventDefault();
         event.returnValue = '';
@@ -325,14 +325,14 @@ export default defineComponent({
 
     window.addEventListener('beforeunload', this.handleBeforeUnload);
 
-    this.socket.on('game-state', (newState) => {
+    this.socket.on('game-state', (newState: any) => {
       this.gameState = newState;
       if (this.gameState.players.length < 2 && !this.gameOver) {
         this.router.push('/dots-and-boxes/lobby');
       }
     });
 
-    this.socket.on('player-ready', (player) => {
+    this.socket.on('player-ready', (player: number) => {
       if (player !== this.player) {
         this.otherPlayerReady = true;
       }
@@ -348,7 +348,7 @@ export default defineComponent({
     }
     window.removeEventListener('beforeunload', this.handleBeforeUnload);
   },
-  beforeRouteLeave(to, from, next) {
+  beforeRouteLeave(to: any, from: any, next: any) {
     if (this.isLeavingDueToDisconnect || this.router.isLeavingDueToDisconnect) {
       next();
       return;

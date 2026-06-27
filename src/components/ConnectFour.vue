@@ -166,7 +166,7 @@ export default defineComponent({
     },
   },
   methods: {
-    canPlayColumn(colIndex) {
+    canPlayColumn(colIndex: number) {
       if (
         this.gameOver ||
         this.player !== this.gameState.currentPlayer ||
@@ -174,13 +174,14 @@ export default defineComponent({
       ) {
         return false;
       }
-      return this.gameState.board[0][colIndex] === null;
+      return this.gameState.board && this.gameState.board[0][colIndex] === null;
     },
-    makeMove(colIndex) {
+    makeMove(colIndex: number) {
       if (!this.canPlayColumn(colIndex)) return;
       this.socket.emit('make-move', { roomKey: this.roomKey, col: colIndex });
     },
-    getDiscClass(row, col) {
+    getDiscClass(row: number, col: number) {
+      if (!this.gameState.board) return '';
       const disc = this.gameState.board[row][col];
       if (disc === 1)
         return 'bg-gradient-to-tr from-blue-600 via-blue-500 to-cyan-400 border-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.55)]';
@@ -192,7 +193,7 @@ export default defineComponent({
       this.ready = true;
       this.socket.emit('new-game', { roomKey: this.roomKey });
     },
-    handleBeforeUnload(event) {
+    handleBeforeUnload(event: BeforeUnloadEvent) {
       if (!this.gameOver && this.gameState.players.length === 2) {
         event.preventDefault();
         event.returnValue = '';
@@ -207,14 +208,14 @@ export default defineComponent({
 
     window.addEventListener('beforeunload', this.handleBeforeUnload);
 
-    this.socket.on('game-state', (newState) => {
+    this.socket.on('game-state', (newState: any) => {
       this.gameState = newState;
       if (this.gameState.players.length < 2 && !this.gameOver) {
         this.router.push('/connect-four/lobby');
       }
     });
 
-    this.socket.on('player-ready', (player) => {
+    this.socket.on('player-ready', (player: number) => {
       if (player !== this.player) {
         this.otherPlayerReady = true;
       }
@@ -230,7 +231,7 @@ export default defineComponent({
     }
     window.removeEventListener('beforeunload', this.handleBeforeUnload);
   },
-  beforeRouteLeave(to, from, next) {
+  beforeRouteLeave(to: any, from: any, next: any) {
     if (this.isLeavingDueToDisconnect || this.router.isLeavingDueToDisconnect) {
       next();
       return;
