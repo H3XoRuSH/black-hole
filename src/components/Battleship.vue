@@ -519,6 +519,18 @@ export default defineComponent({
           ? 'bg-rose-950/40 border-rose-700 shadow-[inset_0_0_12px_rgba(244,63,94,0.4)]'
           : 'bg-slate-900/30 border-slate-800';
       }
+
+      // If game is over, reveal opponent's unhit ships
+      if (this.gameOver) {
+        const opponentShips = this.player === 1 ? this.gameState.p2Ships : this.gameState.p1Ships;
+        const isShip = opponentShips?.some((s) =>
+          s.coordinates.some(([sr, sc]) => sr === row && sc === col)
+        );
+        if (isShip) {
+          return 'bg-cyan-950/40 border border-dashed border-cyan-500/60 shadow-[inset_0_0_6px_rgba(6,182,212,0.2)]';
+        }
+      }
+
       if (this.isMyTurn() && !this.gameOver) {
         return 'bg-slate-950/40 border-slate-800/80 hover:bg-slate-900/60 hover:border-cyan-500/80';
       }
