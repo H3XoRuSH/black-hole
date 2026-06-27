@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center justify-center min-h-full bg-gray-100 p-4 select-none">
     <!-- Header Section -->
-    <header class="text-center mb-8 max-w-md w-full">
+    <header class="text-center mb-4 sm:mb-8 max-w-md w-full">
       <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-2">
         {{ gameName }}
       </h1>
@@ -9,7 +9,7 @@
     </header>
 
     <!-- Main Card -->
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-sm border border-gray-200/80 p-8 text-center">
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-sm border border-gray-200/80 p-5 sm:p-8 text-center">
       <div v-if="roomKey">
         <p class="text-xs text-gray-500 uppercase tracking-wider font-bold mb-3">
           Share this Room Code with your friend
@@ -18,7 +18,7 @@
         <!-- Large Room Code Display with Copy Ability -->
         <div
           @click="copyRoomKey"
-          class="relative group cursor-pointer inline-flex items-center justify-center space-x-3 bg-indigo-50 hover:bg-indigo-100/70 border border-indigo-100 rounded-2xl py-5 px-8 transition-all duration-200 w-full mb-6"
+          class="relative group cursor-pointer inline-flex items-center justify-center space-x-3 bg-indigo-50 hover:bg-indigo-100/70 border border-indigo-100 rounded-2xl py-4 sm:py-5 px-6 sm:px-8 transition-all duration-200 w-full mb-8"
         >
           <span class="text-4xl sm:text-5xl font-extrabold font-mono tracking-widest text-indigo-600">
             {{ roomKey }}
@@ -40,8 +40,18 @@
           </span>
         </div>
 
+        <!-- QR Code Section -->
+        <div class="flex flex-col items-center justify-center bg-gray-50 border border-gray-100 rounded-2xl p-4 mb-4">
+          <div class="bg-white p-2 rounded-xl shadow-sm border border-gray-100/50">
+            <canvas ref="qrCanvas" class="w-32 h-32"></canvas>
+          </div>
+          <p class="text-[11px] text-gray-500 mt-2 max-w-[240px] leading-normal">
+            Scan this QR code with a friend's phone to join instantly
+          </p>
+        </div>
+
         <!-- Waiting Status -->
-        <div class="flex flex-col items-center justify-center mt-8 space-y-4">
+        <div class="flex flex-col items-center justify-center mt-4 sm:mt-6 space-y-3">
           <div class="flex space-x-2.5">
             <span class="w-3.5 h-3.5 bg-indigo-600 rounded-full animate-bounce" style="animation-delay: 0.1s"></span>
             <span class="w-3.5 h-3.5 bg-indigo-600 rounded-full animate-bounce" style="animation-delay: 0.2s"></span>
@@ -76,10 +86,10 @@
       </div>
 
       <!-- Leave / Cancel Button (only shown if room exists) -->
-      <div v-if="roomKey" class="mt-8 pt-6 border-t border-gray-100">
+      <div v-if="roomKey" class="mt-4 sm:mt-6 pt-4 sm:pt-6 border-t border-gray-100">
         <router-link
           to="/menu"
-          class="inline-block w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-3 px-4 rounded-xl transition-all duration-200"
+          class="inline-block w-full bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold py-2.5 sm:py-3 px-4 rounded-xl transition-all duration-200"
         >
           Cancel & Close Room
         </router-link>
@@ -91,6 +101,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import { Socket } from 'socket.io-client';
+import QRCode from 'qrcode';
 
 export default defineComponent({
   props: {
@@ -115,7 +126,38 @@ export default defineComponent({
       copied: false,
     };
   },
+  watch: {
+    roomKey() {
+      this.generateQRCode();
+    },
+  },
+  mounted() {
+    this.generateQRCode();
+  },
   methods: {
+    generateQRCode() {
+      if (!this.roomKey) return;
+      this.$nextTick(() => {
+        const canvas = this.$refs.qrCanvas as HTMLCanvasElement;
+        if (canvas) {
+          QRCode.toCanvas(
+            canvas,
+            this.roomKey,
+            {
+              width: 128,
+              margin: 1,
+              color: {
+                dark: '#4f46e5', // indigo-600 to match theme
+                light: '#ffffff',
+              },
+            },
+            (error) => {
+              if (error) console.error('Failed to generate QR Code:', error);
+            }
+          );
+        }
+      });
+    },
     async copyRoomKey() {
       if (!this.roomKey) return;
       try {

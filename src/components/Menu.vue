@@ -25,7 +25,7 @@
       </div>
 
       <div class="flex flex-col sm:flex-row gap-3">
-        <div class="relative flex-grow">
+        <div class="relative flex-grow flex items-center">
           <input
             v-model="roomCode"
             @input="onRoomCodeInput"
@@ -33,9 +33,20 @@
             type="text"
             placeholder="ENTER CODE"
             maxlength="6"
-            class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-center font-mono tracking-widest text-lg placeholder:font-sans placeholder:tracking-normal placeholder:text-sm text-gray-800 uppercase bg-gray-50/50"
+            class="w-full pl-4 pr-12 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-center font-mono tracking-widest text-lg placeholder:font-sans placeholder:tracking-normal placeholder:text-sm text-gray-800 uppercase bg-gray-50/50"
             :disabled="isValidating"
           />
+          <!-- Camera Scan QR Button inside input -->
+          <button
+            @click="startScanner"
+            class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-indigo-600 transition-colors duration-200 cursor-pointer"
+            title="Scan QR Code"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          </button>
         </div>
         <button
           @click="joinRoomByCode"
@@ -61,6 +72,40 @@
           <span>{{ validationError }}</span>
         </div>
       </transition>
+    </div>
+
+    <!-- QR Code Scanner Modal -->
+    <div v-if="showScanner" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 p-4 backdrop-blur-sm animate-[fade_0.2s_ease]">
+      <div class="w-full max-w-md bg-gray-900 border border-gray-800 rounded-3xl p-6 relative flex flex-col items-center">
+        <button @click="stopScanner" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-white transition-colors duration-200 cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        <h3 class="text-lg font-bold text-white mb-1">Scan Room QR Code</h3>
+        <p class="text-xs text-gray-400 mb-6 text-center">Point your camera at the host's screen</p>
+
+        <div class="relative w-full aspect-square bg-black rounded-2xl overflow-hidden border border-gray-800 flex items-center justify-center">
+          <div id="reader" class="w-full h-full"></div>
+          <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
+            <div class="w-[220px] h-[220px] border-2 border-indigo-500 rounded-2xl relative">
+              <div class="absolute -top-1 -left-1 w-6 h-6 border-t-4 border-l-4 border-indigo-400 rounded-tl-lg"></div>
+              <div class="absolute -top-1 -right-1 w-6 h-6 border-t-4 border-r-4 border-indigo-400 rounded-tr-lg"></div>
+              <div class="absolute -bottom-1 -left-1 w-6 h-6 border-b-4 border-l-4 border-indigo-400 rounded-bl-lg"></div>
+              <div class="absolute -bottom-1 -right-1 w-6 h-6 border-b-4 border-r-4 border-indigo-400 rounded-br-lg"></div>
+              <div class="w-full h-0.5 bg-gradient-to-r from-transparent via-indigo-400 to-transparent absolute top-0 animate-[scan_2s_infinite_linear]"></div>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="scannerError" class="mt-4 text-red-400 text-xs bg-red-950/50 border border-red-900/50 p-3 rounded-xl w-full text-center">
+          {{ scannerError }}
+        </div>
+        <button @click="stopScanner" class="mt-6 w-full py-3 bg-gray-800 hover:bg-gray-700 text-white font-bold rounded-xl transition-all duration-200 cursor-pointer">
+          Cancel
+        </button>
+      </div>
     </div>
 
     <!-- View Toggle Control -->
@@ -101,6 +146,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import { Socket } from 'socket.io-client';
+import { Html5Qrcode } from 'html5-qrcode';
 import gamesData from '../assets/games.json';
 import CarouselView from './menu/CarouselView.vue';
 import ListView from './menu/ListView.vue';
@@ -126,6 +172,10 @@ export default defineComponent({
       roomCode: '',
       validationError: '',
       isValidating: false,
+      hasAutoJoined: false,
+      showScanner: false,
+      html5Qrcode: null as Html5Qrcode | null,
+      scannerError: '',
     };
   },
   computed: {
@@ -139,20 +189,95 @@ export default defineComponent({
     viewMode(newMode) {
       localStorage.setItem('gamesViewMode', newMode);
     },
+    socket: {
+      immediate: true,
+      handler(newSocket, oldSocket) {
+        if (oldSocket) {
+          oldSocket.off('room-validated', this.handleRoomValidated);
+          oldSocket.off('room-validation-error', this.handleRoomValidationError);
+        }
+        if (newSocket) {
+          newSocket.on('room-validated', this.handleRoomValidated);
+          newSocket.on('room-validation-error', this.handleRoomValidationError);
+          this.checkAutoJoin();
+        }
+      },
+    },
   },
   mounted() {
-    if (this.socket) {
-      this.socket.on('room-validated', this.handleRoomValidated);
-      this.socket.on('room-validation-error', this.handleRoomValidationError);
-    }
+    // Handled by reactive socket watcher to prevent race conditions
   },
   beforeUnmount() {
+    if (this.html5Qrcode && this.html5Qrcode.isScanning) {
+      this.html5Qrcode.stop().catch(console.error);
+    }
     if (this.socket) {
       this.socket.off('room-validated', this.handleRoomValidated);
       this.socket.off('room-validation-error', this.handleRoomValidationError);
     }
   },
   methods: {
+    async startScanner() {
+      this.showScanner = true;
+      this.scannerError = '';
+      this.$nextTick(async () => {
+        try {
+          this.html5Qrcode = new Html5Qrcode('reader');
+          const config = { fps: 10, qrbox: { width: 220, height: 220 } };
+          await this.html5Qrcode.start(
+            { facingMode: 'environment' },
+            config,
+            (decodedText) => {
+              const code = this.extractRoomCode(decodedText);
+              if (code) {
+                this.roomCode = code;
+                this.stopScanner();
+                this.joinRoomByCode();
+              } else {
+                this.scannerError = 'Invalid QR code. Please scan a valid room code.';
+              }
+            },
+            () => {}
+          );
+        } catch (err: any) {
+          console.error('Failed to start QR scanner:', err);
+          this.scannerError = 'Could not access camera: ' + (err.message || err);
+        }
+      });
+    },
+    async stopScanner() {
+      if (this.html5Qrcode && this.html5Qrcode.isScanning) {
+        try {
+          await this.html5Qrcode.stop();
+        } catch (err) {
+          console.error('Failed to stop scanner:', err);
+        }
+      }
+      this.html5Qrcode = null;
+      this.showScanner = false;
+    },
+    extractRoomCode(text: string) {
+      const cleanText = text.trim().toUpperCase();
+      if (/^[A-Z0-9]{6}$/.test(cleanText)) {
+        return cleanText;
+      }
+      // Support URL extraction if code was shared as URL
+      const match = cleanText.match(/[?&]JOIN=([A-Z0-9]{6})/);
+      if (match) {
+        return match[1];
+      }
+      return null;
+    },
+    checkAutoJoin() {
+      if (this.hasAutoJoined || !this.socket) return;
+      const joinCode = this.$route.query.join;
+      if (joinCode && typeof joinCode === 'string' && joinCode.length === 6) {
+        this.hasAutoJoined = true;
+        this.roomCode = joinCode.toUpperCase();
+        this.joinRoomByCode();
+        this.$router.replace('/menu');
+      }
+    },
     onRoomCodeInput() {
       this.roomCode = this.roomCode.toUpperCase().replace(/[^A-Z0-9]/g, '');
       if (this.validationError) {
@@ -192,6 +317,17 @@ export default defineComponent({
 </script>
 
 <style scoped>
+@keyframes scan {
+  0% {
+    top: 0%;
+  }
+  50% {
+    top: 100%;
+  }
+  100% {
+    top: 0%;
+  }
+}
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.2s ease;
