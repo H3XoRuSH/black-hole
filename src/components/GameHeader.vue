@@ -30,7 +30,7 @@
       class="w-full bg-white/80 backdrop-blur-md rounded-xl p-2 border border-gray-200 shadow-sm flex items-center justify-between text-sm sm:text-base mb-1.5"
     >
       <div
-        class="flex items-center space-x-2 rounded-lg px-3 py-1.5 transition-all duration-300"
+        class="flex items-center space-x-2 rounded-lg px-2 sm:px-3 py-1.5 transition-all duration-300"
         :class="currentPlayer === 1 && !gameOver ? 'bg-blue-50 shadow-sm scale-105 font-bold' : currentPlayer === 1 ? 'scale-105 font-bold' : 'opacity-60'"
       >
         <span
@@ -44,11 +44,11 @@
         >TURN</span>
       </div>
       <span
-        class="text-gray-400 font-mono text-xs uppercase tracking-widest mx-2"
+        class="text-gray-400 font-mono text-xs uppercase tracking-widest mx-4 flex-shrink-0"
         >VS</span
       >
       <div
-        class="flex items-center space-x-2 rounded-lg px-3 py-1.5 transition-all duration-300"
+        class="flex items-center space-x-2 rounded-lg px-2 sm:px-3 py-1.5 transition-all duration-300"
         :class="currentPlayer === 2 && !gameOver ? 'bg-red-50 shadow-sm scale-105 font-bold' : currentPlayer === 2 ? 'scale-105 font-bold' : 'opacity-60'"
       >
         <span
