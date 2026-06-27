@@ -105,6 +105,20 @@ io.on('connection', (socket: Socket) => {
     }
   );
 
+  socket.on('validate-room', ({ roomKey }: { roomKey: string }) => {
+    const uppercaseKey = roomKey ? roomKey.toUpperCase() : '';
+    if (!rooms.has(uppercaseKey)) {
+      socket.emit('room-validation-error', { message: 'Room does not exist.' });
+      return;
+    }
+    const room = rooms.get(uppercaseKey)!;
+    if (room.gameState.players.length >= 2) {
+      socket.emit('room-validation-error', { message: 'Room is full.' });
+      return;
+    }
+    socket.emit('room-validated', { roomKey: uppercaseKey, gameId: room.gameId });
+  });
+
   socket.on('make-move', (data: any) => {
     const { roomKey } = data;
     if (!rooms.has(roomKey)) {
