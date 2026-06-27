@@ -46,18 +46,18 @@
           <div class="bg-slate-950 border border-slate-900 p-3 rounded-2xl shadow-lg flex flex-col items-center flex-shrink-0">
             <h3 class="text-xs font-mono font-bold tracking-widest text-slate-400 mb-2">POSITIONING GRID</h3>
             <div class="grid grid-cols-7 gap-0.5 text-center font-mono text-[9px] sm:text-xs">
-              <div class="w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center text-slate-600"></div>
-              <div v-for="col in 6" :key="`h-col-${col}`" class="w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center text-slate-500 font-bold">
+              <div class="w-7 h-7 xs:w-8 xs:h-8 sm:w-9 sm:h-9 flex items-center justify-center text-slate-600"></div>
+              <div v-for="col in 6" :key="`h-col-${col}`" class="w-7 h-7 xs:w-8 xs:h-8 sm:w-9 sm:h-9 flex items-center justify-center text-slate-500 font-bold">
                 {{ String.fromCharCode(64 + col) }}
               </div>
               <template v-for="row in 6" :key="`row-${row}`">
-                <div class="w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center text-slate-500 font-bold">
+                <div class="w-7 h-7 xs:w-8 xs:h-8 sm:w-9 sm:h-9 flex items-center justify-center text-slate-500 font-bold">
                   {{ row }}
                 </div>
                 <div
                   v-for="col in 6"
                   :key="`cell-${row-1}-${col-1}`"
-                  class="w-7 h-7 sm:w-9 sm:h-9 rounded border transition-all duration-150 cursor-pointer relative"
+                  class="w-7 h-7 xs:w-8 xs:h-8 sm:w-9 sm:h-9 rounded border transition-all duration-150 cursor-pointer relative"
                   :class="getPlacementCellClass(row-1, col-1)"
                   @mouseover="onPlacementCellHover(row-1, col-1)"
                   @mouseleave="onPlacementCellLeave"
@@ -158,18 +158,18 @@
             </div>
 
             <div class="grid grid-cols-7 gap-0.5 text-center font-mono text-[9px] sm:text-xs">
-              <div class="w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center text-slate-600"></div>
-              <div v-for="col in 6" :key="`t-col-${col}`" class="w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center text-slate-500 font-bold">
+              <div class="w-7 h-7 xs:w-8 xs:h-8 sm:w-9 sm:h-9 flex items-center justify-center text-slate-600"></div>
+              <div v-for="col in 6" :key="`t-col-${col}`" class="w-7 h-7 xs:w-8 xs:h-8 sm:w-9 sm:h-9 flex items-center justify-center text-slate-500 font-bold">
                 {{ String.fromCharCode(64 + col) }}
               </div>
               <template v-for="row in 6" :key="`row-${row}`">
-                <div class="w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center text-slate-500 font-bold">
+                <div class="w-7 h-7 xs:w-8 xs:h-8 sm:w-9 sm:h-9 flex items-center justify-center text-slate-500 font-bold">
                   {{ row }}
                 </div>
                 <div
                   v-for="col in 6"
                   :key="`cell-${row-1}-${col-1}`"
-                  class="w-7 h-7 sm:w-9 sm:h-9 rounded border transition-all duration-150 cursor-pointer relative flex items-center justify-center"
+                  class="w-7 h-7 xs:w-8 xs:h-8 sm:w-9 sm:h-9 rounded border transition-all duration-150 cursor-pointer relative flex items-center justify-center"
                   :class="getTargetCellClass(row-1, col-1)"
                   @click="shootCell(row-1, col-1)"
                 >
@@ -191,18 +191,18 @@
             </div>
 
             <div class="grid grid-cols-7 gap-0.5 text-center font-mono text-[9px] sm:text-xs">
-              <div class="w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center text-slate-600"></div>
-              <div v-for="col in 6" :key="`f-col-${col}`" class="w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center text-slate-500 font-bold">
+              <div class="w-7 h-7 xs:w-8 xs:h-8 sm:w-9 sm:h-9 flex items-center justify-center text-slate-600"></div>
+              <div v-for="col in 6" :key="`f-col-${col}`" class="w-7 h-7 xs:w-8 xs:h-8 sm:w-9 sm:h-9 flex items-center justify-center text-slate-500 font-bold">
                 {{ String.fromCharCode(64 + col) }}
               </div>
               <template v-for="row in 6" :key="`row-${row}`">
-                <div class="w-7 h-7 sm:w-9 sm:h-9 flex items-center justify-center text-slate-500 font-bold">
+                <div class="w-7 h-7 xs:w-8 xs:h-8 sm:w-9 sm:h-9 flex items-center justify-center text-slate-500 font-bold">
                   {{ row }}
                 </div>
                 <div
                   v-for="col in 6"
                   :key="`cell-${row-1}-${col-1}`"
-                  class="w-7 h-7 sm:w-9 sm:h-9 rounded border transition-all duration-150 relative flex items-center justify-center"
+                  class="w-7 h-7 xs:w-8 xs:h-8 sm:w-9 sm:h-9 rounded border transition-all duration-150 relative flex items-center justify-center"
                   :class="getMyFleetCellClass(row-1, col-1)"
                 >
                   <!-- Enemy Shot Marker -->

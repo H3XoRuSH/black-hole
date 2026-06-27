@@ -31,7 +31,7 @@
           <div
             v-for="col in row"
             :key="`${row}-${col}`"
-            class="w-9 h-9 sm:w-11 sm:h-11 md:w-12 md:h-12 lg:w-13 lg:h-13 xl:w-14 xl:h-14 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-200 mx-1 sm:mx-2 relative group"
+            class="w-9 h-9 xs:w-10 xs:h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 lg:w-13 lg:h-13 xl:w-14 xl:h-14 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-200 mx-1 sm:mx-2 relative group"
             :class="getCircleStyle(row, col)"
             @click="clickCircle(row, col)"
           >
