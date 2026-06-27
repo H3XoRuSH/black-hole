@@ -22,5 +22,13 @@
     "route": "/dots-and-boxes/lobby",
     "status": "active",
     "color": "#059669"
+  },
+  {
+    "id": "battleship",
+    "name": "Battleship",
+    "description": "A strategic 2-player grid-guessing game. Place your fleet on a 10x10 grid, take turns calling shots, and sink all of your opponent's ships to win!",
+    "route": "/battleship/lobby",
+    "status": "active",
+    "color": "#e11d48"
   }
 ]
