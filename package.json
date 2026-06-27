@@ -12,6 +12,7 @@
     "preview": "vite preview",
     "start": "tsx server.ts",
     "server-dev": "tsx watch server.ts",
+    "tunnel": "npx ngrok http 5173",
     "format": "eslint --fix ."
   },
   "dependencies": {

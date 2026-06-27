@@ -13,6 +13,7 @@ export default defineConfig({
     },
   },
   server: {
+    allowedHosts: ['.ngrok-free.app', '.ngrok-free.dev'],
     proxy: {
       '/socket.io': {
         target: 'http://localhost:3000',
