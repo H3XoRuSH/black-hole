@@ -29,5 +29,7 @@ coverage
 
 *.tsbuildinfo
 
-# Antigravity agent configuration
+# Agent configuration
 .agents/
+opencode.json
+AGENTS.md
