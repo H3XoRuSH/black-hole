@@ -4,6 +4,7 @@ import Lobby from '../components/Lobby.vue';
 import Game from '../components/Game.vue';
 import ConnectFour from '../components/ConnectFour.vue';
 import DotsAndBoxes from '../components/DotsAndBoxes.vue';
+import Battleship from '../components/Battleship.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -53,6 +54,20 @@ const routes: Array<RouteRecordRaw> = [
     component: DotsAndBoxes,
     props: true,
     meta: { title: 'Dots and Boxes - Gab\'s Arcade' },
+  },
+  {
+    path: '/battleship/lobby',
+    name: 'BattleshipLobby',
+    component: Lobby,
+    props: { gameId: 'battleship', gameName: 'Battleship' },
+    meta: { title: 'Battleship - Gab\'s Arcade' },
+  },
+  {
+    path: '/battleship/game/:roomKey',
+    name: 'BattleshipGame',
+    component: Battleship,
+    props: true,
+    meta: { title: 'Battleship - Gab\'s Arcade' },
   },
   {
     path: '/:pathMatch(.*)*',

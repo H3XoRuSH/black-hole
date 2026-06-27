@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import * as blackHole from './server/games/blackHole.js';
 import * as connectFour from './server/games/connectFour.js';
 import * as dotsAndBoxes from './server/games/dotsAndBoxes.js';
+import * as battleship from './server/games/battleship.js';
 import { Room } from './server/games/blackHole.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -43,6 +44,7 @@ const gamesRegistry: Record<string, GameModule> = {
   'black-hole': blackHole as GameModule,
   'connect-four': connectFour as GameModule,
   'dots-and-boxes': dotsAndBoxes as GameModule,
+  'battleship': battleship as GameModule,
 };
 
 io.on('connection', (socket: Socket) => {
@@ -88,11 +90,16 @@ io.on('connection', (socket: Socket) => {
       room.gameState.players.push({ id: socket.id, player: 2, ready: false });
       socket.join(roomKey);
       room.gameState.players.forEach((player: any) => {
+        let state = room.gameState;
+        if (room.gameId === 'battleship') {
+          const bs = gamesRegistry['battleship'] as any;
+          state = bs.getFilteredState(room.gameState, player.player);
+        }
         io.to(player.id).emit('room-started', {
           roomKey,
           player: player.player,
           gameId: room.gameId,
-          gameState: room.gameState,
+          gameState: state,
         });
       });
     }
@@ -106,7 +113,8 @@ io.on('connection', (socket: Socket) => {
     }
     const room = rooms.get(roomKey)!;
     const player = room.gameState.players.find((p: any) => p.id === socket.id);
-    if (!player || player.player !== room.gameState.currentPlayer) {
+    const isPlayingPhase = !room.gameState.phase || room.gameState.phase === 'playing';
+    if (!player || (isPlayingPhase && player.player !== room.gameState.currentPlayer)) {
       socket.emit('invalid-move', { message: 'Not your turn.' });
       return;
     }
@@ -115,7 +123,14 @@ io.on('connection', (socket: Socket) => {
     if (game) {
       const success = game.makeMove(room, socket, data);
       if (success) {
-        io.to(roomKey).emit('game-state', room.gameState);
+        if (room.gameId === 'battleship') {
+          const bs = game as any;
+          room.gameState.players.forEach((p: any) => {
+            io.to(p.id).emit('game-state', bs.getFilteredState(room.gameState, p.player));
+          });
+        } else {
+          io.to(roomKey).emit('game-state', room.gameState);
+        }
       }
     } else {
       socket.emit('invalid-move', { message: 'Unsupported game type.' });
@@ -142,7 +157,14 @@ io.on('connection', (socket: Socket) => {
       const game = gamesRegistry[room.gameId];
       if (game) {
         room.gameState = game.resetState(room.gameState.players);
-        io.to(roomKey).emit('game-state', room.gameState);
+        if (room.gameId === 'battleship') {
+          const bs = game as any;
+          room.gameState.players.forEach((p: any) => {
+            io.to(p.id).emit('game-state', bs.getFilteredState(room.gameState, p.player));
+          });
+        } else {
+          io.to(roomKey).emit('game-state', room.gameState);
+        }
       }
     }
   });
