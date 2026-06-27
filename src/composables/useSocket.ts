@@ -165,6 +165,11 @@ export function useSocket(router: any) {
       }
     });
 
+    socket.value.on('player-role', ({ player: p }: { player: number }) => {
+      player.value = p;
+      saveRoomData(roomKey.value, p, gameId.value);
+    });
+
     socket.value.on('room-closed', ({ message }: { message: string }) => {
       clearRoomData();
       connectionStatus.value = message;

@@ -232,6 +232,9 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
             // Update the socketRooms mappings for both players
             socketRooms.set(p1.id, { roomKey, playerNumber: 2 });
             socketRooms.set(p2.id, { roomKey, playerNumber: 1 });
+            // Explicitly notify both clients of their new role
+            io.to(p1.id).emit('player-role', { player: 2 });
+            io.to(p2.id).emit('player-role', { player: 1 });
           }
           room.gameState = game.resetState(room.gameState.players);
           broadcastGameState(roomKey, room, io);
