@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="isValidGame"
-    class="flex-grow flex flex-col items-center justify-between h-full p-4 sm:p-6 md:p-8 select-none"
+    class="flex-grow flex flex-col items-center justify-between h-full p-3 sm:p-6 md:p-8 select-none"
   >
     <!-- Game Header -->
     <GameHeader
@@ -13,18 +13,18 @@
     />
 
     <!-- Connect Four Board -->
-    <div class="flex-grow flex items-center justify-center py-4 w-full">
+    <div class="flex-grow flex items-center justify-center py-2 sm:py-4 w-full">
       <!-- Grid wrapper with clean dark plastic container look -->
       <div
-        class="bg-slate-900 border border-slate-800 p-3 sm:p-4 rounded-2xl shadow-xl w-full max-w-[320px] xs:max-w-[380px] sm:max-w-[430px] md:max-w-[480px]"
+        class="bg-slate-900 border border-slate-800 p-3 sm:p-4 rounded-2xl shadow-xl w-full max-w-[280px] xs:max-w-[340px] sm:max-w-[430px] md:max-w-[480px]"
       >
         <!-- Columns Grid -->
-        <div class="grid grid-cols-7 gap-2 sm:gap-3">
+        <div class="grid grid-cols-7 gap-1.5 sm:gap-3">
           <!-- Hover & Interactive Columns -->
           <div
             v-for="colIndex in 7"
             :key="`col-${colIndex - 1}`"
-            class="flex flex-col space-y-2 sm:space-y-3 cursor-pointer group rounded-lg p-1 hover:bg-slate-800/50 transition-colors duration-150 relative"
+            class="flex flex-col space-y-1.5 sm:space-y-3 cursor-pointer group rounded-lg p-1 hover:bg-slate-800/50 transition-colors duration-150 relative"
             @click="makeMove(colIndex - 1)"
           >
             <!-- Preview slot at the top (only on desktop/hover) -->
@@ -62,7 +62,7 @@
     </div>
 
     <!-- Footer Controls -->
-    <div class="w-full max-w-lg flex flex-col items-center justify-center py-4">
+    <div class="w-full max-w-lg flex flex-col items-center justify-center py-2 sm:py-4">
       <button
         v-if="gameOver"
         @click="newGame"
