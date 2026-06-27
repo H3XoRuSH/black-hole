@@ -4,20 +4,23 @@
     "name": "Black Hole",
     "description": "A strategic 2-player game of gravity and calculation. Place your numbered tiles on the triangular grid and try to keep your highest numbers away from the final empty circle!",
     "route": "/black-hole/lobby",
-    "status": "active"
+    "status": "active",
+    "color": "#9333ea"
   },
   {
     "id": "connect-four",
     "name": "Connect Four",
     "description": "A classic 2-player connection game. Drop colored discs into a 7x6 grid, and be the first to form a horizontal, vertical, or diagonal line of four of your own discs!",
     "route": "/connect-four/lobby",
-    "status": "active"
+    "status": "active",
+    "color": "#2563eb"
   },
   {
     "id": "dots-and-boxes",
     "name": "Dots and Boxes",
     "description": "A classic two-player pen-and-paper game. Connect dots to complete boxes; capturing a box gains you a point and grants you an extra turn!",
     "route": "/dots-and-boxes/lobby",
-    "status": "active"
+    "status": "active",
+    "color": "#059669"
   }
 ]
