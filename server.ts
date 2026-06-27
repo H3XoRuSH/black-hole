@@ -34,6 +34,10 @@ const generateRoomKey = (): string => {
 
 const rooms = new Map<string, Room>();
 
+const socketRooms = new Map<string, { roomKey: string; playerNumber: number }>();
+const disconnectTimers = new Map<string, ReturnType<typeof setTimeout>>();
+const RECONNECT_TIMEOUT = 60000;
+
 interface GameModule {
   createInitialState: (playerId: string) => any;
   resetState: (players: any[]) => any;
@@ -63,6 +67,7 @@ io.on('connection', (socket: Socket) => {
       gameState: initialGameState,
     });
     socket.join(roomKey);
+    socketRooms.set(socket.id, { roomKey, playerNumber: 1 });
     socket.emit('waiting-for-player', { roomKey, player: 1, gameId });
     console.log(
       `Room created: ${roomKey}, Player 1: ${socket.id}, Game: ${gameId}`
@@ -89,6 +94,7 @@ io.on('connection', (socket: Socket) => {
       }
       room.gameState.players.push({ id: socket.id, player: 2, ready: false });
       socket.join(roomKey);
+      socketRooms.set(socket.id, { roomKey, playerNumber: 2 });
       room.gameState.players.forEach((player: any) => {
         let state = room.gameState;
         if (room.gameId === 'battleship') {
@@ -196,22 +202,91 @@ io.on('connection', (socket: Socket) => {
         });
         socket.leave(roomKey);
         rooms.delete(roomKey);
+        const timer = disconnectTimers.get(roomKey);
+        if (timer) clearTimeout(timer);
+        disconnectTimers.delete(roomKey);
       }
     }
+    socketRooms.delete(socket.id);
+  });
+
+  socket.on('reconnect-room', ({ roomKey, playerNumber }: { roomKey: string; playerNumber: number }) => {
+    if (!rooms.has(roomKey)) {
+      socket.emit('reconnect-fail', { message: 'That room is no longer available.' });
+      return;
+    }
+
+    const room = rooms.get(roomKey)!;
+    const player = room.gameState.players.find((p: any) => p.player === playerNumber);
+    if (!player) {
+      socket.emit('reconnect-fail', { message: 'Could not find your player slot.' });
+      return;
+    }
+
+    const timer = disconnectTimers.get(roomKey);
+    if (timer) {
+      clearTimeout(timer);
+      disconnectTimers.delete(roomKey);
+    }
+
+    player.id = socket.id;
+    socket.join(roomKey);
+    socketRooms.set(socket.id, { roomKey, playerNumber });
+
+    let state = room.gameState;
+    if (room.gameId === 'battleship') {
+      const bs = gamesRegistry['battleship'] as any;
+      state = bs.getFilteredState(room.gameState, playerNumber);
+    }
+
+    const gameStarted = room.gameState.players.length >= 2;
+
+    socket.emit('reconnect-success', {
+      roomKey,
+      player: playerNumber,
+      gameId: room.gameId,
+      gameState: state,
+      gameStarted,
+    });
+
+    socket.to(roomKey).emit('player-reconnected', {
+      message: 'Your opponent has reconnected!',
+      gameId: room.gameId,
+    });
   });
 
   socket.on('disconnect', () => {
-    for (const [roomKey, room] of rooms) {
-      const playerIndex = room.gameState.players.findIndex(
-        (p: any) => p.id === socket.id
-      );
-      if (playerIndex !== -1) {
-        io.in(roomKey).emit('player-disconnected', {
-          message: 'A player has disconnected. Returning to lobby.',
-          gameId: room.gameId,
-        });
-        rooms.delete(roomKey);
-        break;
+    const info = socketRooms.get(socket.id);
+    if (!info) return;
+    const { roomKey, playerNumber } = info;
+    socketRooms.delete(socket.id);
+
+    if (!disconnectTimers.has(roomKey) && rooms.has(roomKey)) {
+      const timer = setTimeout(() => {
+        const room = rooms.get(roomKey);
+        if (room) {
+          io.in(roomKey).emit('player-disconnected', {
+            message: 'A player has disconnected. Returning to lobby.',
+            gameId: room.gameId,
+          });
+          rooms.delete(roomKey);
+        }
+        disconnectTimers.delete(roomKey);
+      }, RECONNECT_TIMEOUT);
+      disconnectTimers.set(roomKey, timer);
+
+      const room = rooms.get(roomKey);
+      if (room && room.gameState.players.length >= 2) {
+        const otherPlayer = room.gameState.players.find(
+          (p: any) => p.player !== playerNumber
+        );
+        if (otherPlayer) {
+          io.to(otherPlayer.id).emit('player-disconnected', {
+            message: 'Your opponent disconnected. Waiting for reconnection...',
+            gameId: room.gameId,
+            canReconnect: true,
+          });
+        }
       }
     }
   });

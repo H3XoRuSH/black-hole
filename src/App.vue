@@ -66,6 +66,7 @@ export default defineComponent({
       const isGame
         = this.roomKey && to.path === `/${this.gameId}/game/${this.roomKey}`;
       if (!isLobby && !isGame) {
+        sessionStorage.removeItem('roomData');
         this.roomKey = '';
         this.player = null;
         this.connectionStatus = '';
@@ -79,9 +80,20 @@ export default defineComponent({
     if (this.socket) {
       this.socket.on('connect', () => {
         this.connectionStatus = '';
+
+        const saved = sessionStorage.getItem('roomData');
+        if (saved) {
+          try {
+            const { roomKey, player } = JSON.parse(saved);
+            this.socket?.emit('reconnect-room', { roomKey, playerNumber: player });
+          } catch {
+            sessionStorage.removeItem('roomData');
+          }
+          return;
+        }
+
         this.roomKey = '';
         this.player = null;
-        // Only redirect to menu on reconnect if we are not already on the menu or lobby pages
         const isLobby = router.currentRoute.value.path.endsWith('/lobby');
         if (router.currentRoute.value.path !== '/menu' && !isLobby) {
           router.isLeavingDueToDisconnect = true;
@@ -106,6 +118,10 @@ export default defineComponent({
           this.player = player;
           this.gameId = gameId || 'black-hole';
           this.connectionStatus = 'Waiting for another player...';
+          sessionStorage.setItem(
+            'roomData',
+            JSON.stringify({ roomKey, player, gameId })
+          );
           router.isLeavingDueToDisconnect = true;
           router.push(`/${this.gameId}/lobby`).finally(() => {
             router.isLeavingDueToDisconnect = false;
@@ -131,11 +147,36 @@ export default defineComponent({
           this.gameId = gameId || 'black-hole';
           this.gameState = gameState;
           this.connectionStatus = '';
+          sessionStorage.setItem(
+            'roomData',
+            JSON.stringify({ roomKey, player, gameId })
+          );
           router.push(`/${this.gameId}/game/${roomKey}`);
         }
       );
 
+      this.socket.on('reconnect-success', ({ roomKey, player, gameId, gameState, gameStarted }: any) => {
+        this.roomKey = roomKey;
+        this.player = player;
+        this.gameId = gameId || 'black-hole';
+        this.gameState = gameState;
+        this.connectionStatus = '';
+        const route = gameStarted
+          ? `/${this.gameId}/game/${roomKey}`
+          : `/${this.gameId}/lobby`;
+        router.push(route);
+      });
+
+      this.socket.on('reconnect-fail', ({ message }: { message: string }) => {
+        sessionStorage.removeItem('roomData');
+        this.connectionStatus = message;
+        this.roomKey = '';
+        this.player = null;
+        router.push('/menu');
+      });
+
       this.socket.on('room-error', ({ message }: { message: string }) => {
+        sessionStorage.removeItem('roomData');
         this.connectionStatus = message;
         this.roomKey = '';
         this.player = null;
@@ -156,8 +197,13 @@ export default defineComponent({
 
       this.socket.on(
         'player-disconnected',
-        ({ message, gameId }: { message: string; gameId: string }) => {
+        ({ message, gameId, canReconnect }: { message: string; gameId: string; canReconnect?: boolean }) => {
           console.log(`Player disconnected: ${message}`);
+          if (canReconnect) {
+            this.connectionStatus = message;
+            return;
+          }
+          sessionStorage.removeItem('roomData');
           this.connectionStatus = message;
           this.roomKey = '';
           this.player = null;
@@ -177,6 +223,18 @@ export default defineComponent({
           });
         }
       );
+
+      this.socket.on('player-reconnected', () => {
+        this.connectionStatus = '';
+      });
+
+      this.socket.on('room-closed', ({ message }: { message: string }) => {
+        sessionStorage.removeItem('roomData');
+        this.connectionStatus = message;
+        this.roomKey = '';
+        this.player = null;
+        router.push('/menu');
+      });
 
       this.socket.on('invalid-move', ({ message }: { message: string }) => {
         alert(message);
