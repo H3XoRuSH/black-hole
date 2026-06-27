@@ -5,7 +5,33 @@
     "description": "A strategic 2-player game of gravity and calculation. Place your numbered tiles on the triangular grid and try to keep your highest numbers away from the final empty circle!",
     "route": "/black-hole/lobby",
     "status": "active",
-    "color": "#9333ea"
+    "color": "#9333ea",
+    "rules": [
+      {
+        "title": "The Board",
+        "desc": "The game is played on a triangular board of 21 circles (6 rows)."
+      },
+      {
+        "title": "Placing Tiles",
+        "desc": "Players take turns placing their numbered tiles (1 to 10) onto empty circles."
+      },
+      {
+        "title": "Increasing Order",
+        "desc": "You place tiles in ascending order (first turn places tile 1, second turn tile 2, up to 10). A preview of your next tile is shown when hovering."
+      },
+      {
+        "title": "The Black Hole",
+        "desc": "When all 20 tiles are placed, exactly one empty circle will remain. This empty circle becomes the Black Hole."
+      },
+      {
+        "title": "Scoring",
+        "desc": "All tiles immediately adjacent to the Black Hole are sucked in. The numbers on those tiles are summed for each player."
+      },
+      {
+        "title": "Low Score Wins",
+        "desc": "The player with the lower sum of adjacent tiles wins. If a player has no adjacent tiles, their sum is 0. If sums are equal, the game is a tie."
+      }
+    ]
   },
   {
     "id": "connect-four",
@@ -13,7 +39,25 @@
     "description": "A classic 2-player connection game. Drop colored discs into a 7x6 grid, and be the first to form a horizontal, vertical, or diagonal line of four of your own discs!",
     "route": "/connect-four/lobby",
     "status": "active",
-    "color": "#2563eb"
+    "color": "#2563eb",
+    "rules": [
+      {
+        "title": "Drop Discs",
+        "desc": "Players take turns dropping a colored disc of their color (Blue/Red) from the top into any of the 7 columns."
+      },
+      {
+        "title": "Gravity Mechanics",
+        "desc": "The disc will fall straight down to the lowest unoccupied space within the chosen column."
+      },
+      {
+        "title": "Forming a Line",
+        "desc": "Connect four of your discs in a line—horizontally, vertically, or diagonally—to win."
+      },
+      {
+        "title": "Tie Game",
+        "desc": "If all spaces are filled without any player connecting four discs, the game ends in a tie."
+      }
+    ]
   },
   {
     "id": "dots-and-boxes",
@@ -21,7 +65,25 @@
     "description": "A classic two-player pen-and-paper game. Connect dots to complete boxes; capturing a box gains you a point and grants you an extra turn!",
     "route": "/dots-and-boxes/lobby",
     "status": "active",
-    "color": "#059669"
+    "color": "#059669",
+    "rules": [
+      {
+        "title": "Draw Lines",
+        "desc": "Players take turns drawing a single horizontal or vertical line between two adjacent dots on the grid."
+      },
+      {
+        "title": "Claiming Boxes",
+        "desc": "If you draw a line that completes a 1x1 box, you claim that box. It colors in with your color and adds 1 point to your score."
+      },
+      {
+        "title": "Extra Turn",
+        "desc": "Every time you complete a box, you MUST immediately take another turn, allowing you to potentially chain multiple completions!"
+      },
+      {
+        "title": "Winning",
+        "desc": "The game ends when all 16 boxes are claimed. The player with the most boxes (highest score) wins."
+      }
+    ]
   },
   {
     "id": "battleship",
@@ -29,6 +91,24 @@
     "description": "A strategic 2-player grid-guessing game. Place your fleet on a 10x10 grid, take turns calling shots, and sink all of your opponent's ships to win!",
     "route": "/battleship/lobby",
     "status": "active",
-    "color": "#e11d48"
+    "color": "#e11d48",
+    "rules": [
+      {
+        "title": "Phase 1: Position Fleet",
+        "desc": "Secretly place your 3 ships (Cruiser of size 3, Destroyer of size 2, and Patrol Boat of size 2) on your 6x6 grid. Select a ship and click the grid. Press Spacebar or orientation toggle to rotate. Click 'Deploy Fleet' once fully placed."
+      },
+      {
+        "title": "Phase 2: Engage Combat",
+        "desc": "Take turns choosing target coordinates on the opponent's grid to shoot."
+      },
+      {
+        "title": "Shot Indicators",
+        "desc": "Hits are marked with red pins (💥) and misses are marked with white pins (⚪). Complete ship sinkings will be announced."
+      },
+      {
+        "title": "Victory Condition",
+        "desc": "The first player to sink all 3 of the opponent's ships (7 total hits required) wins the battle."
+      }
+    ]
   }
 ]
