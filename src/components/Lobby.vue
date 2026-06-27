@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4"
+    class="flex flex-col items-center justify-center min-h-full bg-gray-100 p-4"
   >
     <h1 class="text-3xl sm:text-4xl font-bold mb-6 sm:mb-8 text-gray-800">
       {{ gameName }}

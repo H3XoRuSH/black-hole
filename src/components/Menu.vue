@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4 select-none">
+  <div class="flex flex-col items-center justify-center min-h-full bg-gray-100 p-4 select-none">
     <!-- Header Section -->
     <header class="text-center mb-10 max-w-md w-full">
       <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-2">

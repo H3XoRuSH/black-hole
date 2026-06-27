@@ -1,9 +1,9 @@
 <template>
   <div
-    class="flex flex-col md:flex-row min-h-screen bg-gray-100 overflow-hidden"
+    class="flex flex-col md:flex-row h-dvh md:h-screen bg-gray-100 overflow-hidden"
   >
     <Sidebar :room-key="roomKey" />
-    <div class="flex-grow flex flex-col min-h-screen overflow-auto">
+    <div class="flex-grow flex flex-col min-h-0 overflow-y-auto">
       <router-view
         :socket="socket"
         :player="player"
