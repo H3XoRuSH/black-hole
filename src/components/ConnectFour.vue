@@ -85,20 +85,7 @@ import { defineComponent, PropType, ref } from 'vue';
 import { Socket } from 'socket.io-client';
 import GameHeader from './GameHeader.vue';
 import { useGame } from '../composables/useGame';
-
-interface Player {
-  id: string;
-  player: number;
-  ready: boolean;
-}
-
-interface GameState {
-  board: (number | null)[][];
-  currentPlayer: number;
-  totalMoves: number;
-  players: Player[];
-  winner: string;
-}
+import type { ConnectFourGameState as GameState } from '../types/shared';
 
 export default defineComponent({
   name: 'ConnectFour',

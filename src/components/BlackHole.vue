@@ -110,27 +110,7 @@ import { defineComponent, PropType, ref } from 'vue';
 import { Socket } from 'socket.io-client';
 import GameHeader from './GameHeader.vue';
 import { useGame } from '../composables/useGame';
-
-interface Player {
-  id: string;
-  player: number;
-  ready: boolean;
-}
-
-interface CircleData {
-  player: number;
-  turn: number;
-}
-
-interface GameState {
-  circles: Record<string, CircleData>;
-  currentPlayer: number;
-  totalMoves: number;
-  maxTurnsPerPlayer: number;
-  players: Player[];
-  scores?: { player1: number; player2: number };
-  winner: string;
-}
+import type { BlackHoleGameState as GameState } from '../types/shared';
 
 export default defineComponent({
   name: 'BlackHole',

@@ -19,13 +19,8 @@
 import { defineComponent } from 'vue';
 import { io, Socket } from 'socket.io-client';
 import routerImport from './router/index.js';
+import type { Player } from './types/shared.js';
 const router = routerImport as any;
-
-interface Player {
-  id: string;
-  player: number;
-  ready: boolean;
-}
 
 interface GameState {
   circles?: Record<string, { player: number; turn: number }>;

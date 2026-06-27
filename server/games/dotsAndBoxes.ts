@@ -1,4 +1,4 @@
-import { Player, Room } from './blackHole.js';
+import type { Player, Room } from '../../src/types/shared.js';
 
 export interface DotsAndBoxesGameState {
   lines: Record<string, number>;
