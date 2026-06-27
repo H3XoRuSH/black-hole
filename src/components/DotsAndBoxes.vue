@@ -196,8 +196,8 @@ export default defineComponent({
       otherPlayerReady: false,
       isLeavingDueToDisconnect: false,
       gameState:
-        this.initialGameState ||
-        ({
+        this.initialGameState
+        || ({
           lines: {},
           boxes: {},
           scores: { player1: 0, player2: 0 },
@@ -211,10 +211,10 @@ export default defineComponent({
   computed: {
     isValidGame() {
       return (
-        this.roomKey &&
-        this.player &&
-        this.gameState.players &&
-        this.gameState.players.length >= 1
+        this.roomKey
+        && this.player
+        && this.gameState.players
+        && this.gameState.players.length >= 1
       );
     },
     gameOver() {
@@ -264,9 +264,9 @@ export default defineComponent({
   methods: {
     isMyTurn() {
       return (
-        !this.gameOver &&
-        this.player === this.gameState.currentPlayer &&
-        this.gameState.players.length === 2
+        !this.gameOver
+        && this.player === this.gameState.currentPlayer
+        && this.gameState.players.length === 2
       );
     },
     makeMove(lineKey: string) {
@@ -285,12 +285,12 @@ export default defineComponent({
 
       // Interactive/hover state
       if (this.isMyTurn()) {
-        const hoverColorClass =
-          this.player === 1
+        const hoverColorClass
+          = this.player === 1
             ? 'bg-blue-500/10 group-hover:bg-blue-500/60'
             : 'bg-rose-500/10 group-hover:bg-rose-500/60';
-        const scalingClass =
-          direction === 'h'
+        const scalingClass
+          = direction === 'h'
             ? 'group-hover:scale-y-125'
             : 'group-hover:scale-x-125';
         return `${hoverColorClass} ${scalingClass}`;

@@ -10,49 +10,49 @@ const routes: Array<RouteRecordRaw> = [
     path: '/menu',
     name: 'Menu',
     component: Menu,
-    meta: { title: "Gab's Arcade" },
+    meta: { title: 'Gab\'s Arcade' },
   },
   {
     path: '/black-hole/lobby',
     name: 'Lobby',
     component: Lobby,
     props: { gameId: 'black-hole', gameName: 'Black Hole' },
-    meta: { title: "Black Hole - Gab's Arcade" },
+    meta: { title: 'Black Hole - Gab\'s Arcade' },
   },
   {
     path: '/black-hole/game/:roomKey',
     name: 'Game',
     component: Game,
     props: true,
-    meta: { title: "Black Hole - Gab's Arcade" },
+    meta: { title: 'Black Hole - Gab\'s Arcade' },
   },
   {
     path: '/connect-four/lobby',
     name: 'ConnectFourLobby',
     component: Lobby,
     props: { gameId: 'connect-four', gameName: 'Connect Four' },
-    meta: { title: "Connect Four - Gab's Arcade" },
+    meta: { title: 'Connect Four - Gab\'s Arcade' },
   },
   {
     path: '/connect-four/game/:roomKey',
     name: 'ConnectFourGame',
     component: ConnectFour,
     props: true,
-    meta: { title: "Connect Four - Gab's Arcade" },
+    meta: { title: 'Connect Four - Gab\'s Arcade' },
   },
   {
     path: '/dots-and-boxes/lobby',
     name: 'DotsAndBoxesLobby',
     component: Lobby,
     props: { gameId: 'dots-and-boxes', gameName: 'Dots and Boxes' },
-    meta: { title: "Dots and Boxes - Gab's Arcade" },
+    meta: { title: 'Dots and Boxes - Gab\'s Arcade' },
   },
   {
     path: '/dots-and-boxes/game/:roomKey',
     name: 'DotsAndBoxesGame',
     component: DotsAndBoxes,
     props: true,
-    meta: { title: "Dots and Boxes - Gab's Arcade" },
+    meta: { title: 'Dots and Boxes - Gab\'s Arcade' },
   },
   {
     path: '/:pathMatch(.*)*',
@@ -66,7 +66,7 @@ const router = createRouter({
 });
 
 router.afterEach((to) => {
-  document.title = (to.meta.title as string) || "Gab's Arcade";
+  document.title = (to.meta.title as string) || 'Gab\'s Arcade';
 });
 
 export default router;
