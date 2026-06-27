@@ -70,8 +70,8 @@ export default defineComponent({
     $route(to: any) {
       // If we navigate to an unrelated route, clean up room and connection state
       const isLobby = to.path === `/${this.gameId}/lobby`;
-      const isGame =
-        this.roomKey && to.path === `/${this.gameId}/game/${this.roomKey}`;
+      const isGame
+        = this.roomKey && to.path === `/${this.gameId}/game/${this.roomKey}`;
       if (!isLobby && !isGame) {
         this.roomKey = '';
         this.player = null;

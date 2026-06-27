@@ -133,8 +133,8 @@ export default defineComponent({
       otherPlayerReady: false,
       isLeavingDueToDisconnect: false,
       gameState:
-        this.initialGameState ||
-        ({
+        this.initialGameState
+        || ({
           board: Array(6)
             .fill(null)
             .map(() => Array(7).fill(null)),
@@ -148,10 +148,10 @@ export default defineComponent({
   computed: {
     isValidGame() {
       return (
-        this.roomKey &&
-        this.player &&
-        this.gameState.players &&
-        this.gameState.players.length >= 1
+        this.roomKey
+        && this.player
+        && this.gameState.players
+        && this.gameState.players.length >= 1
       );
     },
     gameOver() {
@@ -168,9 +168,9 @@ export default defineComponent({
   methods: {
     canPlayColumn(colIndex: number) {
       if (
-        this.gameOver ||
-        this.player !== this.gameState.currentPlayer ||
-        this.gameState.players.length < 2
+        this.gameOver
+        || this.player !== this.gameState.currentPlayer
+        || this.gameState.players.length < 2
       ) {
         return false;
       }

@@ -15,10 +15,10 @@ export const checkConnectFourWinner = (board: (number | null)[][]): number => {
     for (let c = 0; c < cols - 3; c++) {
       const p = board[r][c];
       if (
-        p &&
-        p === board[r][c + 1] &&
-        p === board[r][c + 2] &&
-        p === board[r][c + 3]
+        p
+        && p === board[r][c + 1]
+        && p === board[r][c + 2]
+        && p === board[r][c + 3]
       ) {
         return p;
       }
@@ -28,10 +28,10 @@ export const checkConnectFourWinner = (board: (number | null)[][]): number => {
     for (let c = 0; c < cols; c++) {
       const p = board[r][c];
       if (
-        p &&
-        p === board[r + 1][c] &&
-        p === board[r + 2][c] &&
-        p === board[r + 3][c]
+        p
+        && p === board[r + 1][c]
+        && p === board[r + 2][c]
+        && p === board[r + 3][c]
       ) {
         return p;
       }
@@ -41,10 +41,10 @@ export const checkConnectFourWinner = (board: (number | null)[][]): number => {
     for (let c = 0; c < cols - 3; c++) {
       const p = board[r][c];
       if (
-        p &&
-        p === board[r - 1][c + 1] &&
-        p === board[r - 2][c + 2] &&
-        p === board[r - 3][c + 3]
+        p
+        && p === board[r - 1][c + 1]
+        && p === board[r - 2][c + 2]
+        && p === board[r - 3][c + 3]
       ) {
         return p;
       }
@@ -54,10 +54,10 @@ export const checkConnectFourWinner = (board: (number | null)[][]): number => {
     for (let c = 0; c < cols - 3; c++) {
       const p = board[r][c];
       if (
-        p &&
-        p === board[r + 1][c + 1] &&
-        p === board[r + 2][c + 2] &&
-        p === board[r + 3][c + 3]
+        p
+        && p === board[r + 1][c + 1]
+        && p === board[r + 2][c + 2]
+        && p === board[r + 3][c + 3]
       ) {
         return p;
       }

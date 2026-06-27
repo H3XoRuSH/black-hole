@@ -96,10 +96,10 @@ export const makeMove = (
     const right = `v-${br}-${bc + 1}`;
 
     if (
-      gameState.lines[top] &&
-      gameState.lines[bottom] &&
-      gameState.lines[left] &&
-      gameState.lines[right]
+      gameState.lines[top]
+      && gameState.lines[bottom]
+      && gameState.lines[left]
+      && gameState.lines[right]
     ) {
       gameState.boxes[boxKey] = gameState.currentPlayer;
       if (gameState.currentPlayer === 1) {

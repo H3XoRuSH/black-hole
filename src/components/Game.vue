@@ -164,8 +164,8 @@ export default defineComponent({
       otherPlayerReady: false,
       isLeavingDueToDisconnect: false,
       gameState:
-        this.initialGameState ||
-        ({
+        this.initialGameState
+        || ({
           circles: {},
           currentPlayer: 1,
           totalMoves: 0,
@@ -237,9 +237,9 @@ export default defineComponent({
   methods: {
     clickCircle(row: number, col: number) {
       if (
-        this.gameOver ||
-        this.player !== this.gameState.currentPlayer ||
-        this.gameState.players.length < 2
+        this.gameOver
+        || this.player !== this.gameState.currentPlayer
+        || this.gameState.players.length < 2
       ) {
         return;
       }
@@ -247,9 +247,9 @@ export default defineComponent({
     },
     showHoverPreview(row: number, col: number) {
       if (
-        this.gameOver ||
-        this.player !== this.gameState.currentPlayer ||
-        this.gameState.players.length < 2
+        this.gameOver
+        || this.player !== this.gameState.currentPlayer
+        || this.gameState.players.length < 2
       ) {
         return false;
       }
