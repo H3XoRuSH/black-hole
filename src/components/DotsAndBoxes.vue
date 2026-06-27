@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="isValidGame"
-    class="flex-grow flex flex-col items-center justify-between min-h-screen p-4 sm:p-6 md:p-8 select-none"
+    class="flex-grow flex flex-col items-center justify-between h-full p-4 sm:p-6 md:p-8 select-none"
   >
     <!-- Game Header -->
     <GameHeader
