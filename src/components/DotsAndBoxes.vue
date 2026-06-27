@@ -327,6 +327,10 @@ export default defineComponent({
 
     this.socket.on('game-state', (newState: any) => {
       this.gameState = newState;
+      if (this.gameState.totalMoves === 0) {
+        this.ready = false;
+        this.otherPlayerReady = false;
+      }
       if (this.gameState.players.length < 2 && !this.gameOver) {
         this.router.push('/dots-and-boxes/lobby');
       }
