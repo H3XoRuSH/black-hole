@@ -207,14 +207,18 @@ export const getFilteredState = (gameState: BattleshipGameState, playerNum: numb
       : gameState.p1Ships.map((s) => ({
           name: s.name,
           size: s.size,
-          coordinates: [],
+          coordinates: s.coordinates.filter(([r, c]) =>
+            gameState.p2Shots.some(([sr, sc]) => sr === r && sc === c)
+          ),
         })),
     p2Ships: playerNum === 2 || gameState.phase === 'game-over'
       ? gameState.p2Ships
       : gameState.p2Ships.map((s) => ({
           name: s.name,
           size: s.size,
-          coordinates: [],
+          coordinates: s.coordinates.filter(([r, c]) =>
+            gameState.p1Shots.some(([sr, sc]) => sr === r && sc === c)
+          ),
         })),
   };
 };
