@@ -343,6 +343,11 @@ export default defineComponent({
       deep: true,
       immediate: true,
     },
+    'gameState.phase'(newPhase, oldPhase) {
+      if (newPhase === 'placement' && oldPhase && oldPhase !== 'placement') {
+        this.resetFleet();
+      }
+    },
   },
   mounted() {
     this.checkMobile();
