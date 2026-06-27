@@ -281,7 +281,7 @@ export default defineComponent({
       required: true,
     },
     player: {
-      type: Number as PropType<number | null>,
+      type: Number,
       required: true,
     },
     roomKey: {
