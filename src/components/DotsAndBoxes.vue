@@ -63,7 +63,8 @@
             v-for="line in horizontalLines"
             :key="`line-${line.key}`"
             :id="`line-${line.key}`"
-            class="absolute cursor-pointer group flex items-center justify-center"
+            class="absolute group flex items-center justify-center"
+            :class="{ 'cursor-pointer': isMyTurn() && !gameState.lines[line.key] }"
             :style="{
               top: `${line.r * 25}%`,
               left: `${line.c * 25}%`,
@@ -85,7 +86,8 @@
             v-for="line in verticalLines"
             :key="`line-${line.key}`"
             :id="`line-${line.key}`"
-            class="absolute cursor-pointer group flex items-center justify-center"
+            class="absolute group flex items-center justify-center"
+            :class="{ 'cursor-pointer': isMyTurn() && !gameState.lines[line.key] }"
             :style="{
               top: `${line.r * 25}%`,
               left: `${line.c * 25}%`,
