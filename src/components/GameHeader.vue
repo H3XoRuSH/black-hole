@@ -39,22 +39,11 @@
 
     <!-- Status & Info Indicator -->
     <div class="text-center">
-      <div v-if="!gameOver" class="text-sm font-semibold text-gray-700">
-        Current Turn:
-        <span :class="currentPlayer === 1 ? 'text-blue-600' : 'text-red-600'">
-          Player {{ currentPlayer }} ({{
-            currentPlayer === 1 ? 'Blue' : 'Red'
-          }})
-        </span>
-        <span
-          v-if="extraInfo"
-          class="block sm:inline sm:ml-2 text-xs font-normal text-gray-500"
-        >
-          ({{ extraInfo }})
-        </span>
-      </div>
-      <div v-else class="text-lg font-bold" :class="winnerTextClass">
+      <div v-if="gameOver" class="text-lg font-bold" :class="winnerTextClass">
         Game Over! {{ winner }}
+      </div>
+      <div class="text-xs text-gray-500 mt-1">
+        You are Player {{ player }} ({{ player === 1 ? 'Blue' : 'Red' }})
       </div>
     </div>
   </div>
