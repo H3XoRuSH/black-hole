@@ -1,9 +1,9 @@
 <template>
   <div
-    class="w-full max-w-lg flex flex-col items-center justify-center px-4 py-2 sm:py-3 flex-shrink-0 select-none"
+    class="w-full max-w-lg flex flex-col items-center justify-center px-4 py-3 sm:py-5 flex-shrink-0 select-none"
   >
     <!-- Game Title and Leave Button Row -->
-    <div class="w-full flex items-center justify-between mb-1.5">
+    <div class="w-full flex items-center justify-between mb-3 sm:mb-4">
       <!-- Left Spacer to balance the layout -->
       <div class="w-8 sm:w-10"></div>
 
@@ -27,7 +27,7 @@
 
     <!-- Players VS Status Card -->
     <div
-      class="w-full bg-white/80 backdrop-blur-md rounded-xl p-2 border border-gray-200 shadow-sm flex items-center justify-between text-sm sm:text-base mb-1.5"
+      class="w-full bg-white/80 backdrop-blur-md rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 border border-gray-200 shadow-md flex items-center justify-between text-sm sm:text-base mb-3 sm:mb-4.5"
     >
       <div
         class="flex items-center space-x-2 rounded-lg px-2 sm:px-3 py-1.5 transition-all duration-300"
@@ -44,7 +44,7 @@
         >TURN</span>
       </div>
       <span
-        class="text-gray-400 font-mono text-xs uppercase tracking-widest mx-4 flex-shrink-0"
+        class="text-gray-400 font-mono text-xs uppercase tracking-widest mx-4 sm:mx-6 flex-shrink-0"
         >VS</span
       >
       <div
@@ -71,7 +71,7 @@
       <div v-if="!gameOver" class="text-sm font-bold transition-all duration-300" :class="turnTextColor">
         {{ currentPlayer === player ? 'Your Turn' : "Opponent's Turn" }}
       </div>
-      <div class="text-xs text-gray-500 mt-1">
+      <div class="text-xs text-gray-400 mt-1.5 sm:mt-2">
         You are Player {{ player }} ({{ player === 1 ? 'Blue' : 'Red' }})
       </div>
     </div>
