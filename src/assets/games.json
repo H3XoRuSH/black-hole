@@ -12,5 +12,12 @@
     "description": "A classic 2-player connection game. Drop colored discs into a 7x6 grid, and be the first to form a horizontal, vertical, or diagonal line of four of your own discs!",
     "route": "/connect-four/lobby",
     "status": "active"
+  },
+  {
+    "id": "dots-and-boxes",
+    "name": "Dots and Boxes",
+    "description": "A classic two-player pen-and-paper game. Connect dots to complete boxes; capturing a box gains you a point and grants you an extra turn!",
+    "route": "/dots-and-boxes/lobby",
+    "status": "active"
   }
 ]
