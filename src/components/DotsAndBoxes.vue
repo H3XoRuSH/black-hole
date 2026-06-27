@@ -185,7 +185,7 @@ export default defineComponent({
     },
   },
   setup() {
-    const router = useRouter();
+    const router = useRouter() as any;
     return { router };
   },
   data() {

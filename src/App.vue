@@ -21,7 +21,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { io, Socket } from 'socket.io-client';
-import router from './router';
+import routerImport from './router/index.js';
+const router = routerImport as any;
 import Sidebar from './components/Sidebar.vue';
 
 interface Player {
