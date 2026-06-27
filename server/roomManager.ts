@@ -223,6 +223,16 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       if (allReady && room.gameState.players.length === 2) {
         const game = gamesRegistry[room.gameId];
         if (game) {
+          // Swap P1 and P2 roles
+          const p1 = room.gameState.players.find((p: any) => p.player === 1);
+          const p2 = room.gameState.players.find((p: any) => p.player === 2);
+          if (p1 && p2) {
+            p1.player = 2;
+            p2.player = 1;
+            // Update the socketRooms mappings for both players
+            socketRooms.set(p1.id, { roomKey, playerNumber: 2 });
+            socketRooms.set(p2.id, { roomKey, playerNumber: 1 });
+          }
           room.gameState = game.resetState(room.gameState.players);
           broadcastGameState(roomKey, room, io);
         }

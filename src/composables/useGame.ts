@@ -72,6 +72,11 @@ export function useGame(options: UseGameOptions) {
         }
       });
 
+      const getPlayerNumber = () => {
+        const me = options.gameState.value?.players?.find((p: any) => p.id === options.socket?.id);
+        return me ? me.player : options.player;
+      };
+
       options.socket?.on('player-ready', (data: any) => {
         if (options.onPlayerReady) {
           options.onPlayerReady(data, {
@@ -79,7 +84,8 @@ export function useGame(options: UseGameOptions) {
             setOtherReady: (v: boolean) => { otherPlayerReady.value = v; },
           });
         } else {
-          if (data !== options.player) {
+          const currentPlayerNum = getPlayerNumber();
+          if (data !== currentPlayerNum) {
             otherPlayerReady.value = true;
           }
         }
