@@ -1,7 +1,7 @@
 <template>
-  <div class="flex flex-col items-center justify-start min-h-full bg-gray-100 p-4 pt-10 sm:pt-16 pb-12 select-none">
+  <div class="flex flex-col items-center justify-start min-h-full bg-gray-100 p-4 pt-8 sm:pt-10 pb-8 select-none">
     <!-- Header Section -->
-    <header class="text-center mb-8 max-w-md w-full">
+    <header class="text-center mb-5 sm:mb-6 max-w-md w-full">
       <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-2">
         Gab's Arcade
       </h1>
@@ -11,7 +11,7 @@
     </header>
 
     <!-- Join via Room Code Card -->
-    <div class="w-full max-w-md bg-white border border-gray-200/80 rounded-2xl p-6 shadow-sm mb-8 transition-all hover:shadow-md">
+    <div class="w-full max-w-md bg-white border border-gray-200/80 rounded-2xl p-6 shadow-sm mb-5 sm:mb-6 transition-all hover:shadow-md">
       <div class="flex items-center space-x-2.5 mb-4">
         <div class="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -25,7 +25,7 @@
       </div>
 
       <div class="flex flex-col sm:flex-row gap-3">
-        <div class="relative flex-grow flex items-center">
+        <div class="relative flex-grow">
           <input
             v-model="roomCode"
             @input="onRoomCodeInput"
@@ -33,7 +33,7 @@
             type="text"
             placeholder="ENTER CODE"
             maxlength="6"
-            class="w-full pl-4 pr-12 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-center font-mono tracking-widest text-lg placeholder:font-sans placeholder:tracking-normal placeholder:text-sm text-gray-800 uppercase bg-gray-50/50"
+            class="w-full pl-4 pr-12 h-[52px] border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-center font-mono tracking-widest text-lg placeholder:font-sans placeholder:tracking-normal placeholder:text-sm text-gray-800 uppercase bg-gray-50/50"
             :disabled="isValidating"
           />
           <!-- Camera Scan QR Button inside input -->
@@ -51,7 +51,7 @@
         <button
           @click="joinRoomByCode"
           :disabled="isValidating || roomCode.length !== 6"
-          class="px-6 py-3 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-bold rounded-xl transition-all duration-200 shadow-sm hover:shadow active:scale-95 disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed disabled:scale-100 cursor-pointer flex items-center justify-center min-w-[120px]"
+          class="px-6 h-[52px] bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-bold rounded-xl transition-all duration-200 shadow-sm hover:shadow active:scale-95 disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed disabled:scale-100 cursor-pointer flex items-center justify-center min-w-[120px]"
         >
           <span v-if="isValidating" class="flex items-center space-x-1.5">
             <svg class="animate-spin -ml-1 mr-1 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -110,7 +110,7 @@
 
     <!-- View Toggle Control -->
     <div
-      class="flex bg-gray-200/80 backdrop-blur-sm p-1 rounded-xl mb-8 space-x-1 w-full max-w-[280px] justify-center shadow-inner">
+      class="flex bg-gray-200/80 backdrop-blur-sm p-1 rounded-xl mb-5 sm:mb-6 space-x-1 w-full max-w-[280px] justify-center shadow-inner">
       <button @click="viewMode = 'carousel'" :class="viewMode === 'carousel'
           ? 'bg-white text-gray-900 shadow-sm'
           : 'text-gray-500 hover:text-gray-800'
