@@ -7,7 +7,7 @@ import * as blackHole from './server/games/blackHole.js';
 import * as connectFour from './server/games/connectFour.js';
 import * as dotsAndBoxes from './server/games/dotsAndBoxes.js';
 import * as battleship from './server/games/battleship.js';
-import { Room } from './server/games/blackHole.js';
+import type { Room } from './src/types/shared.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

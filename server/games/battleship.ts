@@ -1,30 +1,6 @@
-import { Player, Room } from './blackHole.js';
+import type { Player, Room, Ship, BattleshipGameState } from '../../src/types/shared.js';
 
-export interface Ship {
-  name: string;
-  size: number;
-  coordinates: [number, number][];
-}
-
-export interface BattleshipGameState {
-  phase: 'placement' | 'playing' | 'game-over';
-  currentPlayer: number;
-  winner: string;
-  players: Player[];
-  p1Placed: boolean;
-  p2Placed: boolean;
-  p1Ships: Ship[];
-  p2Ships: Ship[];
-  p1Shots: [number, number][];
-  p2Shots: [number, number][];
-  lastShotResult: {
-    player: number;
-    row: number;
-    col: number;
-    hit: boolean;
-    sunkShipName: string | null;
-  } | null;
-}
+export type { Ship, BattleshipGameState };
 
 const FLEET_SPECS = [
   { name: 'Cruiser', size: 3 },

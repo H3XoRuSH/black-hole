@@ -25,21 +25,13 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-
-interface Game {
-  id: string;
-  name: string;
-  description: string;
-  route: string;
-  status: string;
-  color: string;
-}
+import type { MenuGame } from '../../types/shared';
 
 export default defineComponent({
   name: 'GridView',
   props: {
     games: {
-      type: Array as PropType<Game[]>,
+      type: Array as PropType<MenuGame[]>,
       required: true,
     },
   },

@@ -1,23 +1,6 @@
-export interface Player {
-  id: string;
-  player: number;
-  ready: boolean;
-}
+import type { Player, BlackHoleGameState, Room } from '../../src/types/shared.js';
 
-export interface BlackHoleGameState {
-  circles: Record<string, { player: number; turn: number }>;
-  currentPlayer: number;
-  totalMoves: number;
-  maxTurnsPerPlayer: number;
-  players: Player[];
-  scores: { player1: number; player2: number };
-  winner: string;
-}
-
-export interface Room {
-  gameId: string;
-  gameState: any;
-}
+export type { Player, BlackHoleGameState, Room };
 
 const allPositions = (): string[] => {
   const positions: string[] = [];
