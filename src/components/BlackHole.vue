@@ -106,10 +106,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
-import { useRouter } from 'vue-router';
+import { defineComponent, PropType, ref } from 'vue';
 import { Socket } from 'socket.io-client';
 import GameHeader from './GameHeader.vue';
+import { useGame } from '../composables/useGame';
 
 interface Player {
   id: string;
@@ -133,6 +133,7 @@ interface GameState {
 }
 
 export default defineComponent({
+  name: 'BlackHole',
   components: {
     GameHeader,
   },
@@ -154,27 +155,32 @@ export default defineComponent({
       required: true,
     },
   },
-  setup() {
-    const router = useRouter() as any;
-    return { router };
+  setup(props) {
+    const gameState = ref<GameState>(
+      props.initialGameState || {
+        circles: {},
+        currentPlayer: 1,
+        totalMoves: 0,
+        maxTurnsPerPlayer: 10,
+        players: [],
+        scores: { player1: 0, player2: 0 },
+        winner: '',
+      }
+    );
+
+    const game = useGame({
+      socket: props.socket as any,
+      player: props.player,
+      roomKey: props.roomKey,
+      gameState,
+      gameOver: () => gameState.value && gameState.value.totalMoves >= gameState.value.maxTurnsPerPlayer * 2,
+      lobbyRoute: '/black-hole/lobby',
+    });
+
+    return { ...game, gameState };
   },
   data() {
-    return {
-      ready: false,
-      otherPlayerReady: false,
-      isLeavingDueToDisconnect: false,
-      gameState:
-        this.initialGameState
-        || ({
-          circles: {},
-          currentPlayer: 1,
-          totalMoves: 0,
-          maxTurnsPerPlayer: 10,
-          players: [],
-          scores: { player1: 0, player2: 0 },
-          winner: '',
-        } as GameState),
-    };
+    return {};
   },
   computed: {
     isValidGame() {
@@ -309,67 +315,6 @@ export default defineComponent({
       }
       return neighbors.filter((pos) => this.allPositions.includes(pos));
     },
-    newGame() {
-      this.ready = true;
-      this.socket.emit('new-game', { roomKey: this.roomKey });
-    },
-    handleBeforeUnload(event: BeforeUnloadEvent) {
-      if (!this.gameOver && this.gameState.players.length === 2) {
-        event.preventDefault();
-        event.returnValue = ''; // Standard browser exit prompt
-      }
-    },
-  },
-  mounted() {
-    if (!this.isValidGame) {
-      this.router.push('/black-hole/lobby');
-      return;
-    }
-
-    window.addEventListener('beforeunload', this.handleBeforeUnload);
-
-    this.socket.on('game-state', (newState: any) => {
-      this.gameState = newState;
-      if (this.gameState.totalMoves === 0) {
-        this.ready = false;
-        this.otherPlayerReady = false;
-      }
-      if (this.gameState.players.length < 2 && !this.gameOver) {
-        this.router.push('/black-hole/lobby');
-      }
-    });
-
-    this.socket.on('player-ready', (player: number) => {
-      if (player !== this.player) {
-        this.otherPlayerReady = true;
-      }
-    });
-  },
-  beforeUnmount() {
-    if (this.roomKey) {
-      this.socket.emit('leave-room', { roomKey: this.roomKey });
-    }
-    this.socket.off('game-state');
-    this.socket.off('player-ready');
-    window.removeEventListener('beforeunload', this.handleBeforeUnload);
-  },
-  beforeRouteLeave(to: any, from: any, next: any) {
-    if (this.isLeavingDueToDisconnect || this.router.isLeavingDueToDisconnect) {
-      next();
-      return;
-    }
-    if (!this.gameOver && this.gameState.players.length === 2) {
-      const answer = window.confirm(
-        'Are you sure you want to leave the ongoing game? This will disconnect you and end the game.'
-      );
-      if (answer) {
-        next();
-      } else {
-        next(false);
-      }
-    } else {
-      next();
-    }
   },
 });
 </script>
