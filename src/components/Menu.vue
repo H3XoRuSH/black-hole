@@ -1,7 +1,5 @@
 <template>
-  <div
-    class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4 select-none"
-  >
+  <div class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4 select-none">
     <!-- Header Section -->
     <header class="text-center mb-10 max-w-md w-full">
       <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-2">
@@ -12,86 +10,32 @@
       </p>
     </header>
 
-    <!-- Games Carousel -->
+    <!-- View Toggle Control -->
+    <div
+      class="flex bg-gray-200/80 backdrop-blur-sm p-1 rounded-xl mb-8 space-x-1 w-full max-w-[280px] justify-center shadow-inner">
+      <button @click="viewMode = 'carousel'" :class="viewMode === 'carousel'
+          ? 'bg-white text-gray-900 shadow-sm'
+          : 'text-gray-500 hover:text-gray-800'
+        " class="flex-1 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer text-center">
+        Carousel
+      </button>
+      <button @click="viewMode = 'list'" :class="viewMode === 'list'
+          ? 'bg-white text-gray-900 shadow-sm'
+          : 'text-gray-500 hover:text-gray-800'
+        " class="flex-1 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer text-center">
+        List
+      </button>
+      <button @click="viewMode = 'grid'" :class="viewMode === 'grid'
+          ? 'bg-white text-gray-900 shadow-sm'
+          : 'text-gray-500 hover:text-gray-800'
+        " class="flex-1 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer text-center">
+        Grid
+      </button>
+    </div>
+
+    <!-- Games Display Section -->
     <main class="w-full max-w-md relative px-4 sm:px-0">
-      <!-- Carousel viewport -->
-      <div
-        class="overflow-hidden rounded-2xl relative"
-        @touchstart="handleTouchStart"
-        @touchend="handleTouchEnd"
-      >
-        <div
-          class="flex transition-transform duration-500 ease-in-out"
-          :style="{ transform: `translateX(-${currentIndex * 100}%)` }"
-        >
-          <div
-            v-for="game in games"
-            :key="game.id"
-            class="w-full flex-shrink-0 p-1"
-          >
-            <div
-              class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-8 flex flex-col justify-between h-[360px] relative overflow-hidden border-t-4"
-              :style="{ borderTopColor: game.color }"
-            >
-              <div>
-                <div class="flex items-center justify-between mb-4">
-                  <h2 class="text-xl sm:text-2xl font-bold text-gray-800">
-                    {{ game.name }}
-                  </h2>
-                  <span
-                    class="px-2.5 py-0.5 text-xs font-semibold rounded-full"
-                    :style="{ backgroundColor: game.color + '10', color: game.color }"
-                  >
-                    Ready to Play
-                  </span>
-                </div>
-                <p class="text-gray-600 text-sm leading-relaxed mb-6">
-                  {{ game.description }}
-                </p>
-              </div>
-
-              <router-link
-                :to="game.route"
-                class="w-full text-white font-bold py-3.5 px-4 rounded-xl transition-all duration-200 text-center block shadow-md hover:shadow-lg hover:brightness-90 active:scale-[0.98]"
-                :style="{ backgroundColor: game.color, boxShadow: `0 4px 12px ${game.color}40` }"
-              >
-                Enter Game Lobby
-              </router-link>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Navigation Arrows -->
-      <button
-        @click="prevSlide"
-        class="absolute -left-12 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-600 w-11 h-11 rounded-full hidden sm:flex items-center justify-center shadow-md transition-all duration-200 z-10 active:scale-95 cursor-pointer select-none"
-        :class="{ 'opacity-30 pointer-events-none': currentIndex === 0 }"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
-        </svg>
-      </button>
-      <button
-        @click="nextSlide"
-        class="absolute -right-12 top-1/2 -translate-y-1/2 bg-white hover:bg-gray-50 border border-gray-200 text-gray-600 w-11 h-11 rounded-full hidden sm:flex items-center justify-center shadow-md transition-all duration-200 z-10 active:scale-95 cursor-pointer select-none"
-        :class="{ 'opacity-30 pointer-events-none': currentIndex === games.length - 1 }"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
-
-      <!-- Pagination Dots -->
-      <div class="flex justify-center space-x-2 mt-4">
-        <button
-          v-for="(game, index) in games"
-          :key="`dot-${game.id}`"
-          @click="goToSlide(index)"
-          class="w-2 h-2 rounded-full transition-all duration-300 cursor-pointer"
-          :class="index === currentIndex ? 'bg-gray-800 w-5' : 'bg-gray-300'"
-        ></button>
-      </div>
+      <component :is="activeComponent" :games="games" />
     </main>
 
     <!-- Footer -->
@@ -104,46 +48,33 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import gamesData from '../assets/games.json';
+import CarouselView from './menu/CarouselView.vue';
+import ListView from './menu/ListView.vue';
+import GridView from './menu/GridView.vue';
 
 export default defineComponent({
   name: 'Menu',
+  components: {
+    CarouselView,
+    ListView,
+    GridView,
+  },
   data() {
     return {
       games: gamesData,
-      currentIndex: 0,
-      touchStartX: 0,
-      touchEndX: 0,
+      viewMode: localStorage.getItem('gamesViewMode') || 'carousel',
     };
   },
-  methods: {
-    nextSlide() {
-      if (this.currentIndex < this.games.length - 1) {
-        this.currentIndex++;
-      }
+  computed: {
+    activeComponent() {
+      if (this.viewMode === 'list') return 'ListView';
+      if (this.viewMode === 'grid') return 'GridView';
+      return 'CarouselView';
     },
-    prevSlide() {
-      if (this.currentIndex > 0) {
-        this.currentIndex--;
-      }
-    },
-    goToSlide(index: number) {
-      this.currentIndex = index;
-    },
-    handleTouchStart(event: TouchEvent) {
-      this.touchStartX = event.changedTouches[0].screenX;
-    },
-    handleTouchEnd(event: TouchEvent) {
-      this.touchEndX = event.changedTouches[0].screenX;
-      this.handleSwipe();
-    },
-    handleSwipe() {
-      const threshold = 50;
-      const diff = this.touchStartX - this.touchEndX;
-      if (diff > threshold) {
-        this.nextSlide();
-      } else if (diff < -threshold) {
-        this.prevSlide();
-      }
+  },
+  watch: {
+    viewMode(newMode) {
+      localStorage.setItem('gamesViewMode', newMode);
     },
   },
 });
