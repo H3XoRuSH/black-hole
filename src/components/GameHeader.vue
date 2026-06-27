@@ -27,28 +27,38 @@
 
     <!-- Players VS Status Card -->
     <div
-      class="w-full bg-white/80 backdrop-blur-md rounded-xl p-3 border border-gray-200 shadow-sm flex items-center justify-between text-sm sm:text-base mb-1.5"
+      class="w-full bg-white/80 backdrop-blur-md rounded-xl p-2 border border-gray-200 shadow-sm flex items-center justify-between text-sm sm:text-base mb-1.5"
     >
       <div
-        class="flex items-center space-x-2 transition-all duration-200"
-        :class="currentPlayer === 1 ? 'scale-105 font-bold' : 'opacity-70'"
+        class="flex items-center space-x-2 rounded-lg px-3 py-1.5 transition-all duration-300"
+        :class="currentPlayer === 1 && !gameOver ? 'bg-blue-50 shadow-sm scale-105 font-bold' : currentPlayer === 1 ? 'scale-105 font-bold' : 'opacity-60'"
       >
         <span
-          class="w-3.5 h-3.5 rounded-full bg-blue-500 ring-2 ring-blue-300"
+          class="w-3.5 h-3.5 rounded-full bg-blue-500 ring-2"
+          :class="currentPlayer === 1 && !gameOver ? 'ring-blue-300 animate-pulse' : 'ring-blue-200'"
         ></span>
         <span class="text-blue-700">Player 1 (Blue)</span>
+        <span
+          v-if="currentPlayer === 1 && !gameOver"
+          class="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-100 rounded-full px-2 py-0.5 leading-none"
+        >TURN</span>
       </div>
       <span
         class="text-gray-400 font-mono text-xs uppercase tracking-widest mx-2"
         >VS</span
       >
       <div
-        class="flex items-center space-x-2 transition-all duration-200"
-        :class="currentPlayer === 2 ? 'scale-105 font-bold' : 'opacity-70'"
+        class="flex items-center space-x-2 rounded-lg px-3 py-1.5 transition-all duration-300"
+        :class="currentPlayer === 2 && !gameOver ? 'bg-red-50 shadow-sm scale-105 font-bold' : currentPlayer === 2 ? 'scale-105 font-bold' : 'opacity-60'"
       >
+        <span
+          v-if="currentPlayer === 2 && !gameOver"
+          class="text-[10px] font-bold uppercase tracking-wider text-red-600 bg-red-100 rounded-full px-2 py-0.5 leading-none"
+        >TURN</span>
         <span class="text-red-700">Player 2 (Red)</span>
         <span
-          class="w-3.5 h-3.5 rounded-full bg-red-500 ring-2 ring-red-300"
+          class="w-3.5 h-3.5 rounded-full bg-red-500 ring-2"
+          :class="currentPlayer === 2 && !gameOver ? 'ring-red-300 animate-pulse' : 'ring-red-200'"
         ></span>
       </div>
     </div>
