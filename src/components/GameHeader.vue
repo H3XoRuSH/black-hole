@@ -58,6 +58,9 @@
       <div v-if="gameOver" class="text-lg font-bold" :class="winnerTextClass">
         Game Over! {{ winner }}
       </div>
+      <div v-if="!gameOver" class="text-sm font-bold transition-all duration-300" :class="turnTextColor">
+        {{ currentPlayer === player ? 'Your Turn' : "Opponent's Turn" }}
+      </div>
       <div class="text-xs text-gray-500 mt-1">
         You are Player {{ player }} ({{ player === 1 ? 'Blue' : 'Red' }})
       </div>
@@ -97,6 +100,12 @@ export default defineComponent({
     },
   },
   computed: {
+    turnTextColor(): string {
+      if (this.currentPlayer === this.player) {
+        return this.currentPlayer === 1 ? 'text-blue-600' : 'text-red-600';
+      }
+      return 'text-gray-400';
+    },
     winnerTextClass(): string {
       if (!this.winner) return '';
       const winnerLower = this.winner.toLowerCase();
