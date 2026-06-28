@@ -139,3 +139,106 @@ export const makeMove = (
   gameState.players.forEach((p) => (p.ready = false));
   return true;
 };
+
+export class DotsAndBoxesComputer {
+  static async getAIMove(gameState: DotsAndBoxesGameState): Promise<{ lineKey: string }> {
+    const aiPlayer = gameState.players.find((p) => p.isAI);
+    const difficulty = aiPlayer?.difficulty || 'hard';
+
+    let mistakeRate = 0;
+    if (difficulty === 'easy') mistakeRate = 0.7;
+    else if (difficulty === 'medium') mistakeRate = 0.4;
+
+    if (Math.random() < mistakeRate) {
+      const allLines: string[] = [];
+      for (let r = 0; r <= 4; r++) {
+        for (let c = 0; c <= 3; c++) allLines.push(`h-${r}-${c}`);
+      }
+      for (let r = 0; r <= 3; r++) {
+        for (let c = 0; c <= 4; c++) allLines.push(`v-${r}-${c}`);
+      }
+      const unoccupiedLines = allLines.filter((line) => !gameState.lines[line]);
+      if (unoccupiedLines.length > 0) {
+        return { lineKey: unoccupiedLines[Math.floor(Math.random() * unoccupiedLines.length)] };
+      }
+    }
+
+    return { lineKey: this.getHeuristicMove(gameState) };
+  }
+
+  private static getHeuristicMove(gameState: DotsAndBoxesGameState): string {
+    const allLines: string[] = [];
+    for (let r = 0; r <= 4; r++) {
+      for (let c = 0; c <= 3; c++) allLines.push(`h-${r}-${c}`);
+    }
+    for (let r = 0; r <= 3; r++) {
+      for (let c = 0; c <= 4; c++) allLines.push(`v-${r}-${c}`);
+    }
+
+    const unoccupiedLines = allLines.filter((line) => !gameState.lines[line]);
+    if (unoccupiedLines.length === 0) return '';
+
+    const getBoxLinesCount = (br: number, bc: number): { count: number; remaining: string[] } => {
+      const lines = [
+        `h-${br}-${bc}`,
+        `h-${br + 1}-${bc}`,
+        `v-${br}-${bc}`,
+        `v-${br}-${bc + 1}`
+      ];
+      const drawn = lines.filter((l) => gameState.lines[l]);
+      const undrawn = lines.filter((l) => !gameState.lines[l]);
+      return { count: drawn.length, remaining: undrawn };
+    };
+
+    for (let r = 0; r <= 3; r++) {
+      for (let c = 0; c <= 3; c++) {
+        const { count, remaining } = getBoxLinesCount(r, c);
+        if (count === 3 && remaining.length === 1) {
+          return remaining[0];
+        }
+      }
+    }
+
+    const safeLines: string[] = [];
+    const unsafeLines: string[] = [];
+
+    for (const line of unoccupiedLines) {
+      gameState.lines[line] = 2;
+      let createsThree = false;
+
+      const parts = line.split('-');
+      const type = parts[0];
+      const r = parseInt(parts[1], 10);
+      const c = parseInt(parts[2], 10);
+
+      const checkBox = (br: number, bc: number) => {
+        const { count } = getBoxLinesCount(br, bc);
+        if (count === 3) createsThree = true;
+      };
+
+      if (type === 'h') {
+        if (r > 0) checkBox(r - 1, c);
+        if (r < 4) checkBox(r, c);
+      } else {
+        if (c > 0) checkBox(r, c - 1);
+        if (c < 4) checkBox(r, c);
+      }
+
+      delete gameState.lines[line];
+
+      if (createsThree) {
+        unsafeLines.push(line);
+      } else {
+        safeLines.push(line);
+      }
+    }
+
+    if (safeLines.length > 0) {
+      return safeLines[Math.floor(Math.random() * safeLines.length)];
+    }
+
+    return unsafeLines[Math.floor(Math.random() * unsafeLines.length)];
+  }
+}
+
+export const getAIMove = (gameState: DotsAndBoxesGameState) => DotsAndBoxesComputer.getAIMove(gameState);

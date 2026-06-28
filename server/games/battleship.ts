@@ -222,3 +222,135 @@ export const getFilteredState = (gameState: BattleshipGameState, playerNum: numb
         })),
   };
 };
+
+export class BattleshipComputer {
+  static async getAIMove(gameState: BattleshipGameState): Promise<any> {
+    if (gameState.phase === 'placement') {
+      return this.getBattleshipHeuristicPlacement();
+    }
+
+    const aiPlayer = gameState.players.find((p) => p.isAI);
+    const difficulty = aiPlayer?.difficulty || 'hard';
+
+    let mistakeRate = 0;
+    if (difficulty === 'easy') mistakeRate = 0.7;
+    else if (difficulty === 'medium') mistakeRate = 0.4;
+
+    if (Math.random() < mistakeRate) {
+      const p2Shots = gameState.p2Shots as [number, number][];
+      const allShots: [number, number][] = [];
+      for (let r = 0; r < 6; r++) {
+        for (let c = 0; c < 6; c++) {
+          const alreadyShot = p2Shots.some(([sr, sc]) => sr === r && sc === c);
+          if (!alreadyShot) allShots.push([r, c]);
+        }
+      }
+      if (allShots.length > 0) {
+        const pick = allShots[Math.floor(Math.random() * allShots.length)];
+        return { action: 'shoot', row: pick[0], col: pick[1] };
+      }
+    }
+
+    return { action: 'shoot', ...this.getBattleshipHeuristicShot(gameState) };
+  }
+
+  private static getBattleshipHeuristicPlacement(): any {
+    const ships = [
+      { name: 'Cruiser', size: 3, coordinates: [] as [number, number][] },
+      { name: 'Destroyer', size: 2, coordinates: [] as [number, number][] },
+      { name: 'Patrol Boat', size: 2, coordinates: [] as [number, number][] }
+    ];
+
+    while (true) {
+      const board = Array(6).fill(null).map(() => Array(6).fill(false));
+      let success = true;
+
+      for (const ship of ships) {
+        let placed = false;
+        for (let attempt = 0; attempt < 100; attempt++) {
+          const isHorizontal = Math.random() < 0.5;
+          const row = Math.floor(Math.random() * 6);
+          const col = Math.floor(Math.random() * 6);
+          const coords: [number, number][] = [];
+
+          if (isHorizontal) {
+            if (col + ship.size <= 6) {
+              for (let i = 0; i < ship.size; i++) coords.push([row, col + i]);
+            }
+          } else {
+            if (row + ship.size <= 6) {
+              for (let i = 0; i < ship.size; i++) coords.push([row + i, col]);
+            }
+          }
+
+          if (coords.length === ship.size && coords.every(([r, c]) => !board[r][c])) {
+            for (const [r, c] of coords) board[r][c] = true;
+            ship.coordinates = coords;
+            placed = true;
+            break;
+          }
+        }
+        if (!placed) {
+          success = false;
+          break;
+        }
+      }
+
+      if (success && validatePlacement(ships)) {
+        return { action: 'place-ships', ships };
+      }
+    }
+  }
+
+  private static getBattleshipHeuristicShot(gameState: BattleshipGameState): { row: number; col: number } {
+    const p2Shots = gameState.p2Shots as [number, number][];
+    const p1Ships = gameState.p1Ships as any[];
+
+    const hitCoords: [number, number][] = [];
+    for (const ship of p1Ships) {
+      const shipShots = ship.coordinates.filter(([sr, sc]: [number, number]) =>
+        p2Shots.some(([r, c]) => r === sr && c === sc)
+      );
+      const isSunk = shipShots.length === ship.size;
+      if (shipShots.length > 0 && !isSunk) {
+        hitCoords.push(...shipShots);
+      }
+    }
+
+    if (hitCoords.length > 0) {
+      for (const [r, c] of hitCoords) {
+        const neighbors = [
+          [r - 1, c],
+          [r + 1, c],
+          [r, c - 1],
+          [r, c + 1]
+        ];
+        for (const [nr, nc] of neighbors) {
+          if (nr >= 0 && nr <= 5 && nc >= 0 && nc <= 5) {
+            const alreadyShot = p2Shots.some(([sr, sc]) => sr === nr && sc === nc);
+            if (!alreadyShot) {
+              return { row: nr, col: nc };
+            }
+          }
+        }
+      }
+    }
+
+    const allShots: [number, number][] = [];
+    for (let r = 0; r < 6; r++) {
+      for (let c = 0; c < 6; c++) {
+        const alreadyShot = p2Shots.some(([sr, sc]) => sr === r && sc === c);
+        if (!alreadyShot) allShots.push([r, c]);
+      }
+    }
+
+    if (allShots.length > 0) {
+      const pick = allShots[Math.floor(Math.random() * allShots.length)];
+      return { row: pick[0], col: pick[1] };
+    }
+
+    return { row: 0, col: 0 };
+  }
+}
+
+export const getAIMove = (gameState: BattleshipGameState) => BattleshipComputer.getAIMove(gameState);

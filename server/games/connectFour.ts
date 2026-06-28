@@ -128,3 +128,91 @@ export const makeMove = (
   gameState.players.forEach((p) => (p.ready = false));
   return true;
 };
+
+export class ConnectFourComputer {
+  static async getAIMove(gameState: ConnectFourGameState): Promise<{ col: number }> {
+    const aiPlayer = gameState.players.find((p) => p.isAI);
+    const difficulty = aiPlayer?.difficulty || 'hard';
+
+    let mistakeRate = 0;
+    if (difficulty === 'easy') mistakeRate = 0.7;
+    else if (difficulty === 'medium') mistakeRate = 0.4;
+
+    if (Math.random() < mistakeRate) {
+      const validCols: number[] = [];
+      for (let c = 0; c < 7; c++) {
+        if (gameState.board[0][c] === null) validCols.push(c);
+      }
+      if (validCols.length > 0) {
+        const randomCol = validCols[Math.floor(Math.random() * validCols.length)];
+        return { col: randomCol };
+      }
+    }
+
+    return { col: this.getHeuristicMove(gameState) };
+  }
+
+  private static getHeuristicMove(gameState: ConnectFourGameState): number {
+    const board = gameState.board;
+    const cols = 7;
+
+    const getLowestEmptyRow = (c: number): number => {
+      for (let r = 5; r >= 0; r--) {
+        if (board[r][c] === null) return r;
+      }
+      return -1;
+    };
+
+    const checkWin = (r: number, c: number, p: number): boolean => {
+      board[r][c] = p;
+      const isWin = this.checkWinInline(board, p);
+      board[r][c] = null;
+      return isWin;
+    };
+
+    for (let c = 0; c < cols; c++) {
+      const r = getLowestEmptyRow(c);
+      if (r !== -1 && checkWin(r, c, 2)) return c;
+    }
+
+    for (let c = 0; c < cols; c++) {
+      const r = getLowestEmptyRow(c);
+      if (r !== -1 && checkWin(r, c, 1)) return c;
+    }
+
+    const pref = [3, 2, 4, 1, 5, 0, 6];
+    for (const c of pref) {
+      if (getLowestEmptyRow(c) !== -1) return c;
+    }
+
+    return 0;
+  }
+
+  private static checkWinInline(board: (number | null)[][], p: number): boolean {
+    const rows = 6;
+    const cols = 7;
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols - 3; c++) {
+        if (board[r][c] === p && board[r][c + 1] === p && board[r][c + 2] === p && board[r][c + 3] === p) return true;
+      }
+    }
+    for (let r = 0; r < rows - 3; r++) {
+      for (let c = 0; c < cols; c++) {
+        if (board[r][c] === p && board[r + 1][c] === p && board[r + 2][c] === p && board[r + 3][c] === p) return true;
+      }
+    }
+    for (let r = 3; r < rows; r++) {
+      for (let c = 0; c < cols - 3; c++) {
+        if (board[r][c] === p && board[r - 1][c + 1] === p && board[r - 2][c + 2] === p && board[r - 3][c + 3] === p) return true;
+      }
+    }
+    for (let r = 0; r < rows - 3; r++) {
+      for (let c = 0; c < cols - 3; c++) {
+        if (board[r][c] === p && board[r + 1][c + 1] === p && board[r + 2][c + 2] === p && board[r + 3][c + 3] === p) return true;
+      }
+    }
+    return false;
+  }
+}
+
+export const getAIMove = (gameState: ConnectFourGameState) => ConnectFourComputer.getAIMove(gameState);

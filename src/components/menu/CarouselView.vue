@@ -13,11 +13,11 @@
                 <h2 class="text-xl sm:text-2xl font-bold text-gray-800">
                   {{ game.name }}
                 </h2>
-                <span class="px-2.5 py-0.5 text-xs font-semibold rounded-full" :style="{
-                  backgroundColor: game.color + '10',
-                  color: game.color,
-                }">
-                  Ready to Play
+                <span
+                  v-if="game.supportsAI"
+                  class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200"
+                >
+                  Play vs AI
                 </span>
               </div>
               <p class="text-gray-600 text-sm leading-relaxed mb-6">
