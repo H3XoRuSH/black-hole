@@ -406,6 +406,15 @@ export default defineComponent({
       return this.activeGame ? this.activeGame.rules || [] : [];
     },
   },
+  watch: {
+    gameOver(newVal) {
+      if (!newVal) {
+        this.recapText = '';
+        this.recapLoading = false;
+        this.showRecapModal = false;
+      }
+    },
+  },
   methods: {
     requestRecap() {
       if (this.socket && this.roomKey) {

@@ -29,9 +29,11 @@ function formatMoveHistory(gameId: string, gameState: any): string {
   const p2Name = getPlayerName(gameState.players, 2);
 
   const playerRef = (playerNum: number) => {
-    if (playerNum === 1) return `${p1Name} (Player 1)`;
-    if (playerNum === 2) return `${p2Name} (Player 2)`;
-    return `Player ${playerNum}`;
+    const name = getPlayerName(gameState.players, playerNum);
+    if (gameId === 'bingo') {
+      return name;
+    }
+    return `${name} (Player ${playerNum})`;
   };
 
   if (gameId === 'black-hole') {
