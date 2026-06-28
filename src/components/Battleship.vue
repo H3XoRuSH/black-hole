@@ -3,6 +3,7 @@
     <!-- Tactical Command Header -->
     <GameHeader
       title="Battleship"
+      :connection-status="connectionStatus"
       :current-player="gameState.currentPlayer"
       :player="player"
       :game-over="gameOver"
@@ -279,7 +280,25 @@ export default defineComponent({
       registerLifecycle: false,
     });
 
-    return { ...game, gameState };
+    const handleGameState = (state: GameState) => {
+      gameState.value = state;
+      if (state.phase === 'placement') {
+        game.ready.value = false;
+      }
+    };
+
+    const handlePlayerReady = ({ player }: { player: number }) => {
+      if (player === props.player) {
+        game.ready.value = true;
+      }
+    };
+
+    return {
+      ...game,
+      gameState,
+      handleGameState,
+      handlePlayerReady,
+    };
   },
   data() {
     return {
@@ -332,17 +351,8 @@ export default defineComponent({
     window.addEventListener('keydown', this.handleKeyDown);
 
     if (this.socket) {
-      this.socket.on('game-state', (state: GameState) => {
-        this.gameState = state;
-        if (state.phase === 'placement') {
-          this.ready = false;
-        }
-      });
-      this.socket.on('player-ready', ({ player }: { player: number }) => {
-        if (player === this.player) {
-          this.ready = true;
-        }
-      });
+      this.socket.on('game-state', this.handleGameState);
+      this.socket.on('player-ready', this.handlePlayerReady);
     }
   },
   beforeUnmount() {
@@ -350,8 +360,8 @@ export default defineComponent({
     window.removeEventListener('keydown', this.handleKeyDown);
     if (this.socket) {
       this.socket.emit('leave-room', { roomKey: this.roomKey });
-      this.socket.off('game-state');
-      this.socket.off('player-ready');
+      this.socket.off('game-state', this.handleGameState);
+      this.socket.off('player-ready', this.handlePlayerReady);
     }
   },
   beforeRouteLeave(to: any, from: any, next: any) {
