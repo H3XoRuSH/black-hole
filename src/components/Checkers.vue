@@ -17,7 +17,7 @@
 
     <div class="flex-grow flex items-center justify-center py-1 sm:py-2 w-full">
       <div
-        class="bg-amber-900 p-1.5 sm:p-2 rounded-2xl shadow-xl w-full max-w-[320px] xs:max-w-[380px] sm:max-w-[460px] md:max-w-[520px]"
+        class="bg-slate-900 border border-slate-800 p-1.5 sm:p-2 rounded-2xl shadow-xl w-full max-w-[320px] xs:max-w-[380px] sm:max-w-[460px] md:max-w-[520px]"
       >
         <div class="grid grid-cols-8 gap-0 aspect-square">
           <div
@@ -122,27 +122,29 @@ export default defineComponent({
     rowCol(idx: number) {
       return { r: Math.floor(idx / 8), c: idx % 8 };
     },
+    actualRowCol(idx: number) {
+      const { r, c } = this.rowCol(idx);
+      if (this.player === 2) return { r: 7 - r, c: 7 - c };
+      return { r, c };
+    },
     idx(r: number, c: number) {
       return r * 8 + c;
-    },
-    isDarkSquare(idx: number) {
-      const { r, c } = this.rowCol(idx);
-      return (r + c) % 2 === 1;
     },
     getSquareClass(idx: number) {
       const { r, c } = this.rowCol(idx);
       const isDark = (r + c) % 2 === 1;
       const selected = this.selectedIdx === idx;
-      const lastMoveTarget = this.gameState.lastMoveTo === `${r},${c}`;
-      const lastMoveFrom = this.gameState.lastMoveFrom === `${r},${c}`;
+      const { r: ar, c: ac } = this.actualRowCol(idx);
+      const lastMoveTarget = this.gameState.lastMoveTo === `${ar},${ac}`;
+      const lastMoveFrom = this.gameState.lastMoveFrom === `${ar},${ac}`;
 
-      let cls = isDark ? 'bg-amber-800/80' : 'bg-amber-200/80';
+      let cls = isDark ? 'bg-slate-800' : 'bg-slate-700/60';
       if (selected) cls += ' ring-2 ring-yellow-400 ring-inset z-20';
       if (lastMoveTarget || lastMoveFrom) cls += ' ring-1 ring-yellow-300/60 ring-inset';
       return cls;
     },
     getPiece(idx: number) {
-      const { r, c } = this.rowCol(idx);
+      const { r, c } = this.actualRowCol(idx);
       return this.gameState.board[r][c] || null;
     },
     isKingPiece(idx: number) {
@@ -235,18 +237,18 @@ export default defineComponent({
     },
     isValidTarget(idx: number) {
       if (!this.selectedIdx) return false;
-      const { r, c } = this.rowCol(idx);
-      const { r: sr, c: sc } = this.rowCol(this.selectedIdx);
+      const { r, c } = this.actualRowCol(idx);
+      const { r: sr, c: sc } = this.actualRowCol(this.selectedIdx);
       const targets = this.getValidTargets(sr, sc);
       return targets.some(([tr, tc]) => tr === r && tc === c);
     },
     handleClick(idx: number) {
       if (!this.isMyTurn()) return;
-      const { r, c } = this.rowCol(idx);
+      const { r, c } = this.actualRowCol(idx);
       const v = this.gameState.board[r][c];
 
       if (this.selectedIdx !== null) {
-        const { r: sr, c: sc } = this.rowCol(this.selectedIdx);
+        const { r: sr, c: sc } = this.actualRowCol(this.selectedIdx);
         const targets = this.getValidTargets(sr, sc);
         const isTarget = targets.some(([tr, tc]) => tr === r && tc === c);
         if (isTarget) {
