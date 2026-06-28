@@ -134,7 +134,8 @@
         id="play-again-btn"
         class="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
       >
-        {{ ready ? 'Waiting for opponent...' : 'Play Again' }}
+        <span v-if="ready">Waiting for opponent<WaitingIndicator /></span>
+        <span v-else>Play Again</span>
       </button>
     </div>
   </div>
@@ -149,6 +150,7 @@
 import { defineComponent, PropType, ref } from 'vue';
 import { Socket } from 'socket.io-client';
 import GameHeader from './GameHeader.vue';
+import WaitingIndicator from './WaitingIndicator.vue';
 import { useGame } from '../composables/useGame.js';
 import type { DotsAndBoxesGameState as GameState } from '../types/shared.js';
 
@@ -156,6 +158,7 @@ export default defineComponent({
   name: 'DotsAndBoxes',
   components: {
     GameHeader,
+    WaitingIndicator,
   },
   props: {
     socket: {

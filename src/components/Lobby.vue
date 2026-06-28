@@ -106,7 +106,7 @@
                   ?
                 </div>
                 <div>
-                  <p class="text-sm font-medium italic">Waiting for player...</p>
+                  <p class="text-sm font-medium italic flex items-center">Waiting for player<WaitingIndicator /></p>
                   <p class="text-[10px]">Player {{ players.length + i }}</p>
                 </div>
               </div>
@@ -234,8 +234,10 @@
 import { defineComponent, PropType } from 'vue';
 import { Socket } from 'socket.io-client';
 import QRCode from 'qrcode';
+import WaitingIndicator from './WaitingIndicator.vue';
 
 export default defineComponent({
+  components: { WaitingIndicator },
   props: {
     socket: {
       type: Object as PropType<Socket>,
