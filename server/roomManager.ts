@@ -72,6 +72,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       initialGameState.minPlayers = gameConfig?.minPlayers ?? 2;
       initialGameState.maxPlayers = gameConfig?.maxPlayers ?? 2;
 
+      initialGameState.players[0].name = initialGameState.players[0].name || 'Player 1';
       rooms.set(roomKey, { gameId, gameState: initialGameState, gameStarted: false, recaps: new Map() });
       socket.join(roomKey);
       socketRooms.set(socket.id, { roomKey, playerNumber: 1 });
@@ -96,7 +97,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
         return;
       }
       const playerNumber = room.gameState.players.length + 1;
-      room.gameState.players.push({ id: socket.id, player: playerNumber, ready: false });
+      room.gameState.players.push({ id: socket.id, player: playerNumber, ready: false, name: `Player ${playerNumber}` });
       socket.join(roomKey);
       socketRooms.set(socket.id, { roomKey, playerNumber });
 
@@ -110,6 +111,16 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       const player = room.gameState.players.find((p: any) => p.id === socket.id);
       if (player) {
         player.ready = !player.ready;
+        broadcastGameState(roomKey, room, io);
+      }
+    },
+
+    renamePlayer(roomKey: string, socket: Socket, name: string, io: SocketIOServer) {
+      if (!rooms.has(roomKey)) return;
+      const room = rooms.get(roomKey)!;
+      const player = room.gameState.players.find((p: any) => p.id === socket.id);
+      if (player) {
+        player.name = name.trim().slice(0, 20) || player.name;
         broadcastGameState(roomKey, room, io);
       }
     },

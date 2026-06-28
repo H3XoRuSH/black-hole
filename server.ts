@@ -70,6 +70,10 @@ io.on('connection', (socket: Socket) => {
     rooms.toggleReady(roomKey, socket, io);
   });
 
+  socket.on('rename-player', ({ roomKey, name }: { roomKey: string; name: string }) => {
+    rooms.renamePlayer(roomKey, socket, name, io);
+  });
+
   socket.on('start-game', ({ roomKey }: { roomKey: string }) => {
     rooms.startGame(roomKey, socket, io);
   });

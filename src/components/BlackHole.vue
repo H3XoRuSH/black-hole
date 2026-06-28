@@ -76,13 +76,13 @@
         >
           <div class="text-sm font-semibold text-gray-700 space-y-1">
             <p class="flex items-center justify-between space-x-8">
-              <span class="text-blue-600">Player 1 Score:</span>
+              <span class="text-blue-600">{{ p1Name }} Score:</span>
               <span class="font-mono font-bold">{{
                 gameState.scores?.player1 || 0
               }}</span>
             </p>
             <p class="flex items-center justify-between space-x-8">
-              <span class="text-red-600">Player 2 Score:</span>
+              <span class="text-red-600">{{ p2Name }} Score:</span>
               <span class="font-mono font-bold">{{
                 gameState.scores?.player2 || 0
               }}</span>
@@ -171,6 +171,14 @@ export default defineComponent({
     return {};
   },
   computed: {
+    p1Name(): string {
+      const p = this.gameState.players.find((p: any) => p.player === 1);
+      return p?.name || 'Player 1';
+    },
+    p2Name(): string {
+      const p = this.gameState.players.find((p: any) => p.player === 2);
+      return p?.name || 'Player 2';
+    },
     isValidGame() {
       return this.roomKey && this.player && this.gameState.players.length >= 1;
     },
