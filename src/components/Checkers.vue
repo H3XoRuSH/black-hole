@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="isValidGame"
-    class="flex-grow flex flex-col items-center justify-between h-full p-3 sm:p-6 md:p-8 select-none"
+    class="flex-grow flex flex-col items-center justify-between h-full p-2 sm:p-4 md:p-6 select-none"
   >
     <GameHeader
       title="Checkers"
@@ -15,9 +15,9 @@
       :room-key="roomKey"
     />
 
-    <div class="flex-grow flex items-center justify-center py-2 sm:py-4 w-full">
+    <div class="flex-grow flex items-center justify-center py-1 sm:py-2 w-full">
       <div
-        class="bg-amber-900 p-2 sm:p-3 rounded-2xl shadow-xl w-full max-w-[320px] xs:max-w-[380px] sm:max-w-[460px] md:max-w-[520px]"
+        class="bg-amber-900 p-1.5 sm:p-2 rounded-2xl shadow-xl w-full max-w-[320px] xs:max-w-[380px] sm:max-w-[460px] md:max-w-[520px]"
       >
         <div class="grid grid-cols-8 gap-0 aspect-square">
           <div
@@ -47,7 +47,7 @@
       </div>
     </div>
 
-    <div class="w-full max-w-lg flex flex-col items-center justify-center py-2 sm:py-4">
+    <div class="w-full max-w-lg flex flex-col items-center justify-center py-1 sm:py-2">
       <button
         v-if="gameOver"
         @click="newGame"
