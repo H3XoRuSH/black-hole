@@ -113,7 +113,8 @@
         :disabled="waiting"
         class="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold py-2.5 px-8 rounded-xl shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {{ waiting ? 'Waiting...' : 'Play Again' }}
+        <span v-if="waiting">Waiting<WaitingIndicator /></span>
+        <span v-else>Play Again</span>
       </button>
     </div>
   </div>
@@ -207,9 +208,11 @@ import { defineComponent, PropType, ref, onBeforeUnmount } from 'vue';
 import { Socket } from 'socket.io-client';
 import { useGame } from '../composables/useGame.js';
 import type { BingoGameState as GameState } from '../types/shared.js';
+import WaitingIndicator from './WaitingIndicator.vue';
 
 export default defineComponent({
   name: 'Bingo',
+  components: { WaitingIndicator },
   props: {
     socket: { type: Object as PropType<Socket>, required: true },
     player: { type: Number, required: true },
