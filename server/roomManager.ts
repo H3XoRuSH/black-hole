@@ -3,6 +3,7 @@ import type { Room } from '../src/types/shared.js';
 import { readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { generateRecap } from './recapService.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -61,12 +62,15 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
 
       const game = gamesRegistry[gameId] || gamesRegistry['black-hole'];
       const initialGameState = game.createInitialState(socket.id);
+      initialGameState.moveHistory = [];
+      initialGameState.recap = undefined;
+      initialGameState.recapLoading = false;
 
       const gameConfig = gamesConfig.find((g: any) => g.id === gameId);
       initialGameState.minPlayers = gameConfig?.minPlayers ?? 2;
       initialGameState.maxPlayers = gameConfig?.maxPlayers ?? 2;
 
-      rooms.set(roomKey, { gameId, gameState: initialGameState, gameStarted: false });
+      rooms.set(roomKey, { gameId, gameState: initialGameState, gameStarted: false, recaps: new Map() });
       socket.join(roomKey);
       socketRooms.set(socket.id, { roomKey, playerNumber: 1 });
       socket.emit('waiting-for-player', { roomKey, player: 1, gameId, gameState: initialGameState });
@@ -304,10 +308,54 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       const game = gamesRegistry[room.gameId];
       if (game) {
         const success = game.makeMove(room, socket, data);
-        if (success) broadcastGameState(roomKey, room, io);
+        if (success) {
+          if (!room.gameState.moveHistory) {
+            room.gameState.moveHistory = [];
+          }
+          const moveRecord: any = {
+            player: player.player,
+            timestamp: Date.now(),
+            ...data,
+          };
+          if (room.gameId === 'battleship' && data.action === 'shoot' && room.gameState.lastShotResult) {
+            moveRecord.hit = room.gameState.lastShotResult.hit;
+            moveRecord.sunkShipName = room.gameState.lastShotResult.sunkShipName;
+          }
+          room.gameState.moveHistory.push(moveRecord);
+
+          broadcastGameState(roomKey, room, io);
+        }
       } else {
         socket.emit('invalid-move', { message: 'Unsupported game type.' });
       }
+    },
+
+    requestRecap(roomKey: string, socket: Socket) {
+      if (!rooms.has(roomKey)) return;
+      const room = rooms.get(roomKey)!;
+      if (!room.gameState.winner) return;
+
+      const playerEntry = room.gameState.players.find((p: any) => p.id === socket.id);
+      if (!playerEntry) return;
+      const playerNum = playerEntry.player;
+
+      const existing = room.recaps?.get(playerNum);
+      if (existing?.text || existing?.loading) return;
+
+      if (!room.recaps) room.recaps = new Map();
+      room.recaps.set(playerNum, { text: '', loading: true });
+      socket.emit('recap-loading');
+
+      generateRecap(room.gameId, room.gameState)
+        .then((recapText) => {
+          room.recaps?.set(playerNum, { text: recapText, loading: false });
+          socket.emit('recap-generated', { text: recapText });
+        })
+        .catch((err) => {
+          console.error('Failed to generate recap:', err);
+          room.recaps?.set(playerNum, { text: '', loading: false });
+          socket.emit('recap-generated', { text: '' });
+        });
     },
 
     newGame(roomKey: string, socket: Socket, io: SocketIOServer) {
@@ -341,6 +389,8 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
             io.to(p2.id).emit('player-role', { player: 1 });
           }
           room.gameState = game.resetState(room.gameState.players);
+          room.gameState.moveHistory = [];
+          if (room.recaps) room.recaps.clear();
           broadcastGameState(roomKey, room, io);
         }
       }

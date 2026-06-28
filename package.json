@@ -10,8 +10,8 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "start": "tsx server.ts",
-    "server-dev": "tsx watch server.ts",
+    "start": "tsx --env-file=.env server.ts",
+    "server-dev": "tsx watch --env-file=.env server.ts",
     "tunnel": "npx ngrok http 5173",
     "format": "eslint --fix ."
   },
