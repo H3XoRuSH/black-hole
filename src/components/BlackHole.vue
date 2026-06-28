@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="isValidGame"
-    class="flex-grow flex flex-col items-center justify-between h-full p-4 sm:p-6 md:p-8 select-none"
+    class="flex-grow flex flex-col items-center justify-between h-full p-3 sm:p-4 md:p-6 select-none"
   >
     <GameHeader
       title="Black Hole"
@@ -14,18 +14,18 @@
 
     <!-- Content Area -->
     <div
-      class="flex-grow flex flex-col items-center justify-center overflow-auto py-4 w-full"
+      class="flex-grow flex flex-col items-center justify-center overflow-auto py-2 sm:py-3 w-full"
     >
       <!-- Cosmic Board Card -->
       <div
-        class="bg-slate-900/95 backdrop-blur-md border border-slate-800 rounded-3xl shadow-2xl p-4 sm:p-5 transition-all duration-500 flex flex-col items-center"
+        class="bg-slate-900/95 backdrop-blur-md border border-slate-800 rounded-3xl shadow-2xl p-3 sm:p-4 transition-all duration-500 flex flex-col items-center"
         :class="boardTurnClass"
       >
         <!-- Triangular Grid -->
         <div
           v-for="row in 6"
           :key="row"
-          class="flex justify-center mb-2.5"
+          class="flex justify-center mb-1.5 sm:mb-2"
           :class="{ 'mb-0': row === 6 }"
         >
           <div
@@ -65,10 +65,10 @@
       <!-- Scores & Actions -->
       <div
         v-if="gameOver"
-        class="flex flex-col items-center mt-6 transition-all duration-300"
+        class="flex flex-col items-center mt-3.5 sm:mt-4.5 transition-all duration-300"
       >
         <div
-          class="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl px-6 py-3 shadow-sm mb-4 text-center"
+          class="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl px-5 py-2 shadow-sm mb-3 text-center"
         >
           <div class="text-sm font-semibold text-gray-700 space-y-1">
             <p class="flex items-center justify-between space-x-8">
@@ -88,7 +88,7 @@
         <button
           @click="newGame"
           :disabled="ready"
-          class="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {{ ready ? 'Waiting for opponent...' : 'Play Again' }}
         </button>
