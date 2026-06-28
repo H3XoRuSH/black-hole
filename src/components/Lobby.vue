@@ -381,7 +381,7 @@ export default defineComponent({
       this.newName = me?.name || '';
       this.editingName = true;
       this.$nextTick(() => {
-        (this.$refs.nameInput as HTMLInputElement)?.focus();
+        (this.$refs.nameInput as HTMLInputElement[])?.[0]?.focus();
       });
     },
     submitRename() {
