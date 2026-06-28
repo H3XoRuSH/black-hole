@@ -6,6 +6,7 @@ import ConnectFour from '../components/ConnectFour.vue';
 import DotsAndBoxes from '../components/DotsAndBoxes.vue';
 import Battleship from '../components/Battleship.vue';
 import Checkers from '../components/Checkers.vue';
+import Bingo from '../components/Bingo.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -55,6 +56,20 @@ const routes: Array<RouteRecordRaw> = [
     component: DotsAndBoxes,
     props: true,
     meta: { title: 'Dots and Boxes - Gab\'s Arcade' },
+  },
+  {
+    path: '/bingo/lobby',
+    name: 'BingoLobby',
+    component: Lobby,
+    props: { gameId: 'bingo', gameName: 'Bingo' },
+    meta: { title: 'Bingo - Gab\'s Arcade' },
+  },
+  {
+    path: '/bingo/game/:roomKey',
+    name: 'BingoGame',
+    component: Bingo,
+    props: true,
+    meta: { title: 'Bingo - Gab\'s Arcade' },
   },
   {
     path: '/checkers/lobby',

@@ -8,6 +8,7 @@ import * as connectFour from './server/games/connectFour.js';
 import * as dotsAndBoxes from './server/games/dotsAndBoxes.js';
 import * as battleship from './server/games/battleship.js';
 import * as checkers from './server/games/checkers.js';
+import * as bingo from './server/games/bingo.js';
 import { createRoomManager } from './server/roomManager.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -30,6 +31,7 @@ const rooms = createRoomManager({
   'dots-and-boxes': dotsAndBoxes as any,
   'battleship': battleship as any,
   'checkers': checkers as any,
+  'bingo': bingo as any,
 });
 
 io.on('connection', (socket: Socket) => {

@@ -75,6 +75,18 @@ export interface BattleshipGameState {
   recapLoading?: boolean;
 }
 
+export interface BingoGameState {
+  cards: Record<number, number[][]>;
+  daubed: Record<number, string[]>;
+  drawnNumbers: number[];
+  phase: string;
+  winner: string;
+  players: Player[];
+  currentPlayer: number;
+  totalMoves: number;
+  moveHistory?: any[];
+}
+
 export interface CheckersGameState {
   board: number[][];
   currentPlayer: number;

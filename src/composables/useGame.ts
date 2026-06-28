@@ -122,7 +122,7 @@ export function useGame(options: UseGameOptions) {
         next();
         return;
       }
-      if (!options.gameOver() && options.gameState.value?.players?.length === 2) {
+      if (!options.gameOver() && options.gameState.value?.players?.length >= 2) {
         const answer = window.confirm(
           'Are you sure you want to leave the ongoing game? This will disconnect you and end the game.'
         );
