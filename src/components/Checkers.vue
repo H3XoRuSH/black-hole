@@ -236,7 +236,8 @@ export default defineComponent({
     isValidTarget(idx: number) {
       if (!this.selectedIdx) return false;
       const { r, c } = this.rowCol(idx);
-      const targets = this.getValidTargets(...this.rowCol(this.selectedIdx));
+      const { r: sr, c: sc } = this.rowCol(this.selectedIdx);
+      const targets = this.getValidTargets(sr, sc);
       return targets.some(([tr, tc]) => tr === r && tc === c);
     },
     handleClick(idx: number) {
@@ -245,12 +246,12 @@ export default defineComponent({
       const v = this.gameState.board[r][c];
 
       if (this.selectedIdx !== null) {
-        const targets = this.getValidTargets(...this.rowCol(this.selectedIdx));
+        const { r: sr, c: sc } = this.rowCol(this.selectedIdx);
+        const targets = this.getValidTargets(sr, sc);
         const isTarget = targets.some(([tr, tc]) => tr === r && tc === c);
         if (isTarget) {
-          const { r: fr, c: fc } = this.rowCol(this.selectedIdx);
           this.selectedIdx = null;
-          this.socket.emit('make-move', { roomKey: this.roomKey, fromRow: fr, fromCol: fc, toRow: r, toCol: c });
+          this.socket.emit('make-move', { roomKey: this.roomKey, fromRow: sr, fromCol: sc, toRow: r, toCol: c });
           return;
         }
       }
