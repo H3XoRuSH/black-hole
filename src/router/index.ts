@@ -5,6 +5,7 @@ import BlackHole from '../components/BlackHole.vue';
 import ConnectFour from '../components/ConnectFour.vue';
 import DotsAndBoxes from '../components/DotsAndBoxes.vue';
 import Battleship from '../components/Battleship.vue';
+import Checkers from '../components/Checkers.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -54,6 +55,20 @@ const routes: Array<RouteRecordRaw> = [
     component: DotsAndBoxes,
     props: true,
     meta: { title: 'Dots and Boxes - Gab\'s Arcade' },
+  },
+  {
+    path: '/checkers/lobby',
+    name: 'CheckersLobby',
+    component: Lobby,
+    props: { gameId: 'checkers', gameName: 'Checkers' },
+    meta: { title: 'Checkers - Gab\'s Arcade' },
+  },
+  {
+    path: '/checkers/game/:roomKey',
+    name: 'CheckersGame',
+    component: Checkers,
+    props: true,
+    meta: { title: 'Checkers - Gab\'s Arcade' },
   },
   {
     path: '/battleship/lobby',
