@@ -8,6 +8,7 @@
     "route": "/black-hole/lobby",
     "status": "active",
     "color": "#9333ea",
+    "supportsAI": true,
     "rules": [
       {
         "title": "The Board",
@@ -44,6 +45,7 @@
     "route": "/connect-four/lobby",
     "status": "active",
     "color": "#2563eb",
+    "supportsAI": true,
     "rules": [
       {
         "title": "Drop Discs",
@@ -72,6 +74,7 @@
     "route": "/dots-and-boxes/lobby",
     "status": "active",
     "color": "#059669",
+    "supportsAI": true,
     "rules": [
       {
         "title": "Draw Lines",
@@ -100,6 +103,7 @@
     "route": "/battleship/lobby",
     "status": "active",
     "color": "#e11d48",
+    "supportsAI": true,
     "rules": [
       {
         "title": "Phase 1: Position Fleet",

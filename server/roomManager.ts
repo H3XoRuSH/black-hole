@@ -21,6 +21,7 @@ export interface GameModule {
   makeMove: (room: Room, socket: Socket, data: any) => boolean;
   noTurns?: boolean;
   onGameStart?: (room: Room) => void;
+  getAIMove?: (gameState: any) => Promise<any>;
 }
 
 const generateRoomKey = (): string => {
@@ -57,7 +58,82 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
     }
   }
 
-  return {
+  function triggerAIMoveIfActive(roomKey: string, room: Room, io: SocketIOServer) {
+    if (!room.gameStarted || room.gameState.winner) return;
+
+    const aiSupportedGames = ['black-hole', 'connect-four', 'dots-and-boxes', 'battleship'];
+    if (!aiSupportedGames.includes(room.gameId)) return;
+
+    const aiPlayer = room.gameState.players.find((p: any) => p.isAI);
+    if (!aiPlayer) return;
+
+    const isAITurn = (() => {
+      if (room.gameId === 'battleship') {
+        if (room.gameState.phase === 'placement') {
+          const aiNum = aiPlayer.player;
+          return aiNum === 1 ? !room.gameState.p1Placed : !room.gameState.p2Placed;
+        }
+        if (room.gameState.phase === 'playing') {
+          const currPlayer = room.gameState.players.find((p: any) => p.player === room.gameState.currentPlayer);
+          return currPlayer?.isAI;
+        }
+        return false;
+      }
+      const currPlayer = room.gameState.players.find((p: any) => p.player === room.gameState.currentPlayer);
+      return currPlayer?.isAI;
+    })();
+
+    if (isAITurn) {
+      setTimeout(() => {
+        const currentRoom = rooms.get(roomKey);
+        if (!currentRoom || !currentRoom.gameStarted || currentRoom.gameState.winner) return;
+
+        const currentAI = currentRoom.gameState.players.find((p: any) => p.isAI);
+        if (!currentAI) return;
+
+        const stillAITurn = (() => {
+          if (currentRoom.gameId === 'battleship') {
+            if (currentRoom.gameState.phase === 'placement') {
+              const aiNum = currentAI.player;
+              return aiNum === 1 ? !currentRoom.gameState.p1Placed : !currentRoom.gameState.p2Placed;
+            }
+            if (currentRoom.gameState.phase === 'playing') {
+              const currPlayer = currentRoom.gameState.players.find((p: any) => p.player === currentRoom.gameState.currentPlayer);
+              return currPlayer?.isAI;
+            }
+            return false;
+          }
+          const currPlayer = currentRoom.gameState.players.find((p: any) => p.player === currentRoom.gameState.currentPlayer);
+          return currPlayer?.isAI;
+        })();
+
+        if (!stillAITurn) return;
+
+        const gameModule = gamesRegistry[currentRoom.gameId];
+        if (!gameModule || !gameModule.getAIMove) return;
+
+        gameModule.getAIMove(currentRoom.gameState)
+          .then((moveData) => {
+            const data = {
+              roomKey,
+              ...moveData
+            };
+            const mockSocket = {
+              id: currentAI.id,
+              emit: (event: string, payload: any) => {
+                console.log(`[AI socket emit] event: ${event}`, payload);
+              }
+            } as any;
+            manager.makeMove(data, mockSocket, io);
+          })
+          .catch((err) => {
+            console.error('Error during AI move:', err);
+          });
+      }, 600);
+    }
+  }
+
+  const manager = {
     createRoom(gameId: string, socket: Socket) {
       let roomKey = generateRoomKey();
       while (rooms.has(roomKey)) roomKey = generateRoomKey();
@@ -160,6 +236,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
           gameState: getFilteredState(room, player.player),
         });
       });
+      triggerAIMoveIfActive(roomKey, room, io);
     },
 
     validateRoom(roomKey: string, socket: Socket) {
@@ -345,6 +422,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
           room.gameState.moveHistory.push(moveRecord);
 
           broadcastGameState(roomKey, room, io);
+          triggerAIMoveIfActive(roomKey, room, io);
         }
       } else {
         socket.emit('invalid-move', { message: 'Unsupported game type.' });
@@ -392,6 +470,15 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       }
       player.ready = true;
       io.to(roomKey).emit('player-ready', { player: player.player });
+
+      // Auto-ready any AI players
+      room.gameState.players.forEach((p: any) => {
+        if (p.isAI) {
+          p.ready = true;
+          io.to(roomKey).emit('player-ready', { player: p.player });
+        }
+      });
+
       const allReady = room.gameState.players.every((p: any) => p.ready);
       const playerCount = room.gameState.players.length;
       const gameConfig = gamesConfig.find((g: any) => g.id === room.gameId);
@@ -415,7 +502,63 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
           room.gameState.moveHistory = [];
           if (room.recaps) room.recaps.clear();
           broadcastGameState(roomKey, room, io);
+          triggerAIMoveIfActive(roomKey, room, io);
         }
+      }
+    },
+
+    addAI(roomKey: string, difficulty: 'easy' | 'medium' | 'hard', socket: Socket, io: SocketIOServer) {
+      if (!rooms.has(roomKey)) {
+        socket.emit('room-error', { message: 'Room does not exist.' });
+        return;
+      }
+      const room = rooms.get(roomKey)!;
+      const gameConfig = gamesConfig.find((g: any) => g.id === room.gameId);
+      const maxPlayers = gameConfig?.maxPlayers ?? 2;
+      if (room.gameState.players.length >= maxPlayers) {
+        socket.emit('room-error', { message: 'Room is full.' });
+        return;
+      }
+      const playerNumber = room.gameState.players.length + 1;
+      const diffLabel = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
+      room.gameState.players.push({
+        id: 'ai-opponent',
+        player: playerNumber,
+        ready: true,
+        name: `Computer (${diffLabel})`,
+        isAI: true,
+        difficulty
+      });
+      broadcastGameState(roomKey, room, io);
+    },
+
+    changeDifficulty(roomKey: string, difficulty: 'easy' | 'medium' | 'hard', socket: Socket, io: SocketIOServer) {
+      if (!rooms.has(roomKey)) return;
+      const room = rooms.get(roomKey)!;
+      const aiPlayer = room.gameState.players.find((p: any) => p.isAI);
+      if (aiPlayer) {
+        aiPlayer.difficulty = difficulty;
+        const diffLabel = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
+        aiPlayer.name = `Computer (${diffLabel})`;
+        broadcastGameState(roomKey, room, io);
+      }
+    },
+
+    removeAI(roomKey: string, socket: Socket, io: SocketIOServer) {
+      if (!rooms.has(roomKey)) return;
+      const room = rooms.get(roomKey)!;
+      const playerIndex = room.gameState.players.findIndex((p: any) => p.isAI);
+      if (playerIndex !== -1) {
+        room.gameState.players.splice(playerIndex, 1);
+        room.gameState.players.forEach((p: any, idx: number) => {
+          p.player = idx + 1;
+          p.ready = false;
+          if (p.id !== 'ai-opponent') {
+            socketRooms.set(p.id, { roomKey, playerNumber: p.player });
+            io.to(p.id).emit('player-role', { player: p.player });
+          }
+        });
+        broadcastGameState(roomKey, room, io);
       }
     },
 
@@ -423,4 +566,5 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       return socketRooms.get(socketId);
     },
   };
+  return manager;
 }

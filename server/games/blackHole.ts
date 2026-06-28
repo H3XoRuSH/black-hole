@@ -118,3 +118,70 @@ export const makeMove = (
   gameState.winner = getWinner(gameState);
   return true;
 };
+
+export class BlackHoleComputer {
+  static async getAIMove(gameState: BlackHoleGameState): Promise<{ row: number; col: number }> {
+    const aiPlayer = gameState.players.find((p) => p.isAI);
+    const difficulty = aiPlayer?.difficulty || 'hard';
+
+    let mistakeRate = 0;
+    if (difficulty === 'easy') mistakeRate = 0.7;
+    else if (difficulty === 'medium') mistakeRate = 0.4;
+
+    if (Math.random() < mistakeRate) {
+      const allPos: { row: number; col: number }[] = [];
+      for (let r = 1; r <= 6; r++) {
+        for (let c = 1; c <= r; c++) {
+          allPos.push({ row: r, col: c });
+        }
+      }
+      const unoccupied = allPos.filter((pos) => !gameState.circles[`${pos.row}-${pos.col}`]);
+      if (unoccupied.length > 0) {
+        return unoccupied[Math.floor(Math.random() * unoccupied.length)];
+      }
+    }
+
+    return this.getHeuristicMove(gameState);
+  }
+
+  private static getHeuristicMove(gameState: BlackHoleGameState): { row: number; col: number } {
+    const allPos: { row: number; col: number }[] = [];
+    for (let r = 1; r <= 6; r++) {
+      for (let c = 1; c <= r; c++) {
+        allPos.push({ row: r, col: c });
+      }
+    }
+    const unoccupied = allPos.filter((pos) => !gameState.circles[`${pos.row}-${pos.col}`]);
+    if (unoccupied.length === 0) return { row: 1, col: 1 };
+
+    const getNeighborsCount = (row: number, col: number): number => {
+      let count = 0;
+      const neighbors = [
+        [row, col - 1],
+        [row, col + 1],
+        [row - 1, col],
+        [row - 1, col - 1],
+        [row + 1, col],
+        [row + 1, col + 1]
+      ];
+      for (const [r, c] of neighbors) {
+        if (c >= 1 && c <= r && r >= 1 && r <= 6) count++;
+      }
+      return count;
+    };
+
+    const tileVal = Math.floor(gameState.totalMoves / 2) + 1;
+
+    if (tileVal <= 4) {
+      unoccupied.sort((a, b) => getNeighborsCount(b.row, b.col) - getNeighborsCount(a.row, a.col));
+    } else if (tileVal >= 7) {
+      unoccupied.sort((a, b) => getNeighborsCount(a.row, a.col) - getNeighborsCount(b.row, b.col));
+    } else {
+      unoccupied.sort(() => Math.random() - 0.5);
+    }
+
+    return unoccupied[0];
+  }
+}
+
+export const getAIMove = (gameState: BlackHoleGameState) => BlackHoleComputer.getAIMove(gameState);

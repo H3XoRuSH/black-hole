@@ -3,6 +3,8 @@ export interface Player {
   player: number;
   ready: boolean;
   name?: string;
+  isAI?: boolean;
+  difficulty?: 'easy' | 'medium' | 'hard';
 }
 
 export interface CircleData {
@@ -122,4 +124,5 @@ export interface MenuGame {
   route: string;
   status: string;
   color: string;
+  supportsAI?: boolean;
 }

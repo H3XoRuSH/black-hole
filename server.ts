@@ -78,6 +78,18 @@ io.on('connection', (socket: Socket) => {
     rooms.startGame(roomKey, socket, io);
   });
 
+  socket.on('add-ai', ({ roomKey, difficulty }: { roomKey: string; difficulty?: 'easy' | 'medium' | 'hard' }) => {
+    rooms.addAI(roomKey, difficulty || 'hard', socket, io);
+  });
+
+  socket.on('change-difficulty', ({ roomKey, difficulty }: { roomKey: string; difficulty: 'easy' | 'medium' | 'hard' }) => {
+    rooms.changeDifficulty(roomKey, difficulty, socket, io);
+  });
+
+  socket.on('remove-ai', ({ roomKey }: { roomKey: string }) => {
+    rooms.removeAI(roomKey, socket, io);
+  });
+
   socket.on('reconnect-room', ({ roomKey, playerNumber }: { roomKey: string; playerNumber: number }) => {
     rooms.reconnectRoom(roomKey, playerNumber, socket);
   });

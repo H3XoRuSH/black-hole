@@ -6,6 +6,8 @@ export interface DeepSeekChatOptions {
   maxTokens?: number;
 }
 
+export const isDeepSeekConfigured = !!DEEPSEEK_API_KEY;
+
 export async function callDeepSeek(options: DeepSeekChatOptions): Promise<string> {
   if (!DEEPSEEK_API_KEY) {
     throw new Error('DEEPSEEK_API_KEY is not configured.');

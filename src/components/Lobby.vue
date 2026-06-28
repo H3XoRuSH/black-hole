@@ -85,6 +85,11 @@
                         autofocus
                       />
                     </template>
+                    <template v-else-if="p.isAI">
+                      <p class="text-sm font-medium text-gray-800 truncate max-w-[120px]">
+                        Computer
+                      </p>
+                    </template>
                     <template v-else>
                       <p class="text-sm font-medium text-gray-800 truncate max-w-[120px]">
                         {{ p.name || (p.player === 1 ? 'Host' : `Player ${p.player}`) }}
@@ -104,39 +109,86 @@
                   </div>
                   <p class="text-[10px] text-gray-500">Player {{ p.player }}</p>
                 </div>
-              </div>
-              <div>
-                <span
-                  v-if="p.ready"
-                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800"
-                >
-                  Ready
-                </span>
-                <span
-                  v-else
-                  class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800"
-                >
-                  Not Ready
-                </span>
-              </div>
-            </div>
+               </div>
+               <div>
+                 <template v-if="p.isAI">
+                   <div v-if="isHost" class="flex items-center space-x-1.5">
+                     <select
+                       :value="p.difficulty || 'hard'"
+                       @change="changeDifficulty($event)"
+                       class="text-xs font-semibold py-1 px-2.5 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer"
+                     >
+                       <option value="easy">Easy</option>
+                       <option value="medium">Medium</option>
+                       <option value="hard">Hard</option>
+                     </select>
+                     <button
+                       @click="removeAIOpponent"
+                       class="p-1 text-gray-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer flex-shrink-0"
+                       title="Remove computer"
+                     >
+                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                         <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                       </svg>
+                     </button>
+                   </div>
+                   <span
+                     v-else
+                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider"
+                     :class="{
+                       'bg-cyan-100 text-cyan-800': p.difficulty === 'easy',
+                       'bg-amber-100 text-amber-800': p.difficulty === 'medium',
+                       'bg-rose-100 text-rose-800': p.difficulty === 'hard' || !p.difficulty
+                     }"
+                   >
+                     {{ p.difficulty || 'hard' }}
+                   </span>
+                 </template>
+                 <template v-else>
+                   <span
+                     v-if="p.ready"
+                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800"
+                   >
+                     Ready
+                   </span>
+                   <span
+                     v-else
+                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 text-amber-800"
+                   >
+                     Not Ready
+                   </span>
+                 </template>
+               </div>
+             </div>
 
-            <!-- Wait placeholder for available player slots -->
-            <div
-              v-for="i in Math.max(0, maxPlayers - players.length)"
-              :key="'waiting-' + i"
-              class="flex items-center justify-between p-3 bg-gray-50 border border-gray-100 border-dashed rounded-xl text-gray-400"
-            >
-              <div class="flex items-center space-x-3">
-                <div class="w-8 h-8 rounded-full bg-gray-100 border border-dashed border-gray-300 flex items-center justify-center text-gray-400 text-sm">
-                  ?
-                </div>
-                <div>
-                  <p class="text-sm font-medium italic flex items-center">Waiting for player<WaitingIndicator /></p>
-                  <p class="text-[10px]">Player {{ players.length + i }}</p>
-                </div>
-              </div>
-            </div>
+             <!-- Wait placeholder for available player slots -->
+             <div
+               v-for="i in Math.max(0, maxPlayers - players.length)"
+               :key="'waiting-' + i"
+               class="flex items-center justify-between p-3 bg-gray-50 border border-gray-100 border-dashed rounded-xl text-gray-400"
+             >
+               <div class="flex items-center space-x-3">
+                 <div class="w-8 h-8 rounded-full bg-gray-100 border border-dashed border-gray-300 flex items-center justify-center text-gray-400 text-sm">
+                   ?
+                 </div>
+                 <div>
+                   <p class="text-sm font-medium italic flex items-center">Waiting for player<WaitingIndicator /></p>
+                   <p class="text-[10px]">Player {{ players.length + i }}</p>
+                 </div>
+               </div>
+               <div>
+                 <button
+                   v-if="isHost && players.length === 1 && supportsAI"
+                   @click="addAIOpponent('hard')"
+                   class="text-xs font-bold py-1.5 px-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-all duration-200 cursor-pointer shadow-sm active:scale-95 flex items-center gap-1.5"
+                 >
+                   <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                     <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                   </svg>
+                   Play vs AI
+                 </button>
+               </div>
+             </div>
           </div>
 
           <!-- Toggle Ready and Start Game buttons -->
@@ -261,6 +313,7 @@ import { defineComponent, PropType } from 'vue';
 import { Socket } from 'socket.io-client';
 import QRCode from 'qrcode';
 import WaitingIndicator from './WaitingIndicator.vue';
+import gamesData from '../assets/games.json';
 
 export default defineComponent({
   components: { WaitingIndicator },
@@ -296,6 +349,10 @@ export default defineComponent({
   computed: {
     isHost(): boolean {
       return this.player === 1;
+    },
+    supportsAI(): boolean {
+      const game = gamesData.find((g) => g.id === this.gameId);
+      return !!game?.supportsAI;
     },
     players(): any[] {
       return this.initialGameState?.players || [];
@@ -369,6 +426,23 @@ export default defineComponent({
     toggleReady() {
       if (this.socket && this.roomKey) {
         this.socket.emit('toggle-ready', { roomKey: this.roomKey });
+      }
+    },
+    addAIOpponent(difficulty: 'easy' | 'medium' | 'hard' = 'hard') {
+      if (this.socket && this.roomKey) {
+        this.socket.emit('add-ai', { roomKey: this.roomKey, difficulty });
+      }
+    },
+    changeDifficulty(event: Event) {
+      const select = event.target as HTMLSelectElement;
+      const difficulty = select.value as 'easy' | 'medium' | 'hard';
+      if (this.socket && this.roomKey) {
+        this.socket.emit('change-difficulty', { roomKey: this.roomKey, difficulty });
+      }
+    },
+    removeAIOpponent() {
+      if (this.socket && this.roomKey) {
+        this.socket.emit('remove-ai', { roomKey: this.roomKey });
       }
     },
     startGame() {
