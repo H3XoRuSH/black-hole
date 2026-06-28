@@ -6,6 +6,7 @@ export interface ConnectFourGameState {
   totalMoves: number;
   winner: string;
   players: Player[];
+  lastMove?: { row: number; col: number };
 }
 
 export const checkConnectFourWinner = (board: (number | null)[][]): number => {
@@ -113,6 +114,7 @@ export const makeMove = (
     return false;
   }
   gameState.board[rowToPlace][col] = gameState.currentPlayer;
+  gameState.lastMove = { row: rowToPlace, col };
   gameState.totalMoves++;
 
   const winnerPlayer = checkConnectFourWinner(gameState.board);

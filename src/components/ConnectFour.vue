@@ -52,7 +52,7 @@
               <div
                 v-if="gameState.board[rowIndex - 1][colIndex - 1]"
                 class="w-[90%] h-[90%] rounded-full shadow-md transform transition-all duration-300 scale-100"
-                :class="getDiscClass(rowIndex - 1, colIndex - 1)"
+                :class="[getDiscClass(rowIndex - 1, colIndex - 1), lastMoveClass(rowIndex - 1, colIndex - 1)]"
               >
                 <!-- Inner detailing for realistic shiny disc look -->
                 <div
@@ -188,6 +188,12 @@ export default defineComponent({
       if (disc === 2)
         return 'bg-gradient-to-tr from-red-600 via-red-500 to-rose-400 border-red-400 shadow-[0_0_10px_rgba(239,68,68,0.55)]';
       return '';
+    },
+    lastMoveClass(row: number, col: number) {
+      if (!this.gameState.lastMove) return '';
+      return this.gameState.lastMove.row === row && this.gameState.lastMove.col === col
+        ? 'ring-2 ring-yellow-300/80 ring-inset'
+        : '';
     },
   },
 });

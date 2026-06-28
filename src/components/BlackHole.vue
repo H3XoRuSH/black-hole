@@ -36,7 +36,7 @@
             v-for="col in row"
             :key="`${row}-${col}`"
             class="w-9 h-9 xs:w-10 xs:h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 lg:w-13 lg:h-13 xl:w-14 xl:h-14 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-200 mx-1 sm:mx-2 relative group"
-            :class="getCircleStyle(row, col)"
+            :class="[getCircleStyle(row, col), lastMoveClass(row, col)]"
             @click="clickCircle(row, col)"
           >
             <!-- Slow spinning Vortex for Black Hole -->
@@ -284,6 +284,12 @@ export default defineComponent({
     getCircleText(row: number, col: number) {
       const data = this.getCircleData(row, col);
       return data?.turn || '';
+    },
+    lastMoveClass(row: number, col: number) {
+      if (!this.gameState.lastMove) return '';
+      return this.gameState.lastMove.row === row && this.gameState.lastMove.col === col
+        ? 'ring-2 ring-yellow-300/80 ring-inset'
+        : '';
     },
     showBlackHoleIcon(row: number, col: number) {
       const key = `${row}-${col}`;

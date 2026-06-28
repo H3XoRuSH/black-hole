@@ -20,6 +20,7 @@ export interface BlackHoleGameState {
   moveHistory?: any[];
   recap?: string;
   recapLoading?: boolean;
+  lastMove?: { row: number; col: number };
 }
 
 export interface ConnectFourGameState {
@@ -31,6 +32,7 @@ export interface ConnectFourGameState {
   moveHistory?: any[];
   recap?: string;
   recapLoading?: boolean;
+  lastMove?: { row: number; col: number };
 }
 
 export interface DotsAndBoxesGameState {
@@ -44,6 +46,7 @@ export interface DotsAndBoxesGameState {
   moveHistory?: any[];
   recap?: string;
   recapLoading?: boolean;
+  lastMove?: { lineKey: string };
 }
 
 export interface Ship {
