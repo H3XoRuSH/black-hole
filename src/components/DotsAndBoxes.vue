@@ -20,11 +20,11 @@
     <div class="flex space-x-8 mb-4 text-sm font-bold text-gray-700">
       <div class="flex items-center space-x-2">
         <div class="w-3.5 h-3.5 rounded-full bg-blue-500 shadow"></div>
-        <span>Player 1 (Blue): {{ gameState.scores.player1 }}</span>
+        <span>{{ p1Name }} (Blue): {{ gameState.scores.player1 }}</span>
       </div>
       <div class="flex items-center space-x-2">
         <div class="w-3.5 h-3.5 rounded-full bg-rose-500 shadow"></div>
-        <span>Player 2 (Red): {{ gameState.scores.player2 }}</span>
+        <span>{{ p2Name }} (Red): {{ gameState.scores.player2 }}</span>
       </div>
     </div>
 
@@ -207,6 +207,14 @@ export default defineComponent({
     return {};
   },
   computed: {
+    p1Name(): string {
+      const p = this.gameState.players.find((p: any) => p.player === 1);
+      return p?.name || 'Player 1';
+    },
+    p2Name(): string {
+      const p = this.gameState.players.find((p: any) => p.player === 2);
+      return p?.name || 'Player 2';
+    },
     isValidGame() {
       return (
         this.roomKey

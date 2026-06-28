@@ -2,10 +2,12 @@ export function getSystemPrompt(): string {
   return 'You output match recaps. No preamble, no meta-commentary.';
 }
 
-export function getRecapPrompt(gameName: string, formattedHistory: string, gameId?: string): string {
+export function getRecapPrompt(gameName: string, formattedHistory: string, gameId?: string, playerNames?: string[]): string {
+  const p1Name = playerNames?.[0] || 'Player 1';
+  const p2Name = playerNames?.[1] || 'Player 2';
   const playerRef = gameId === 'bingo'
-    ? 'Refer to players by their player number (Player 1, Player 2, etc.)'
-    : 'Refer to "Player 1 (Blue)" and "Player 2 (Red)"';
+    ? `Refer to players as "${p1Name}" and "${p2Name}"`
+    : `Refer to "${p1Name} (Blue)" and "${p2Name} (Red)"`;
   return `Game log for ${gameName}:
 ${formattedHistory}
 

@@ -64,18 +64,44 @@
               :key="p.player"
               class="flex items-center justify-between p-3 bg-gray-50 border border-gray-100 rounded-xl"
             >
-              <div class="flex items-center space-x-3">
+              <div class="flex items-center space-x-3 min-w-0 flex-shrink">
                 <div
-                  class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm"
+                  class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0"
                   :class="playerColorClasses(p.player)"
                 >
                   P{{ p.player }}
                 </div>
-                <div>
-                  <p class="text-sm font-medium text-gray-800">
-                    {{ p.player === 1 ? 'Host' : `Player ${p.player}` }}
-                    {{ p.id === socket?.id ? '(You)' : '' }}
-                  </p>
+                <div class="min-w-0">
+                  <div class="flex items-center space-x-1.5">
+                    <template v-if="p.id === socket?.id && editingName">
+                      <input
+                        v-model="newName"
+                        @keyup.enter="submitRename"
+                        @blur="submitRename"
+                        @keyup.escape="cancelRename"
+                        ref="nameInput"
+                        class="text-sm font-medium text-gray-800 bg-white border border-gray-300 rounded-lg px-2 py-1 w-28 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                        maxlength="20"
+                        autofocus
+                      />
+                    </template>
+                    <template v-else>
+                      <p class="text-sm font-medium text-gray-800 truncate max-w-[120px]">
+                        {{ p.name || (p.player === 1 ? 'Host' : `Player ${p.player}`) }}
+                      </p>
+                      <button
+                        v-if="p.id === socket?.id"
+                        @click="startEditing"
+                        class="p-1 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors cursor-pointer flex-shrink-0"
+                        title="Change name"
+                      >
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                        </svg>
+                      </button>
+                    </template>
+                    <span v-if="p.id === socket?.id" class="text-[10px] text-gray-400 font-medium flex-shrink-0">(You)</span>
+                  </div>
                   <p class="text-[10px] text-gray-500">Player {{ p.player }}</p>
                 </div>
               </div>
@@ -263,6 +289,8 @@ export default defineComponent({
     return {
       copied: false,
       isQRModalOpen: false,
+      editingName: false,
+      newName: '',
     };
   },
   computed: {
@@ -347,6 +375,25 @@ export default defineComponent({
       if (this.socket && this.roomKey && this.canStartGame) {
         this.socket.emit('start-game', { roomKey: this.roomKey });
       }
+    },
+    startEditing() {
+      const me = this.players.find((p: any) => p.id === this.socket?.id);
+      this.newName = me?.name || '';
+      this.editingName = true;
+      this.$nextTick(() => {
+        (this.$refs.nameInput as HTMLInputElement)?.focus();
+      });
+    },
+    submitRename() {
+      if (!this.editingName) return;
+      this.editingName = false;
+      const name = this.newName.trim();
+      if (name && this.socket && this.roomKey) {
+        this.socket.emit('rename-player', { roomKey: this.roomKey, name });
+      }
+    },
+    cancelRename() {
+      this.editingName = false;
     },
     playerColorClasses(playerNum: number) {
       const colors = [

@@ -56,7 +56,7 @@
           class="w-3.5 h-3.5 rounded-full bg-blue-500 ring-2"
           :class="currentPlayer === 1 && !gameOver ? 'ring-blue-300 animate-pulse' : 'ring-blue-200'"
         ></span>
-        <span class="text-blue-700">Player 1 (Blue)</span>
+        <span class="text-blue-700">{{ p1Label }}</span>
         <span
           v-if="currentPlayer === 1 && !gameOver"
           class="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-100 rounded-full px-2 py-0.5 leading-none"
@@ -74,7 +74,7 @@
           v-if="currentPlayer === 2 && !gameOver"
           class="text-[10px] font-bold uppercase tracking-wider text-red-600 bg-red-100 rounded-full px-2 py-0.5 leading-none"
         >TURN</span>
-        <span class="text-red-700">Player 2 (Red)</span>
+        <span class="text-red-700">{{ p2Label }}</span>
         <span
           class="w-3.5 h-3.5 rounded-full bg-red-500 ring-2"
           :class="currentPlayer === 2 && !gameOver ? 'ring-red-300 animate-pulse' : 'ring-red-200'"
@@ -91,7 +91,7 @@
         {{ currentPlayer === player ? 'Your Turn' : "Opponent's Turn" }}
       </div>
       <div class="text-xs text-gray-400 mt-1.5 sm:mt-2">
-        You are Player {{ player }} ({{ player === 1 ? 'Blue' : 'Red' }})
+        You are {{ youLabel }}
       </div>
     </div>
 
@@ -326,6 +326,28 @@ export default defineComponent({
     };
   },
   computed: {
+    players(): any[] {
+      return this.gameState?.players || [];
+    },
+    p1Name(): string {
+      const p = this.players.find((p: any) => p.player === 1);
+      return p?.name || 'Player 1';
+    },
+    p2Name(): string {
+      const p = this.players.find((p: any) => p.player === 2);
+      return p?.name || 'Player 2';
+    },
+    p1Label(): string {
+      return `${this.p1Name} (Blue)`;
+    },
+    p2Label(): string {
+      return `${this.p2Name} (Red)`;
+    },
+    youLabel(): string {
+      const me = this.players.find((p: any) => p.player === this.player);
+      const name = me?.name || `Player ${this.player}`;
+      return `${name} (${this.player === 1 ? 'Blue' : 'Red'})`;
+    },
     turnTextColor(): string {
       if (this.currentPlayer === this.player) {
         return this.currentPlayer === 1 ? 'text-blue-600' : 'text-red-600';

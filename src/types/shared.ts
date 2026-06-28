@@ -2,6 +2,7 @@ export interface Player {
   id: string;
   player: number;
   ready: boolean;
+  name?: string;
 }
 
 export interface CircleData {

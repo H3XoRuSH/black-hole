@@ -15,20 +15,33 @@ function getGameName(gameId: string): string {
   }
 }
 
+function getPlayerName(players: any[], playerNum: number): string {
+  const p = players?.find((p: any) => p.player === playerNum);
+  return p?.name || `Player ${playerNum}`;
+}
+
 function formatMoveHistory(gameId: string, gameState: any): string {
   const history = gameState.moveHistory || [];
   if (history.length === 0) return 'No moves were recorded.';
 
   const logs: string[] = [];
+  const p1Name = getPlayerName(gameState.players, 1);
+  const p2Name = getPlayerName(gameState.players, 2);
+
+  const playerRef = (playerNum: number) => {
+    if (playerNum === 1) return `${p1Name} (Player 1)`;
+    if (playerNum === 2) return `${p2Name} (Player 2)`;
+    return `Player ${playerNum}`;
+  };
 
   if (gameId === 'black-hole') {
     history.forEach((move: any, index: number) => {
-      logs.push(`Move ${index + 1}: Player ${move.player} placed tile #${Math.floor(index / 2) + 1} at row ${move.row}, col ${move.col}`);
+      logs.push(`Move ${index + 1}: ${playerRef(move.player)} placed tile #${Math.floor(index / 2) + 1} at row ${move.row}, col ${move.col}`);
     });
-    logs.push(`Final Scores: Player 1 (Blue): ${gameState.scores?.player1}, Player 2 (Red): ${gameState.scores?.player2}`);
+    logs.push(`Final Scores: ${p1Name} (Blue): ${gameState.scores?.player1}, ${p2Name} (Red): ${gameState.scores?.player2}`);
   } else if (gameId === 'connect-four') {
     history.forEach((move: any, index: number) => {
-      logs.push(`Move ${index + 1}: Player ${move.player} dropped a disc in column ${move.col + 1}`);
+      logs.push(`Move ${index + 1}: ${playerRef(move.player)} dropped a disc in column ${move.col + 1}`);
     });
   } else if (gameId === 'dots-and-boxes') {
     history.forEach((move: any, index: number) => {
@@ -36,18 +49,18 @@ function formatMoveHistory(gameId: string, gameState: any): string {
       if (parts && parts.length === 3) {
         const [type, r, c] = parts;
         const typeStr = type === 'h' ? 'horizontal' : 'vertical';
-        logs.push(`Move ${index + 1}: Player ${move.player} drew a ${typeStr} line at row ${r}, col ${c}`);
+        logs.push(`Move ${index + 1}: ${playerRef(move.player)} drew a ${typeStr} line at row ${r}, col ${c}`);
       }
     });
-    logs.push(`Final Scores: Player 1 (Blue): ${gameState.scores?.player1}, Player 2 (Red): ${gameState.scores?.player2}`);
+    logs.push(`Final Scores: ${p1Name} (Blue): ${gameState.scores?.player1}, ${p2Name} (Red): ${gameState.scores?.player2}`);
   } else if (gameId === 'battleship') {
     history.forEach((move: any, index: number) => {
       if (move.action === 'place-ships') {
-        logs.push(`Move ${index + 1}: Player ${move.player} placed their fleet.`);
+        logs.push(`Move ${index + 1}: ${playerRef(move.player)} placed their fleet.`);
       } else if (move.action === 'shoot') {
         const result = move.hit ? 'Hit' : 'Miss';
         const sunk = move.sunkShipName ? ` (${move.sunkShipName} sunk!)` : '';
-        logs.push(`Move ${index + 1}: Player ${move.player} shot at row ${move.row + 1}, col ${move.col + 1} -> ${result}${sunk}`);
+        logs.push(`Move ${index + 1}: ${playerRef(move.player)} shot at row ${move.row + 1}, col ${move.col + 1} -> ${result}${sunk}`);
       }
     });
   } else if (gameId === 'checkers') {
@@ -57,7 +70,7 @@ function formatMoveHistory(gameId: string, gameState: any): string {
       let desc = `moved from (${move.fromRow},${move.fromCol}) to (${move.toRow},${move.toCol})`;
       if (isCapture) desc += ' (capture)';
       if (isPromotion) desc += ' (king promotion)';
-      logs.push(`Move ${index + 1}: Player ${move.player} ${desc}`);
+      logs.push(`Move ${index + 1}: ${playerRef(move.player)} ${desc}`);
     });
   } else if (gameId === 'bingo') {
     let drawIdx = 0;
@@ -67,9 +80,9 @@ function formatMoveHistory(gameId: string, gameState: any): string {
         const letter = num ? (num <= 15 ? 'B' : num <= 30 ? 'I' : num <= 45 ? 'N' : num <= 60 ? 'G' : 'O') : '?';
         logs.push(`Move ${index + 1}: Host drew ${letter} ${num}`);
       } else if (move.action === 'daub') {
-        logs.push(`Move ${index + 1}: Player ${move.player} daubed row ${move.row}, col ${move.col}`);
+        logs.push(`Move ${index + 1}: ${playerRef(move.player)} daubed row ${move.row}, col ${move.col}`);
       } else if (move.action === 'call-bingo') {
-        logs.push(`Move ${index + 1}: Player ${move.player} called BINGO!`);
+        logs.push(`Move ${index + 1}: ${playerRef(move.player)} called BINGO!`);
       }
     });
   }
@@ -82,14 +95,16 @@ function generateMockRecap(gameId: string, gameState: any): string {
   const gameName = getGameName(gameId);
   const winner = gameState.winner || 'Tie game!';
   const totalMoves = gameState.totalMoves;
+  const p1Name = getPlayerName(gameState.players, 1);
+  const p2Name = getPlayerName(gameState.players, 2);
 
   let analysis = '';
   if (gameId === 'black-hole') {
-    analysis = `Player 1 ended with a score of ${gameState.scores?.player1 || 0}, while Player 2 finished with ${gameState.scores?.player2 || 0}. Since the objective is to have the lower sum of tiles adjacent to the final empty circle (the Black Hole), the tactical placements near the end proved decisive. Both players carefully balanced high and low tiles, trying to push high numbers onto their opponent.`;
+    analysis = `${p1Name} ended with a score of ${gameState.scores?.player1 || 0}, while ${p2Name} finished with ${gameState.scores?.player2 || 0}. Since the objective is to have the lower sum of tiles adjacent to the final empty circle (the Black Hole), the tactical placements near the end proved decisive. Both players carefully balanced high and low tiles, trying to push high numbers onto their opponent.`;
   } else if (gameId === 'connect-four') {
     analysis = `Discs were dropped in rapid succession across the columns. The critical struggle took place in the central columns, where both players fought for positional dominance. The game ended when a player found a critical path to connect four, or when the board became fully saturated.`;
   } else if (gameId === 'dots-and-boxes') {
-    analysis = `The battle for boxes was intense, with Player 1 scoring ${gameState.scores?.player1 || 0} boxes and Player 2 scoring ${gameState.scores?.player2 || 0} boxes. The opening phase saw a cautious layout of lines, avoiding early double-contact setups. A chain of box completions near the mid-game shifted the momentum.`;
+    analysis = `The battle for boxes was intense, with ${p1Name} scoring ${gameState.scores?.player1 || 0} boxes and ${p2Name} scoring ${gameState.scores?.player2 || 0} boxes. The opening phase saw a cautious layout of lines, avoiding early double-contact setups. A chain of box completions near the mid-game shifted the momentum.`;
   } else if (gameId === 'battleship') {
     analysis = `Both fleets were deployed on the 6x6 grid. The artillery phase began with players trading blind shots. Hits were registered on crucial ships, and key coordinates were defended or systematically bombarded until the last of the opponent's ships were sent to the bottom.`;
   } else if (gameId === 'checkers') {
@@ -132,7 +147,8 @@ export async function generateRecap(gameId: string, gameState: any): Promise<str
   }
 
   const formattedHistory = formatMoveHistory(gameId, gameState);
-  const prompt = getRecapPrompt(getGameName(gameId), formattedHistory, gameId);
+  const playerNames = gameState.players?.map((p: any) => p.name).filter(Boolean) || [];
+  const prompt = getRecapPrompt(getGameName(gameId), formattedHistory, gameId, playerNames);
 
   try {
     const recap = await callDeepSeek({
