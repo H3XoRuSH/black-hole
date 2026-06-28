@@ -9,6 +9,8 @@ function getGameName(gameId: string): string {
     case 'connect-four': return 'Connect Four';
     case 'dots-and-boxes': return 'Dots and Boxes';
     case 'battleship': return 'Battleship';
+    case 'checkers': return 'Checkers';
+    case 'bingo': return 'Bingo';
     default: return 'Arcade Game';
   }
 }
@@ -48,6 +50,28 @@ function formatMoveHistory(gameId: string, gameState: any): string {
         logs.push(`Move ${index + 1}: Player ${move.player} shot at row ${move.row + 1}, col ${move.col + 1} -> ${result}${sunk}`);
       }
     });
+  } else if (gameId === 'checkers') {
+    history.forEach((move: any, index: number) => {
+      const isCapture = Math.abs(move.toRow - move.fromRow) === 2;
+      const isPromotion = (move.player === 1 && move.toRow === 0) || (move.player === 2 && move.toRow === 7);
+      let desc = `moved from (${move.fromRow},${move.fromCol}) to (${move.toRow},${move.toCol})`;
+      if (isCapture) desc += ' (capture)';
+      if (isPromotion) desc += ' (king promotion)';
+      logs.push(`Move ${index + 1}: Player ${move.player} ${desc}`);
+    });
+  } else if (gameId === 'bingo') {
+    let drawIdx = 0;
+    history.forEach((move: any, index: number) => {
+      if (move.action === 'draw') {
+        const num = gameState.drawnNumbers?.[drawIdx++];
+        const letter = num ? (num <= 15 ? 'B' : num <= 30 ? 'I' : num <= 45 ? 'N' : num <= 60 ? 'G' : 'O') : '?';
+        logs.push(`Move ${index + 1}: Host drew ${letter} ${num}`);
+      } else if (move.action === 'daub') {
+        logs.push(`Move ${index + 1}: Player ${move.player} daubed row ${move.row}, col ${move.col}`);
+      } else if (move.action === 'call-bingo') {
+        logs.push(`Move ${index + 1}: Player ${move.player} called BINGO!`);
+      }
+    });
   }
 
   logs.push(`Outcome: ${gameState.winner}`);
@@ -68,6 +92,26 @@ function generateMockRecap(gameId: string, gameState: any): string {
     analysis = `The battle for boxes was intense, with Player 1 scoring ${gameState.scores?.player1 || 0} boxes and Player 2 scoring ${gameState.scores?.player2 || 0} boxes. The opening phase saw a cautious layout of lines, avoiding early double-contact setups. A chain of box completions near the mid-game shifted the momentum.`;
   } else if (gameId === 'battleship') {
     analysis = `Both fleets were deployed on the 6x6 grid. The artillery phase began with players trading blind shots. Hits were registered on crucial ships, and key coordinates were defended or systematically bombarded until the last of the opponent's ships were sent to the bottom.`;
+  } else if (gameId === 'checkers') {
+    const capCount = gameState.moveHistory?.filter((m: any) => Math.abs(m.toRow - m.fromRow) === 2).length || 0;
+    const promoCount = gameState.moveHistory?.filter((m: any) => (m.player === 1 && m.toRow === 0) || (m.player === 2 && m.toRow === 7)).length || 0;
+    analysis = `The board saw aggressive play from the opening moves.`;
+    if (capCount > 0) analysis += ` A total of ${capCount} capture${capCount > 1 ? 's' : ''} were made, steadily thinning the opponent's ranks.`;
+    if (promoCount > 0) analysis += ` ${promoCount} piece${promoCount > 1 ? 's were' : ' was'} promoted to king, adding powerful ranged threats.`;
+    analysis += ` The endgame came down to piece advantage and positional control, where one player outmaneuvered the other to seal the victory.`;
+  } else if (gameId === 'bingo') {
+    const totalDraws = gameState.drawnNumbers?.length || 0;
+    analysis = `The caller drew ${totalDraws} numbers out of 75 total. Players daubed their cards, watching their rows, columns, and diagonals fill up. The tension built with every call until one player finally completed a winning pattern and shouted BINGO!`;
+
+    return `### 🎮 ${gameName} Match Recap (Simulated AI)
+
+**Outcome:** **${winner}**
+
+${analysis}
+
+The match lasted for **${totalMoves}** total moves. Players tracked their cards closely as each number was called, celebrating every daub that brought them closer to victory.
+
+*Note: Set the \`DEEPSEEK_API_KEY\` environment variable to enable live AI-generated summaries from DeepSeek.*`;
   }
 
   return `### 🎮 ${gameName} Match Recap (Simulated AI)
@@ -88,7 +132,7 @@ export async function generateRecap(gameId: string, gameState: any): Promise<str
   }
 
   const formattedHistory = formatMoveHistory(gameId, gameState);
-  const prompt = getRecapPrompt(getGameName(gameId), formattedHistory);
+  const prompt = getRecapPrompt(getGameName(gameId), formattedHistory, gameId);
 
   try {
     const recap = await callDeepSeek({
