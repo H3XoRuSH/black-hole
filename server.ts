@@ -55,7 +55,15 @@ io.on('connection', (socket: Socket) => {
   });
 
   socket.on('leave-room', ({ roomKey }: { roomKey: string }) => {
-    rooms.leaveRoom(roomKey, socket);
+    rooms.leaveRoom(roomKey, socket, io);
+  });
+
+  socket.on('toggle-ready', ({ roomKey }: { roomKey: string }) => {
+    rooms.toggleReady(roomKey, socket, io);
+  });
+
+  socket.on('start-game', ({ roomKey }: { roomKey: string }) => {
+    rooms.startGame(roomKey, socket, io);
   });
 
   socket.on('reconnect-room', ({ roomKey, playerNumber }: { roomKey: string; playerNumber: number }) => {

@@ -66,6 +66,7 @@ export interface BattleshipGameState {
 export interface Room {
   gameId: string;
   gameState: any;
+  gameStarted?: boolean;
 }
 
 export interface MenuGame {

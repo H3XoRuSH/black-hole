@@ -81,11 +81,15 @@ export function useSocket(router: any) {
       }
     });
 
-    socket.value.on('waiting-for-player', ({ roomKey: rk, player: p, gameId: gId }: { roomKey: string; player: number; gameId: string }) => {
+    socket.value.on('waiting-for-player', ({ roomKey: rk, player: p, gameId: gId, gameState: gs }: any) => {
+      resetGameState();
       roomKey.value = rk;
       player.value = p;
       gameId.value = gId || 'black-hole';
-      connectionStatus.value = 'Waiting for another player...';
+      connectionStatus.value = '';
+      if (gs) {
+        gameState.value = gs;
+      }
       saveRoomData(rk, p, gameId.value);
       router.isLeavingDueToDisconnect = true;
       router.push(`/${gameId.value}/lobby`).finally(() => {
@@ -156,6 +160,7 @@ export function useSocket(router: any) {
     });
 
     socket.value.on('game-state', (gs: any) => {
+      gameState.value = gs;
       if (gs && gs.players) {
         const me = gs.players.find((p: any) => p.id === socket.value?.id);
         if (me && me.player !== player.value) {
@@ -175,7 +180,11 @@ export function useSocket(router: any) {
       connectionStatus.value = message;
       roomKey.value = '';
       player.value = null;
-      router.push('/menu');
+      const targetGameId = gameId.value || 'black-hole';
+      router.isLeavingDueToDisconnect = true;
+      router.push(`/${targetGameId}/lobby`).finally(() => {
+        router.isLeavingDueToDisconnect = false;
+      });
     });
 
     socket.value.on('invalid-move', ({ message }: { message: string }) => {

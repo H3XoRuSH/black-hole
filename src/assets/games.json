@@ -2,6 +2,8 @@
   {
     "id": "black-hole",
     "name": "Black Hole",
+    "minPlayers": 2,
+    "maxPlayers": 2,
     "description": "A strategic 2-player game of gravity and calculation. Place your numbered tiles on the triangular grid and try to keep your highest numbers away from the final empty circle!",
     "route": "/black-hole/lobby",
     "status": "active",
@@ -36,6 +38,8 @@
   {
     "id": "connect-four",
     "name": "Connect Four",
+    "minPlayers": 2,
+    "maxPlayers": 2,
     "description": "A classic 2-player connection game. Drop colored discs into a 7x6 grid, and be the first to form a horizontal, vertical, or diagonal line of four of your own discs!",
     "route": "/connect-four/lobby",
     "status": "active",
@@ -62,6 +66,8 @@
   {
     "id": "dots-and-boxes",
     "name": "Dots and Boxes",
+    "minPlayers": 2,
+    "maxPlayers": 2,
     "description": "A classic two-player pen-and-paper game. Connect dots to complete boxes; capturing a box gains you a point and grants you an extra turn!",
     "route": "/dots-and-boxes/lobby",
     "status": "active",
@@ -88,6 +94,8 @@
   {
     "id": "battleship",
     "name": "Battleship",
+    "minPlayers": 2,
+    "maxPlayers": 2,
     "description": "A strategic 2-player grid-guessing game. Place your fleet on a 10x10 grid, take turns calling shots, and sink all of your opponent's ships to win!",
     "route": "/battleship/lobby",
     "status": "active",

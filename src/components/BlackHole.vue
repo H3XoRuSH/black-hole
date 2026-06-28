@@ -5,6 +5,7 @@
   >
     <GameHeader
       title="Black Hole"
+      :connection-status="connectionStatus"
       :current-player="gameState.currentPlayer"
       :player="player"
       :game-over="gameOver"
@@ -134,6 +135,7 @@ export default defineComponent({
       type: Object as PropType<GameState>,
       required: true,
     },
+    connectionStatus: String,
   },
   setup(props) {
     const gameState = ref<GameState>(

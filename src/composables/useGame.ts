@@ -23,6 +23,9 @@ export function useGame(options: UseGameOptions) {
   const isLeavingDueToDisconnect = ref(false);
   const router = useRouter() as any;
 
+  let gameStateHandler: any = null;
+  let playerReadyHandler: any = null;
+
   function newGame() {
     ready.value = true;
     options.socket?.emit('new-game', { roomKey: options.roomKey });
@@ -54,7 +57,7 @@ export function useGame(options: UseGameOptions) {
         window.addEventListener('beforeunload', handleBeforeUnload);
       }
 
-      options.socket?.on('game-state', (newState: any) => {
+      gameStateHandler = (newState: any) => {
         if (options.onGameState) {
           options.onGameState(newState, {
             setReady: (v: boolean) => { ready.value = v; },
@@ -70,14 +73,14 @@ export function useGame(options: UseGameOptions) {
             router.push(options.lobbyRoute);
           }
         }
-      });
+      };
 
       const getPlayerNumber = () => {
         const me = options.gameState.value?.players?.find((p: any) => p.id === options.socket?.id);
         return me ? me.player : options.player;
       };
 
-      options.socket?.on('player-ready', (data: any) => {
+      playerReadyHandler = (data: any) => {
         if (options.onPlayerReady) {
           options.onPlayerReady(data, {
             setReady: (v: boolean) => { ready.value = v; },
@@ -89,7 +92,10 @@ export function useGame(options: UseGameOptions) {
             otherPlayerReady.value = true;
           }
         }
-      });
+      };
+
+      options.socket?.on('game-state', gameStateHandler);
+      options.socket?.on('player-ready', playerReadyHandler);
     });
 
     onBeforeUnmount(() => {
@@ -103,8 +109,12 @@ export function useGame(options: UseGameOptions) {
       if (options.roomKey) {
         options.socket?.emit('leave-room', { roomKey: options.roomKey });
       }
-      options.socket?.off('game-state');
-      options.socket?.off('player-ready');
+      if (gameStateHandler) {
+        options.socket?.off('game-state', gameStateHandler);
+      }
+      if (playerReadyHandler) {
+        options.socket?.off('player-ready', playerReadyHandler);
+      }
     });
 
     onBeforeRouteLeave((to: any, from: any, next: any) => {
