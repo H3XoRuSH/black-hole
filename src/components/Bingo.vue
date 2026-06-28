@@ -21,8 +21,23 @@
       </router-link>
     </div>
 
-    <div v-if="gameOver" class="text-lg font-bold text-green-600 mb-2 flex-shrink-0">
+    <div v-if="gameOver" class="text-lg font-bold text-green-600 mb-1 flex-shrink-0">
       Game Over! {{ gameState.winner }}
+    </div>
+
+    <div
+      v-if="gameOver"
+      class="w-full max-w-lg flex justify-center mb-2 flex-shrink-0"
+    >
+      <button
+        @click="openRecapModal"
+        class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all duration-150 cursor-pointer shadow-md active:scale-95 flex items-center space-x-2"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7z" clip-rule="evenodd" />
+        </svg>
+        <span>AI Recap</span>
+      </button>
     </div>
 
     <div class="flex-grow flex flex-col items-center justify-start w-full overflow-y-auto py-1">
@@ -105,10 +120,90 @@
   <div v-else class="h-full flex flex-col items-center justify-center p-6">
     <p class="text-lg text-gray-500 font-medium">Invalid game state. Redirecting to lobby...</p>
   </div>
+
+  <!-- Recap Modal -->
+  <Teleport to="body">
+    <Transition
+      enter-active-class="transition duration-300 ease-out"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition duration-200 ease-in"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div
+        v-if="showRecapModal"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/65 backdrop-blur-sm"
+        @click.self="closeRecapModal"
+      >
+        <Transition
+          enter-active-class="transition duration-300 ease-out"
+          enter-from-class="opacity-0 scale-95 translate-y-4"
+          enter-to-class="opacity-100 scale-100 translate-y-0"
+          leave-active-class="transition duration-200 ease-in"
+          leave-from-class="opacity-100 scale-100 translate-y-0"
+          leave-to-class="opacity-0 scale-95 translate-y-4"
+        >
+          <div
+            v-if="showRecapModal"
+            class="bg-slate-900 border border-slate-800 text-white rounded-2xl max-w-lg w-full shadow-2xl p-6 flex flex-col relative max-h-[85vh] overflow-hidden"
+          >
+            <button
+              @click="closeRecapModal"
+              class="absolute top-4 right-4 text-slate-400 hover:text-white hover:bg-slate-800/80 p-1.5 rounded-lg transition-colors cursor-pointer active:scale-95"
+              aria-label="Close Recap"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+
+            <div class="mb-5 flex items-center space-x-3 pr-8">
+              <div class="p-2 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div>
+                <h2 class="text-xl font-bold tracking-tight">AI Match Recap</h2>
+                <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">Bingo</p>
+              </div>
+            </div>
+
+            <div v-if="recapLoading" class="flex flex-col items-center py-8 space-y-3">
+              <div class="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+              <span class="text-xs text-slate-400 animate-pulse">Analyzing key moves...</span>
+            </div>
+
+            <div
+              v-else-if="!recapText"
+              class="flex justify-center py-6"
+            >
+              <button
+                @click="requestRecap"
+                class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all duration-150 cursor-pointer shadow-md active:scale-95 flex items-center space-x-2"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7z" clip-rule="evenodd" />
+                </svg>
+                <span>Generate AI Recap</span>
+              </button>
+            </div>
+
+            <div
+              v-else
+              class="overflow-y-auto pr-1 text-slate-300 text-sm space-y-4 focus:outline-none"
+              v-html="formattedRecapHtml"
+            ></div>
+          </div>
+        </Transition>
+      </div>
+    </Transition>
+  </Teleport>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue';
+import { defineComponent, PropType, ref, onBeforeUnmount } from 'vue';
 import { Socket } from 'socket.io-client';
 import { useGame } from '../composables/useGame.js';
 import type { BingoGameState as GameState } from '../types/shared.js';
@@ -138,6 +233,62 @@ export default defineComponent({
 
     const waiting = ref(false);
 
+    const showRecapModal = ref(false);
+    const recapText = ref('');
+    const recapLoading = ref(false);
+
+    function requestRecap() {
+      if (props.socket && props.roomKey) {
+        recapLoading.value = true;
+        props.socket.emit('request-recap', { roomKey: props.roomKey });
+      }
+    }
+
+    function openRecapModal() {
+      showRecapModal.value = true;
+      document.addEventListener('keydown', handleRecapEscKey);
+      if (recapLoading.value) return;
+      if (!recapText.value && props.socket && props.roomKey) {
+        recapLoading.value = true;
+        props.socket.emit('request-recap', { roomKey: props.roomKey });
+      }
+    }
+
+    function closeRecapModal() {
+      showRecapModal.value = false;
+      document.removeEventListener('keydown', handleRecapEscKey);
+    }
+
+    function handleRecapEscKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        closeRecapModal();
+      }
+    }
+
+    function setupRecapListeners() {
+      if (!props.socket) return;
+      props.socket.on('recap-loading', () => {
+        recapLoading.value = true;
+      });
+      props.socket.on('recap-generated', ({ text }: { text: string }) => {
+        recapText.value = text;
+        recapLoading.value = false;
+      });
+    }
+
+    function teardownRecapListeners() {
+      if (!props.socket) return;
+      props.socket.off('recap-loading');
+      props.socket.off('recap-generated');
+    }
+
+    setupRecapListeners();
+
+    onBeforeUnmount(() => {
+      document.removeEventListener('keydown', handleRecapEscKey);
+      teardownRecapListeners();
+    });
+
     const game = useGame({
       socket: props.socket as any,
       player: props.player,
@@ -153,7 +304,17 @@ export default defineComponent({
       },
     });
 
-    return { ...game, gameState, waiting };
+    return {
+      ...game,
+      gameState,
+      waiting,
+      showRecapModal,
+      recapText,
+      recapLoading,
+      requestRecap,
+      openRecapModal,
+      closeRecapModal,
+    };
   },
   computed: {
     isValidGame() {
@@ -183,6 +344,31 @@ export default defineComponent({
     },
     isMyTurn() {
       return this.player === 1 && !this.gameOver && this.gameState.players.length >= 2;
+    },
+    formattedRecapHtml(): string {
+      if (!this.recapText) return '';
+      let html = this.recapText;
+
+      html = html
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+      html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+      html = html.replace(/### (.*?)\n/g, '<h3 class="text-sm font-bold text-slate-100 mt-3 mb-1">$1</h3>');
+      html = html.replace(/## (.*?)\n/g, '<h2 class="text-base font-bold text-slate-100 mt-4 mb-2">$1</h2>');
+
+      html = html.replace(/^\* (.*?)$/gm, '<li class="ml-4 list-disc text-slate-300">$1</li>');
+
+      html = html.split('\n\n').map((p) => {
+        if (p.trim().startsWith('<li') || p.trim().startsWith('<h3') || p.trim().startsWith('<h2')) {
+          return p;
+        }
+        return `<p class="mb-2 leading-relaxed text-slate-300">${p}</p>`;
+      }).join('');
+
+      return html;
     },
   },
   methods: {
