@@ -275,10 +275,14 @@ export default defineComponent({
     getLineClass(lineKey: string, direction: string) {
       const lineOwner = this.gameState.lines[lineKey];
       if (lineOwner === 1) {
-        return 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)]';
+        const base = 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)]';
+        const last = this.gameState.lastMove?.lineKey === lineKey ? ' ring-2 ring-yellow-300/80' : '';
+        return base + last;
       }
       if (lineOwner === 2) {
-        return 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]';
+        const base = 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]';
+        const last = this.gameState.lastMove?.lineKey === lineKey ? ' ring-2 ring-yellow-300/80' : '';
+        return base + last;
       }
 
       // Interactive/hover state
@@ -294,7 +298,7 @@ export default defineComponent({
         return `${hoverColorClass} ${scalingClass}`;
       }
 
-      return 'bg-slate-800/40';
+      return 'bg-slate-800/30';
     },
     getBoxClass(boxKey: string) {
       const boxOwner = this.gameState.boxes[boxKey];

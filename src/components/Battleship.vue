@@ -531,9 +531,11 @@ export default defineComponent({
     getTargetCellClass(row: number, col: number): string {
       const shot = this.hasShot(row, col);
       if (shot) {
-        return this.isHit(row, col)
+        const base = this.isHit(row, col)
           ? 'bg-rose-950/40 border-rose-700 shadow-[inset_0_0_12px_rgba(244,63,94,0.4)]'
           : 'bg-slate-900/30 border-slate-800';
+        const lastHit = this.gameState.lastShotResult?.row === row && this.gameState.lastShotResult?.col === col;
+        return base + (lastHit ? ' ring-2 ring-yellow-300/80' : '');
       }
 
       // If game is over, reveal opponent's unhit ships
@@ -558,15 +560,18 @@ export default defineComponent({
         s.coordinates.some(([sr, sc]) => sr === row && sc === col)
       );
       const enemyShot = this.hasEnemyShot(row, col);
+      const lastHit = this.gameState.lastShotResult?.row === row && this.gameState.lastShotResult?.col === col;
+      const ring = lastHit ? ' ring-2 ring-yellow-300/80' : '';
 
       if (isShip) {
-        return enemyShot
+        const base = enemyShot
           ? 'bg-rose-950 border-rose-600 shadow-[0_0_10px_rgba(239,68,68,0.5)] animate-pulse'
           : 'bg-cyan-700/60 border-cyan-500 shadow-[0_0_6px_rgba(6,182,212,0.2)]';
+        return base + ring;
       }
 
       if (enemyShot) {
-        return 'bg-slate-900 border-slate-800';
+        return 'bg-slate-900 border-slate-800' + ring;
       }
 
       return 'bg-slate-950/30 border-slate-800/60';

@@ -108,6 +108,7 @@ export const makeMove = (
     player: gameState.currentPlayer,
     turn: playerTurnNumber,
   };
+  gameState.lastMove = { row, col };
   gameState.totalMoves++;
   gameState.currentPlayer = gameState.currentPlayer === 1 ? 2 : 1;
 

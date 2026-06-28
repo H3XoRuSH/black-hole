@@ -8,6 +8,7 @@ export interface DotsAndBoxesGameState {
   totalMoves: number;
   winner: string;
   players: Player[];
+  lastMove?: { lineKey: string };
 }
 
 export const createInitialState = (playerId: string): DotsAndBoxesGameState => {
@@ -82,6 +83,7 @@ export const makeMove = (
   }
 
   gameState.lines[lineKey] = gameState.currentPlayer;
+  gameState.lastMove = { lineKey };
   gameState.totalMoves++;
 
   let boxScored = false;
