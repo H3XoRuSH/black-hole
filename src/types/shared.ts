@@ -75,6 +75,18 @@ export interface BattleshipGameState {
   recapLoading?: boolean;
 }
 
+export interface CheckersGameState {
+  board: number[][];
+  currentPlayer: number;
+  winner: string;
+  players: Player[];
+  totalMoves: number;
+  mustCapturePos: string | null;
+  moveHistory?: any[];
+  lastMoveFrom?: string;
+  lastMoveTo?: string;
+}
+
 export interface RecapEntry {
   text: string;
   loading: boolean;

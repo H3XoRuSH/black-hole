@@ -92,6 +92,38 @@
     ]
   },
   {
+    "id": "checkers",
+    "name": "Checkers",
+    "minPlayers": 2,
+    "maxPlayers": 2,
+    "description": "A classic 2-player strategy game. Capture your opponent's pieces by jumping over them on an 8x8 board. Mandatory jumps, king promotion, and chain captures included!",
+    "route": "/checkers/lobby",
+    "status": "active",
+    "color": "#d97706",
+    "rules": [
+      {
+        "title": "The Board",
+        "desc": "8x8 board with dark and light squares. Each player starts with 12 pieces on the dark squares of their side."
+      },
+      {
+        "title": "Movement",
+        "desc": "Regular pieces move diagonally forward one square. Kings (promoted pieces) can move diagonally in any direction."
+      },
+      {
+        "title": "Capturing",
+        "desc": "Jump over an adjacent opponent's piece to an empty square beyond to capture it. Captures are MANDATORY — if you can capture, you must."
+      },
+      {
+        "title": "Multi-Jump & King Promotion",
+        "desc": "After a capture, if the same piece can capture again, it must continue (chain capture). When a regular piece reaches the opponent's back rank, it becomes a King."
+      },
+      {
+        "title": "Winning",
+        "desc": "You win by capturing all of your opponent's pieces or leaving them with no legal moves."
+      }
+    ]
+  },
+  {
     "id": "battleship",
     "name": "Battleship",
     "minPlayers": 2,

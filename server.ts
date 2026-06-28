@@ -7,6 +7,7 @@ import * as blackHole from './server/games/blackHole.js';
 import * as connectFour from './server/games/connectFour.js';
 import * as dotsAndBoxes from './server/games/dotsAndBoxes.js';
 import * as battleship from './server/games/battleship.js';
+import * as checkers from './server/games/checkers.js';
 import { createRoomManager } from './server/roomManager.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -28,6 +29,7 @@ const rooms = createRoomManager({
   'connect-four': connectFour as any,
   'dots-and-boxes': dotsAndBoxes as any,
   'battleship': battleship as any,
+  'checkers': checkers as any,
 });
 
 io.on('connection', (socket: Socket) => {
