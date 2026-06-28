@@ -137,8 +137,11 @@
     </main>
 
     <!-- Footer -->
-    <footer class="mt-12 pb-6 text-gray-500 text-xs text-center">
+    <footer class="mt-12 pb-6 text-gray-500 text-xs text-center flex flex-col items-center space-y-1">
       <p>© 2026 Gab Samonte.</p>
+      <button @click="openBugReport" class="hover:text-indigo-600 transition cursor-pointer underline text-[11px] font-medium">
+        Report a Bug
+      </button>
     </footer>
   </div>
 </template>
@@ -311,6 +314,9 @@ export default defineComponent({
     handleRoomValidationError({ message }: { message: string }) {
       this.isValidating = false;
       this.validationError = message;
+    },
+    openBugReport() {
+      window.dispatchEvent(new CustomEvent('open-bug-report'));
     },
   },
 });

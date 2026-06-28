@@ -13,6 +13,7 @@
       ></router-view>
     </div>
     <ToastContainer />
+    <BugReportModal :socket="socket" />
   </div>
 </template>
 
@@ -21,9 +22,10 @@ import { defineComponent } from 'vue';
 import { useRouter } from 'vue-router';
 import { useSocket } from './composables/useSocket.js';
 import ToastContainer from './components/ToastContainer.vue';
+import BugReportModal from './components/BugReportModal.vue';
 
 export default defineComponent({
-  components: { ToastContainer },
+  components: { ToastContainer, BugReportModal },
   setup() {
     const router = useRouter() as any;
     return { ...useSocket(router) };
