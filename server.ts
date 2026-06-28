@@ -10,6 +10,7 @@ import * as battleship from './server/games/battleship.js';
 import * as checkers from './server/games/checkers.js';
 import * as bingo from './server/games/bingo.js';
 import { createRoomManager } from './server/roomManager.js';
+import { evaluateBugReport, createGitHubIssue } from './server/bugReportService.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -88,6 +89,25 @@ io.on('connection', (socket: Socket) => {
 
   socket.on('remove-ai', ({ roomKey }: { roomKey: string }) => {
     rooms.removeAI(roomKey, socket, io);
+  });
+
+  socket.on('report-bug', async (data) => {
+    try {
+      const result = await evaluateBugReport(data);
+      if (result.rejected) {
+        socket.emit('bug-report-error', { message: result.reason || 'Bug report rejected as spam/invalid.' });
+        return;
+      }
+      const issue = await createGitHubIssue({
+        title: result.formattedTitle!,
+        body: result.formattedBody!,
+        labels: ['bug', data.category.toLowerCase().replace(/\s+/g, '-')]
+      });
+      socket.emit('bug-report-success', { issueUrl: issue.html_url });
+    } catch (err: any) {
+      console.error('Error reporting bug:', err);
+      socket.emit('bug-report-error', { message: err.message || 'Failed to process bug report.' });
+    }
   });
 
   socket.on('reconnect-room', ({ roomKey, playerNumber }: { roomKey: string; playerNumber: number }) => {
