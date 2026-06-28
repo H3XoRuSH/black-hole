@@ -1,5 +1,5 @@
 <template>
-  <span class="inline-flex items-center gap-0.5 ml-0.5">
+  <span class="inline-flex items-center gap-0.5 ml-1.5">
     <span
       v-for="i in 3"
       :key="i"
