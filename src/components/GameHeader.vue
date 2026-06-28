@@ -95,6 +95,43 @@
       </div>
     </div>
 
+    <!-- AI Match Recap Panel -->
+    <div
+      v-if="gameOver && gameState"
+      class="w-full mt-4 bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl text-left transition-all duration-300"
+    >
+      <div class="flex items-center justify-between mb-3 border-b border-slate-800 pb-2">
+        <div class="flex items-center space-x-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd" />
+          </svg>
+          <span class="text-sm font-bold text-slate-200">DeepSeek AI Match Recap</span>
+        </div>
+        <span
+          class="text-[10px] font-bold uppercase tracking-wider text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 rounded-full px-2 py-0.5"
+          >Beta</span
+        >
+      </div>
+
+      <!-- Loading State -->
+      <div v-if="gameState.recapLoading" class="flex flex-col items-center py-6 space-y-3">
+        <div class="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+        <span class="text-xs text-slate-400 animate-pulse">DeepSeek AI is analyzing key moves...</span>
+      </div>
+
+      <!-- Content -->
+      <div
+        v-else-if="gameState.recap"
+        class="text-xs sm:text-sm text-slate-300 max-h-60 overflow-y-auto pr-1"
+        v-html="formattedRecapHtml"
+      ></div>
+
+      <!-- Not started / No recap -->
+      <div v-else class="text-xs text-slate-500 text-center py-2">
+        No recap available.
+      </div>
+    </div>
+
     <!-- Instructions Modal -->
     <Teleport to="body">
       <Transition
@@ -208,6 +245,10 @@ export default defineComponent({
       type: String,
       default: '',
     },
+    gameState: {
+      type: Object,
+      default: null,
+    },
   },
   data() {
     return {
@@ -228,6 +269,36 @@ export default defineComponent({
       if (winnerLower.includes(`player ${this.player}`))
         return 'text-green-600';
       return 'text-red-600';
+    },
+    formattedRecapHtml(): string {
+      if (!this.gameState || !this.gameState.recap) return '';
+      let html = this.gameState.recap;
+
+      // Escape HTML to prevent XSS
+      html = html
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+      // Convert bold: **text** -> <strong>text</strong>
+      html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+
+      // Convert headings: ### text -> <h3 class="text-sm font-bold text-slate-100 mt-3 mb-1">text</h3>
+      html = html.replace(/### (.*?)\n/g, '<h3 class="text-sm font-bold text-slate-100 mt-3 mb-1">$1</h3>');
+      html = html.replace(/## (.*?)\n/g, '<h2 class="text-base font-bold text-slate-100 mt-4 mb-2">$1</h2>');
+
+      // Convert list items: * item -> <li class="ml-4 list-disc text-slate-300">item</li>
+      html = html.replace(/^\* (.*?)$/gm, '<li class="ml-4 list-disc text-slate-300">$1</li>');
+
+      // Convert newlines to paragraphs
+      html = html.split('\n\n').map((p) => {
+        if (p.trim().startsWith('<li') || p.trim().startsWith('<h3') || p.trim().startsWith('<h2')) {
+          return p;
+        }
+        return `<p class="mb-2 leading-relaxed text-slate-300">${p}</p>`;
+      }).join('');
+
+      return html;
     },
     activeGameId(): string {
       const parts = this.$route.path.split('/');

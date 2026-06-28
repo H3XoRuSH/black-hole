@@ -33,3 +33,5 @@ coverage
 .agents/
 opencode.json
 AGENTS.md
+
+.env

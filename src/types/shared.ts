@@ -17,6 +17,9 @@ export interface BlackHoleGameState {
   players: Player[];
   scores: { player1: number; player2: number };
   winner: string;
+  moveHistory?: any[];
+  recap?: string;
+  recapLoading?: boolean;
 }
 
 export interface ConnectFourGameState {
@@ -25,6 +28,9 @@ export interface ConnectFourGameState {
   totalMoves: number;
   players: Player[];
   winner: string;
+  moveHistory?: any[];
+  recap?: string;
+  recapLoading?: boolean;
 }
 
 export interface DotsAndBoxesGameState {
@@ -35,6 +41,9 @@ export interface DotsAndBoxesGameState {
   totalMoves: number;
   players: Player[];
   winner: string;
+  moveHistory?: any[];
+  recap?: string;
+  recapLoading?: boolean;
 }
 
 export interface Ship {
@@ -61,6 +70,9 @@ export interface BattleshipGameState {
     hit: boolean;
     sunkShipName: string | null;
   } | null;
+  moveHistory?: any[];
+  recap?: string;
+  recapLoading?: boolean;
 }
 
 export interface Room {

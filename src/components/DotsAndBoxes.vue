@@ -11,6 +11,7 @@
       :player="player"
       :game-over="gameOver"
       :winner="gameState.winner"
+      :game-state="gameState"
     />
 
     <!-- Score Info -->

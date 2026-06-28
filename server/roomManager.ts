@@ -3,6 +3,7 @@ import type { Room } from '../src/types/shared.js';
 import { readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { generateRecap } from './recapService.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -61,6 +62,9 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
 
       const game = gamesRegistry[gameId] || gamesRegistry['black-hole'];
       const initialGameState = game.createInitialState(socket.id);
+      initialGameState.moveHistory = [];
+      initialGameState.recap = undefined;
+      initialGameState.recapLoading = false;
 
       const gameConfig = gamesConfig.find((g: any) => g.id === gameId);
       initialGameState.minPlayers = gameConfig?.minPlayers ?? 2;
@@ -304,7 +308,40 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       const game = gamesRegistry[room.gameId];
       if (game) {
         const success = game.makeMove(room, socket, data);
-        if (success) broadcastGameState(roomKey, room, io);
+        if (success) {
+          if (!room.gameState.moveHistory) {
+            room.gameState.moveHistory = [];
+          }
+          const moveRecord: any = {
+            player: player.player,
+            timestamp: Date.now(),
+            ...data,
+          };
+          if (room.gameId === 'battleship' && data.action === 'shoot' && room.gameState.lastShotResult) {
+            moveRecord.hit = room.gameState.lastShotResult.hit;
+            moveRecord.sunkShipName = room.gameState.lastShotResult.sunkShipName;
+          }
+          room.gameState.moveHistory.push(moveRecord);
+
+          if (room.gameState.winner) {
+            room.gameState.recapLoading = true;
+            broadcastGameState(roomKey, room, io);
+
+            generateRecap(room.gameId, room.gameState)
+              .then((recapText) => {
+                room.gameState.recap = recapText;
+                room.gameState.recapLoading = false;
+                broadcastGameState(roomKey, room, io);
+              })
+              .catch((err) => {
+                console.error('Failed to generate recap:', err);
+                room.gameState.recapLoading = false;
+                broadcastGameState(roomKey, room, io);
+              });
+          } else {
+            broadcastGameState(roomKey, room, io);
+          }
+        }
       } else {
         socket.emit('invalid-move', { message: 'Unsupported game type.' });
       }
@@ -341,6 +378,9 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
             io.to(p2.id).emit('player-role', { player: 1 });
           }
           room.gameState = game.resetState(room.gameState.players);
+          room.gameState.moveHistory = [];
+          room.gameState.recap = undefined;
+          room.gameState.recapLoading = false;
           broadcastGameState(roomKey, room, io);
         }
       }
