@@ -56,8 +56,8 @@
 
         <!-- Players List -->
         <div class="mt-6 border-t border-gray-100 pt-6 text-left">
-          <h4 class="text-sm font-semibold text-gray-700 mb-3">Players</h4>
-          <div class="space-y-3 mb-6">
+          <h4 class="text-sm font-semibold text-gray-700 mb-3">Players ({{ players.length }}/{{ maxPlayers }})</h4>
+          <div class="space-y-3 mb-6 max-h-64 overflow-y-auto">
             <!-- Dynamic Players List -->
             <div
               v-for="p in players"
@@ -67,7 +67,7 @@
               <div class="flex items-center space-x-3">
                 <div
                   class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm"
-                  :class="p.player === 1 ? 'bg-indigo-100 text-indigo-600' : 'bg-pink-100 text-pink-600'"
+                  :class="playerColorClasses(p.player)"
                 >
                   P{{ p.player }}
                 </div>
@@ -95,9 +95,9 @@
               </div>
             </div>
 
-            <!-- Wait placeholder for required min players -->
+            <!-- Wait placeholder for available player slots -->
             <div
-              v-for="i in Math.max(0, minPlayers - players.length)"
+              v-for="i in Math.max(0, maxPlayers - players.length)"
               :key="'waiting-' + i"
               class="flex items-center justify-between p-3 bg-gray-50 border border-gray-100 border-dashed rounded-xl text-gray-400"
             >
@@ -345,6 +345,19 @@ export default defineComponent({
       if (this.socket && this.roomKey && this.canStartGame) {
         this.socket.emit('start-game', { roomKey: this.roomKey });
       }
+    },
+    playerColorClasses(playerNum: number) {
+      const colors = [
+        'bg-indigo-100 text-indigo-600',
+        'bg-pink-100 text-pink-600',
+        'bg-emerald-100 text-emerald-600',
+        'bg-orange-100 text-orange-600',
+        'bg-purple-100 text-purple-600',
+        'bg-cyan-100 text-cyan-600',
+        'bg-rose-100 text-rose-600',
+        'bg-amber-100 text-amber-600',
+      ];
+      return colors[(playerNum - 1) % colors.length];
     },
   },
   beforeRouteLeave(to: any, from: any, next: any) {

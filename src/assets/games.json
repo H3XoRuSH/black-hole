@@ -92,6 +92,34 @@
     ]
   },
   {
+    "id": "battleship",
+    "name": "Battleship",
+    "minPlayers": 2,
+    "maxPlayers": 2,
+    "description": "A strategic 2-player grid-guessing game. Place your fleet on a 10x10 grid, take turns calling shots, and sink all of your opponent's ships to win!",
+    "route": "/battleship/lobby",
+    "status": "active",
+    "color": "#e11d48",
+    "rules": [
+      {
+        "title": "Phase 1: Position Fleet",
+        "desc": "Secretly place your 3 ships (Cruiser of size 3, Destroyer of size 2, and Patrol Boat of size 2) on your 6x6 grid. Select a ship and click the grid. Press Spacebar or orientation toggle to rotate. Click 'Deploy Fleet' once fully placed."
+      },
+      {
+        "title": "Phase 2: Engage Combat",
+        "desc": "Take turns choosing target coordinates on the opponent's grid to shoot."
+      },
+      {
+        "title": "Shot Indicators",
+        "desc": "Hits are marked with red pins (💥) and misses are marked with white pins (⚪). Complete ship sinkings will be announced."
+      },
+      {
+        "title": "Victory Condition",
+        "desc": "The first player to sink all 3 of the opponent's ships (7 total hits required) wins the battle."
+      }
+    ]
+  },
+  {
     "id": "checkers",
     "name": "Checkers",
     "minPlayers": 2,
@@ -124,30 +152,34 @@
     ]
   },
   {
-    "id": "battleship",
-    "name": "Battleship",
+    "id": "bingo",
+    "name": "Bingo",
     "minPlayers": 2,
-    "maxPlayers": 2,
-    "description": "A strategic 2-player grid-guessing game. Place your fleet on a 10x10 grid, take turns calling shots, and sink all of your opponent's ships to win!",
-    "route": "/battleship/lobby",
+    "maxPlayers": 8,
+    "description": "A classic multiplayer Bingo game for 2-8 players. The host draws numbers, and players mark their cards. First to complete a row, column, or diagonal shouts BINGO!",
+    "route": "/bingo/lobby",
     "status": "active",
-    "color": "#e11d48",
+    "color": "#0891b2",
     "rules": [
       {
-        "title": "Phase 1: Position Fleet",
-        "desc": "Secretly place your 3 ships (Cruiser of size 3, Destroyer of size 2, and Patrol Boat of size 2) on your 6x6 grid. Select a ship and click the grid. Press Spacebar or orientation toggle to rotate. Click 'Deploy Fleet' once fully placed."
+        "title": "Players",
+        "desc": "2 to 8 players can join. One player is the host who draws the numbers."
       },
       {
-        "title": "Phase 2: Engage Combat",
-        "desc": "Take turns choosing target coordinates on the opponent's grid to shoot."
+        "title": "Your Card",
+        "desc": "Each player gets a unique 5x5 Bingo card with numbers. The center space is FREE (auto-daubed)."
       },
       {
-        "title": "Shot Indicators",
-        "desc": "Hits are marked with red pins (💥) and misses are marked with white pins (⚪). Complete ship sinkings will be announced."
+        "title": "Drawing Numbers",
+        "desc": "The host clicks 'Draw Number' to randomly pick a number from 1-75 that hasn't been drawn yet."
       },
       {
-        "title": "Victory Condition",
-        "desc": "The first player to sink all 3 of the opponent's ships (7 total hits required) wins the battle."
+        "title": "Daubing",
+        "desc": "When a number is drawn, click on that number on your card to daub (mark) it."
+      },
+      {
+        "title": "Calling BINGO",
+        "desc": "If you daub all 5 cells in a row, column, or diagonal, click the BINGO! button to win. The server validates your card."
       }
     ]
   }

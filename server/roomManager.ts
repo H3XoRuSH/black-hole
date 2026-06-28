@@ -19,6 +19,8 @@ export interface GameModule {
   createInitialState: (playerId: string) => any;
   resetState: (players: any[]) => any;
   makeMove: (room: Room, socket: Socket, data: any) => boolean;
+  noTurns?: boolean;
+  onGameStart?: (room: Room) => void;
 }
 
 const generateRoomKey = (): string => {
@@ -133,6 +135,12 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       }
       room.gameStarted = true;
       room.gameState.players.forEach((p: any) => p.ready = false);
+
+      const gameModule = gamesRegistry[room.gameId];
+      if (gameModule?.onGameStart) {
+        gameModule.onGameStart(room);
+      }
+
       room.gameState.players.forEach((player: any) => {
         io.to(player.id).emit('room-started', {
           roomKey,
@@ -150,7 +158,9 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
         return;
       }
       const room = rooms.get(uppercaseKey)!;
-      if (room.gameState.players.length >= 2) {
+      const gameConfig = gamesConfig.find((g: any) => g.id === room.gameId);
+      const maxPlayers = gameConfig?.maxPlayers ?? 2;
+      if (room.gameState.players.length >= maxPlayers) {
         socket.emit('room-validation-error', { message: 'Room is full.' });
         return;
       }
@@ -299,13 +309,13 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
         return;
       }
       const room = rooms.get(roomKey)!;
+      const game = gamesRegistry[room.gameId];
       const player = room.gameState.players.find((p: any) => p.id === socket.id);
       const isPlayingPhase = !room.gameState.phase || room.gameState.phase === 'playing';
-      if (!player || (isPlayingPhase && player.player !== room.gameState.currentPlayer)) {
+      if (!game?.noTurns && (!player || (isPlayingPhase && player.player !== room.gameState.currentPlayer))) {
         socket.emit('invalid-move', { message: 'Not your turn.' });
         return;
       }
-      const game = gamesRegistry[room.gameId];
       if (game) {
         const success = game.makeMove(room, socket, data);
         if (success) {
@@ -372,21 +382,23 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       player.ready = true;
       io.to(roomKey).emit('player-ready', { player: player.player });
       const allReady = room.gameState.players.every((p: any) => p.ready);
-      if (allReady && room.gameState.players.length === 2) {
+      const playerCount = room.gameState.players.length;
+      const gameConfig = gamesConfig.find((g: any) => g.id === room.gameId);
+      const minPlayers = gameConfig?.minPlayers ?? 2;
+      if (allReady && playerCount >= minPlayers) {
         const game = gamesRegistry[room.gameId];
         if (game) {
-          // Swap P1 and P2 roles
-          const p1 = room.gameState.players.find((p: any) => p.player === 1);
-          const p2 = room.gameState.players.find((p: any) => p.player === 2);
-          if (p1 && p2) {
-            p1.player = 2;
-            p2.player = 1;
-            // Update the socketRooms mappings for both players
-            socketRooms.set(p1.id, { roomKey, playerNumber: 2 });
-            socketRooms.set(p2.id, { roomKey, playerNumber: 1 });
-            // Explicitly notify both clients of their new role
-            io.to(p1.id).emit('player-role', { player: 2 });
-            io.to(p2.id).emit('player-role', { player: 1 });
+          if (playerCount === 2) {
+            const p1 = room.gameState.players.find((p: any) => p.player === 1);
+            const p2 = room.gameState.players.find((p: any) => p.player === 2);
+            if (p1 && p2) {
+              p1.player = 2;
+              p2.player = 1;
+              socketRooms.set(p1.id, { roomKey, playerNumber: 2 });
+              socketRooms.set(p2.id, { roomKey, playerNumber: 1 });
+              io.to(p1.id).emit('player-role', { player: 2 });
+              io.to(p2.id).emit('player-role', { player: 1 });
+            }
           }
           room.gameState = game.resetState(room.gameState.players);
           room.gameState.moveHistory = [];
