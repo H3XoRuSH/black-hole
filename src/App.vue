@@ -12,6 +12,7 @@
         @update-room-key="roomKey = $event"
       ></router-view>
     </div>
+    <ToastContainer />
   </div>
 </template>
 
@@ -19,8 +20,10 @@
 import { defineComponent } from 'vue';
 import { useRouter } from 'vue-router';
 import { useSocket } from './composables/useSocket.js';
+import ToastContainer from './components/ToastContainer.vue';
 
 export default defineComponent({
+  components: { ToastContainer },
   setup() {
     const router = useRouter() as any;
     return { ...useSocket(router) };

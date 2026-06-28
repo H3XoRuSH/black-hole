@@ -1,6 +1,7 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { io, Socket } from 'socket.io-client';
 import type { Player } from '../types/shared.js';
+import { useToast } from './useToast.js';
 
 interface GameState {
   circles?: Record<string, { player: number; turn: number }>;
@@ -188,7 +189,8 @@ export function useSocket(router: any) {
     });
 
     socket.value.on('invalid-move', ({ message }: { message: string }) => {
-      alert(message);
+      const { showToast } = useToast();
+      showToast(message, 'error');
     });
   });
 
