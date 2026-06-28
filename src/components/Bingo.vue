@@ -318,6 +318,17 @@ export default defineComponent({
       prevLen = len;
     });
 
+    watch(
+      () => gameState.value.phase,
+      (newPhase) => {
+        if (newPhase === 'playing') {
+          recapText.value = '';
+          recapLoading.value = false;
+          showRecapModal.value = false;
+        }
+      }
+    );
+
     onBeforeUnmount(() => {
       document.removeEventListener('keydown', handleRecapEscKey);
       teardownRecapListeners();
