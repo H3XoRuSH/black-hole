@@ -1,3 +1,6 @@
+import { callDeepSeek } from './deepseek.js';
+import { getSystemPrompt, getRecapPrompt } from './prompts.js';
+
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
 
 function getGameName(gameId: string): string {
@@ -85,47 +88,17 @@ export async function generateRecap(gameId: string, gameState: any): Promise<str
   }
 
   const formattedHistory = formatMoveHistory(gameId, gameState);
-  const prompt = `You are a professional board game commentator and narrator.
-We just finished a match of "${getGameName(gameId)}". Here is the log of moves and final outcome:
-
-${formattedHistory}
-
-Please write a brief, engaging, and professional narrative summary/recap of the match (2-3 paragraphs, about 100-150 words).
-Focus on:
-1. The opening moves and initial strategies.
-2. Key turning points, crucial blockages, or mistakes.
-3. The dramatic final conclusion.
-
-Format your response in clean Markdown. Refer to players as "Player 1 (Blue)" and "Player 2 (Red)" (or names if appropriate). Keep it concise, exciting, and professional.`;
+  const prompt = getRecapPrompt(getGameName(gameId), formattedHistory);
 
   try {
-    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: 'deepseek-chat',
-        messages: [
-          { role: 'system', content: 'You are a professional board game analyst.' },
-          { role: 'user', content: prompt }
-        ],
-        temperature: 0.7,
-        max_tokens: 500
-      })
+    const recap = await callDeepSeek({
+      messages: [
+        { role: 'system', content: getSystemPrompt() },
+        { role: 'user', content: prompt }
+      ],
+      temperature: 0.7,
+      maxTokens: 500
     });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`DeepSeek API returned error ${response.status}: ${errorText}`);
-    }
-
-    const data: any = await response.json();
-    const recap = data.choices?.[0]?.message?.content;
-    if (!recap) {
-      throw new Error('Invalid response structure from DeepSeek API.');
-    }
     return recap;
   } catch (error) {
     console.error('Error calling DeepSeek API:', error);

@@ -9,6 +9,8 @@
       :game-over="gameOver"
       :winner="gameState.winner"
       :game-state="gameState"
+      :socket="socket"
+      :room-key="roomKey"
     />
 
     <!-- Game Log Alert Area -->

@@ -50,6 +50,10 @@ io.on('connection', (socket: Socket) => {
     rooms.makeMove(data, socket, io);
   });
 
+  socket.on('request-recap', ({ roomKey }: { roomKey: string }) => {
+    rooms.requestRecap(roomKey, socket);
+  });
+
   socket.on('new-game', ({ roomKey }: { roomKey: string }) => {
     rooms.newGame(roomKey, socket, io);
   });

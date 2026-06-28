@@ -12,6 +12,8 @@
       :winner="gameState.winner"
       :extra-info="`P1: ${player1Turns}/${gameState.maxTurnsPerPlayer} | P2: ${player2Turns}/${gameState.maxTurnsPerPlayer}`"
       :game-state="gameState"
+      :socket="socket"
+      :room-key="roomKey"
     />
 
     <!-- Content Area -->

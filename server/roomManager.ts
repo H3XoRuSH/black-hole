@@ -70,7 +70,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       initialGameState.minPlayers = gameConfig?.minPlayers ?? 2;
       initialGameState.maxPlayers = gameConfig?.maxPlayers ?? 2;
 
-      rooms.set(roomKey, { gameId, gameState: initialGameState, gameStarted: false });
+      rooms.set(roomKey, { gameId, gameState: initialGameState, gameStarted: false, recaps: new Map() });
       socket.join(roomKey);
       socketRooms.set(socket.id, { roomKey, playerNumber: 1 });
       socket.emit('waiting-for-player', { roomKey, player: 1, gameId, gameState: initialGameState });
@@ -323,28 +323,39 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
           }
           room.gameState.moveHistory.push(moveRecord);
 
-          if (room.gameState.winner) {
-            room.gameState.recapLoading = true;
-            broadcastGameState(roomKey, room, io);
-
-            generateRecap(room.gameId, room.gameState)
-              .then((recapText) => {
-                room.gameState.recap = recapText;
-                room.gameState.recapLoading = false;
-                broadcastGameState(roomKey, room, io);
-              })
-              .catch((err) => {
-                console.error('Failed to generate recap:', err);
-                room.gameState.recapLoading = false;
-                broadcastGameState(roomKey, room, io);
-              });
-          } else {
-            broadcastGameState(roomKey, room, io);
-          }
+          broadcastGameState(roomKey, room, io);
         }
       } else {
         socket.emit('invalid-move', { message: 'Unsupported game type.' });
       }
+    },
+
+    requestRecap(roomKey: string, socket: Socket) {
+      if (!rooms.has(roomKey)) return;
+      const room = rooms.get(roomKey)!;
+      if (!room.gameState.winner) return;
+
+      const playerEntry = room.gameState.players.find((p: any) => p.id === socket.id);
+      if (!playerEntry) return;
+      const playerNum = playerEntry.player;
+
+      const existing = room.recaps?.get(playerNum);
+      if (existing?.text || existing?.loading) return;
+
+      if (!room.recaps) room.recaps = new Map();
+      room.recaps.set(playerNum, { text: '', loading: true });
+      socket.emit('recap-loading');
+
+      generateRecap(room.gameId, room.gameState)
+        .then((recapText) => {
+          room.recaps?.set(playerNum, { text: recapText, loading: false });
+          socket.emit('recap-generated', { text: recapText });
+        })
+        .catch((err) => {
+          console.error('Failed to generate recap:', err);
+          room.recaps?.set(playerNum, { text: '', loading: false });
+          socket.emit('recap-generated', { text: '' });
+        });
     },
 
     newGame(roomKey: string, socket: Socket, io: SocketIOServer) {
@@ -379,8 +390,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
           }
           room.gameState = game.resetState(room.gameState.players);
           room.gameState.moveHistory = [];
-          room.gameState.recap = undefined;
-          room.gameState.recapLoading = false;
+          if (room.recaps) room.recaps.clear();
           broadcastGameState(roomKey, room, io);
         }
       }

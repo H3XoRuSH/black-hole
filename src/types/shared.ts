@@ -75,10 +75,16 @@ export interface BattleshipGameState {
   recapLoading?: boolean;
 }
 
+export interface RecapEntry {
+  text: string;
+  loading: boolean;
+}
+
 export interface Room {
   gameId: string;
   gameState: any;
   gameStarted?: boolean;
+  recaps?: Map<number, RecapEntry>;
 }
 
 export interface MenuGame {

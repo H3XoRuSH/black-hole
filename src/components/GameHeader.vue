@@ -95,41 +95,20 @@
       </div>
     </div>
 
-    <!-- AI Match Recap Panel -->
+    <!-- AI Recap Button -->
     <div
       v-if="gameOver && gameState"
-      class="w-full mt-4 bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl text-left transition-all duration-300"
+      class="w-full mt-4 flex justify-center"
     >
-      <div class="flex items-center justify-between mb-3 border-b border-slate-800 pb-2">
-        <div class="flex items-center space-x-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-400" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd" />
-          </svg>
-          <span class="text-sm font-bold text-slate-200">DeepSeek AI Match Recap</span>
-        </div>
-        <span
-          class="text-[10px] font-bold uppercase tracking-wider text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 rounded-full px-2 py-0.5"
-          >Beta</span
-        >
-      </div>
-
-      <!-- Loading State -->
-      <div v-if="gameState.recapLoading" class="flex flex-col items-center py-6 space-y-3">
-        <div class="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-        <span class="text-xs text-slate-400 animate-pulse">DeepSeek AI is analyzing key moves...</span>
-      </div>
-
-      <!-- Content -->
-      <div
-        v-else-if="gameState.recap"
-        class="text-xs sm:text-sm text-slate-300 max-h-60 overflow-y-auto pr-1"
-        v-html="formattedRecapHtml"
-      ></div>
-
-      <!-- Not started / No recap -->
-      <div v-else class="text-xs text-slate-500 text-center py-2">
-        No recap available.
-      </div>
+      <button
+        @click="openRecapModal"
+        class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all duration-150 cursor-pointer shadow-md active:scale-95 flex items-center space-x-2"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7z" clip-rule="evenodd" />
+        </svg>
+        <span>AI Recap</span>
+      </button>
     </div>
 
     <!-- Instructions Modal -->
@@ -210,6 +189,86 @@
         </div>
       </Transition>
     </Teleport>
+
+    <!-- Recap Modal -->
+    <Teleport to="body">
+      <Transition
+        enter-active-class="transition duration-300 ease-out"
+        enter-from-class="opacity-0"
+        enter-to-class="opacity-100"
+        leave-active-class="transition duration-200 ease-in"
+        leave-from-class="opacity-100"
+        leave-to-class="opacity-0"
+      >
+        <div
+          v-if="showRecapModal"
+          class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/65 backdrop-blur-sm"
+          @click.self="closeRecapModal"
+        >
+          <Transition
+            enter-active-class="transition duration-300 ease-out"
+            enter-from-class="opacity-0 scale-95 translate-y-4"
+            enter-to-class="opacity-100 scale-100 translate-y-0"
+            leave-active-class="transition duration-200 ease-in"
+            leave-from-class="opacity-100 scale-100 translate-y-0"
+            leave-to-class="opacity-0 scale-95 translate-y-4"
+          >
+            <div
+              v-if="showRecapModal"
+              class="bg-slate-900 border border-slate-800 text-white rounded-2xl max-w-lg w-full shadow-2xl p-6 flex flex-col relative max-h-[85vh] overflow-hidden"
+            >
+              <button
+                @click="closeRecapModal"
+                class="absolute top-4 right-4 text-slate-400 hover:text-white hover:bg-slate-800/80 p-1.5 rounded-lg transition-colors cursor-pointer active:scale-95"
+                aria-label="Close Recap"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+
+              <div class="mb-5 flex items-center space-x-3 pr-8">
+                <div class="p-2 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd" />
+                  </svg>
+                </div>
+                <div>
+                  <h2 class="text-xl font-bold tracking-tight">AI Match Recap</h2>
+                  <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">{{ activeGameName }}</p>
+                </div>
+              </div>
+
+              <div v-if="recapLoading" class="flex flex-col items-center py-8 space-y-3">
+                <div class="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                <span class="text-xs text-slate-400 animate-pulse">Analyzing key moves...</span>
+              </div>
+
+              <div
+                v-else-if="!recapText"
+                class="flex justify-center py-6"
+              >
+                <button
+                  @click="requestRecap"
+                  class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all duration-150 cursor-pointer shadow-md active:scale-95 flex items-center space-x-2"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7z" clip-rule="evenodd" />
+                  </svg>
+                  <span>Generate AI Recap</span>
+                </button>
+              </div>
+
+              <div
+                v-else
+                class="overflow-y-auto pr-1 text-slate-300 text-sm space-y-4 focus:outline-none"
+                v-html="formattedRecapHtml"
+              ></div>
+            </div>
+          </Transition>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
@@ -249,10 +308,21 @@ export default defineComponent({
       type: Object,
       default: null,
     },
+    socket: {
+      type: Object,
+      default: null,
+    },
+    roomKey: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
       isModalOpen: false,
+      showRecapModal: false,
+      recapText: '',
+      recapLoading: false,
     };
   },
   computed: {
@@ -271,8 +341,8 @@ export default defineComponent({
       return 'text-red-600';
     },
     formattedRecapHtml(): string {
-      if (!this.gameState || !this.gameState.recap) return '';
-      let html = this.gameState.recap;
+      if (!this.recapText) return '';
+      let html = this.recapText;
 
       // Escape HTML to prevent XSS
       html = html
@@ -315,6 +385,30 @@ export default defineComponent({
     },
   },
   methods: {
+    requestRecap() {
+      if (this.socket && this.roomKey) {
+        this.recapLoading = true;
+        this.socket.emit('request-recap', { roomKey: this.roomKey });
+      }
+    },
+    openRecapModal() {
+      this.showRecapModal = true;
+      document.addEventListener('keydown', this.handleRecapEscKey);
+      if (this.recapLoading) return;
+      if (!this.recapText && this.socket && this.roomKey) {
+        this.recapLoading = true;
+        this.socket.emit('request-recap', { roomKey: this.roomKey });
+      }
+    },
+    closeRecapModal() {
+      this.showRecapModal = false;
+      document.removeEventListener('keydown', this.handleRecapEscKey);
+    },
+    handleRecapEscKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        this.closeRecapModal();
+      }
+    },
     openModal() {
       this.isModalOpen = true;
       document.addEventListener('keydown', this.handleEscKey);
@@ -328,9 +422,28 @@ export default defineComponent({
         this.closeModal();
       }
     },
+    setupRecapListeners() {
+      if (!this.socket) return;
+      this.socket.on('recap-loading', () => {
+        this.recapLoading = true;
+      });
+      this.socket.on('recap-generated', ({ text }: { text: string }) => {
+        this.recapText = text;
+        this.recapLoading = false;
+      });
+    },
+    teardownRecapListeners() {
+      if (!this.socket) return;
+      this.socket.off('recap-loading');
+      this.socket.off('recap-generated');
+    },
+  },
+  mounted() {
+    this.setupRecapListeners();
   },
   beforeUnmount() {
     document.removeEventListener('keydown', this.handleEscKey);
+    this.teardownRecapListeners();
   },
 });
 </script>
