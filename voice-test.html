@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speech Synthesis Voice Test</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, sans-serif; background: #0f172a; color: #e2e8f0; padding: 2rem; }
+  h1 { margin-bottom: 1rem; font-size: 1.5rem; }
+  input { width: 100%; padding: 0.5rem 1rem; border-radius: 8px; border: 1px solid #334155; background: #1e293b; color: #e2e8f0; font-size: 1rem; margin-bottom: 1rem; }
+  .voices { display: grid; gap: 0.5rem; }
+  .voice { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 1rem; background: #1e293b; border-radius: 8px; border: 1px solid #334155; }
+  .voice button { background: #6366f1; color: #fff; border: none; padding: 0.4rem 1rem; border-radius: 6px; cursor: pointer; font-size: 0.85rem; }
+  .voice button:hover { background: #4f46e5; }
+  .voice .name { font-weight: 600; }
+  .voice .lang { color: #94a3b8; font-size: 0.85rem; }
+  .voice .default { background: #22c55e; color: #052e16; font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 4px; font-weight: 700; }
+</style>
+</head>
+<body>
+<h1>Choose a voice</h1>
+<input type="text" id="text" value="B 14, I 22, N 44, G 57, O 71">
+<div class="voices" id="voices"></div>
+
+<script>
+const textInput = document.getElementById('text');
+const container = document.getElementById('voices');
+
+function renderVoices() {
+  const voices = speechSynthesis.getVoices();
+  container.innerHTML = voices.map((v, i) => `
+    <div class="voice">
+      <button onclick="speakVoice(${i})">Play</button>
+      <span class="name">${v.name}</span>
+      <span class="lang">${v.lang}</span>
+      ${v.default ? '<span class="default">default</span>' : ''}
+    </div>
+  `).join('');
+}
+
+function speakVoice(index) {
+  const voices = speechSynthesis.getVoices();
+  const utterance = new SpeechSynthesisUtterance(textInput.value || 'Hello');
+  utterance.voice = voices[index];
+  utterance.rate = 0.8;
+  utterance.volume = 1;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utterance);
+}
+
+speechSynthesis.onvoiceschanged = renderVoices;
+renderVoices();
+</script>
+</body>
+</html>
