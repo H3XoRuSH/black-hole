@@ -18,7 +18,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { useRouter } from 'vue-router';
-import { useSocket } from './composables/useSocket';
+import { useSocket } from './composables/useSocket.js';
 
 export default defineComponent({
   setup() {

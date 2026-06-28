@@ -31,7 +31,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import type { MenuGame } from '../../types/shared';
+import type { MenuGame } from '../../types/shared.js';
 
 export default defineComponent({
   name: 'ListView',

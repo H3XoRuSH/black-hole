@@ -145,8 +145,8 @@
 import { defineComponent, PropType, ref } from 'vue';
 import { Socket } from 'socket.io-client';
 import GameHeader from './GameHeader.vue';
-import { useGame } from '../composables/useGame';
-import type { DotsAndBoxesGameState as GameState } from '../types/shared';
+import { useGame } from '../composables/useGame.js';
+import type { DotsAndBoxesGameState as GameState } from '../types/shared.js';
 
 export default defineComponent({
   name: 'DotsAndBoxes',
