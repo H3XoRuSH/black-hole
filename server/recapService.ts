@@ -101,7 +101,17 @@ function generateMockRecap(gameId: string, gameState: any): string {
     analysis += ` The endgame came down to piece advantage and positional control, where one player outmaneuvered the other to seal the victory.`;
   } else if (gameId === 'bingo') {
     const totalDraws = gameState.drawnNumbers?.length || 0;
-    analysis = `The caller drew ${totalDraws} numbers out of 75 in total. Players daubed their cards frantically, tracking their rows, columns, and diagonals. The tension built with every call until one player finally completed a winning pattern and shouted BINGO!`;
+    analysis = `The caller drew ${totalDraws} numbers out of 75 total. Players daubed their cards, watching their rows, columns, and diagonals fill up. The tension built with every call until one player finally completed a winning pattern and shouted BINGO!`;
+
+    return `### 🎮 ${gameName} Match Recap (Simulated AI)
+
+**Outcome:** **${winner}**
+
+${analysis}
+
+The match lasted for **${totalMoves}** total moves. Players tracked their cards closely as each number was called, celebrating every daub that brought them closer to victory.
+
+*Note: Set the \`DEEPSEEK_API_KEY\` environment variable to enable live AI-generated summaries from DeepSeek.*`;
   }
 
   return `### 🎮 ${gameName} Match Recap (Simulated AI)
@@ -122,7 +132,7 @@ export async function generateRecap(gameId: string, gameState: any): Promise<str
   }
 
   const formattedHistory = formatMoveHistory(gameId, gameState);
-  const prompt = getRecapPrompt(getGameName(gameId), formattedHistory);
+  const prompt = getRecapPrompt(getGameName(gameId), formattedHistory, gameId);
 
   try {
     const recap = await callDeepSeek({
