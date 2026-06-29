@@ -32,8 +32,8 @@ export default defineComponent({
   },
   watch: {
     $route(to: any) {
-      const isLobby = to.path === `/${this.gameId}/lobby`;
-      const isGame = this.roomKey && to.path === `/${this.gameId}/game/${this.roomKey}`;
+      const isLobby = to.path.endsWith('/lobby');
+      const isGame = to.path.includes('/game/');
       if (!isLobby && !isGame) {
         sessionStorage.removeItem('roomData');
         this.roomKey = '';

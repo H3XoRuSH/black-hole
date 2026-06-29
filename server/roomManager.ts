@@ -298,7 +298,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       socketRooms.delete(socket.id);
     },
 
-    reconnectRoom(roomKey: string, playerNumber: number, socket: Socket) {
+    reconnectRoom(roomKey: string, playerNumber: number, socket: Socket, io: SocketIOServer) {
       if (!rooms.has(roomKey)) {
         socket.emit('reconnect-fail', { message: 'That room is no longer available.' });
         return;
@@ -330,6 +330,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
         message: 'Your opponent has reconnected!',
         gameId: room.gameId,
       });
+      broadcastGameState(roomKey, room, io);
     },
 
     handleDisconnect(socketId: string, io: SocketIOServer) {
@@ -341,37 +342,36 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       if (!rooms.has(roomKey)) return;
       const room = rooms.get(roomKey)!;
 
-      if (!room.gameStarted) {
-        if (playerNumber === 1) {
-          io.in(roomKey).emit('room-closed', {
-            message: 'The host has disconnected.',
-          });
-          rooms.delete(roomKey);
-        } else {
-          const idx = room.gameState.players.findIndex((p: any) => p.player === playerNumber);
-          if (idx !== -1) {
-            room.gameState.players.splice(idx, 1);
-            room.gameState.players.forEach((p: any, i: number) => {
-              p.player = i + 1;
-              p.ready = false;
-              socketRooms.set(p.id, { roomKey, playerNumber: p.player });
-              io.to(p.id).emit('player-role', { player: p.player });
-            });
-            broadcastGameState(roomKey, room, io);
-          }
-        }
-        return;
-      }
-
       if (!disconnectTimers.has(roomKey)) {
         const timer = setTimeout(() => {
           const r = rooms.get(roomKey);
           if (r) {
-            io.in(roomKey).emit('player-disconnected', {
-              message: 'A player has disconnected. Returning to lobby.',
-              gameId: r.gameId,
-            });
-            rooms.delete(roomKey);
+            if (!r.gameStarted) {
+              if (playerNumber === 1) {
+                io.in(roomKey).emit('room-closed', {
+                  message: 'The host has disconnected.',
+                });
+                rooms.delete(roomKey);
+              } else {
+                const idx = r.gameState.players.findIndex((p: any) => p.player === playerNumber);
+                if (idx !== -1) {
+                  r.gameState.players.splice(idx, 1);
+                  r.gameState.players.forEach((p: any, i: number) => {
+                    p.player = i + 1;
+                    p.ready = false;
+                    socketRooms.set(p.id, { roomKey, playerNumber: p.player });
+                    io.to(p.id).emit('player-role', { player: p.player });
+                  });
+                  broadcastGameState(roomKey, r, io);
+                }
+              }
+            } else {
+              io.in(roomKey).emit('player-disconnected', {
+                message: 'A player has disconnected. Returning to lobby.',
+                gameId: r.gameId,
+              });
+              rooms.delete(roomKey);
+            }
           }
           disconnectTimers.delete(roomKey);
         }, RECONNECT_TIMEOUT);
@@ -380,8 +380,9 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
         if (room.gameState.players.length >= 2) {
           const otherPlayer = room.gameState.players.find((p: any) => p.player !== playerNumber);
           if (otherPlayer) {
+            const roleName = playerNumber === 1 ? 'host' : 'opponent';
             io.to(otherPlayer.id).emit('player-disconnected', {
-              message: 'Your opponent disconnected. Waiting for reconnection...',
+              message: `The ${roleName} disconnected. Waiting for reconnection...`,
               gameId: room.gameId,
               canReconnect: true,
             });

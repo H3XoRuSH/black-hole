@@ -111,7 +111,7 @@ io.on('connection', (socket: Socket) => {
   });
 
   socket.on('reconnect-room', ({ roomKey, playerNumber }: { roomKey: string; playerNumber: number }) => {
-    rooms.reconnectRoom(roomKey, playerNumber, socket);
+    rooms.reconnectRoom(roomKey, playerNumber, socket, io);
   });
 
   socket.on('disconnect', () => {
