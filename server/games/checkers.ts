@@ -273,6 +273,32 @@ export const makeMove = (
     gameState.winner = `Player ${opponent(gameState.currentPlayer)} wins!`;
   } else if (!hasLegalMoves(board, gameState.currentPlayer)) {
     gameState.winner = `Player ${opponent(gameState.currentPlayer)} wins!`;
+  } else {
+    // Check if all remaining pieces on the board are kings
+    let regularCount = 0;
+    let p1Kings = 0;
+    let p2Kings = 0;
+    for (let r = 0; r < ROWS; r++) {
+      for (let c = 0; c < COLS; c++) {
+        const val = board[r][c];
+        if (val === P1 || val === P2) {
+          regularCount++;
+        } else if (val === K1) {
+          p1Kings++;
+        } else if (val === K2) {
+          p2Kings++;
+        }
+      }
+    }
+    if (regularCount === 0 && (p1Kings > 0 || p2Kings > 0)) {
+      if (p1Kings > p2Kings) {
+        gameState.winner = 'Player 1 wins!';
+      } else if (p2Kings > p1Kings) {
+        gameState.winner = 'Player 2 wins!';
+      } else {
+        gameState.winner = 'Draw!';
+      }
+    }
   }
 
   return true;

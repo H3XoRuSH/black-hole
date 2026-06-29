@@ -357,7 +357,7 @@ export default defineComponent({
     winnerTextClass(): string {
       if (!this.winner) return '';
       const winnerLower = this.winner.toLowerCase();
-      if (winnerLower.includes('tie')) return 'text-gray-600';
+      if (winnerLower.includes('tie') || winnerLower.includes('draw')) return 'text-gray-600';
       if (winnerLower.includes(`player ${this.player}`))
         return 'text-green-600';
       return 'text-red-600';
