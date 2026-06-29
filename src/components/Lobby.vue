@@ -81,7 +81,7 @@
                         @keyup.escape="cancelRename"
                         ref="nameInput"
                         class="text-sm font-medium text-gray-800 bg-white border border-gray-300 rounded-lg px-2 py-1 w-28 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                        maxlength="20"
+                        maxlength="10"
                         autofocus
                       />
                     </template>
@@ -461,7 +461,7 @@ export default defineComponent({
     submitRename() {
       if (!this.editingName) return;
       this.editingName = false;
-      const name = this.newName.trim();
+      const name = this.newName.trim().slice(0, 10);
       if (name && this.socket && this.roomKey) {
         this.socket.emit('rename-player', { roomKey: this.roomKey, name });
       }

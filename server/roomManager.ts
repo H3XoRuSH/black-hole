@@ -196,7 +196,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       const room = rooms.get(roomKey)!;
       const player = room.gameState.players.find((p: any) => p.id === socket.id);
       if (player) {
-        player.name = name.trim().slice(0, 20) || player.name;
+        player.name = name.trim().slice(0, 10) || player.name;
         broadcastGameState(roomKey, room, io);
       }
     },
