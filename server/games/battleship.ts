@@ -223,6 +223,14 @@ export const getFilteredState = (gameState: BattleshipGameState, playerNum: numb
   };
 };
 
+/**
+ * BattleshipComputer - AI Move Generator for Battleship.
+ * Supports three difficulty levels:
+ * - Easy: 70% mistake rate. Shoots completely randomly.
+ * - Medium: 40% mistake rate. Uses a hunt-and-target search targeting neighbors of any unsunk hits.
+ * - Hard: 0% mistake rate. Uses horizontal/vertical alignment targeting when hits are connected,
+ *         and probability density heatmap calculations with checkerboard parity filtering for hunt mode.
+ */
 export class BattleshipComputer {
   static async getAIMove(gameState: BattleshipGameState): Promise<any> {
     if (gameState.phase === 'placement') {
@@ -231,17 +239,18 @@ export class BattleshipComputer {
 
     const aiPlayer = gameState.players.find((p) => p.isAI);
     const difficulty = aiPlayer?.difficulty || 'hard';
+    const aiPlayerNum = aiPlayer?.player || 2;
 
     let mistakeRate = 0;
     if (difficulty === 'easy') mistakeRate = 0.7;
     else if (difficulty === 'medium') mistakeRate = 0.4;
 
     if (Math.random() < mistakeRate) {
-      const p2Shots = gameState.p2Shots as [number, number][];
+      const ownShots = aiPlayerNum === 1 ? gameState.p1Shots : gameState.p2Shots;
       const allShots: [number, number][] = [];
       for (let r = 0; r < 6; r++) {
         for (let c = 0; c < 6; c++) {
-          const alreadyShot = p2Shots.some(([sr, sc]) => sr === r && sc === c);
+          const alreadyShot = ownShots.some(([sr, sc]) => sr === r && sc === c);
           if (!alreadyShot) allShots.push([r, c]);
         }
       }
@@ -251,7 +260,16 @@ export class BattleshipComputer {
       }
     }
 
-    return { action: 'shoot', ...this.getBattleshipHeuristicShot(gameState) };
+    let move: { row: number; col: number };
+    if (difficulty === 'easy') {
+      move = this.getEasyShot(gameState, aiPlayerNum);
+    } else if (difficulty === 'medium') {
+      move = this.getMediumShot(gameState, aiPlayerNum);
+    } else {
+      move = this.getHardShot(gameState, aiPlayerNum);
+    }
+
+    return { action: 'shoot', ...move };
   }
 
   private static getBattleshipHeuristicPlacement(): any {
@@ -302,14 +320,30 @@ export class BattleshipComputer {
     }
   }
 
-  private static getBattleshipHeuristicShot(gameState: BattleshipGameState): { row: number; col: number } {
-    const p2Shots = gameState.p2Shots as [number, number][];
-    const p1Ships = gameState.p1Ships as any[];
+  private static getEasyShot(gameState: BattleshipGameState, aiPlayerNum: number): { row: number; col: number } {
+    const ownShots = aiPlayerNum === 1 ? gameState.p1Shots : gameState.p2Shots;
+    const allShots: [number, number][] = [];
+    for (let r = 0; r < 6; r++) {
+      for (let c = 0; c < 6; c++) {
+        const alreadyShot = ownShots.some(([sr, sc]) => sr === r && sc === c);
+        if (!alreadyShot) allShots.push([r, c]);
+      }
+    }
+    if (allShots.length > 0) {
+      const pick = allShots[Math.floor(Math.random() * allShots.length)];
+      return { row: pick[0], col: pick[1] };
+    }
+    return { row: 0, col: 0 };
+  }
+
+  private static getMediumShot(gameState: BattleshipGameState, aiPlayerNum: number): { row: number; col: number } {
+    const ownShots = aiPlayerNum === 1 ? gameState.p1Shots : gameState.p2Shots;
+    const opponentShips = aiPlayerNum === 1 ? gameState.p2Ships : gameState.p1Ships;
 
     const hitCoords: [number, number][] = [];
-    for (const ship of p1Ships) {
+    for (const ship of opponentShips) {
       const shipShots = ship.coordinates.filter(([sr, sc]: [number, number]) =>
-        p2Shots.some(([r, c]) => r === sr && c === sc)
+        ownShots.some(([r, c]) => r === sr && c === sc)
       );
       const isSunk = shipShots.length === ship.size;
       if (shipShots.length > 0 && !isSunk) {
@@ -327,7 +361,7 @@ export class BattleshipComputer {
         ];
         for (const [nr, nc] of neighbors) {
           if (nr >= 0 && nr <= 5 && nc >= 0 && nc <= 5) {
-            const alreadyShot = p2Shots.some(([sr, sc]) => sr === nr && sc === nc);
+            const alreadyShot = ownShots.some(([sr, sc]) => sr === nr && sc === nc);
             if (!alreadyShot) {
               return { row: nr, col: nc };
             }
@@ -339,7 +373,7 @@ export class BattleshipComputer {
     const allShots: [number, number][] = [];
     for (let r = 0; r < 6; r++) {
       for (let c = 0; c < 6; c++) {
-        const alreadyShot = p2Shots.some(([sr, sc]) => sr === r && sc === c);
+        const alreadyShot = ownShots.some(([sr, sc]) => sr === r && sc === c);
         if (!alreadyShot) allShots.push([r, c]);
       }
     }
@@ -349,6 +383,139 @@ export class BattleshipComputer {
       return { row: pick[0], col: pick[1] };
     }
 
+    return { row: 0, col: 0 };
+  }
+
+  private static getHardShot(gameState: BattleshipGameState, aiPlayerNum: number): { row: number; col: number } {
+    const ownShots = aiPlayerNum === 1 ? gameState.p1Shots : gameState.p2Shots;
+    const opponentShips = aiPlayerNum === 1 ? gameState.p2Ships : gameState.p1Ships;
+    const isAlreadyShot = (r: number, c: number) => ownShots.some(([sr, sc]) => sr === r && sc === c);
+
+    const unsunkShips = opponentShips.filter((ship) => {
+      const shipShots = ship.coordinates.filter(([sr, sc]: [number, number]) =>
+        ownShots.some(([r, c]) => r === sr && c === sc)
+      );
+      return shipShots.length > 0 && shipShots.length < ship.size;
+    });
+
+    if (unsunkShips.length > 0) {
+      const ship = unsunkShips[0];
+      const shipHits = ship.coordinates.filter(([sr, sc]) => ownShots.some(([r, c]) => r === sr && c === sc));
+
+      if (shipHits.length === 1) {
+        const [r, c] = shipHits[0];
+        const neighbors = [[r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1]];
+        for (const [nr, nc] of neighbors) {
+          if (nr >= 0 && nr <= 5 && nc >= 0 && nc <= 5 && !isAlreadyShot(nr, nc)) {
+            return { row: nr, col: nc };
+          }
+        }
+      } else {
+        const isHorizontal = shipHits[0][0] === shipHits[1][0];
+        const candidates: [number, number][] = [];
+        if (isHorizontal) {
+          const row = shipHits[0][0];
+          const cols = shipHits.map((h) => h[1]);
+          candidates.push([row, Math.min(...cols) - 1]);
+          candidates.push([row, Math.max(...cols) + 1]);
+        } else {
+          const col = shipHits[0][1];
+          const rows = shipHits.map((h) => h[0]);
+          candidates.push([Math.min(...rows) - 1, col]);
+          candidates.push([Math.max(...rows) + 1, col]);
+        }
+        for (const [nr, nc] of candidates) {
+          if (nr >= 0 && nr <= 5 && nc >= 0 && nc <= 5 && !isAlreadyShot(nr, nc)) {
+            return { row: nr, col: nc };
+          }
+        }
+        for (const [r, c] of shipHits) {
+          const neighbors = [[r - 1, c], [r + 1, c], [r, c - 1], [r, c + 1]];
+          for (const [nr, nc] of neighbors) {
+            if (nr >= 0 && nr <= 5 && nc >= 0 && nc <= 5 && !isAlreadyShot(nr, nc)) {
+              return { row: nr, col: nc };
+            }
+          }
+        }
+      }
+    }
+
+    const untouchedShips = opponentShips.filter((ship) => {
+      const shipShots = ship.coordinates.filter(([sr, sc]: [number, number]) =>
+        ownShots.some(([r, c]) => r === sr && c === sc)
+      );
+      return shipShots.length === 0;
+    });
+
+    const remainingSizes = untouchedShips.map((s) => s.size);
+    if (remainingSizes.length === 0) {
+      const unoccupied: [number, number][] = [];
+      for (let r = 0; r < 6; r++) {
+        for (let c = 0; c < 6; c++) {
+          if (!isAlreadyShot(r, c)) unoccupied.push([r, c]);
+        }
+      }
+      if (unoccupied.length > 0) {
+        const pick = unoccupied[Math.floor(Math.random() * unoccupied.length)];
+        return { row: pick[0], col: pick[1] };
+      }
+      return { row: 0, col: 0 };
+    }
+
+    const density = Array(6).fill(null).map(() => Array(6).fill(0));
+    for (const size of remainingSizes) {
+      for (let r = 0; r < 6; r++) {
+        for (let c = 0; c <= 6 - size; c++) {
+          let possible = true;
+          for (let i = 0; i < size; i++) {
+            if (isAlreadyShot(r, c + i)) {
+              possible = false;
+              break;
+            }
+          }
+          if (possible) {
+            for (let i = 0; i < size; i++) density[r][c + i]++;
+          }
+        }
+      }
+      for (let c = 0; c < 6; c++) {
+        for (let r = 0; r <= 6 - size; r++) {
+          let possible = true;
+          for (let i = 0; i < size; i++) {
+            if (isAlreadyShot(r + i, c)) {
+              possible = false;
+              break;
+            }
+          }
+          if (possible) {
+            for (let i = 0; i < size; i++) density[r + i][c]++;
+          }
+        }
+      }
+    }
+
+    let maxDensity = -1;
+    let bestCells: [number, number][] = [];
+    for (let r = 0; r < 6; r++) {
+      for (let c = 0; c < 6; c++) {
+        if (!isAlreadyShot(r, c)) {
+          const val = density[r][c];
+          if (val > maxDensity) {
+            maxDensity = val;
+            bestCells = [[r, c]];
+          } else if (val === maxDensity) {
+            bestCells.push([r, c]);
+          }
+        }
+      }
+    }
+
+    if (bestCells.length > 0) {
+      const parityCells = bestCells.filter(([r, c]) => (r + c) % 2 === 0);
+      const candidates = parityCells.length > 0 ? parityCells : bestCells;
+      const pick = candidates[Math.floor(Math.random() * candidates.length)];
+      return { row: pick[0], col: pick[1] };
+    }
     return { row: 0, col: 0 };
   }
 }
