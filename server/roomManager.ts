@@ -39,6 +39,51 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
   const rooms = new Map<string, Room>();
   const socketRooms = new Map<string, { roomKey: string; playerNumber: number }>();
   const disconnectTimers = new Map<string, ReturnType<typeof setTimeout>>();
+  const bingoIntervals = new Map<string, ReturnType<typeof setInterval>>();
+
+  function startBingoTimer(roomKey: string, room: Room, io: SocketIOServer) {
+    stopBingoTimer(roomKey);
+    if (room.gameId !== 'bingo') return;
+    const interval = setInterval(() => {
+      const currentRoom = rooms.get(roomKey);
+      if (!currentRoom || !currentRoom.gameStarted || currentRoom.gameState.winner) {
+        stopBingoTimer(roomKey);
+        return;
+      }
+      const gameState = currentRoom.gameState;
+      const remaining: number[] = [];
+      for (let n = 1; n <= 75; n++) {
+        if (!gameState.drawnNumbers.includes(n)) remaining.push(n);
+      }
+      if (remaining.length === 0) {
+        stopBingoTimer(roomKey);
+        return;
+      }
+      const pick = remaining[Math.floor(Math.random() * remaining.length)];
+      gameState.drawnNumbers.push(pick);
+      gameState.totalMoves++;
+      gameState.players.forEach((p: any) => (p.ready = false));
+      if (!gameState.moveHistory) {
+        gameState.moveHistory = [];
+      }
+      gameState.moveHistory.push({
+        player: 0,
+        action: 'draw',
+        timestamp: Date.now(),
+        pick,
+      });
+      broadcastGameState(roomKey, currentRoom, io);
+    }, 5000);
+    bingoIntervals.set(roomKey, interval);
+  }
+
+  function stopBingoTimer(roomKey: string) {
+    const interval = bingoIntervals.get(roomKey);
+    if (interval) {
+      clearInterval(interval);
+      bingoIntervals.delete(roomKey);
+    }
+  }
 
   function getFilteredState(room: Room, playerNum: number) {
     if (room.gameId === 'battleship') {
@@ -237,6 +282,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
         });
       });
       triggerAIMoveIfActive(roomKey, room, io);
+      startBingoTimer(roomKey, room, io);
     },
 
     validateRoom(roomKey: string, socket: Socket) {
@@ -268,6 +314,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
             });
             socket.leave(roomKey);
             rooms.delete(roomKey);
+            stopBingoTimer(roomKey);
             const timer = disconnectTimers.get(roomKey);
             if (timer) clearTimeout(timer);
             disconnectTimers.delete(roomKey);
@@ -278,6 +325,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
               });
               socket.leave(roomKey);
               rooms.delete(roomKey);
+              stopBingoTimer(roomKey);
               const timer = disconnectTimers.get(roomKey);
               if (timer) clearTimeout(timer);
               disconnectTimers.delete(roomKey);
@@ -352,6 +400,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
                   message: 'The host has disconnected.',
                 });
                 rooms.delete(roomKey);
+                stopBingoTimer(roomKey);
               } else {
                 const idx = r.gameState.players.findIndex((p: any) => p.player === playerNumber);
                 if (idx !== -1) {
@@ -371,6 +420,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
                 gameId: r.gameId,
               });
               rooms.delete(roomKey);
+              stopBingoTimer(roomKey);
             }
           }
           disconnectTimers.delete(roomKey);
@@ -421,6 +471,10 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
             moveRecord.sunkShipName = room.gameState.lastShotResult.sunkShipName;
           }
           room.gameState.moveHistory.push(moveRecord);
+
+          if (room.gameId === 'bingo' && room.gameState.winner) {
+            stopBingoTimer(roomKey);
+          }
 
           broadcastGameState(roomKey, room, io);
           triggerAIMoveIfActive(roomKey, room, io);
@@ -504,6 +558,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
           if (room.recaps) room.recaps.clear();
           broadcastGameState(roomKey, room, io);
           triggerAIMoveIfActive(roomKey, room, io);
+          startBingoTimer(roomKey, room, io);
         }
       }
     },
