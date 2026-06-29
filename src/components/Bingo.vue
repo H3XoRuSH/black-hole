@@ -20,8 +20,8 @@
         </button>
       </div>
       <div v-if="!gameOver" class="flex items-center space-x-2">
-        <span class="text-xs font-semibold" :class="isMyTurn ? 'text-green-600' : 'text-gray-400'">
-          {{ gameState.currentPlayer === player ? 'You are drawing' : 'Host draws' }}
+        <span class="text-xs font-semibold text-gray-400">
+          Auto-drawing numbers...
         </span>
       </div>
       <router-link to="/menu"
@@ -84,16 +84,6 @@
           <div v-else class="text-xs text-gray-500 italic">
             No number drawn yet
           </div>
-        </div>
-
-        <div class="mt-2 text-center">
-          <button
-            v-if="player === 1 && !gameOver"
-            @click="drawNumber"
-            class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-1.5 rounded-xl shadow-md transition-all duration-150 cursor-pointer active:scale-95 text-sm"
-          >
-            Draw Number
-          </button>
         </div>
 
         <details class="text-xs text-gray-400 mt-2" open>
@@ -389,9 +379,6 @@ export default defineComponent({
       if (n <= 60) return 'G';
       return 'O';
     },
-    isMyTurn() {
-      return this.player === 1 && !this.gameOver && this.gameState.players.length >= 2;
-    },
     formattedRecapHtml(): string {
       if (!this.recapText) return '';
       let html = this.recapText;
@@ -444,10 +431,6 @@ export default defineComponent({
       if (r === 2 && c === 2) return;
       if (this.myDaubed.has(`${r},${c}`)) return;
       this.socket.emit('make-move', { roomKey: this.roomKey, action: 'daub', row: r, col: c });
-    },
-    drawNumber() {
-      if (this.gameOver || !this.socket) return;
-      this.socket.emit('make-move', { roomKey: this.roomKey, action: 'draw' });
     },
     callBingo() {
       if (this.gameOver || !this.socket) return;

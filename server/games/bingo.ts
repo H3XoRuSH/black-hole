@@ -112,30 +112,6 @@ export const makeMove = (
     return false;
   }
 
-  if (data.action === 'draw') {
-    if (player.player !== 1) {
-      socket.emit('invalid-move', { message: 'Only the host can draw numbers.' });
-      return false;
-    }
-    if (gameState.winner) {
-      socket.emit('invalid-move', { message: 'Game is over.' });
-      return false;
-    }
-    const remaining: number[] = [];
-    for (let n = 1; n <= 75; n++) {
-      if (!gameState.drawnNumbers.includes(n)) remaining.push(n);
-    }
-    if (remaining.length === 0) {
-      socket.emit('invalid-move', { message: 'All numbers have been drawn.' });
-      return false;
-    }
-    const pick = remaining[Math.floor(Math.random() * remaining.length)];
-    gameState.drawnNumbers.push(pick);
-    gameState.totalMoves++;
-    gameState.players.forEach((p: any) => (p.ready = false));
-    return true;
-  }
-
   if (data.action === 'daub') {
     const { row, col } = data;
     if (row === undefined || col === undefined) {
