@@ -61,7 +61,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
   function triggerAIMoveIfActive(roomKey: string, room: Room, io: SocketIOServer) {
     if (!room.gameStarted || room.gameState.winner) return;
 
-    const aiSupportedGames = ['black-hole', 'connect-four', 'dots-and-boxes', 'battleship'];
+    const aiSupportedGames = ['black-hole', 'connect-four', 'dots-and-boxes', 'battleship', 'checkers'];
     if (!aiSupportedGames.includes(room.gameId)) return;
 
     const aiPlayer = room.gameState.players.find((p: any) => p.isAI);
