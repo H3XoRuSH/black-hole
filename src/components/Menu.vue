@@ -110,24 +110,50 @@
 
     <!-- View Toggle Control -->
     <div
-      class="flex bg-gray-200/80 backdrop-blur-sm p-1 rounded-xl mb-5 sm:mb-6 space-x-1 w-full max-w-[280px] justify-center shadow-inner">
-      <button @click="viewMode = 'carousel'" :class="viewMode === 'carousel'
+      class="flex bg-gray-200/80 backdrop-blur-sm p-1 rounded-xl mb-5 sm:mb-6 space-x-1 w-full max-w-[180px] justify-center shadow-inner">
+      <button
+        @click="viewMode = 'carousel'"
+        :class="viewMode === 'carousel'
           ? 'bg-white text-gray-900 shadow-sm'
           : 'text-gray-500 hover:text-gray-800'
-        " class="flex-1 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer text-center">
-        Carousel
+        "
+        class="flex-grow py-2 rounded-lg transition-all duration-200 cursor-pointer flex items-center justify-center"
+        title="Carousel View"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <rect x="7" y="4" width="10" height="16" rx="2" />
+          <rect x="2" y="6" width="3" height="12" rx="1" opacity="0.6" />
+          <rect x="19" y="6" width="3" height="12" rx="1" opacity="0.6" />
+        </svg>
       </button>
-      <button @click="viewMode = 'list'" :class="viewMode === 'list'
+      <button
+        @click="viewMode = 'list'"
+        :class="viewMode === 'list'
           ? 'bg-white text-gray-900 shadow-sm'
           : 'text-gray-500 hover:text-gray-800'
-        " class="flex-1 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer text-center">
-        List
+        "
+        class="flex-grow py-2 rounded-lg transition-all duration-200 cursor-pointer flex items-center justify-center"
+        title="List View"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01" stroke-width="2.5" />
+        </svg>
       </button>
-      <button @click="viewMode = 'grid'" :class="viewMode === 'grid'
+      <button
+        @click="viewMode = 'grid'"
+        :class="viewMode === 'grid'
           ? 'bg-white text-gray-900 shadow-sm'
           : 'text-gray-500 hover:text-gray-800'
-        " class="flex-1 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 cursor-pointer text-center">
-        Grid
+        "
+        class="flex-grow py-2 rounded-lg transition-all duration-200 cursor-pointer flex items-center justify-center"
+        title="Grid View"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <rect x="4" y="4" width="6" height="6" rx="1" />
+          <rect x="14" y="4" width="6" height="6" rx="1" />
+          <rect x="4" y="14" width="6" height="6" rx="1" />
+          <rect x="14" y="14" width="6" height="6" rx="1" />
+        </svg>
       </button>
     </div>
 
