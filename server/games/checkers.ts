@@ -303,3 +303,324 @@ export const makeMove = (
 
   return true;
 };
+
+const evaluateBoard = (board: number[][]): number => {
+  let score = 0;
+  for (let r = 0; r < 8; r++) {
+    for (let c = 0; c < 8; c++) {
+      const val = board[r][c];
+      if (val === EMPTY) continue;
+
+      let pieceValue = 0;
+      let positionalBonus = 0;
+
+      // Center control (rows 3, 4, columns 2-5)
+      const isCenter = r >= 3 && r <= 4 && c >= 2 && c <= 5;
+      // Edge safety (columns 0 or 7)
+      const isEdge = c === 0 || c === 7;
+
+      if (val === P1) {
+        pieceValue = 100;
+        // Advancement bonus (closer to row 0)
+        positionalBonus += (7 - r) * 5;
+        // Back rank protection
+        if (r === 7) positionalBonus += 20;
+        if (isCenter) positionalBonus += 15;
+        if (isEdge) positionalBonus += 10;
+        score += pieceValue + positionalBonus;
+      } else if (val === K1) {
+        pieceValue = 175;
+        if (isCenter) positionalBonus += 15;
+        if (isEdge) positionalBonus += 10;
+        score += pieceValue + positionalBonus;
+      } else if (val === P2) {
+        pieceValue = 100;
+        // Advancement bonus (closer to row 7)
+        positionalBonus += r * 5;
+        // Back rank protection
+        if (r === 0) positionalBonus += 20;
+        if (isCenter) positionalBonus += 15;
+        if (isEdge) positionalBonus += 10;
+        score -= (pieceValue + positionalBonus);
+      } else if (val === K2) {
+        pieceValue = 175;
+        if (isCenter) positionalBonus += 15;
+        if (isEdge) positionalBonus += 10;
+        score -= (pieceValue + positionalBonus);
+      }
+    }
+  }
+  return score;
+};
+
+const getAllLegalMoves = (
+  board: number[][],
+  currentPlayer: number,
+  mustCapturePos: string | null
+): { fromRow: number; fromCol: number; toRow: number; toCol: number }[] => {
+  const moves: { fromRow: number; fromCol: number; toRow: number; toCol: number }[] = [];
+
+  if (mustCapturePos) {
+    const [fromRow, fromCol] = mustCapturePos.split(',').map(Number);
+    const captures = getCapturesForPiece(board, fromRow, fromCol);
+    for (const [toRow, toCol] of captures) {
+      moves.push({ fromRow, fromCol, toRow, toCol });
+    }
+    return moves;
+  }
+
+  const capturesExist = hasAnyCapture(board, currentPlayer);
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      if (isOwn(board[r][c], currentPlayer)) {
+        if (capturesExist) {
+          const captures = getCapturesForPiece(board, r, c);
+          for (const [toRow, toCol] of captures) {
+            moves.push({ fromRow: r, fromCol: c, toRow, toCol });
+          }
+        } else {
+          const simples = getSimpleMoves(board, r, c);
+          for (const [toRow, toCol] of simples) {
+            moves.push({ fromRow: r, fromCol: c, toRow, toCol });
+          }
+        }
+      }
+    }
+  }
+  return moves;
+};
+
+const simulateMove = (
+  board: number[][],
+  currentPlayer: number,
+  move: { fromRow: number; fromCol: number; toRow: number; toCol: number }
+): { nextBoard: number[][]; nextPlayer: number; nextMustCapturePos: string | null } => {
+  const nextBoard = board.map((row) => [...row]);
+  const { fromRow, fromCol, toRow, toCol } = move;
+  const piece = nextBoard[fromRow][fromCol];
+
+  nextBoard[toRow][toCol] = piece;
+  nextBoard[fromRow][fromCol] = EMPTY;
+
+  const dr = toRow - fromRow;
+  const dc = toCol - fromCol;
+  const isCapture = Math.abs(dr) === 2;
+
+  if (isCapture) {
+    const midR = fromRow + dr / 2;
+    const midC = fromCol + dc / 2;
+    nextBoard[midR][midC] = EMPTY;
+
+    const promoteRow = piece === P1 || piece === K1 ? 0 : 7;
+    let promoted = false;
+    if (!isKing(piece) && toRow === promoteRow) {
+      nextBoard[toRow][toCol] = piece + 2;
+      promoted = true;
+    }
+
+    if (!promoted) {
+      const furtherCaptures = getCapturesForPiece(nextBoard, toRow, toCol);
+      if (furtherCaptures.length > 0) {
+        return {
+          nextBoard,
+          nextPlayer: currentPlayer,
+          nextMustCapturePos: `${toRow},${toCol}`,
+        };
+      }
+    }
+  } else {
+    const promoteRow = piece === P1 || piece === K1 ? 0 : 7;
+    if (!isKing(piece) && toRow === promoteRow) {
+      nextBoard[toRow][toCol] = piece + 2;
+    }
+  }
+
+  return {
+    nextBoard,
+    nextPlayer: opponent(currentPlayer),
+    nextMustCapturePos: null,
+  };
+};
+
+const minimax = (
+  board: number[][],
+  player: number,
+  mustCapturePos: string | null,
+  depth: number,
+  alpha: number,
+  beta: number,
+  isMaximizing: boolean
+): number => {
+  const hasMoves = hasLegalMoves(board, player);
+  if (!hasMoves) {
+    return isMaximizing ? -10000 - depth : 10000 + depth;
+  }
+
+  let regularCount = 0;
+  let p1Kings = 0;
+  let p2Kings = 0;
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      const val = board[r][c];
+      if (val === P1 || val === P2) regularCount++;
+      else if (val === K1) p1Kings++;
+      else if (val === K2) p2Kings++;
+    }
+  }
+  if (regularCount === 0 && (p1Kings > 0 || p2Kings > 0)) {
+    if (p1Kings > p2Kings) return 9000;
+    if (p2Kings > p1Kings) return -9000;
+    return 0;
+  }
+
+  if (depth === 0) {
+    return evaluateBoard(board);
+  }
+
+  const moves = getAllLegalMoves(board, player, mustCapturePos);
+
+  if (isMaximizing) {
+    let maxEval = -Infinity;
+    for (const move of moves) {
+      const { nextBoard, nextPlayer, nextMustCapturePos } = simulateMove(board, player, move);
+      const nextIsMaximizing = nextPlayer === 1;
+      const evaluation = minimax(
+        nextBoard,
+        nextPlayer,
+        nextMustCapturePos,
+        depth - 1,
+        alpha,
+        beta,
+        nextIsMaximizing
+      );
+      maxEval = Math.max(maxEval, evaluation);
+      alpha = Math.max(alpha, evaluation);
+      if (beta <= alpha) break;
+    }
+    return maxEval;
+  } else {
+    let minEval = Infinity;
+    for (const move of moves) {
+      const { nextBoard, nextPlayer, nextMustCapturePos } = simulateMove(board, player, move);
+      const nextIsMaximizing = nextPlayer === 1;
+      const evaluation = minimax(
+        nextBoard,
+        nextPlayer,
+        nextMustCapturePos,
+        depth - 1,
+        alpha,
+        beta,
+        nextIsMaximizing
+      );
+      minEval = Math.min(minEval, evaluation);
+      beta = Math.min(beta, evaluation);
+      if (beta <= alpha) break;
+    }
+    return minEval;
+  }
+};
+
+/**
+ * CheckersComputer - AI Move Generator for Checkers.
+ * Supports three difficulty levels:
+ * - Easy: 70% mistake rate. Uses a basic 1-ply minimax look-ahead.
+ * - Medium: 40% mistake rate. Uses a 3-ply alpha-beta minimax search.
+ * - Hard: 0% mistake rate. Uses a 5-ply alpha-beta minimax search with dynamic depth
+ *         scaling up to 7-ply in the late-game/endgame to optimize calculation speed.
+ *
+ * Board Evaluation logic:
+ * - Piece values are scored based on standard checkers rules: normal piece is 100, king is 175.
+ * - Positional factors are applied dynamically:
+ *   - Center control: bonus for occupying center board (rows 3-4, columns 2-5) for higher mobility.
+ *   - Edge safety: bonus for occupying safe edge squares (columns 0 or 7).
+ *   - Back rank protection: bonus for keeping pieces on back rows to block promotions.
+ *   - Promotion proximity: small advancement bonus for regular pieces based on distance from home row.
+ */
+export class CheckersComputer {
+  static async getAIMove(gameState: CheckersGameState): Promise<{ fromRow: number; fromCol: number; toRow: number; toCol: number }> {
+    const aiPlayer = gameState.players.find((p) => p.isAI);
+    const difficulty = aiPlayer?.difficulty || 'hard';
+    const aiPlayerNumber = aiPlayer?.player || 2;
+
+    const moves = getAllLegalMoves(gameState.board, aiPlayerNumber, gameState.mustCapturePos);
+    if (moves.length === 0) {
+      return { fromRow: 0, fromCol: 0, toRow: 0, toCol: 0 };
+    }
+
+    let mistakeRate = 0;
+    if (difficulty === 'easy') mistakeRate = 0.7;
+    else if (difficulty === 'medium') mistakeRate = 0.4;
+
+    if (Math.random() < mistakeRate) {
+      return moves[Math.floor(Math.random() * moves.length)];
+    }
+
+    let depth = 5;
+    if (difficulty === 'easy') {
+      depth = 1;
+    } else if (difficulty === 'medium') {
+      depth = 3;
+    } else {
+      let totalPieces = 0;
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          if (gameState.board[r][c] !== EMPTY) totalPieces++;
+        }
+      }
+      if (totalPieces <= 6) {
+        depth = 7;
+      } else if (totalPieces <= 12) {
+        depth = 6;
+      } else {
+        depth = 5;
+      }
+    }
+
+    let bestMove = moves[0];
+    const isMaximizing = aiPlayerNumber === 1;
+
+    if (isMaximizing) {
+      let maxEval = -Infinity;
+      for (const move of moves) {
+        const { nextBoard, nextPlayer, nextMustCapturePos } = simulateMove(gameState.board, aiPlayerNumber, move);
+        const nextIsMaximizing = nextPlayer === 1;
+        const evaluation = minimax(
+          nextBoard,
+          nextPlayer,
+          nextMustCapturePos,
+          depth - 1,
+          -Infinity,
+          Infinity,
+          nextIsMaximizing
+        );
+        if (evaluation > maxEval) {
+          maxEval = evaluation;
+          bestMove = move;
+        }
+      }
+    } else {
+      let minEval = Infinity;
+      for (const move of moves) {
+        const { nextBoard, nextPlayer, nextMustCapturePos } = simulateMove(gameState.board, aiPlayerNumber, move);
+        const nextIsMaximizing = nextPlayer === 1;
+        const evaluation = minimax(
+          nextBoard,
+          nextPlayer,
+          nextMustCapturePos,
+          depth - 1,
+          -Infinity,
+          Infinity,
+          nextIsMaximizing
+        );
+        if (evaluation < minEval) {
+          minEval = evaluation;
+          bestMove = move;
+        }
+      }
+    }
+
+    return bestMove;
+  }
+}
+
+export const getAIMove = (gameState: CheckersGameState) => CheckersComputer.getAIMove(gameState);

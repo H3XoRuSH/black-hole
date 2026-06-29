@@ -132,6 +132,7 @@
     "route": "/checkers/lobby",
     "status": "active",
     "color": "#d97706",
+    "supportsAI": true,
     "rules": [
       {
         "title": "The Board",
