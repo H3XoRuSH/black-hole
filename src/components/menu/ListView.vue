@@ -5,6 +5,7 @@
       :style="{ borderLeftColor: game.color }">
       <div class="flex-grow pr-4">
         <div class="flex items-center space-x-2 mb-1">
+          <div v-if="game.icon" class="w-7 h-7 flex-shrink-0" :style="{ color: game.color }" v-html="game.icon"></div>
           <h2 class="text-base sm:text-lg font-bold text-gray-800">
             {{ game.name }}
           </h2>

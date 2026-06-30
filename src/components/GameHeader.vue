@@ -15,11 +15,14 @@
         </svg>
       </button>
 
-      <h1
-        class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-red-600 bg-clip-text text-transparent text-center flex-grow"
-      >
-        {{ title }}
-      </h1>
+      <div class="flex items-center justify-center flex-grow space-x-2.5">
+        <div v-if="activeGame?.icon" class="w-7 h-7 sm:w-8 sm:h-8 flex-shrink-0" :style="{ color: activeGame.color }" v-html="activeGame.icon"></div>
+        <h1
+          class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-red-600 bg-clip-text text-transparent text-center"
+        >
+          {{ title }}
+        </h1>
+      </div>
 
       <!-- Exit / Leave Button -->
       <router-link

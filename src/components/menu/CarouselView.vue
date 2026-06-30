@@ -10,12 +10,15 @@
             :style="{ borderTopColor: game.color }">
             <div>
               <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xl sm:text-2xl font-bold text-gray-800">
-                  {{ game.name }}
-                </h2>
+                <div class="flex items-center space-x-2.5 min-w-0">
+                  <div v-if="game.icon" class="w-8 h-8 flex-shrink-0" :style="{ color: game.color }" v-html="game.icon"></div>
+                  <h2 class="text-xl sm:text-2xl font-bold text-gray-800 truncate">
+                    {{ game.name }}
+                  </h2>
+                </div>
                 <span
                   v-if="game.supportsAI"
-                  class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200"
+                  class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200 flex-shrink-0 ml-1"
                 >
                   Play vs AI
                 </span>
