@@ -140,13 +140,46 @@ export const makeMove = (
   return true;
 };
 
+const LINE_KEYS: string[] = [];
+for (let r = 0; r <= 4; r++) {
+  for (let c = 0; c <= 3; c++) LINE_KEYS.push(`h-${r}-${c}`);
+}
+for (let r = 0; r <= 3; r++) {
+  for (let c = 0; c <= 4; c++) LINE_KEYS.push(`v-${r}-${c}`);
+}
+
+const KEY_TO_INDEX: Record<string, number> = {};
+LINE_KEYS.forEach((key, index) => {
+  KEY_TO_INDEX[key] = index;
+});
+
+const BOX_TO_LINES: number[][] = [];
+const LINE_TO_BOXES: number[][] = Array.from({ length: 40 }, () => []);
+
+for (let br = 0; br < 4; br++) {
+  for (let bc = 0; bc < 4; bc++) {
+    const boxIdx = br * 4 + bc;
+    const top = KEY_TO_INDEX[`h-${br}-${bc}`];
+    const bottom = KEY_TO_INDEX[`h-${br + 1}-${bc}`];
+    const left = KEY_TO_INDEX[`v-${br}-${bc}`];
+    const right = KEY_TO_INDEX[`v-${br}-${bc + 1}`];
+
+    BOX_TO_LINES[boxIdx] = [top, bottom, left, right];
+
+    LINE_TO_BOXES[top].push(boxIdx);
+    LINE_TO_BOXES[bottom].push(boxIdx);
+    LINE_TO_BOXES[left].push(boxIdx);
+    LINE_TO_BOXES[right].push(boxIdx);
+  }
+}
+
 /**
  * DotsAndBoxesComputer - AI Move Generator for Dots and Boxes.
  * Supports three difficulty levels:
  * - Easy: 70% mistake rate. Uses a basic static heuristic (completes boxes if possible, plays safe moves, blocks opponent).
  * - Medium: 40% mistake rate. Uses a 3-ply alpha-beta minimax search.
  * - Hard: 0% mistake rate. Uses a 4-ply minimax search in the early game and searches to the
- *         end of the game (full minimax) when 10 or fewer empty lines remain.
+ *         end of the game (full minimax) when 12 or fewer empty lines remain.
  *
  * Turn-Keeping Minimax Logic:
  * - Completing a box allows the player to keep their turn. This is handled by recursively calling
@@ -164,14 +197,7 @@ export class DotsAndBoxesComputer {
     else if (difficulty === 'medium') mistakeRate = 0.4;
 
     if (Math.random() < mistakeRate) {
-      const allLines: string[] = [];
-      for (let r = 0; r <= 4; r++) {
-        for (let c = 0; c <= 3; c++) allLines.push(`h-${r}-${c}`);
-      }
-      for (let r = 0; r <= 3; r++) {
-        for (let c = 0; c <= 4; c++) allLines.push(`v-${r}-${c}`);
-      }
-      const unoccupiedLines = allLines.filter((line) => !gameState.lines[line]);
+      const unoccupiedLines = LINE_KEYS.filter((line) => !gameState.lines[line]);
       if (unoccupiedLines.length > 0) {
         return { lineKey: unoccupiedLines[Math.floor(Math.random() * unoccupiedLines.length)] };
       }
@@ -182,29 +208,14 @@ export class DotsAndBoxesComputer {
     } else if (difficulty === 'medium') {
       return { lineKey: this.getBestMoveUsingMinimax(gameState, 3) };
     } else {
-      const allLines: string[] = [];
-      for (let r = 0; r <= 4; r++) {
-        for (let c = 0; c <= 3; c++) allLines.push(`h-${r}-${c}`);
-      }
-      for (let r = 0; r <= 3; r++) {
-        for (let c = 0; c <= 4; c++) allLines.push(`v-${r}-${c}`);
-      }
-      const unoccupiedCount = allLines.filter((line) => !gameState.lines[line]).length;
-      const depth = unoccupiedCount <= 10 ? unoccupiedCount : 4;
+      const unoccupiedCount = LINE_KEYS.filter((line) => !gameState.lines[line]).length;
+      const depth = unoccupiedCount <= 12 ? unoccupiedCount : 4;
       return { lineKey: this.getBestMoveUsingMinimax(gameState, depth) };
     }
   }
 
   private static getStaticHeuristicMove(gameState: DotsAndBoxesGameState): string {
-    const allLines: string[] = [];
-    for (let r = 0; r <= 4; r++) {
-      for (let c = 0; c <= 3; c++) allLines.push(`h-${r}-${c}`);
-    }
-    for (let r = 0; r <= 3; r++) {
-      for (let c = 0; c <= 4; c++) allLines.push(`v-${r}-${c}`);
-    }
-
-    const unoccupiedLines = allLines.filter((line) => !gameState.lines[line]);
+    const unoccupiedLines = LINE_KEYS.filter((line) => !gameState.lines[line]);
     if (unoccupiedLines.length === 0) return '';
 
     const getBoxLinesCount = (br: number, bc: number): { count: number; remaining: string[] } => {
@@ -273,211 +284,254 @@ export class DotsAndBoxesComputer {
     gameState: DotsAndBoxesGameState,
     depth: number
   ): string {
-    const lines = { ...gameState.lines };
-    const boxes = { ...gameState.boxes };
     const aiPlayer = gameState.currentPlayer;
     const opponentPlayer = aiPlayer === 1 ? 2 : 1;
 
-    const allLines: string[] = [];
-    for (let r = 0; r <= 4; r++) {
-      for (let c = 0; c <= 3; c++) allLines.push(`h-${r}-${c}`);
+    const linesState = new Array(40);
+    for (let i = 0; i < 40; i++) {
+      linesState[i] = !!gameState.lines[LINE_KEYS[i]];
     }
-    for (let r = 0; r <= 3; r++) {
-      for (let c = 0; c <= 4; c++) allLines.push(`v-${r}-${c}`);
+
+    const boxesState = new Uint8Array(16);
+    let completedBoxesCount = 0;
+    for (let br = 0; br < 4; br++) {
+      for (let bc = 0; bc < 4; bc++) {
+        const boxIdx = br * 4 + bc;
+        const boxKey = `${br}-${bc}`;
+        const owner = gameState.boxes[boxKey] || 0;
+        boxesState[boxIdx] = owner;
+        if (owner !== 0) {
+          completedBoxesCount++;
+        }
+      }
     }
-    const unoccupied = allLines.filter((l) => !lines[l]);
+
+    const unoccupied: number[] = [];
+    for (let i = 0; i < 40; i++) {
+      if (!linesState[i]) unoccupied.push(i);
+    }
+
     if (unoccupied.length === 0) return '';
 
-    const getMovePriority = (line: string): number => {
-      let createsThree = false;
+    const priorities = new Int32Array(unoccupied.length);
+    for (let k = 0; k < unoccupied.length; k++) {
+      const lineIdx = unoccupied[k];
       let completesBox = false;
+      let createsThree = false;
+      const boxes = LINE_TO_BOXES[lineIdx];
+      for (let b = 0; b < boxes.length; b++) {
+        const boxIdx = boxes[b];
+        const boxLines = BOX_TO_LINES[boxIdx];
+        let drawnCount = 0;
+        if (linesState[boxLines[0]]) drawnCount++;
+        if (linesState[boxLines[1]]) drawnCount++;
+        if (linesState[boxLines[2]]) drawnCount++;
+        if (linesState[boxLines[3]]) drawnCount++;
 
-      const parts = line.split('-');
-      const type = parts[0];
-      const r = parseInt(parts[1], 10);
-      const c = parseInt(parts[2], 10);
-
-      const checkSingle = (br: number, bc: number) => {
-        const boxLines = [`h-${br}-${bc}`, `h-${br + 1}-${bc}`, `v-${br}-${bc}`, `v-${br}-${bc + 1}`];
-        const count = boxLines.filter((l) => lines[l]).length;
-        if (count === 3) completesBox = true;
-        if (count === 2) createsThree = true;
-      };
-
-      if (type === 'h') {
-        if (r > 0) checkSingle(r - 1, c);
-        if (r < 4) checkSingle(r, c);
-      } else {
-        if (c > 0) checkSingle(r, c - 1);
-        if (c < 4) checkSingle(r, c);
+        if (drawnCount === 3) completesBox = true;
+        if (drawnCount === 2) createsThree = true;
       }
+      if (completesBox) priorities[k] = 3;
+      else if (createsThree) priorities[k] = 1;
+      else priorities[k] = 2;
+    }
 
-      if (completesBox) return 3;
-      if (createsThree) return 1;
-      return 2;
-    };
+    const pairs = unoccupied.map((lineIdx, k) => ({ lineIdx, priority: priorities[k] }));
+    pairs.sort((a, b) => b.priority - a.priority);
 
-    unoccupied.sort((a, b) => getMovePriority(b) - getMovePriority(a));
-
-    let bestMove = unoccupied[0];
+    let bestMove = pairs[0].lineIdx;
     let bestVal = -Infinity;
 
-    for (const line of unoccupied) {
-      lines[line] = aiPlayer;
-      const completed = checkMoveBoxes(lines, line, aiPlayer);
-      for (const boxKey of completed) {
-        boxes[boxKey] = aiPlayer;
+    for (let k = 0; k < pairs.length; k++) {
+      const lineIdx = pairs[k].lineIdx;
+      linesState[lineIdx] = true;
+
+      const boxes = LINE_TO_BOXES[lineIdx];
+      let completedCount = 0;
+      const completedBoxIndices: number[] = [];
+      for (let b = 0; b < boxes.length; b++) {
+        const boxIdx = boxes[b];
+        const boxLines = BOX_TO_LINES[boxIdx];
+        if (linesState[boxLines[0]] && linesState[boxLines[1]] && linesState[boxLines[2]] && linesState[boxLines[3]]) {
+          boxesState[boxIdx] = aiPlayer;
+          completedBoxIndices.push(boxIdx);
+          completedCount++;
+        }
+      }
+
+      const nextUnoccupied = new Array(unoccupied.length - 1);
+      let index = 0;
+      for (let u = 0; u < unoccupied.length; u++) {
+        if (unoccupied[u] !== lineIdx) {
+          nextUnoccupied[index++] = unoccupied[u];
+        }
       }
 
       let val: number;
-      if (completed.length > 0) {
-        val = minimax(lines, boxes, aiPlayer, depth - 1, true, -Infinity, Infinity, aiPlayer, opponentPlayer);
+      if (completedCount > 0) {
+        val = fastMinimax(
+          linesState,
+          boxesState,
+          completedBoxesCount + completedCount,
+          aiPlayer,
+          depth - 1,
+          true,
+          -Infinity,
+          Infinity,
+          aiPlayer,
+          opponentPlayer,
+          nextUnoccupied
+        );
       } else {
-        val = minimax(lines, boxes, opponentPlayer, depth - 1, false, -Infinity, Infinity, aiPlayer, opponentPlayer);
+        val = fastMinimax(
+          linesState,
+          boxesState,
+          completedBoxesCount,
+          opponentPlayer,
+          depth - 1,
+          false,
+          -Infinity,
+          Infinity,
+          aiPlayer,
+          opponentPlayer,
+          nextUnoccupied
+        );
       }
 
-      for (const boxKey of completed) {
-        delete boxes[boxKey];
+      for (let b = 0; b < completedBoxIndices.length; b++) {
+        boxesState[completedBoxIndices[b]] = 0;
       }
-      delete lines[line];
+      linesState[lineIdx] = false;
 
       if (val > bestVal) {
         bestVal = val;
-        bestMove = line;
+        bestMove = lineIdx;
       }
     }
 
-    return bestMove;
+    return LINE_KEYS[bestMove];
   }
 }
 
-const checkMoveBoxes = (
-  lines: Record<string, number>,
-  lineKey: string,
-  _player: number
-): string[] => {
-  const parts = lineKey.split('-');
-  const type = parts[0];
-  const r = parseInt(parts[1], 10);
-  const c = parseInt(parts[2], 10);
-  const completed: string[] = [];
-
-  const checkSingleBox = (br: number, bc: number) => {
-    const top = `h-${br}-${bc}`;
-    const bottom = `h-${br + 1}-${bc}`;
-    const left = `v-${br}-${bc}`;
-    const right = `v-${br}-${bc + 1}`;
-
-    if (lines[top] && lines[bottom] && lines[left] && lines[right]) {
-      completed.push(`${br}-${bc}`);
-    }
-  };
-
-  if (type === 'h') {
-    if (r > 0) checkSingleBox(r - 1, c);
-    if (r < 4) checkSingleBox(r, c);
-  } else {
-    if (c > 0) checkSingleBox(r, c - 1);
-    if (c < 4) checkSingleBox(r, c);
-  }
-
-  return completed;
-};
-
-const evaluateState = (
-  boxes: Record<string, number>,
-  aiPlayer: number
-): number => {
-  let score = 0;
-  for (const key of Object.keys(boxes)) {
-    if (boxes[key] === aiPlayer) score++;
-    else score--;
-  }
-  return score;
-};
-
-const minimax = (
-  lines: Record<string, number>,
-  boxes: Record<string, number>,
+const fastMinimax = (
+  linesState: boolean[],
+  boxesState: Uint8Array,
+  completedBoxesCount: number,
   currentPlayer: number,
   depth: number,
   isMaximizing: boolean,
   alpha: number,
   beta: number,
   aiPlayer: number,
-  opponentPlayer: number
+  opponentPlayer: number,
+  unoccupied: number[]
 ): number => {
-  const completedBoxes = Object.keys(boxes).length;
-  if (completedBoxes === 16) {
-    return evaluateState(boxes, aiPlayer) * 1000;
-  }
-  if (depth === 0) {
-    return evaluateState(boxes, aiPlayer);
-  }
-
-  const allLines: string[] = [];
-  for (let r = 0; r <= 4; r++) {
-    for (let c = 0; c <= 3; c++) allLines.push(`h-${r}-${c}`);
-  }
-  for (let r = 0; r <= 3; r++) {
-    for (let c = 0; c <= 4; c++) allLines.push(`v-${r}-${c}`);
-  }
-  const unoccupied = allLines.filter((l) => !lines[l]);
-  if (unoccupied.length === 0) {
-    return evaluateState(boxes, aiPlayer);
-  }
-
-  const getMovePriority = (line: string): number => {
-    let createsThree = false;
-    let completesBox = false;
-
-    const parts = line.split('-');
-    const type = parts[0];
-    const r = parseInt(parts[1], 10);
-    const c = parseInt(parts[2], 10);
-
-    const checkSingle = (br: number, bc: number) => {
-      const boxLines = [`h-${br}-${bc}`, `h-${br + 1}-${bc}`, `v-${br}-${bc}`, `v-${br}-${bc + 1}`];
-      const count = boxLines.filter((l) => lines[l]).length;
-      if (count === 3) completesBox = true;
-      if (count === 2) createsThree = true;
-    };
-
-    if (type === 'h') {
-      if (r > 0) checkSingle(r - 1, c);
-      if (r < 4) checkSingle(r, c);
-    } else {
-      if (c > 0) checkSingle(r, c - 1);
-      if (c < 4) checkSingle(r, c);
+  if (completedBoxesCount === 16) {
+    let score = 0;
+    for (let j = 0; j < 16; j++) {
+      if (boxesState[j] === aiPlayer) score++;
+      else if (boxesState[j] === opponentPlayer) score--;
     }
+    return score * 1000;
+  }
+  if (depth === 0 || unoccupied.length === 0) {
+    let score = 0;
+    for (let j = 0; j < 16; j++) {
+      if (boxesState[j] === aiPlayer) score++;
+      else if (boxesState[j] === opponentPlayer) score--;
+    }
+    return score;
+  }
 
-    if (completesBox) return 3;
-    if (createsThree) return 1;
-    return 2;
-  };
+  const priorities = new Int32Array(unoccupied.length);
+  for (let k = 0; k < unoccupied.length; k++) {
+    const lineIdx = unoccupied[k];
+    let completesBox = false;
+    let createsThree = false;
+    const boxes = LINE_TO_BOXES[lineIdx];
+    for (let b = 0; b < boxes.length; b++) {
+      const boxIdx = boxes[b];
+      const boxLines = BOX_TO_LINES[boxIdx];
+      let drawnCount = 0;
+      if (linesState[boxLines[0]]) drawnCount++;
+      if (linesState[boxLines[1]]) drawnCount++;
+      if (linesState[boxLines[2]]) drawnCount++;
+      if (linesState[boxLines[3]]) drawnCount++;
 
-  unoccupied.sort((a, b) => getMovePriority(b) - getMovePriority(a));
+      if (drawnCount === 3) completesBox = true;
+      if (drawnCount === 2) createsThree = true;
+    }
+    if (completesBox) priorities[k] = 3;
+    else if (createsThree) priorities[k] = 1;
+    else priorities[k] = 2;
+  }
+
+  const sortedUnoccupied = unoccupied.slice();
+  const pairs = sortedUnoccupied.map((lineIdx, k) => ({ lineIdx, priority: priorities[k] }));
+  pairs.sort((a, b) => b.priority - a.priority);
 
   if (isMaximizing) {
     let maxEval = -Infinity;
-    for (const line of unoccupied) {
-      lines[line] = aiPlayer;
-      const completed = checkMoveBoxes(lines, line, aiPlayer);
-      for (const boxKey of completed) {
-        boxes[boxKey] = aiPlayer;
+    for (let k = 0; k < pairs.length; k++) {
+      const lineIdx = pairs[k].lineIdx;
+      linesState[lineIdx] = true;
+
+      const boxes = LINE_TO_BOXES[lineIdx];
+      let completedCount = 0;
+      const completedBoxIndices: number[] = [];
+      for (let b = 0; b < boxes.length; b++) {
+        const boxIdx = boxes[b];
+        const boxLines = BOX_TO_LINES[boxIdx];
+        if (linesState[boxLines[0]] && linesState[boxLines[1]] && linesState[boxLines[2]] && linesState[boxLines[3]]) {
+          boxesState[boxIdx] = aiPlayer;
+          completedBoxIndices.push(boxIdx);
+          completedCount++;
+        }
+      }
+
+      const nextUnoccupied = new Array(unoccupied.length - 1);
+      let index = 0;
+      for (let u = 0; u < unoccupied.length; u++) {
+        if (unoccupied[u] !== lineIdx) {
+          nextUnoccupied[index++] = unoccupied[u];
+        }
       }
 
       let val: number;
-      if (completed.length > 0) {
-        val = minimax(lines, boxes, aiPlayer, depth - 1, true, alpha, beta, aiPlayer, opponentPlayer);
+      if (completedCount > 0) {
+        val = fastMinimax(
+          linesState,
+          boxesState,
+          completedBoxesCount + completedCount,
+          aiPlayer,
+          depth - 1,
+          true,
+          alpha,
+          beta,
+          aiPlayer,
+          opponentPlayer,
+          nextUnoccupied
+        );
       } else {
-        val = minimax(lines, boxes, opponentPlayer, depth - 1, false, alpha, beta, aiPlayer, opponentPlayer);
+        val = fastMinimax(
+          linesState,
+          boxesState,
+          completedBoxesCount,
+          opponentPlayer,
+          depth - 1,
+          false,
+          alpha,
+          beta,
+          aiPlayer,
+          opponentPlayer,
+          nextUnoccupied
+        );
       }
 
-      for (const boxKey of completed) {
-        delete boxes[boxKey];
+      for (let b = 0; b < completedBoxIndices.length; b++) {
+        boxesState[completedBoxIndices[b]] = 0;
       }
-      delete lines[line];
+      linesState[lineIdx] = false;
 
       maxEval = Math.max(maxEval, val);
       alpha = Math.max(alpha, val);
@@ -486,24 +540,66 @@ const minimax = (
     return maxEval;
   } else {
     let minEval = Infinity;
-    for (const line of unoccupied) {
-      lines[line] = opponentPlayer;
-      const completed = checkMoveBoxes(lines, line, opponentPlayer);
-      for (const boxKey of completed) {
-        boxes[boxKey] = opponentPlayer;
+    for (let k = 0; k < pairs.length; k++) {
+      const lineIdx = pairs[k].lineIdx;
+      linesState[lineIdx] = true;
+
+      const boxes = LINE_TO_BOXES[lineIdx];
+      let completedCount = 0;
+      const completedBoxIndices: number[] = [];
+      for (let b = 0; b < boxes.length; b++) {
+        const boxIdx = boxes[b];
+        const boxLines = BOX_TO_LINES[boxIdx];
+        if (linesState[boxLines[0]] && linesState[boxLines[1]] && linesState[boxLines[2]] && linesState[boxLines[3]]) {
+          boxesState[boxIdx] = opponentPlayer;
+          completedBoxIndices.push(boxIdx);
+          completedCount++;
+        }
+      }
+
+      const nextUnoccupied = new Array(unoccupied.length - 1);
+      let index = 0;
+      for (let u = 0; u < unoccupied.length; u++) {
+        if (unoccupied[u] !== lineIdx) {
+          nextUnoccupied[index++] = unoccupied[u];
+        }
       }
 
       let val: number;
-      if (completed.length > 0) {
-        val = minimax(lines, boxes, opponentPlayer, depth - 1, false, alpha, beta, aiPlayer, opponentPlayer);
+      if (completedCount > 0) {
+        val = fastMinimax(
+          linesState,
+          boxesState,
+          completedBoxesCount + completedCount,
+          opponentPlayer,
+          depth - 1,
+          false,
+          alpha,
+          beta,
+          aiPlayer,
+          opponentPlayer,
+          nextUnoccupied
+        );
       } else {
-        val = minimax(lines, boxes, aiPlayer, depth - 1, true, alpha, beta, aiPlayer, opponentPlayer);
+        val = fastMinimax(
+          linesState,
+          boxesState,
+          completedBoxesCount,
+          aiPlayer,
+          depth - 1,
+          true,
+          alpha,
+          beta,
+          aiPlayer,
+          opponentPlayer,
+          nextUnoccupied
+        );
       }
 
-      for (const boxKey of completed) {
-        delete boxes[boxKey];
+      for (let b = 0; b < completedBoxIndices.length; b++) {
+        boxesState[completedBoxIndices[b]] = 0;
       }
-      delete lines[line];
+      linesState[lineIdx] = false;
 
       minEval = Math.min(minEval, val);
       beta = Math.min(beta, val);
