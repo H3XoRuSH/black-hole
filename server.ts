@@ -59,6 +59,10 @@ io.on('connection', (socket: Socket) => {
     rooms.requestRecap(roomKey, socket);
   });
 
+  socket.on('recap-question', ({ roomKey, question }: { roomKey: string; question: string }) => {
+    rooms.recapQuestion(roomKey, socket, { question });
+  });
+
   socket.on('new-game', ({ roomKey }: { roomKey: string }) => {
     rooms.newGame(roomKey, socket, io);
   });
