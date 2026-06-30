@@ -196,9 +196,64 @@
 
             <div
               v-else
-              class="overflow-y-auto pr-1 text-slate-300 text-sm space-y-4 focus:outline-none"
-              v-html="formattedRecapHtml"
-            ></div>
+              class="flex flex-col flex-grow overflow-hidden"
+            >
+              <div class="overflow-y-auto pr-1 text-slate-300 text-sm space-y-4 focus:outline-none">
+                <div v-html="formattedRecapHtml"></div>
+
+                <div v-if="recapConversation.length > 0" class="border-t border-slate-700/50 pt-4 mt-4 space-y-3">
+                  <div
+                    v-for="(msg, idx) in recapConversation"
+                    :key="idx"
+                    class="flex"
+                    :class="msg.role === 'user' ? 'justify-end' : 'justify-start'"
+                  >
+                    <div
+                      class="max-w-[85%] rounded-xl px-3 py-2 text-xs leading-relaxed"
+                      :class="msg.role === 'user'
+                        ? 'bg-indigo-600/20 text-indigo-200 border border-indigo-500/20'
+                        : 'bg-slate-800 text-slate-300 border border-slate-700/50'"
+                    >
+                      <p class="font-medium text-[10px] uppercase tracking-wider mb-1 opacity-60">
+                        {{ msg.role === 'user' ? 'You' : 'AI' }}
+                      </p>
+                      <p>{{ msg.content }}</p>
+                    </div>
+                  </div>
+                  <div v-if="recapAskLoading" class="flex justify-start">
+                    <div class="bg-slate-800 text-slate-400 rounded-xl px-3 py-2 text-xs border border-slate-700/50">
+                      <span class="animate-pulse">Thinking...</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div v-if="!recapQuestionAsked" class="flex-shrink-0 mt-3 pt-3 border-t border-slate-700/50">
+                <div class="flex items-center space-x-2">
+                  <input
+                    v-model="recapQuestion"
+                    type="text"
+                    placeholder="Ask a follow-up question about this match..."
+                    class="flex-grow bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+                    @keyup.enter="sendRecapQuestion"
+                    :disabled="recapAskLoading"
+                  />
+                  <button
+                    @click="sendRecapQuestion"
+                    :disabled="recapAskLoading || !recapQuestion.trim()"
+                    class="bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-700 disabled:text-slate-500 text-white rounded-xl px-3 py-2 text-xs transition-all duration-150 cursor-pointer active:scale-95 flex-shrink-0"
+                  >
+                    <svg v-if="recapAskLoading" class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </Transition>
       </div>
@@ -243,6 +298,10 @@ export default defineComponent({
     const showRecapModal = ref(false);
     const recapText = ref('');
     const recapLoading = ref(false);
+    const recapConversation = ref<Array<{ role: string; content: string }>>([]);
+    const recapQuestion = ref('');
+    const recapAskLoading = ref(false);
+    const recapQuestionAsked = ref(false);
 
     function requestRecap() {
       if (props.socket && props.roomKey) {
@@ -272,6 +331,15 @@ export default defineComponent({
       }
     }
 
+    function sendRecapQuestion() {
+      const q = recapQuestion.value.trim();
+      if (!q || recapAskLoading.value || !props.socket || !props.roomKey) return;
+      recapConversation.value.push({ role: 'user', content: q });
+      recapAskLoading.value = true;
+      recapQuestion.value = '';
+      props.socket.emit('recap-question', { roomKey: props.roomKey, question: q });
+    }
+
     function setupRecapListeners() {
       if (!props.socket) return;
       props.socket.on('recap-loading', () => {
@@ -281,12 +349,26 @@ export default defineComponent({
         recapText.value = text;
         recapLoading.value = false;
       });
+      props.socket.on('recap-answering', () => {
+        recapAskLoading.value = true;
+      });
+      props.socket.on('recap-answer', ({ answer, error }: { answer?: string; error?: string }) => {
+        recapAskLoading.value = false;
+        if (error) {
+          recapConversation.value.push({ role: 'assistant', content: `Error: ${error}` });
+          return;
+        }
+        recapConversation.value.push({ role: 'assistant', content: answer || '' });
+        recapQuestionAsked.value = true;
+      });
     }
 
     function teardownRecapListeners() {
       if (!props.socket) return;
       props.socket.off('recap-loading');
       props.socket.off('recap-generated');
+      props.socket.off('recap-answering');
+      props.socket.off('recap-answer');
     }
 
     setupRecapListeners();
@@ -315,6 +397,10 @@ export default defineComponent({
           recapText.value = '';
           recapLoading.value = false;
           showRecapModal.value = false;
+          recapConversation.value = [];
+          recapQuestion.value = '';
+          recapAskLoading.value = false;
+          recapQuestionAsked.value = false;
         }
       }
     );
@@ -346,10 +432,15 @@ export default defineComponent({
       showRecapModal,
       recapText,
       recapLoading,
+      recapConversation,
+      recapQuestion,
+      recapAskLoading,
+      recapQuestionAsked,
       muted,
       requestRecap,
       openRecapModal,
       closeRecapModal,
+      sendRecapQuestion,
       toggleMute,
     };
   },

@@ -1,5 +1,5 @@
-import { callDeepSeek } from './deepseek.js';
-import { getSystemPrompt, getRecapPrompt } from './prompts.js';
+import { callDeepSeek, isDeepSeekConfigured } from './deepseek.js';
+import { getSystemPrompt, getRecapPrompt, getRecapConversationPrompt } from './prompts.js';
 
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
 
@@ -140,6 +140,40 @@ ${analysis}
 The match lasted for **${totalMoves}** total moves. In the early game, both players laid down solid foundations. The mid-game brought several tense moments as defensive blocks were forced. Ultimately, the endgame strategy separated the victor from the vanquished.
 
 *Note: Set the \`DEEPSEEK_API_KEY\` environment variable to enable live AI-generated summaries from DeepSeek.*`;
+}
+
+export async function recapConversation(
+  gameId: string,
+  gameState: any,
+  originalRecap: string,
+  conversationHistory: Array<{ role: string; content: string }>,
+  question: string
+): Promise<string> {
+  if (!isDeepSeekConfigured) {
+    return `[Simulated AI] That's an interesting question about the ${getGameName(gameId)} match! In a live AI scenario, I'd analyze the move data and original recap to give you a detailed answer. Set the \`DEEPSEEK_API_KEY\` environment variable to enable live AI answers.`;
+  }
+
+  const formattedHistory = formatMoveHistory(gameId, gameState);
+  const playerNames = gameState.players?.map((p: any) => p.name).filter(Boolean) || [];
+  const conversationPrompt = getRecapConversationPrompt(
+    getGameName(gameId), formattedHistory, originalRecap, question, gameId, playerNames
+  );
+
+  try {
+    const answer = await callDeepSeek({
+      messages: [
+        { role: 'system', content: getSystemPrompt() },
+        ...conversationHistory,
+        { role: 'user', content: conversationPrompt }
+      ],
+      temperature: 0.7,
+      maxTokens: 800
+    });
+    return answer;
+  } catch (error) {
+    console.error('Error calling DeepSeek API for follow-up:', error);
+    return `*Sorry, I couldn't process that question due to an API error.*`;
+  }
 }
 
 export async function generateRecap(gameId: string, gameState: any): Promise<string> {

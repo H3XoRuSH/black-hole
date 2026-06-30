@@ -3,7 +3,7 @@ import type { Room } from '../src/types/shared.js';
 import { readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { generateRecap } from './recapService.js';
+import { generateRecap, recapConversation } from './recapService.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -194,7 +194,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       initialGameState.maxPlayers = gameConfig?.maxPlayers ?? 2;
 
       initialGameState.players[0].name = initialGameState.players[0].name || 'Player 1';
-      rooms.set(roomKey, { gameId, gameState: initialGameState, gameStarted: false, recaps: new Map() });
+      rooms.set(roomKey, { gameId, gameState: initialGameState, gameStarted: false, recaps: new Map(), recapConversations: new Map() });
       socket.join(roomKey);
       socketRooms.set(socket.id, { roomKey, playerNumber: 1 });
       socket.emit('waiting-for-player', { roomKey, player: 1, gameId, gameState: initialGameState });
@@ -512,6 +512,46 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
         });
     },
 
+    recapQuestion(roomKey: string, socket: Socket, data: { question: string }) {
+      if (!rooms.has(roomKey)) {
+        socket.emit('recap-answer', { error: 'Room does not exist.' });
+        return;
+      }
+      const room = rooms.get(roomKey)!;
+      if (!room.gameState.winner) {
+        socket.emit('recap-answer', { error: 'Game is not over yet.' });
+        return;
+      }
+
+      const playerEntry = room.gameState.players.find((p: any) => p.id === socket.id);
+      if (!playerEntry) return;
+      const playerNum = playerEntry.player;
+
+      const recap = room.recaps?.get(playerNum);
+      if (!recap?.text) {
+        socket.emit('recap-answer', { error: 'Generate a recap first before asking questions.' });
+        return;
+      }
+
+      if (!room.recapConversations) room.recapConversations = new Map();
+      if (!room.recapConversations.has(playerNum)) {
+        room.recapConversations.set(playerNum, []);
+      }
+      const history = room.recapConversations.get(playerNum)!;
+
+      socket.emit('recap-answering');
+      recapConversation(room.gameId, room.gameState, recap.text, history, data.question)
+        .then((answer) => {
+          history.push({ role: 'user', content: data.question });
+          history.push({ role: 'assistant', content: answer });
+          socket.emit('recap-answer', { question: data.question, answer });
+        })
+        .catch((err) => {
+          console.error('Failed to answer recap question:', err);
+          socket.emit('recap-answer', { error: 'Failed to process your question.' });
+        });
+    },
+
     newGame(roomKey: string, socket: Socket, io: SocketIOServer) {
       if (!rooms.has(roomKey)) {
         socket.emit('room-error', { message: 'Room does not exist.' });
@@ -556,6 +596,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
           room.gameState = game.resetState(room.gameState.players);
           room.gameState.moveHistory = [];
           if (room.recaps) room.recaps.clear();
+          if (room.recapConversations) room.recapConversations.clear();
           broadcastGameState(roomKey, room, io);
           triggerAIMoveIfActive(roomKey, room, io);
           startBingoTimer(roomKey, room, io);

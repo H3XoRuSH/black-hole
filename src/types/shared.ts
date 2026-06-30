@@ -110,11 +110,17 @@ export interface RecapEntry {
   loading: boolean;
 }
 
+export interface RecapChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
 export interface Room {
   gameId: string;
   gameState: any;
   gameStarted?: boolean;
   recaps?: Map<number, RecapEntry>;
+  recapConversations?: Map<number, RecapChatMessage[]>;
 }
 
 export interface MenuGame {
