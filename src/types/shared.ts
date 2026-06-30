@@ -131,4 +131,5 @@ export interface MenuGame {
   status: string;
   color: string;
   supportsAI?: boolean;
+  icon?: string;
 }

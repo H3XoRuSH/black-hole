@@ -5,9 +5,12 @@
       :style="{ borderTopColor: game.color }">
       <div>
         <div class="flex items-center justify-between mb-2">
-          <h2 class="text-sm sm:text-base font-bold text-gray-800 line-clamp-1">
-            {{ game.name }}
-          </h2>
+          <div class="flex items-center space-x-1.5 min-w-0">
+            <div v-if="game.icon" class="w-5 h-5 flex-shrink-0" :style="{ color: game.color }" v-html="game.icon"></div>
+            <h2 class="text-sm sm:text-base font-bold text-gray-800 line-clamp-1">
+              {{ game.name }}
+            </h2>
+          </div>
           <span
             v-if="game.supportsAI"
             class="px-1.5 py-0.2 text-[8px] font-bold rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200 flex-shrink-0 ml-1"
