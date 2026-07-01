@@ -1,5 +1,5 @@
 import { Socket, Server as SocketIOServer } from 'socket.io';
-import type { Room } from '../src/types/shared.js';
+import type { Room, TriviaGameState as TGS } from '../src/types/shared.js';
 import { readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -20,7 +20,7 @@ export interface GameModule {
   resetState: (players: any[]) => any;
   makeMove: (room: Room, socket: Socket, data: any) => boolean;
   noTurns?: boolean;
-  onGameStart?: (room: Room) => void;
+  onGameStart?: (room: Room) => void | Promise<void>;
   getAIMove?: (gameState: any) => Promise<any>;
 }
 
@@ -40,6 +40,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
   const socketRooms = new Map<string, { roomKey: string; playerNumber: number }>();
   const disconnectTimers = new Map<string, ReturnType<typeof setTimeout>>();
   const bingoIntervals = new Map<string, ReturnType<typeof setInterval>>();
+  const triviaTimers = new Map<string, ReturnType<typeof setTimeout>[]>();
 
   function startBingoTimer(roomKey: string, room: Room, io: SocketIOServer) {
     stopBingoTimer(roomKey);
@@ -82,6 +83,119 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
     if (interval) {
       clearInterval(interval);
       bingoIntervals.delete(roomKey);
+    }
+  }
+
+  function addTriviaTimer(roomKey: string, timer: ReturnType<typeof setTimeout>) {
+    const existing = triviaTimers.get(roomKey) || [];
+    existing.push(timer);
+    triviaTimers.set(roomKey, existing);
+  }
+
+  function stopTriviaTimers(roomKey: string) {
+    const timers = triviaTimers.get(roomKey);
+    if (timers) {
+      timers.forEach(clearTimeout);
+      triviaTimers.delete(roomKey);
+    }
+  }
+
+  function isHiddenChar(ch: string): boolean {
+    return /[a-zA-Z0-9]/.test(ch);
+  }
+
+  function generateBlankDisplay(answer: string): string {
+    return answer.split('').map((ch) => (isHiddenChar(ch) ? '_' : ch)).join('');
+  }
+
+  function countHiddenChars(answer: string): number {
+    return answer.split('').filter((ch) => isHiddenChar(ch)).length;
+  }
+
+  function advanceTriviaToNextOrEnd(roomKey: string, io: SocketIOServer) {
+    const r = rooms.get(roomKey);
+    if (!r) return;
+    const s = r.gameState as TGS;
+    s.currentQuestionIndex++;
+    if (s.currentQuestionIndex >= s.questions.length) {
+      const maxScore = Math.max(...Object.values(s.scores));
+      const winners = Object.entries(s.scores)
+        .filter(([, sc]) => sc === maxScore)
+        .map(([p]) => parseInt(p));
+      if (s.players.length <= 1) {
+        s.winner = `Final Score: ${s.scores[1] || 0}/${s.questions.length}`;
+      } else if (winners.length === 1) {
+        s.winner = `Player ${winners[0]} wins!`;
+      } else {
+        s.winner = `Tie game!`;
+      }
+      s.phase = 'game-over';
+      s.players.forEach((p: any) => (p.ready = false));
+      broadcastGameState(roomKey, r, io);
+    } else {
+      const answer = s.questions[s.currentQuestionIndex].correctAnswer;
+      s.answerDisplay = generateBlankDisplay(answer);
+      s.totalLetters = countHiddenChars(answer);
+      s.revealIndex = 0;
+      s.solvedBy = null;
+      s.phase = 'question-intro';
+      broadcastGameState(roomKey, r, io);
+      scheduleTriviaNextPhase(roomKey, io);
+    }
+  }
+
+  function scheduleTriviaNextPhase(roomKey: string, io: SocketIOServer) {
+    const room = rooms.get(roomKey);
+    if (!room || room.gameId !== 'trivia') return;
+    const gs = room.gameState as TGS;
+    if (gs.phase === 'game-over') return;
+
+    stopTriviaTimers(roomKey);
+
+    if (gs.phase === 'question-intro') {
+      addTriviaTimer(roomKey, setTimeout(() => {
+        const r = rooms.get(roomKey);
+        if (!r || (r.gameState as TGS).phase === 'game-over') return;
+        const s = r.gameState as TGS;
+        s.phase = 'revealing';
+        broadcastGameState(roomKey, r, io);
+        scheduleTriviaNextPhase(roomKey, io);
+      }, 3000));
+    } else if (gs.phase === 'revealing') {
+      const s = gs;
+      const q = s.questions[s.currentQuestionIndex];
+      if (!q) {
+        s.phase = 'game-over';
+        broadcastGameState(roomKey, room, io);
+        return;
+      }
+      const positions: number[] = [];
+      for (let i = 0; i < s.answerDisplay.length; i++) {
+        if (s.answerDisplay[i] === '_') positions.push(i);
+      }
+      if (positions.length === 0) {
+        addTriviaTimer(roomKey, setTimeout(() => {
+          advanceTriviaToNextOrEnd(roomKey, io);
+        }, 4000));
+      } else {
+        const randIdx = positions[Math.floor(Math.random() * positions.length)];
+        s.answerDisplay = s.answerDisplay.substring(0, randIdx) + q.correctAnswer[randIdx] + s.answerDisplay.substring(randIdx + 1);
+        s.revealIndex++;
+        broadcastGameState(roomKey, room, io);
+        if (s.revealIndex >= s.totalLetters) {
+          addTriviaTimer(roomKey, setTimeout(() => {
+            advanceTriviaToNextOrEnd(roomKey, io);
+          }, 4000));
+        } else {
+          addTriviaTimer(roomKey, setTimeout(() => {
+            scheduleTriviaNextPhase(roomKey, io);
+          }, 3000));
+        }
+      }
+    } else if (gs.phase === 'solved') {
+      addTriviaTimer(roomKey, setTimeout(() => {
+        advanceTriviaToNextOrEnd(roomKey, io);
+      }, 3000));
     }
   }
 
@@ -269,8 +383,10 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       room.gameState.players.forEach((p: any) => p.ready = false);
 
       const gameModule = gamesRegistry[room.gameId];
+      let startPromise: Promise<void> | undefined;
       if (gameModule?.onGameStart) {
-        gameModule.onGameStart(room);
+        const result = gameModule.onGameStart(room);
+        if (result) startPromise = Promise.resolve(result);
       }
 
       room.gameState.players.forEach((player: any) => {
@@ -283,6 +399,16 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       });
       triggerAIMoveIfActive(roomKey, room, io);
       startBingoTimer(roomKey, room, io);
+
+      if (room.gameId === 'trivia') {
+        (startPromise || Promise.resolve()).then(() => {
+          const r = rooms.get(roomKey);
+          if (r) {
+            broadcastGameState(roomKey, r, io);
+            scheduleTriviaNextPhase(roomKey, io);
+          }
+        });
+      }
     },
 
     validateRoom(roomKey: string, socket: Socket) {
@@ -315,6 +441,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
             socket.leave(roomKey);
             rooms.delete(roomKey);
             stopBingoTimer(roomKey);
+            stopTriviaTimers(roomKey);
             const timer = disconnectTimers.get(roomKey);
             if (timer) clearTimeout(timer);
             disconnectTimers.delete(roomKey);
@@ -326,6 +453,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
               socket.leave(roomKey);
               rooms.delete(roomKey);
               stopBingoTimer(roomKey);
+              stopTriviaTimers(roomKey);
               const timer = disconnectTimers.get(roomKey);
               if (timer) clearTimeout(timer);
               disconnectTimers.delete(roomKey);
@@ -401,6 +529,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
                 });
                 rooms.delete(roomKey);
                 stopBingoTimer(roomKey);
+                stopTriviaTimers(roomKey);
               } else {
                 const idx = r.gameState.players.findIndex((p: any) => p.player === playerNumber);
                 if (idx !== -1) {
@@ -421,6 +550,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
               });
               rooms.delete(roomKey);
               stopBingoTimer(roomKey);
+              stopTriviaTimers(roomKey);
             }
           }
           disconnectTimers.delete(roomKey);
@@ -476,7 +606,16 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
             stopBingoTimer(roomKey);
           }
 
+          if (room.gameId === 'trivia') {
+            stopTriviaTimers(roomKey);
+          }
+
           broadcastGameState(roomKey, room, io);
+
+          if (room.gameId === 'trivia') {
+            scheduleTriviaNextPhase(roomKey, io);
+          }
+
           triggerAIMoveIfActive(roomKey, room, io);
         }
       } else {
@@ -600,6 +739,22 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
           broadcastGameState(roomKey, room, io);
           triggerAIMoveIfActive(roomKey, room, io);
           startBingoTimer(roomKey, room, io);
+
+          if (room.gameId === 'trivia') {
+            stopTriviaTimers(roomKey);
+            const mod = gamesRegistry['trivia'];
+            if (mod?.onGameStart) {
+              const p = mod.onGameStart(room);
+              const promise = p ? Promise.resolve(p) : Promise.resolve();
+              promise.then(() => {
+                const r = rooms.get(roomKey);
+                if (r) {
+                  broadcastGameState(roomKey, r, io);
+                  scheduleTriviaNextPhase(roomKey, io);
+                }
+              });
+            }
+          }
         }
       }
     },
@@ -657,6 +812,20 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
         });
         broadcastGameState(roomKey, room, io);
       }
+    },
+
+    setTriviaOptions(roomKey: string, socket: Socket, data: { category?: number; categoryName?: string; difficulty?: string }, io: SocketIOServer) {
+      if (!rooms.has(roomKey)) return;
+      const room = rooms.get(roomKey)!;
+      if (room.gameId !== 'trivia') return;
+      const host = room.gameState.players.find((p: any) => p.id === socket.id);
+      if (!host || host.player !== 1) return;
+      room.gameState.triviaOptions = {
+        category: data.category,
+        categoryName: data.categoryName,
+        difficulty: data.difficulty,
+      };
+      broadcastGameState(roomKey, room, io);
     },
 
     getSocketRoom(socketId: string) {

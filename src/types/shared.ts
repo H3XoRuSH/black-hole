@@ -131,5 +131,36 @@ export interface MenuGame {
   status: string;
   color: string;
   supportsAI?: boolean;
+  singlePlayer?: boolean;
   icon?: string;
+}
+
+export interface TriviaQuestion {
+  category: string;
+  difficulty: string;
+  question: string;
+  correctAnswer: string;
+}
+
+export interface TriviaOptions {
+  category?: number;
+  categoryName?: string;
+  difficulty?: string;
+}
+
+export interface TriviaGameState {
+  questions: TriviaQuestion[];
+  currentQuestionIndex: number;
+  phase: 'lobby' | 'question-intro' | 'revealing' | 'solved' | 'game-over';
+  scores: Record<number, number>;
+  winner: string;
+  players: Player[];
+  currentPlayer: number;
+  totalMoves: number;
+  answerDisplay: string;
+  totalLetters: number;
+  revealIndex: number;
+  solvedBy: number | null;
+  triviaOptions: TriviaOptions;
+  moveHistory?: any[];
 }

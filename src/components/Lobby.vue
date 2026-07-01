@@ -202,6 +202,37 @@
              </div>
           </div>
 
+          <!-- Trivia Options (host only) -->
+          <div v-if="gameId === 'trivia' && isHost" class="pt-4 border-t border-gray-100">
+            <h4 class="text-sm font-semibold text-gray-700 mb-3">Trivia Settings</h4>
+            <div class="flex gap-2 mb-2">
+              <div class="flex-1">
+                <label class="text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1 block">Category</label>
+                <select
+                  v-model="triviaCategory"
+                  @change="updateTriviaOptions"
+                  class="w-full text-xs font-semibold py-2 px-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer"
+                >
+                  <option :value="null">Any Category</option>
+                  <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+                </select>
+              </div>
+              <div class="flex-1">
+                <label class="text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1 block">Difficulty</label>
+                <select
+                  v-model="triviaDifficulty"
+                  @change="updateTriviaOptions"
+                  class="w-full text-xs font-semibold py-2 px-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer"
+                >
+                  <option value="">Any Difficulty</option>
+                  <option value="easy">Easy</option>
+                  <option value="medium">Medium</option>
+                  <option value="hard">Hard</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
           <!-- Toggle Ready and Start Game buttons -->
           <div class="space-y-3 pt-4 border-t border-gray-100">
             <button
@@ -355,6 +386,8 @@ export default defineComponent({
       isQRModalOpen: false,
       editingName: false,
       newName: '',
+      triviaCategory: null as number | null,
+      triviaDifficulty: '',
     };
   },
   computed: {
@@ -380,6 +413,25 @@ export default defineComponent({
     },
     canStartGame(): boolean {
       return this.players.length >= this.minPlayers && this.players.every((p: any) => p.ready);
+    },
+    categories(): Array<{ id: number; name: string }> {
+      return [
+        { id: 9, name: 'General Knowledge' },
+        { id: 10, name: 'Entertainment: Books' },
+        { id: 11, name: 'Entertainment: Film' },
+        { id: 12, name: 'Entertainment: Music' },
+        { id: 14, name: 'Entertainment: Television' },
+        { id: 15, name: 'Entertainment: Video Games' },
+        { id: 17, name: 'Science & Nature' },
+        { id: 18, name: 'Science: Computers' },
+        { id: 19, name: 'Science: Mathematics' },
+        { id: 20, name: 'Mythology' },
+        { id: 21, name: 'Sports' },
+        { id: 22, name: 'Geography' },
+        { id: 23, name: 'History' },
+        { id: 24, name: 'Politics' },
+        { id: 27, name: 'Animals' },
+      ];
     },
   },
   watch: {
@@ -433,6 +485,16 @@ export default defineComponent({
       } catch (err) {
         console.error('Failed to copy text: ', err);
       }
+    },
+    updateTriviaOptions() {
+      if (!this.socket || !this.roomKey) return;
+      const cat = this.categories.find((c) => c.id === this.triviaCategory);
+      this.socket.emit('set-trivia-options', {
+        roomKey: this.roomKey,
+        category: this.triviaCategory || undefined,
+        categoryName: cat?.name,
+        difficulty: this.triviaDifficulty || undefined,
+      });
     },
     toggleReady() {
       if (this.socket && this.roomKey) {

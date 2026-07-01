@@ -7,6 +7,7 @@ import DotsAndBoxes from '../components/DotsAndBoxes.vue';
 import Battleship from '../components/Battleship.vue';
 import Checkers from '../components/Checkers.vue';
 import Bingo from '../components/Bingo.vue';
+import Trivia from '../components/Trivia.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -70,6 +71,20 @@ const routes: Array<RouteRecordRaw> = [
     component: Bingo,
     props: true,
     meta: { title: 'Bingo - Gab\'s Arcade' },
+  },
+  {
+    path: '/trivia/lobby',
+    name: 'TriviaLobby',
+    component: Lobby,
+    props: { gameId: 'trivia', gameName: 'Trivia' },
+    meta: { title: 'Trivia - Gab\'s Arcade' },
+  },
+  {
+    path: '/trivia/game/:roomKey',
+    name: 'TriviaGame',
+    component: Trivia,
+    props: true,
+    meta: { title: 'Trivia - Gab\'s Arcade' },
   },
   {
     path: '/checkers/lobby',
