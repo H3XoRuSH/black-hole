@@ -12,6 +12,7 @@ A real-time, multiplayer online arcade featuring classic strategic board and pen
 - **Battleship**: A strategic naval guessing game. Place your fleet of ships on a 6x6 grid, and take turns firing shots to locate and sink the opponent's hidden ships.
 - **Checkers**: Classic American draughts on an 8x8 board. Capture your opponent's pieces by jumping over them. Mandatory jumps, multi-jump chains, and king promotion included.
 - **Bingo**: A classic multiplayer game for 2-8 players. The host draws numbers and players daub their unique 5x5 cards. First to complete a row, column, or diagonal calls BINGO!
+- **Trivia**: A real-time quiz game for 1-8 players. Questions are fetched from Open Trivia DB across multiple categories and difficulties. Each answer starts fully hidden — letters are gradually revealed and the first player to type the correct answer scores a point. Most points after 10 questions wins!
   
 ## Tech Stack
 
