@@ -4,11 +4,12 @@ export interface DeepSeekChatOptions {
   messages: Array<{ role: string; content: string }>;
   temperature?: number;
   maxTokens?: number;
+  thinking?: { type: 'enabled' | 'disabled'; budget_tokens?: number };
 }
 
 export const isDeepSeekConfigured = !!DEEPSEEK_API_KEY;
 
-export async function callDeepSeek(options: DeepSeekChatOptions): Promise<string> {
+async function deepSeekFetch(model: string, options: DeepSeekChatOptions): Promise<string> {
   if (!DEEPSEEK_API_KEY) {
     throw new Error('DEEPSEEK_API_KEY is not configured.');
   }
@@ -20,9 +21,9 @@ export async function callDeepSeek(options: DeepSeekChatOptions): Promise<string
       'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
     },
     body: JSON.stringify({
-      model: 'deepseek-v4-flash',
+      model,
       messages: options.messages,
-      thinking: { type: 'disabled' },
+      thinking: options.thinking ?? { type: 'disabled' },
       stream: false,
       temperature: options.temperature ?? 0.7,
       max_tokens: options.maxTokens ?? 1000
@@ -41,4 +42,12 @@ export async function callDeepSeek(options: DeepSeekChatOptions): Promise<string
     throw new Error('Invalid response structure from DeepSeek API.');
   }
   return content;
+}
+
+export async function callDeepSeek(options: DeepSeekChatOptions): Promise<string> {
+  return deepSeekFetch('deepseek-v4-flash', options);
+}
+
+export async function callDeepSeekPro(options: DeepSeekChatOptions): Promise<string> {
+  return deepSeekFetch('deepseek-v4-pro', options);
 }

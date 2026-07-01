@@ -409,6 +409,15 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
           }
         });
       }
+
+      if (room.gameId === 'infinite-word-chain') {
+        (startPromise || Promise.resolve()).then(() => {
+          const r = rooms.get(roomKey);
+          if (r) {
+            broadcastGameState(roomKey, r, io);
+          }
+        });
+      }
     },
 
     validateRoom(roomKey: string, socket: Socket) {
@@ -571,7 +580,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       }
     },
 
-    makeMove(data: any, socket: Socket, io: SocketIOServer) {
+    async makeMove(data: any, socket: Socket, io: SocketIOServer) {
       const { roomKey } = data;
       if (!rooms.has(roomKey)) {
         socket.emit('invalid-move', { message: 'Room does not exist.' });
@@ -586,7 +595,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
         return;
       }
       if (game) {
-        const success = game.makeMove(room, socket, data);
+        const success = await game.makeMove(room, socket, data);
         if (success) {
           if (!room.gameState.moveHistory) {
             room.gameState.moveHistory = [];
@@ -751,6 +760,20 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
                 if (r) {
                   broadcastGameState(roomKey, r, io);
                   scheduleTriviaNextPhase(roomKey, io);
+                }
+              });
+            }
+          }
+
+          if (room.gameId === 'infinite-word-chain') {
+            const mod = gamesRegistry['infinite-word-chain'];
+            if (mod?.onGameStart) {
+              const p = mod.onGameStart(room);
+              const promise = p ? Promise.resolve(p) : Promise.resolve();
+              promise.then(() => {
+                const r = rooms.get(roomKey);
+                if (r) {
+                  broadcastGameState(roomKey, r, io);
                 }
               });
             }
