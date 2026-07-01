@@ -162,6 +162,36 @@
     ]
   },
   {
+    "id": "trivia",
+    "name": "Trivia",
+    "minPlayers": 1,
+    "maxPlayers": 8,
+    "singlePlayer": true,
+    "description": "A real-time multiplayer trivia game! Race to buzz in first and answer questions from various categories. Test your knowledge against friends or play solo to beat your high score!",
+    "route": "/trivia/lobby",
+    "status": "active",
+    "color": "#7c3aed",
+    "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3\"/><path d=\"M12 17h.01\"/></svg>",
+    "rules": [
+      {
+        "title": "How It Works",
+        "desc": "Questions are fetched from the Open Trivia Database across various categories and difficulties. Each game has 10 questions."
+      },
+      {
+        "title": "Buzzing In",
+        "desc": "When a question appears, wait for the buzzer to open. The first player to buzz gets to answer. If no one buzzes in time, the question is skipped."
+      },
+      {
+        "title": "Answering",
+        "desc": "The player who buzzed in has 10 seconds to select an answer. Choose wisely — only one chance!"
+      },
+      {
+        "title": "Scoring",
+        "desc": "Each correct answer earns 1 point. The player with the most points after 10 questions wins. In solo mode, try to beat your personal best!"
+      }
+    ]
+  },
+  {
     "id": "bingo",
     "name": "Bingo",
     "minPlayers": 2,

@@ -9,6 +9,7 @@ import * as dotsAndBoxes from './server/games/dotsAndBoxes.js';
 import * as battleship from './server/games/battleship.js';
 import * as checkers from './server/games/checkers.js';
 import * as bingo from './server/games/bingo.js';
+import * as trivia from './server/games/trivia.js';
 import { createRoomManager } from './server/roomManager.js';
 import { evaluateBugReport, createGitHubIssue } from './server/bugReportService.js';
 
@@ -33,6 +34,7 @@ const rooms = createRoomManager({
   'battleship': battleship as any,
   'checkers': checkers as any,
   'bingo': bingo as any,
+  'trivia': trivia as any,
 });
 
 io.on('connection', (socket: Socket) => {
@@ -93,6 +95,10 @@ io.on('connection', (socket: Socket) => {
 
   socket.on('remove-ai', ({ roomKey }: { roomKey: string }) => {
     rooms.removeAI(roomKey, socket, io);
+  });
+
+  socket.on('set-trivia-options', ({ roomKey, category, categoryName, difficulty }: { roomKey: string; category?: number; categoryName?: string; difficulty?: string }) => {
+    rooms.setTriviaOptions(roomKey, socket, { category, categoryName, difficulty }, io);
   });
 
   socket.on('report-bug', async (data) => {

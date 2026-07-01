@@ -17,6 +17,12 @@
           >
             Play vs AI
           </span>
+          <span
+            v-if="game.singlePlayer"
+            class="px-1.5 py-0.2 text-[8px] font-bold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 flex-shrink-0 ml-1"
+          >
+            Single Player
+          </span>
         </div>
         <p class="text-gray-500 text-[11px] sm:text-xs leading-relaxed line-clamp-4">
           {{ game.description }}
