@@ -8,6 +8,7 @@ import Battleship from '../components/Battleship.vue';
 import Checkers from '../components/Checkers.vue';
 import Bingo from '../components/Bingo.vue';
 import Trivia from '../components/Trivia.vue';
+import InfiniteWordChain from '../components/InfiniteWordChain.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -85,6 +86,20 @@ const routes: Array<RouteRecordRaw> = [
     component: Trivia,
     props: true,
     meta: { title: 'Trivia - Gab\'s Arcade' },
+  },
+  {
+    path: '/infinite-word-chain/lobby',
+    name: 'InfiniteWordChainLobby',
+    component: Lobby,
+    props: { gameId: 'infinite-word-chain', gameName: 'Infinite Word Chain' },
+    meta: { title: 'Infinite Word Chain - Gab\'s Arcade' },
+  },
+  {
+    path: '/infinite-word-chain/game/:roomKey',
+    name: 'InfiniteWordChainGame',
+    component: InfiniteWordChain,
+    props: true,
+    meta: { title: 'Infinite Word Chain - Gab\'s Arcade' },
   },
   {
     path: '/checkers/lobby',

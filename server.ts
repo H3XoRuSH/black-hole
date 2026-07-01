@@ -10,6 +10,7 @@ import * as battleship from './server/games/battleship.js';
 import * as checkers from './server/games/checkers.js';
 import * as bingo from './server/games/bingo.js';
 import * as trivia from './server/games/trivia.js';
+import * as infiniteWordChain from './server/games/infinite-word-chain.js';
 import { createRoomManager } from './server/roomManager.js';
 import { evaluateBugReport, createGitHubIssue } from './server/bugReportService.js';
 
@@ -35,6 +36,7 @@ const rooms = createRoomManager({
   'checkers': checkers as any,
   'bingo': bingo as any,
   'trivia': trivia as any,
+  'infinite-word-chain': infiniteWordChain as any,
 });
 
 io.on('connection', (socket: Socket) => {

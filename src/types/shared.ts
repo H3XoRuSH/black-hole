@@ -164,3 +164,21 @@ export interface TriviaGameState {
   triviaOptions: TriviaOptions;
   moveHistory?: any[];
 }
+
+export interface InfiniteWordChainGameState {
+  pairs: [string, string][];
+  currentPairIndex: number;
+  phase: 'playing' | 'game-over';
+  currentWord: string;
+  answerWord: string;
+  answerDisplay: string;
+  totalLetters: number;
+  revealIndex: number;
+  winner: string;
+  players: Player[];
+  currentPlayer: number;
+  totalMoves: number;
+  score: number;
+  mistakes: number;
+  moveHistory?: any[];
+}

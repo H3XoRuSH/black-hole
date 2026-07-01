@@ -13,6 +13,7 @@ A real-time, multiplayer online arcade featuring classic strategic board and pen
 - **Checkers**: Classic American draughts on an 8x8 board. Capture your opponent's pieces by jumping over them. Mandatory jumps, multi-jump chains, and king promotion included.
 - **Bingo**: A classic multiplayer game for 2-8 players. The host draws numbers and players daub their unique 5x5 cards. First to complete a row, column, or diagonal calls BINGO!
 - **Trivia**: A real-time quiz game for 1-8 players. Questions are fetched from Open Trivia DB across multiple categories and difficulties. Each answer starts fully hidden — letters are gradually revealed and the first player to type the correct answer scores a point. Most points after 10 questions wins!
+- **Infinite Word Chain**: A single-player word chain game powered by AI. Guess the missing word that completes a common two-word phrase. Wrong guesses reveal more letters as hints. Each correct answer continues the chain infinitely — how many can you get?
   
 ## Tech Stack
 

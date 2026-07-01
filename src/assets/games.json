@@ -170,7 +170,7 @@
     "description": "A real-time multiplayer trivia game! Race to buzz in first and answer questions from various categories. Test your knowledge against friends or play solo to beat your high score!",
     "route": "/trivia/lobby",
     "status": "active",
-    "color": "#7c3aed",
+    "color": "#14b8a6",
     "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3\"/><path d=\"M12 17h.01\"/></svg>",
     "rules": [
       {
@@ -188,6 +188,36 @@
       {
         "title": "Scoring",
         "desc": "Each correct answer earns 1 point. The player with the most points after 10 questions wins. In solo mode, try to beat your personal best!"
+      }
+    ]
+  },
+  {
+    "id": "infinite-word-chain",
+    "name": "Infinite Word Chain",
+    "minPlayers": 1,
+    "maxPlayers": 1,
+    "singlePlayer": true,
+    "description": "A single-player word chain game powered by AI. Each word you enter forms a two-word phrase with the previous word. Build an endless chain and see how far you can go!",
+    "route": "/infinite-word-chain/lobby",
+    "status": "active",
+    "color": "#ec4899",
+    "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"4 7 4 4 7 4\"/><polyline points=\"17 4 20 4 20 7\"/><polyline points=\"20 17 20 20 17 20\"/><polyline points=\"7 20 4 20 4 17\"/><line x1=\"4\" y1=\"12\" x2=\"20\" y2=\"12\"/><line x1=\"12\" y1=\"4\" x2=\"12\" y2=\"20\"/><path d=\"M8 8l3 4-3 4\"/><path d=\"M16 8l-3 4 3 4\"/></svg>",
+    "rules": [
+      {
+        "title": "How to Play",
+        "desc": "You are given a starting word. Enter any single word that forms a common two-word phrase or compound word with it (e.g., 'apple' → 'pie' for 'apple pie')."
+      },
+      {
+        "title": "The Chain",
+        "desc": "After each valid word, the AI generates a new word that forms a phrase with your word. The chain continues infinitely."
+      },
+      {
+        "title": "Scoring",
+        "desc": "Each successful link in the chain earns you 1 point. Try to build the longest chain possible!"
+      },
+      {
+        "title": "Timer",
+        "desc": "You have 20 seconds to submit each word. If time runs out or you enter an invalid word, the game ends."
       }
     ]
   },
