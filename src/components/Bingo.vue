@@ -24,14 +24,25 @@
           Auto-drawing numbers...
         </span>
       </div>
-      <router-link to="/menu"
-        class="text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all p-1.5 rounded-lg cursor-pointer active:scale-95 flex-shrink-0"
-        title="Leave Game"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-        </svg>
-      </router-link>
+      <div class="flex items-center space-x-1">
+        <button
+          @click="openHowToPlay"
+          class="text-gray-400 dark:text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/30 p-1.5 rounded-lg flex items-center justify-center cursor-pointer active:scale-95 flex-shrink-0 border border-transparent hover:border-blue-200/50 dark:hover:border-blue-700/50 transition-all duration-200"
+          title="How to Play"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </button>
+        <router-link to="/menu"
+          class="text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all p-1.5 rounded-lg cursor-pointer active:scale-95 flex-shrink-0"
+          title="Leave Game"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+          </svg>
+        </router-link>
+      </div>
     </div>
 
     <div v-if="gameOver" class="text-lg font-bold text-green-600 mb-1 flex-shrink-0">
@@ -124,6 +135,12 @@
   <div v-else class="h-full flex flex-col items-center justify-center p-6">
     <p class="text-lg text-gray-500 font-medium">Invalid game state. Redirecting to lobby...</p>
   </div>
+
+  <HowToPlayModal
+    :is-open="isHowToPlayOpen"
+    game-id="bingo"
+    @close="closeHowToPlay"
+  />
 
   <!-- Recap Modal -->
   <BaseModal
@@ -227,10 +244,11 @@ import { useSpeech } from '../composables/useSpeech.js';
 import type { BingoGameState as GameState } from '../types/shared.js';
 import WaitingIndicator from './WaitingIndicator.vue';
 import BaseModal from './BaseModal.vue';
+import HowToPlayModal from './HowToPlayModal.vue';
 
 export default defineComponent({
   name: 'Bingo',
-  components: { WaitingIndicator, BaseModal },
+  components: { WaitingIndicator, BaseModal, HowToPlayModal },
   emits: ['update-connection-status', 'update-player', 'update-room-key'],
   props: {
     socket: { type: Object as PropType<Socket>, required: true },
@@ -254,6 +272,13 @@ export default defineComponent({
     );
 
     const waiting = ref(false);
+    const isHowToPlayOpen = ref(false);
+    const openHowToPlay = () => {
+      isHowToPlayOpen.value = true;
+    };
+    const closeHowToPlay = () => {
+      isHowToPlayOpen.value = false;
+    };
 
     const showRecapModal = ref(false);
     const recapText = ref('');
@@ -389,6 +414,9 @@ export default defineComponent({
       ...game,
       gameState,
       waiting,
+      isHowToPlayOpen,
+      openHowToPlay,
+      closeHowToPlay,
       showRecapModal,
       recapText,
       recapLoading,

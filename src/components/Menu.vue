@@ -110,7 +110,7 @@
 
     <!-- Filter Bar -->
     <div class="w-full max-w-md px-4 sm:px-0 mb-4">
-      <div class="flex space-x-2">
+      <div class="flex flex-wrap items-center gap-2">
         <!-- View Mode Dropdown -->
         <div class="relative">
           <button
@@ -160,9 +160,9 @@
           <button
             @click="showFilterDropdown = !showFilterDropdown"
             @blur="closeFilterDropdown"
-            class="h-10 pl-3 pr-9 border border-gray-200 dark:border-slate-600 rounded-xl bg-gradient-to-b from-white to-gray-50/80 dark:from-slate-700 dark:to-slate-800 text-sm text-gray-700 dark:text-gray-300 font-medium cursor-pointer shadow-sm flex items-center whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-[130px]"
+            class="h-10 pl-3 pr-9 border border-gray-200 dark:border-slate-600 rounded-xl bg-gradient-to-b from-white to-gray-50/80 dark:from-slate-700 dark:to-slate-800 text-sm text-gray-700 dark:text-gray-300 font-medium cursor-pointer shadow-sm flex items-center focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-[100px]"
           >
-            {{ currentFilterLabel }}
+            <span class="truncate">{{ currentFilterLabel }}</span>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
             </svg>

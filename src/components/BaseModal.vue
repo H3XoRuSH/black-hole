@@ -56,7 +56,7 @@
               </div>
             </div>
 
-            <div class="overflow-y-auto pr-1 focus:outline-none flex-grow" ref="scrollRef">
+            <div class="overflow-y-auto pr-1 focus:outline-none flex-grow custom-scroll" ref="scrollRef">
               <slot />
             </div>
 
@@ -201,3 +201,28 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.custom-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: rgb(100 116 139 / 0.3);
+  border-radius: 999px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgb(100 116 139 / 0.5);
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .custom-scroll {
+    scrollbar-width: none;
+  }
+}
+</style>
