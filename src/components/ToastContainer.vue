@@ -7,18 +7,24 @@
     <div
       v-for="toast in toasts"
       :key="toast.id"
-      class="pointer-events-auto flex items-start gap-2 px-4 py-3 rounded-xl shadow-lg text-sm font-medium"
+      class="pointer-events-auto flex flex-col rounded-xl shadow-lg text-sm font-medium overflow-hidden"
       :class="bgClass(toast.type)"
     >
-      <span class="flex-1">{{ toast.message }}</span>
-      <button
-        @click="removeToast(toast.id)"
-        class="text-white/70 hover:text-white transition-colors cursor-pointer flex-shrink-0"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-        </svg>
-      </button>
+      <div class="flex items-start gap-2 px-4 py-3">
+        <span class="flex-1">{{ toast.message }}</span>
+        <button
+          @click="removeToast(toast.id)"
+          class="text-white/70 hover:text-white transition-colors cursor-pointer flex-shrink-0"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+      <div
+        class="toast-progress h-1 bg-white/30"
+        :style="{ animationDuration: toast.duration + 'ms' }"
+      />
     </div>
   </TransitionGroup>
 </template>
@@ -61,5 +67,17 @@ export default defineComponent({
 .toast-leave-to {
   opacity: 0;
   transform: translateX(100%);
+}
+.toast-enter-active .toast-progress,
+.toast-leave-active .toast-progress {
+  animation: none;
+  width: 100%;
+}
+.toast-progress {
+  animation: toast-shrink linear forwards;
+}
+@keyframes toast-shrink {
+  from { width: 100%; }
+  to { width: 0%; }
 }
 </style>
