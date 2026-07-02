@@ -837,14 +837,14 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       }
     },
 
-    setTriviaOptions(roomKey: string, socket: Socket, data: { category?: number; categoryName?: string; difficulty?: string }, io: SocketIOServer) {
+    setTriviaOptions(roomKey: string, socket: Socket, data: { categorySlug?: string; categoryName?: string; difficulty?: string }, io: SocketIOServer) {
       if (!rooms.has(roomKey)) return;
       const room = rooms.get(roomKey)!;
       if (room.gameId !== 'trivia') return;
       const host = room.gameState.players.find((p: any) => p.id === socket.id);
       if (!host || host.player !== 1) return;
       room.gameState.triviaOptions = {
-        category: data.category,
+        categorySlug: data.categorySlug,
         categoryName: data.categoryName,
         difficulty: data.difficulty,
       };

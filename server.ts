@@ -2,6 +2,7 @@ import express from 'express';
 import { createServer } from 'http';
 import { Server, Socket } from 'socket.io';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import * as blackHole from './server/games/blackHole.js';
 import * as connectFour from './server/games/connectFour.js';
@@ -17,6 +18,16 @@ import { evaluateBugReport, createGitHubIssue } from './server/bugReportService.
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const distPath = path.join(__dirname, 'dist');
+const indexPath = path.join(distPath, 'index.html');
+
+let cachedIndex: string | null = null;
+try {
+  cachedIndex = fs.readFileSync(indexPath, 'utf-8');
+} catch {
+  console.warn('dist/index.html not found, run `npm run build` first');
+}
+
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {
@@ -26,7 +37,30 @@ const io = new Server(server, {
   },
 });
 
-app.use(express.static(path.join(__dirname, 'dist')));
+app.use('/assets', express.static(path.join(distPath, 'assets'), {
+  maxAge: '1y',
+  immutable: true,
+}));
+
+app.use(express.static(distPath, { index: false }));
+
+const cleanupSw = `self.addEventListener('install',()=>self.skipWaiting());
+self.addEventListener('activate',(e)=>e.waitUntil((async()=>{(await caches.keys()).forEach(k=>caches.delete(k));(await self.registration.unregister())})()));`;
+
+app.get(/^\/(sw|service-worker)\.js$/, (req, res) => {
+  res.setHeader('Content-Type', 'application/javascript');
+  res.setHeader('Cache-Control', 'no-store');
+  res.send(cleanupSw);
+});
+
+app.get('*', (req, res) => {
+  if (cachedIndex) {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.send(cachedIndex);
+  } else {
+    res.sendFile(indexPath);
+  }
+});
 
 const rooms = createRoomManager({
   'black-hole': blackHole as any,
@@ -99,8 +133,8 @@ io.on('connection', (socket: Socket) => {
     rooms.removeAI(roomKey, socket, io);
   });
 
-  socket.on('set-trivia-options', ({ roomKey, category, categoryName, difficulty }: { roomKey: string; category?: number; categoryName?: string; difficulty?: string }) => {
-    rooms.setTriviaOptions(roomKey, socket, { category, categoryName, difficulty }, io);
+  socket.on('set-trivia-options', ({ roomKey, categorySlug, categoryName, difficulty }: { roomKey: string; categorySlug?: string; categoryName?: string; difficulty?: string }) => {
+    rooms.setTriviaOptions(roomKey, socket, { categorySlug, categoryName, difficulty }, io);
   });
 
   socket.on('report-bug', async (data) => {
@@ -129,10 +163,6 @@ io.on('connection', (socket: Socket) => {
   socket.on('disconnect', () => {
     rooms.handleDisconnect(socket.id, io);
   });
-});
-
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
 const PORT = process.env.PORT || 3000;

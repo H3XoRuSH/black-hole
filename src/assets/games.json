@@ -175,7 +175,7 @@
     "rules": [
       {
         "title": "How It Works",
-        "desc": "Questions are fetched from the Open Trivia Database across various categories and difficulties. Each game has 10 questions."
+        "desc": "Questions are sourced from The Trivia API across various categories and difficulties, with a curated fallback pool. Each game has 10 questions."
       },
       {
         "title": "Buzzing In",
