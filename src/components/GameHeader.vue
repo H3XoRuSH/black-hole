@@ -7,7 +7,7 @@
       <!-- How to Play / Instructions Button -->
       <button
         @click="openModal"
-        class="text-gray-400 hover:text-blue-500 hover:bg-blue-50/50 p-1.5 rounded-lg flex items-center justify-center cursor-pointer active:scale-95 flex-shrink-0 border border-transparent hover:border-blue-200/50 transition-all duration-200"
+        class="text-gray-400 dark:text-gray-500 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-blue-50/50 dark:hover:bg-blue-900/30 p-1.5 rounded-lg flex items-center justify-center cursor-pointer active:scale-95 flex-shrink-0 border border-transparent hover:border-blue-200/50 dark:hover:border-blue-700/50 transition-all duration-200"
         title="How to Play"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -27,7 +27,7 @@
       <!-- Exit / Leave Button -->
       <router-link
         to="/menu"
-        class="text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all p-1.5 rounded-lg flex items-center justify-center cursor-pointer active:scale-95 flex-shrink-0"
+        class="text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition-all p-1.5 rounded-lg flex items-center justify-center cursor-pointer active:scale-95 flex-shrink-0"
         title="Leave Game"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -39,7 +39,7 @@
     <!-- Connection Status Banner -->
     <div
       v-if="connectionStatus"
-      class="w-full mb-3 sm:mb-4 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-3 text-xs sm:text-sm font-medium flex items-center justify-center space-x-2 animate-pulse"
+      class="w-full mb-3 sm:mb-4 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700/50 text-amber-800 dark:text-amber-200 rounded-xl p-3 text-xs sm:text-sm font-medium flex items-center justify-center space-x-2 animate-pulse"
     >
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -49,20 +49,20 @@
 
     <!-- Players VS Status Card -->
     <div
-      class="w-full bg-white/80 backdrop-blur-md rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 border border-gray-200 shadow-md flex items-center justify-between text-sm sm:text-base mb-3 sm:mb-4.5"
+      class="w-full bg-white/80 dark:bg-slate-800/80 backdrop-blur-md rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 border border-gray-200 dark:border-slate-700 shadow-md flex items-center justify-between text-sm sm:text-base mb-3 sm:mb-4.5 h-[4rem] sm:h-[4.5rem]"
     >
       <div
-        class="flex items-center space-x-2 rounded-lg px-2 sm:px-3 py-1.5 transition-all duration-300"
-        :class="currentPlayer === 1 && !gameOver ? 'bg-blue-50 shadow-sm scale-105 font-bold' : currentPlayer === 1 ? 'scale-105 font-bold' : 'opacity-60'"
+        class="flex items-center space-x-2 rounded-lg px-2 sm:px-3 py-1.5 transition-all duration-300 flex-shrink-0"
+        :class="currentPlayer === 1 && !gameOver ? 'bg-blue-50 dark:bg-blue-900/40 shadow-sm scale-105 font-bold' : currentPlayer === 1 ? 'scale-105 font-bold' : 'opacity-60'"
       >
         <span
           class="w-3.5 h-3.5 rounded-full bg-blue-500 ring-2"
           :class="currentPlayer === 1 && !gameOver ? 'ring-blue-300 animate-pulse' : 'ring-blue-200'"
         ></span>
-        <span class="text-blue-700">{{ p1Label }}</span>
+        <span class="text-blue-700 dark:text-blue-300">{{ p1Label }}</span>
         <span
           v-if="currentPlayer === 1 && !gameOver"
-          class="text-[10px] font-bold uppercase tracking-wider text-blue-600 bg-blue-100 rounded-full px-2 py-0.5 leading-none"
+          class="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/50 rounded-full px-2 py-0.5 leading-none"
         >TURN</span>
       </div>
       <span
@@ -71,13 +71,13 @@
       >
       <div
         class="flex items-center space-x-2 rounded-lg px-2 sm:px-3 py-1.5 transition-all duration-300"
-        :class="currentPlayer === 2 && !gameOver ? 'bg-red-50 shadow-sm scale-105 font-bold' : currentPlayer === 2 ? 'scale-105 font-bold' : 'opacity-60'"
+        :class="currentPlayer === 2 && !gameOver ? 'bg-red-50 dark:bg-red-900/40 shadow-sm scale-105 font-bold' : currentPlayer === 2 ? 'scale-105 font-bold' : 'opacity-60'"
       >
         <span
           v-if="currentPlayer === 2 && !gameOver"
-          class="text-[10px] font-bold uppercase tracking-wider text-red-600 bg-red-100 rounded-full px-2 py-0.5 leading-none"
+          class="text-[10px] font-bold uppercase tracking-wider text-red-600 dark:text-red-300 bg-red-100 dark:bg-red-900/50 rounded-full px-2 py-0.5 leading-none"
         >TURN</span>
-        <span class="text-red-700">{{ p2Label }}</span>
+        <span class="text-red-700 dark:text-red-300">{{ p2Label }}</span>
         <span
           class="w-3.5 h-3.5 rounded-full bg-red-500 ring-2"
           :class="currentPlayer === 2 && !gameOver ? 'ring-red-300 animate-pulse' : 'ring-red-200'"
@@ -93,7 +93,7 @@
       <div v-if="!gameOver" class="text-sm font-bold transition-all duration-300" :class="turnTextColor">
         {{ currentPlayer === player ? 'Your Turn' : "Opponent's Turn" }}
       </div>
-      <div class="text-xs text-gray-400 mt-1.5 sm:mt-2">
+      <div class="text-xs text-gray-400 dark:text-gray-500 mt-1.5 sm:mt-2">
         You are {{ youLabel }}
       </div>
     </div>

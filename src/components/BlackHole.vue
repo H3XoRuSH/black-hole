@@ -72,9 +72,9 @@
         class="flex flex-col items-center mt-3.5 sm:mt-4.5 transition-all duration-300"
       >
         <div
-          class="bg-white/80 backdrop-blur-sm border border-gray-200 rounded-2xl px-5 py-2 shadow-sm mb-3 text-center"
+          class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-gray-200 dark:border-slate-700 rounded-2xl px-5 py-2 shadow-sm mb-3 text-center"
         >
-          <div class="text-sm font-semibold text-gray-700 space-y-1">
+          <div class="text-sm font-semibold text-gray-700 dark:text-gray-200 space-y-1">
             <p class="flex items-center justify-between space-x-8">
               <span class="text-blue-600">{{ p1Name }} Score:</span>
               <span class="font-mono font-bold">{{
@@ -104,7 +104,7 @@
     v-else
     class="h-full flex flex-col items-center justify-center px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-6"
   >
-    <p class="text-lg sm:text-xl text-gray-600">
+    <p class="text-lg sm:text-xl text-gray-600 dark:text-gray-400">
       Invalid game state. Redirecting to lobby...
     </p>
   </div>

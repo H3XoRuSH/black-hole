@@ -25,7 +25,7 @@
           <div
             v-if="isOpen"
             ref="contentRef"
-            :class="['w-full rounded-2xl shadow-2xl p-6 flex flex-col relative max-h-[85vh] overflow-hidden', contentClass, maxWidthClass]"
+            :class="['w-full rounded-2xl shadow-2xl p-6 flex flex-col relative max-h-[85vh] overflow-hidden', contentClass, maxWidthClass, theme === 'light' ? 'dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200' : '']"
             :role="role"
             :aria-modal="role === 'dialog' ? 'true' : undefined"
             :aria-label="role === 'dialog' && title ? title : undefined"
@@ -196,7 +196,7 @@ export default defineComponent({
       if (this.theme === 'dark') {
         return 'bg-blue-500/10 border border-blue-500/20 text-blue-400';
       }
-      return 'bg-indigo-50 text-indigo-600';
+      return 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400';
     },
   },
 });

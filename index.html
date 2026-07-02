@@ -5,6 +5,18 @@
     <link rel="icon" href="/icon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Gab's Arcade</title>
+    <script>
+      (function() {
+        try {
+          var dark = localStorage.getItem('darkMode');
+          if (dark === 'true') {
+            document.documentElement.classList.add('dark');
+          } else if (dark === null && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+          }
+        } catch(e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="app"></div>

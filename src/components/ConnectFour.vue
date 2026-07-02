@@ -79,7 +79,7 @@
     </div>
   </div>
   <div v-else class="h-full flex flex-col items-center justify-center p-6">
-    <p class="text-lg text-gray-500 font-medium">
+    <p class="text-lg text-gray-500 dark:text-gray-400 font-medium">
       Invalid game state. Redirecting to lobby...
     </p>
   </div>

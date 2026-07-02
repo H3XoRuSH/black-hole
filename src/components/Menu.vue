@@ -1,26 +1,26 @@
 <template>
-  <div class="flex flex-col items-center justify-start min-h-full bg-gray-100 p-4 pt-8 sm:pt-10 pb-8 select-none">
+  <div class="flex flex-col items-center justify-start min-h-full bg-gray-100 dark:bg-slate-900 p-4 pt-8 sm:pt-10 pb-8 select-none">
     <!-- Header Section -->
     <header class="text-center mb-5 sm:mb-6 max-w-md w-full">
-      <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 mb-2">
+      <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">
         Gab's Arcade
       </h1>
-      <p class="text-gray-600 text-sm sm:text-base">
+      <p class="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
         Select a game to start playing with your friends.
       </p>
     </header>
 
     <!-- Join via Room Code Card -->
-    <div class="w-full max-w-md bg-white border border-gray-200/80 rounded-2xl p-6 shadow-sm mb-5 sm:mb-6 transition-all hover:shadow-md">
+    <div class="w-full max-w-md bg-white dark:bg-slate-800 border border-gray-200/80 dark:border-slate-700 rounded-2xl p-6 shadow-sm mb-5 sm:mb-6 transition-all hover:shadow-md">
       <div class="flex items-center space-x-2.5 mb-4">
-        <div class="p-2 bg-indigo-50 text-indigo-600 rounded-lg">
+        <div class="p-2 bg-indigo-50 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 rounded-lg">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
           </svg>
         </div>
         <div>
-          <h2 class="text-base font-bold text-gray-800">Join via Room Code</h2>
-          <p class="text-xs text-gray-500">Enter a 6-digit code to jump directly into the game</p>
+          <h2 class="text-base font-bold text-gray-800 dark:text-gray-100">Join via Room Code</h2>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Enter a 6-digit code to jump directly into the game</p>
         </div>
       </div>
 
@@ -33,7 +33,7 @@
             type="text"
             placeholder="ENTER CODE"
             maxlength="6"
-            class="w-full pl-4 pr-12 h-[52px] border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-center font-mono tracking-widest text-lg placeholder:font-sans placeholder:tracking-normal placeholder:text-sm text-gray-800 uppercase bg-gray-50/50"
+            class="w-full pl-4 pr-12 h-[52px] border border-gray-200 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-center font-mono tracking-widest text-lg placeholder:font-sans placeholder:tracking-normal placeholder:text-sm text-gray-800 dark:text-gray-200 uppercase bg-gray-50/50 dark:bg-slate-700/50"
             :disabled="isValidating"
           />
           <!-- Camera Scan QR Button inside input -->
@@ -51,7 +51,7 @@
         <button
           @click="joinRoomByCode"
           :disabled="isValidating || roomCode.length !== 6"
-          class="px-6 h-[52px] bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-bold rounded-xl transition-all duration-200 shadow-sm hover:shadow active:scale-95 disabled:from-gray-300 disabled:to-gray-300 disabled:cursor-not-allowed disabled:scale-100 cursor-pointer flex items-center justify-center min-w-[120px]"
+           class="px-6 h-[52px] bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-bold rounded-xl transition-all duration-200 shadow-sm hover:shadow active:scale-95 disabled:from-gray-300 disabled:to-gray-300 dark:disabled:from-slate-600 dark:disabled:to-slate-600 disabled:cursor-not-allowed disabled:scale-100 cursor-pointer flex items-center justify-center min-w-[120px]"
         >
           <span v-if="isValidating" class="flex items-center space-x-1.5">
             <svg class="animate-spin -ml-1 mr-1 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -116,14 +116,14 @@
           <button
             @click="showViewDropdown = !showViewDropdown"
             @blur="closeViewDropdown"
-            class="h-10 px-3 border border-gray-200 rounded-xl bg-gradient-to-b from-white to-gray-50/80 cursor-pointer shadow-sm flex items-center focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+            class="h-10 px-3 border border-gray-200 dark:border-slate-600 rounded-xl bg-gradient-to-b from-white to-gray-50/80 dark:from-slate-700 dark:to-slate-800 cursor-pointer shadow-sm flex items-center focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:text-gray-200"
           >
             <span v-html="currentViewIcon"></span>
           </button>
           <transition name="fade">
             <div
               v-if="showViewDropdown"
-              class="absolute left-0 top-full mt-1 w-40 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden"
+              class="absolute left-0 top-full mt-1 w-40 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl shadow-xl z-50 overflow-hidden"
             >
               <button
                 v-for="v in viewModes"
@@ -131,8 +131,8 @@
                 @mousedown.prevent="selectViewMode(v.value)"
                 class="w-full px-4 py-2.5 text-left text-sm transition-colors duration-150 cursor-pointer flex items-center space-x-3"
                 :class="viewMode === v.value
-                  ? 'bg-indigo-50 text-indigo-700 font-semibold'
-                  : 'text-gray-700 hover:bg-gray-50'
+                  ? 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-semibold'
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-600'
                 "
               >
                 <span v-html="v.icon" class="w-5 h-5 flex-shrink-0"></span>
@@ -144,14 +144,14 @@
 
         <!-- Search Input -->
         <div class="relative flex-1">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
           <input
             v-model="searchQuery"
             type="text"
             placeholder="Search games..."
-            class="w-full pl-10 pr-4 h-10 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm bg-white/80"
+            class="w-full pl-10 pr-4 h-10 border border-gray-200 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm bg-white/80 dark:bg-slate-700/80 dark:text-gray-200 dark:placeholder-gray-400"
           />
         </div>
 
@@ -160,17 +160,17 @@
           <button
             @click="showFilterDropdown = !showFilterDropdown"
             @blur="closeFilterDropdown"
-            class="h-10 pl-3 pr-9 border border-gray-200 rounded-xl bg-gradient-to-b from-white to-gray-50/80 text-sm text-gray-700 font-medium cursor-pointer shadow-sm flex items-center whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-[130px]"
+            class="h-10 pl-3 pr-9 border border-gray-200 dark:border-slate-600 rounded-xl bg-gradient-to-b from-white to-gray-50/80 dark:from-slate-700 dark:to-slate-800 text-sm text-gray-700 dark:text-gray-300 font-medium cursor-pointer shadow-sm flex items-center whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-[130px]"
           >
             {{ currentFilterLabel }}
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
           <transition name="fade">
             <div
               v-if="showFilterDropdown"
-              class="absolute right-0 top-full mt-1 w-44 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden"
+              class="absolute right-0 top-full mt-1 w-44 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl shadow-xl z-50 overflow-hidden"
             >
               <button
                 v-for="f in filters"
@@ -178,12 +178,12 @@
                 @mousedown.prevent="selectFilter(f.value)"
                 class="w-full px-4 py-2.5 text-left text-sm transition-colors duration-150 cursor-pointer"
                 :class="activeFilter === f.value
-                  ? 'bg-indigo-50 text-indigo-700 font-semibold'
-                  : 'text-gray-700 hover:bg-gray-50'
+                  ? 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-semibold'
+                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-600'
                 "
               >
                 <span class="flex items-center space-x-2.5">
-                  <svg v-if="activeFilter === f.value" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <svg v-if="activeFilter === f.value" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                   <span v-else class="w-4" />
@@ -193,6 +193,7 @@
             </div>
           </transition>
         </div>
+        <DarkModeToggle />
       </div>
     </div>
 
@@ -202,9 +203,9 @@
     </main>
 
     <!-- Footer -->
-    <footer class="mt-12 pb-6 text-gray-500 text-xs text-center flex flex-col items-center space-y-1">
+    <footer class="mt-12 pb-6 text-gray-500 dark:text-gray-400 text-xs text-center flex flex-col items-center space-y-1">
       <p>© 2026 Gab Samonte.</p>
-      <button @click="openBugReport" class="hover:text-indigo-600 transition cursor-pointer underline text-[11px] font-medium">
+      <button @click="openBugReport" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition cursor-pointer underline text-[11px] font-medium">
         Report a Bug
       </button>
     </footer>
@@ -219,12 +220,14 @@ import gamesData from '../assets/games.json';
 import CarouselView from './menu/CarouselView.vue';
 import ListView from './menu/ListView.vue';
 import GridView from './menu/GridView.vue';
+import DarkModeToggle from './DarkModeToggle.vue';
 
 export default defineComponent({
   name: 'Menu',
   components: {
     CarouselView,
     ListView,
+    DarkModeToggle,
     GridView,
   },
   props: {

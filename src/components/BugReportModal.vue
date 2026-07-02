@@ -14,11 +14,11 @@
 
     <form @submit.prevent="submitReport" class="space-y-4">
       <div>
-        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Category</label>
+        <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Category</label>
         <select
           v-model="category"
           :disabled="loading"
-          class="w-full text-sm py-2 px-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-slate-50 cursor-pointer"
+          class="w-full text-sm py-2 px-3 border border-slate-200 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-slate-50 dark:bg-slate-700 cursor-pointer dark:text-slate-200"
         >
           <option value="Gameplay Bug">Gameplay Bug</option>
           <option value="UI/Visual Issue">UI/Visual Issue</option>
@@ -28,7 +28,7 @@
       </div>
 
       <div>
-        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Title</label>
+        <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Title</label>
         <input
           v-model="title"
           :disabled="loading"
@@ -36,12 +36,12 @@
           placeholder="e.g. Turn freezes on connection drop"
           maxlength="100"
           required
-          class="w-full text-sm py-2.5 px-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-slate-50"
+          class="w-full text-sm py-2.5 px-4 border border-slate-200 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-slate-50 dark:bg-slate-700 dark:text-slate-200 dark:placeholder-slate-400"
         />
       </div>
 
       <div>
-        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Description</label>
+        <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Description</label>
         <textarea
           v-model="description"
           :disabled="loading"
@@ -49,7 +49,7 @@
           rows="4"
           maxlength="1000"
           required
-          class="w-full text-sm py-2.5 px-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-slate-50 resize-none"
+          class="w-full text-sm py-2.5 px-4 border border-slate-200 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-slate-50 dark:bg-slate-700 dark:text-slate-200 dark:placeholder-slate-400 resize-none"
         ></textarea>
       </div>
 
@@ -58,7 +58,7 @@
           type="button"
           @click="close"
           :disabled="loading"
-          class="flex-1 py-3 border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-sm rounded-xl transition duration-150 active:scale-95 disabled:opacity-50 cursor-pointer text-center"
+          class="flex-1 py-3 border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-sm rounded-xl transition duration-150 active:scale-95 disabled:opacity-50 cursor-pointer text-center"
         >
           Cancel
         </button>

@@ -1,5 +1,5 @@
 <template>
-  <div class="h-dvh md:h-screen bg-gray-100 overflow-hidden flex flex-col min-h-0">
+  <div class="h-dvh md:h-screen bg-gray-100 dark:bg-slate-900 overflow-hidden flex flex-col min-h-0">
     <div class="flex-grow flex flex-col min-h-0 overflow-y-auto">
       <router-view
         :socket="socket"
@@ -23,7 +23,6 @@ import { useRouter } from 'vue-router';
 import { useSocket } from './composables/useSocket.js';
 import ToastContainer from './components/ToastContainer.vue';
 import BugReportModal from './components/BugReportModal.vue';
-
 export default defineComponent({
   components: { ToastContainer, BugReportModal },
   setup() {
