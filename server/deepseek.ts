@@ -79,17 +79,15 @@ async function openRouterFetch(model: string, options: DeepSeekChatOptions): Pro
   return content;
 }
 
-export async function callDeepSeek(options: DeepSeekChatOptions): Promise<string> {
-  // Primary: DeepSeek
+async function callDeepSeekWithFallback(model: string, label: string, options: DeepSeekChatOptions): Promise<string> {
   if (isDeepSeekConfigured) {
     try {
-      return await deepSeekFetch('deepseek-v4-flash', options);
+      return await deepSeekFetch(model, options);
     } catch (error) {
-      console.warn('DeepSeek failed, falling back to OpenRouter:', error);
+      console.warn(`${label} failed, falling back to OpenRouter:`, error);
     }
   }
 
-  // Fallback: OpenRouter free model router
   if (isOpenRouterConfigured) {
     return openRouterFetch('openrouter/free', options);
   }
@@ -97,20 +95,10 @@ export async function callDeepSeek(options: DeepSeekChatOptions): Promise<string
   throw new Error('No LLM provider configured (DeepSeek or OpenRouter).');
 }
 
-export async function callDeepSeekPro(options: DeepSeekChatOptions): Promise<string> {
-  // Primary: DeepSeek Pro
-  if (isDeepSeekConfigured) {
-    try {
-      return await deepSeekFetch('deepseek-v4-pro', options);
-    } catch (error) {
-      console.warn('DeepSeek Pro failed, falling back to OpenRouter:', error);
-    }
-  }
+export function callDeepSeek(options: DeepSeekChatOptions): Promise<string> {
+  return callDeepSeekWithFallback('deepseek-v4-flash', 'DeepSeek', options);
+}
 
-  // Fallback: OpenRouter free model router
-  if (isOpenRouterConfigured) {
-    return openRouterFetch('openrouter/free', options);
-  }
-
-  throw new Error('No LLM provider configured (DeepSeek or OpenRouter).');
+export function callDeepSeekPro(options: DeepSeekChatOptions): Promise<string> {
+  return callDeepSeekWithFallback('deepseek-v4-pro', 'DeepSeek Pro', options);
 }
