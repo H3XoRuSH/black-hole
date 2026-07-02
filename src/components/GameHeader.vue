@@ -115,227 +115,145 @@
     </div>
 
     <!-- Instructions Modal -->
-    <Teleport to="body">
-      <Transition
-        enter-active-class="transition duration-300 ease-out"
-        enter-from-class="opacity-0"
-        enter-to-class="opacity-100"
-        leave-active-class="transition duration-200 ease-in"
-        leave-from-class="opacity-100"
-        leave-to-class="opacity-0"
-      >
-        <div
-          v-if="isModalOpen"
-          class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/65 backdrop-blur-sm"
-          @click.self="closeModal"
-        >
-          <Transition
-            enter-active-class="transition duration-300 ease-out"
-            enter-from-class="opacity-0 scale-95 translate-y-4"
-            enter-to-class="opacity-100 scale-100 translate-y-0"
-            leave-active-class="transition duration-200 ease-in"
-            leave-from-class="opacity-100 scale-100 translate-y-0"
-            leave-to-class="opacity-0 scale-95 translate-y-4"
-          >
-            <div
-              v-if="isModalOpen"
-              class="bg-slate-900 border border-slate-800 text-white rounded-2xl max-w-lg w-full shadow-2xl p-6 flex flex-col relative max-h-[85vh] overflow-hidden"
-            >
-              <!-- Close Button -->
-              <button
-                @click="closeModal"
-                class="absolute top-4 right-4 text-slate-400 hover:text-white hover:bg-slate-800/80 p-1.5 rounded-lg transition-colors cursor-pointer active:scale-95"
-                aria-label="Close Rules"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
+    <BaseModal
+      :is-open="isModalOpen"
+      title="How to Play"
+      :subtitle="activeGameName"
+      @close="closeModal"
+    >
+      <template #header-icon>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        </svg>
+      </template>
 
-              <!-- Modal Header -->
-              <div class="mb-5 flex items-center space-x-3 pr-8">
-                <div class="p-2 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                  </svg>
-                </div>
-                <div>
-                  <h2 class="text-xl font-bold tracking-tight">How to Play</h2>
-                  <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">{{ activeGameName }}</p>
-                </div>
-              </div>
-
-              <!-- Rules Content (Scrollable) -->
-              <div class="overflow-y-auto pr-1 text-slate-300 text-sm space-y-4 focus:outline-none">
-                <div v-for="(rule, index) in rulesList" :key="index" class="flex items-start space-x-3.5 bg-slate-950/40 border border-slate-800/40 rounded-xl p-3.5 hover:border-slate-800 transition-colors">
-                  <div class="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-blue-500/15 text-blue-400 font-bold text-xs border border-blue-500/25">
-                    {{ index + 1 }}
-                  </div>
-                  <div class="flex-grow space-y-0.5">
-                    <h4 class="font-bold text-slate-100 text-sm" v-if="rule.title">{{ rule.title }}</h4>
-                    <p class="leading-relaxed text-slate-300 text-xs sm:text-sm">{{ rule.desc }}</p>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Footer -->
-              <div class="mt-6 pt-4 border-t border-slate-800 flex justify-end">
-                <button
-                  @click="closeModal"
-                  class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2 rounded-xl text-sm transition-all duration-150 cursor-pointer shadow-lg shadow-blue-500/10 active:scale-95 animate-pulse"
-                >
-                  Got it, let's play!
-                </button>
-              </div>
-            </div>
-          </Transition>
+      <div class="text-slate-300 text-sm space-y-4">
+        <div v-for="(rule, index) in rulesList" :key="index" class="flex items-start space-x-3.5 bg-slate-950/40 border border-slate-800/40 rounded-xl p-3.5 hover:border-slate-800 transition-colors">
+          <div class="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-blue-500/15 text-blue-400 font-bold text-xs border border-blue-500/25">
+            {{ index + 1 }}
+          </div>
+          <div class="flex-grow space-y-0.5">
+            <h4 class="font-bold text-slate-100 text-sm" v-if="rule.title">{{ rule.title }}</h4>
+            <p class="leading-relaxed text-slate-300 text-xs sm:text-sm">{{ rule.desc }}</p>
+          </div>
         </div>
-      </Transition>
-    </Teleport>
+      </div>
+
+      <template #footer>
+        <div class="flex justify-end">
+          <button
+            @click="closeModal"
+            class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2 rounded-xl text-sm transition-all duration-150 cursor-pointer shadow-lg shadow-blue-500/10 active:scale-95 animate-pulse"
+          >
+            Got it, let's play!
+          </button>
+        </div>
+      </template>
+    </BaseModal>
 
     <!-- Recap Modal -->
-    <Teleport to="body">
-      <Transition
-        enter-active-class="transition duration-300 ease-out"
-        enter-from-class="opacity-0"
-        enter-to-class="opacity-100"
-        leave-active-class="transition duration-200 ease-in"
-        leave-from-class="opacity-100"
-        leave-to-class="opacity-0"
+    <BaseModal
+      :is-open="showRecapModal"
+      title="AI Match Recap"
+      :subtitle="activeGameName"
+      @close="closeRecapModal"
+    >
+      <template #header-icon>
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd" />
+        </svg>
+      </template>
+
+      <div v-if="recapLoading" class="flex flex-col items-center py-8 space-y-3">
+        <div class="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+        <span class="text-xs text-slate-400 animate-pulse">Analyzing key moves...</span>
+      </div>
+
+      <div
+        v-else-if="!recapText"
+        class="flex justify-center py-6"
       >
-        <div
-          v-if="showRecapModal"
-          class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/65 backdrop-blur-sm"
-          @click.self="closeRecapModal"
+        <button
+          @click="requestRecap"
+          class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all duration-150 cursor-pointer shadow-md active:scale-95 flex items-center space-x-2"
         >
-          <Transition
-            enter-active-class="transition duration-300 ease-out"
-            enter-from-class="opacity-0 scale-95 translate-y-4"
-            enter-to-class="opacity-100 scale-100 translate-y-0"
-            leave-active-class="transition duration-200 ease-in"
-            leave-from-class="opacity-100 scale-100 translate-y-0"
-            leave-to-class="opacity-0 scale-95 translate-y-4"
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd" />
+          </svg>
+          <span>Generate AI Recap</span>
+        </button>
+      </div>
+
+      <div
+        v-else
+        class="flex flex-col flex-grow overflow-hidden"
+      >
+        <div v-html="formattedRecapHtml"></div>
+
+        <div v-if="recapConversation.length > 0" class="border-t border-slate-700/50 pt-4 mt-4 space-y-3">
+          <div
+            v-for="(msg, idx) in recapConversation"
+            :key="idx"
+            class="flex"
+            :class="msg.role === 'user' ? 'justify-end' : 'justify-start'"
           >
             <div
-              v-if="showRecapModal"
-              class="bg-slate-900 border border-slate-800 text-white rounded-2xl max-w-lg w-full shadow-2xl p-6 flex flex-col relative max-h-[85vh] overflow-hidden"
+              class="max-w-[85%] rounded-xl px-3 py-2 text-xs leading-relaxed"
+              :class="msg.role === 'user'
+                ? 'bg-indigo-600/20 text-indigo-200 border border-indigo-500/20'
+                : 'bg-slate-800 text-slate-300 border border-slate-700/50'"
             >
-              <button
-                @click="closeRecapModal"
-                class="absolute top-4 right-4 text-slate-400 hover:text-white hover:bg-slate-800/80 p-1.5 rounded-lg transition-colors cursor-pointer active:scale-95"
-                aria-label="Close Recap"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-
-              <div class="mb-5 flex items-center space-x-3 pr-8">
-                <div class="p-2 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd" />
-                  </svg>
-                </div>
-                <div>
-                  <h2 class="text-xl font-bold tracking-tight">AI Match Recap</h2>
-                  <p class="text-xs text-slate-400 font-medium uppercase tracking-wider">{{ activeGameName }}</p>
-                </div>
-              </div>
-
-              <div v-if="recapLoading" class="flex flex-col items-center py-8 space-y-3">
-                <div class="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-                <span class="text-xs text-slate-400 animate-pulse">Analyzing key moves...</span>
-              </div>
-
-              <div
-                v-else-if="!recapText"
-                class="flex justify-center py-6"
-              >
-                <button
-                  @click="requestRecap"
-                  class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all duration-150 cursor-pointer shadow-md active:scale-95 flex items-center space-x-2"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7z" clip-rule="evenodd" />
-                  </svg>
-                  <span>Generate AI Recap</span>
-                </button>
-              </div>
-
-              <div
-                v-else
-                class="flex flex-col flex-grow overflow-hidden"
-              >
-                <div class="overflow-y-auto pr-1 text-slate-300 text-sm space-y-4 focus:outline-none">
-                  <div v-html="formattedRecapHtml"></div>
-
-                  <div v-if="recapConversation.length > 0" class="border-t border-slate-700/50 pt-4 mt-4 space-y-3">
-                    <div
-                      v-for="(msg, idx) in recapConversation"
-                      :key="idx"
-                      class="flex"
-                      :class="msg.role === 'user' ? 'justify-end' : 'justify-start'"
-                    >
-                      <div
-                        class="max-w-[85%] rounded-xl px-3 py-2 text-xs leading-relaxed"
-                        :class="msg.role === 'user'
-                          ? 'bg-indigo-600/20 text-indigo-200 border border-indigo-500/20'
-                          : 'bg-slate-800 text-slate-300 border border-slate-700/50'"
-                      >
-                        <p class="font-medium text-[10px] uppercase tracking-wider mb-1 opacity-60">
-                          {{ msg.role === 'user' ? 'You' : 'AI' }}
-                        </p>
-                        <p>{{ msg.content }}</p>
-                      </div>
-                    </div>
-                    <div v-if="recapAskLoading" class="flex justify-start">
-                      <div class="bg-slate-800 text-slate-400 rounded-xl px-3 py-2 text-xs border border-slate-700/50">
-                        <span class="animate-pulse">Thinking...</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div v-if="!recapQuestionAsked" class="flex-shrink-0 mt-3 pt-3 border-t border-slate-700/50">
-                  <div class="flex items-center space-x-2">
-                    <input
-                      v-model="recapQuestion"
-                      type="text"
-                      placeholder="Ask a follow-up question about this match..."
-                      class="flex-grow bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
-                      @keyup.enter="sendRecapQuestion"
-                      :disabled="recapAskLoading"
-                    />
-                    <button
-                      @click="sendRecapQuestion"
-                      :disabled="recapAskLoading || !recapQuestion.trim()"
-                      class="bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-700 disabled:text-slate-500 text-white rounded-xl px-3 py-2 text-xs transition-all duration-150 cursor-pointer active:scale-95 flex-shrink-0"
-                    >
-                      <svg v-if="recapAskLoading" class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                      </svg>
-                      <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <p class="font-medium text-[10px] uppercase tracking-wider mb-1 opacity-60">
+                {{ msg.role === 'user' ? 'You' : 'AI' }}
+              </p>
+              <p>{{ msg.content }}</p>
             </div>
-          </Transition>
+          </div>
+          <div v-if="recapAskLoading" class="flex justify-start">
+            <div class="bg-slate-800 text-slate-400 rounded-xl px-3 py-2 text-xs border border-slate-700/50">
+              <span class="animate-pulse">Thinking...</span>
+            </div>
+          </div>
         </div>
-      </Transition>
-    </Teleport>
+
+        <div v-if="!recapQuestionAsked" class="flex-shrink-0 mt-3 pt-3 border-t border-slate-700/50">
+          <div class="flex items-center space-x-2">
+            <input
+              v-model="recapQuestion"
+              type="text"
+              placeholder="Ask a follow-up question about this match..."
+              class="flex-grow bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+              @keyup.enter="sendRecapQuestion"
+              :disabled="recapAskLoading"
+            />
+            <button
+              @click="sendRecapQuestion"
+              :disabled="recapAskLoading || !recapQuestion.trim()"
+              class="bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-700 disabled:text-slate-500 text-white rounded-xl px-3 py-2 text-xs transition-all duration-150 cursor-pointer active:scale-95 flex-shrink-0"
+            >
+              <svg v-if="recapAskLoading" class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+    </BaseModal>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue';
 import gamesData from '../assets/games.json';
+import BaseModal from './BaseModal.vue';
 
 export default defineComponent({
   name: 'GameHeader',
+  components: { BaseModal },
   props: {
     connectionStatus: String,
     title: {
