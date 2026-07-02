@@ -1,7 +1,7 @@
 <template>
   <div class="relative w-full">
     <!-- Carousel viewport -->
-    <div class="overflow-hidden rounded-2xl relative" @touchstart="handleTouchStart" @touchend="handleTouchEnd">
+    <div class="overflow-hidden rounded-2xl relative" @touchstart.passive="handleTouchStart" @touchend="handleTouchEnd">
       <div class="flex transition-transform duration-500 ease-in-out"
         :style="{ transform: `translateX(-${currentIndex * 100}%)` }">
         <div v-for="game in games" :key="game.id" class="w-full flex-shrink-0 p-1">
