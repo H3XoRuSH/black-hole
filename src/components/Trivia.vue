@@ -66,13 +66,18 @@
         <div v-if="phase === 'question-intro' || phase === 'revealing' || phase === 'solved'"
           class="mb-4 text-center"
         >
-          <div class="inline-flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1">
-            <span
-              v-for="(ch, idx) in displayChars"
-              :key="idx"
-              class="font-mono text-lg sm:text-xl font-black tracking-widest"
-              :class="displayCharClass(ch, idx)"
-            >{{ ch }}</span>
+          <div class="inline-flex flex-wrap items-center justify-center gap-y-1">
+            <template v-for="(group, gIdx) in wordGroups" :key="gIdx">
+              <span v-if="group.length === 1 && group[0] === ' '" class="inline-block w-4" />
+              <span v-else class="whitespace-nowrap">
+                <span
+                  v-for="(ch, idx) in group"
+                  :key="idx"
+                  class="font-mono text-lg sm:text-xl font-black tracking-widest"
+                  :class="displayCharClass(ch, idx)"
+                >{{ ch }}</span>
+              </span>
+            </template>
           </div>
         </div>
 
@@ -91,6 +96,7 @@
               type="text"
               placeholder="Type your answer..."
               class="flex-grow bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
+              style="scroll-margin-top: 40vh"
               @keyup.enter="submitAnswer"
               :disabled="gameState.solvedBy !== null"
               ref="answerInput"
@@ -186,7 +192,7 @@ export default defineComponent({
     const answerInput = ref<HTMLInputElement | null>(null);
 
     watch(() => gameState.value.phase, (newPhase) => {
-      if (newPhase === 'revealing') {
+      if (newPhase === 'question-intro' || newPhase === 'revealing') {
         nextTick(() => {
           answerInput.value?.focus();
         });
@@ -254,6 +260,23 @@ export default defineComponent({
     },
     displayChars(): string[] {
       return (this.gameState.answerDisplay || '').split('');
+    },
+    wordGroups(): string[][] {
+      const groups: string[][] = [];
+      let word: string[] = [];
+      for (const ch of this.displayChars) {
+        if (ch === ' ') {
+          if (word.length) {
+            groups.push(word);
+            word = [];
+          }
+          groups.push([' ']);
+        } else {
+          word.push(ch);
+        }
+      }
+      if (word.length) groups.push(word);
+      return groups;
     },
     solverName(): string {
       if (this.gameState.solvedBy === null) return '';

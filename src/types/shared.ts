@@ -143,7 +143,7 @@ export interface TriviaQuestion {
 }
 
 export interface TriviaOptions {
-  category?: number;
+  categorySlug?: string;
   categoryName?: string;
   difficulty?: string;
 }

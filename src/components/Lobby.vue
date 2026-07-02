@@ -214,7 +214,7 @@
                   class="w-full text-xs font-semibold py-2 px-3 bg-white border border-gray-300 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer"
                 >
                   <option :value="null">Any Category</option>
-                  <option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.name }}</option>
+                  <option v-for="cat in categories" :key="cat.slug" :value="cat.slug">{{ cat.name }}</option>
                 </select>
               </div>
               <div class="flex-1">
@@ -387,7 +387,7 @@ export default defineComponent({
       isQRModalOpen: false,
       editingName: false,
       newName: '',
-      triviaCategory: null as number | null,
+      triviaCategory: null as string | null,
       triviaDifficulty: '',
     };
   },
@@ -415,23 +415,18 @@ export default defineComponent({
     canStartGame(): boolean {
       return this.players.length >= this.minPlayers && this.players.every((p: any) => p.ready);
     },
-    categories(): Array<{ id: number; name: string }> {
+    categories(): Array<{ slug: string; name: string }> {
       return [
-        { id: 9, name: 'General Knowledge' },
-        { id: 10, name: 'Entertainment: Books' },
-        { id: 11, name: 'Entertainment: Film' },
-        { id: 12, name: 'Entertainment: Music' },
-        { id: 14, name: 'Entertainment: Television' },
-        { id: 15, name: 'Entertainment: Video Games' },
-        { id: 17, name: 'Science & Nature' },
-        { id: 18, name: 'Science: Computers' },
-        { id: 19, name: 'Science: Mathematics' },
-        { id: 20, name: 'Mythology' },
-        { id: 21, name: 'Sports' },
-        { id: 22, name: 'Geography' },
-        { id: 23, name: 'History' },
-        { id: 24, name: 'Politics' },
-        { id: 27, name: 'Animals' },
+        { slug: 'general_knowledge', name: 'General Knowledge' },
+        { slug: 'film_and_tv', name: 'Film & TV' },
+        { slug: 'music', name: 'Music' },
+        { slug: 'arts_and_literature', name: 'Arts & Literature' },
+        { slug: 'science', name: 'Science' },
+        { slug: 'geography', name: 'Geography' },
+        { slug: 'history', name: 'History' },
+        { slug: 'sport_and_leisure', name: 'Sports & Leisure' },
+        { slug: 'society_and_culture', name: 'Society & Culture' },
+        { slug: 'food_and_drink', name: 'Food & Drink' },
       ];
     },
   },
@@ -489,10 +484,10 @@ export default defineComponent({
     },
     updateTriviaOptions() {
       if (!this.socket || !this.roomKey) return;
-      const cat = this.categories.find((c) => c.id === this.triviaCategory);
+      const cat = this.categories.find((c) => c.slug === this.triviaCategory);
       this.socket.emit('set-trivia-options', {
         roomKey: this.roomKey,
-        category: this.triviaCategory || undefined,
+        categorySlug: this.triviaCategory || undefined,
         categoryName: cat?.name,
         difficulty: this.triviaDifficulty || undefined,
       });
