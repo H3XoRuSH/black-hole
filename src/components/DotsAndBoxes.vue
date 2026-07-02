@@ -17,14 +17,14 @@
     />
 
     <!-- Score Info -->
-    <div class="flex space-x-8 mb-4 text-sm font-bold text-gray-700 dark:text-gray-200">
-      <div class="flex items-center space-x-2">
-        <div class="w-3.5 h-3.5 rounded-full bg-blue-500 shadow"></div>
-        <span>{{ p1Name }} (Blue): {{ gameState.scores.player1 }}</span>
+    <div class="flex flex-wrap justify-center gap-x-6 gap-y-1 mb-4 text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-200">
+      <div class="flex items-center space-x-1.5">
+        <div class="w-3 h-3 rounded-full bg-blue-500 shadow shrink-0"></div>
+        <span>{{ p1Name }}: {{ gameState.scores.player1 }}</span>
       </div>
-      <div class="flex items-center space-x-2">
-        <div class="w-3.5 h-3.5 rounded-full bg-rose-500 shadow"></div>
-        <span>{{ p2Name }} (Red): {{ gameState.scores.player2 }}</span>
+      <div class="flex items-center space-x-1.5">
+        <div class="w-3 h-3 rounded-full bg-rose-500 shadow shrink-0"></div>
+        <span>{{ p2Name }}: {{ gameState.scores.player2 }}</span>
       </div>
     </div>
 

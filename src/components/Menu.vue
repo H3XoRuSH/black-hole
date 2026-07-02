@@ -14,7 +14,7 @@
     <div class="w-full max-w-md bg-white dark:bg-slate-800 border border-gray-200/80 dark:border-slate-700 rounded-2xl p-6 shadow-sm mb-5 sm:mb-6 transition-all hover:shadow-md">
       <div class="flex items-center space-x-2.5 mb-4">
         <div class="p-2 bg-indigo-50 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 rounded-lg">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
           </svg>
         </div>
@@ -239,7 +239,7 @@ export default defineComponent({
   data() {
     return {
       games: gamesData,
-      viewMode: localStorage.getItem('gamesViewMode') || 'carousel',
+      viewMode: localStorage.getItem('gamesViewMode') || 'grid',
       roomCode: '',
       validationError: '',
       isValidating: false,

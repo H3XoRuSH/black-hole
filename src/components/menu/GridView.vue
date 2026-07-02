@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-2 gap-4 w-full">
+  <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 w-full">
     <GameCard v-for="game in games" :key="game.id" :game="game" variant="grid" @select-game="(id: string) => $emit('select-game', id)" />
   </div>
 </template>

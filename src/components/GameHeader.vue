@@ -18,7 +18,8 @@
       <div class="flex items-center justify-center flex-grow space-x-2.5">
         <div v-if="activeGame?.icon" class="w-7 h-7 sm:w-8 sm:h-8 flex-shrink-0" :style="{ color: activeGame.color }" v-html="activeGame.icon"></div>
         <h1
-          class="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-blue-600 to-red-600 bg-clip-text text-transparent text-center"
+          class="text-2xl sm:text-3xl font-bold text-center"
+          :style="{ color: activeGame?.color || '#6366f1' }"
         >
           {{ title }}
         </h1>
@@ -39,7 +40,7 @@
     <!-- Connection Status Banner -->
     <div
       v-if="connectionStatus"
-      class="w-full mb-3 sm:mb-4 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700/50 text-amber-800 dark:text-amber-200 rounded-xl p-3 text-xs sm:text-sm font-medium flex items-center justify-center space-x-2 animate-pulse"
+       class="w-full mb-3 sm:mb-4 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700/50 text-amber-800 dark:text-amber-200 rounded-xl p-3 text-xs sm:text-sm font-medium flex items-center justify-center space-x-2"
     >
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
@@ -49,38 +50,37 @@
 
     <!-- Players VS Status Card -->
     <div
-      class="w-full bg-white/80 dark:bg-slate-800/80 backdrop-blur-md rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 border border-gray-200 dark:border-slate-700 shadow-md flex items-center justify-between text-sm sm:text-base mb-3 sm:mb-4.5 h-[4rem] sm:h-[4.5rem]"
+      class="w-full bg-white/90 dark:bg-slate-800/90 backdrop-blur-md rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-gray-200 dark:border-slate-700 shadow-md flex items-center justify-between text-sm sm:text-base mb-3 sm:mb-4.5"
     >
       <div
-        class="flex items-center space-x-2 rounded-lg px-2 sm:px-3 py-1.5 transition-all duration-300 flex-shrink-0"
-        :class="currentPlayer === 1 && !gameOver ? 'bg-blue-50 dark:bg-blue-900/40 shadow-sm scale-105 font-bold' : currentPlayer === 1 ? 'scale-105 font-bold' : 'opacity-60'"
+        class="flex items-center gap-2 rounded-lg px-2 sm:px-3 py-1.5 transition-all duration-300 min-w-0 flex-shrink"
+        :class="currentPlayer === 1 && !gameOver ? 'bg-blue-50 dark:bg-blue-900/40 shadow-sm ring-1 ring-blue-200 dark:ring-blue-800' : 'opacity-60'"
       >
         <span
-          class="w-3.5 h-3.5 rounded-full bg-blue-500 ring-2"
-          :class="currentPlayer === 1 && !gameOver ? 'ring-blue-300 animate-pulse' : 'ring-blue-200'"
+          class="w-3 h-3 rounded-full bg-blue-500 shrink-0 ring-2 ring-blue-200"
+          :class="currentPlayer === 1 && !gameOver ? 'animate-pulse ring-blue-300' : ''"
         ></span>
-        <span class="text-blue-700 dark:text-blue-300">{{ p1Label }}</span>
+        <span class="text-blue-700 dark:text-blue-300 font-semibold truncate">{{ p1Label }}</span>
         <span
           v-if="currentPlayer === 1 && !gameOver"
-          class="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/50 rounded-full px-2 py-0.5 leading-none"
+          class="text-[10px] font-bold uppercase tracking-wider text-blue-600 dark:text-blue-300 bg-blue-100 dark:bg-blue-900/50 rounded-full px-1.5 py-0.5 leading-none shrink-0"
         >TURN</span>
       </div>
-      <span
-        class="text-gray-400 font-mono text-xs uppercase tracking-widest mx-4 sm:mx-6 flex-shrink-0"
-        >VS</span
-      >
+
+      <span class="text-gray-400 dark:text-gray-500 font-bold text-xs mx-2 sm:mx-4 shrink-0">VS</span>
+
       <div
-        class="flex items-center space-x-2 rounded-lg px-2 sm:px-3 py-1.5 transition-all duration-300"
-        :class="currentPlayer === 2 && !gameOver ? 'bg-red-50 dark:bg-red-900/40 shadow-sm scale-105 font-bold' : currentPlayer === 2 ? 'scale-105 font-bold' : 'opacity-60'"
+        class="flex items-center gap-2 rounded-lg px-2 sm:px-3 py-1.5 transition-all duration-300 min-w-0 flex-shrink"
+        :class="currentPlayer === 2 && !gameOver ? 'bg-red-50 dark:bg-red-900/40 shadow-sm ring-1 ring-red-200 dark:ring-red-800' : 'opacity-60'"
       >
         <span
           v-if="currentPlayer === 2 && !gameOver"
-          class="text-[10px] font-bold uppercase tracking-wider text-red-600 dark:text-red-300 bg-red-100 dark:bg-red-900/50 rounded-full px-2 py-0.5 leading-none"
+          class="text-[10px] font-bold uppercase tracking-wider text-red-600 dark:text-red-300 bg-red-100 dark:bg-red-900/50 rounded-full px-1.5 py-0.5 leading-none shrink-0"
         >TURN</span>
-        <span class="text-red-700 dark:text-red-300">{{ p2Label }}</span>
+        <span class="text-red-700 dark:text-red-300 font-semibold truncate">{{ p2Label }}</span>
         <span
-          class="w-3.5 h-3.5 rounded-full bg-red-500 ring-2"
-          :class="currentPlayer === 2 && !gameOver ? 'ring-red-300 animate-pulse' : 'ring-red-200'"
+          class="w-3 h-3 rounded-full bg-red-500 shrink-0 ring-2 ring-red-200"
+          :class="currentPlayer === 2 && !gameOver ? 'animate-pulse ring-red-300' : ''"
         ></span>
       </div>
     </div>
@@ -288,15 +288,15 @@ export default defineComponent({
       return p?.name || 'Player 2';
     },
     p1Label(): string {
-      return `${this.p1Name} (Blue)`;
+      return this.p1Name;
     },
     p2Label(): string {
-      return `${this.p2Name} (Red)`;
+      return this.p2Name;
     },
     youLabel(): string {
       const me = this.players.find((p: any) => p.player === this.player);
       const name = me?.name || `Player ${this.player}`;
-      return `${name} (${this.player === 1 ? 'Blue' : 'Red'})`;
+      return name;
     },
     turnTextColor(): string {
       if (this.currentPlayer === this.player) {

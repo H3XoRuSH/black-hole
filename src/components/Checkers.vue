@@ -17,7 +17,7 @@
 
     <div class="flex-grow flex items-center justify-center py-1 sm:py-2 w-full">
       <div
-        class="bg-slate-900 border border-slate-800 p-1.5 sm:p-2 rounded-2xl shadow-xl w-full max-w-[320px] xs:max-w-[380px] sm:max-w-[460px] md:max-w-[520px]"
+        class="bg-slate-900 border border-slate-800 p-1 sm:p-2 rounded-2xl shadow-xl w-full max-w-[300px] xs:max-w-[360px] sm:max-w-[460px] md:max-w-[520px]"
       >
         <div class="grid grid-cols-8 gap-0 aspect-square">
           <div

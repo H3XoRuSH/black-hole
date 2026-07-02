@@ -2,7 +2,7 @@
   <TransitionGroup
     name="toast"
     tag="div"
-    class="fixed bottom-4 right-4 z-[100] flex flex-col gap-2 pointer-events-none max-w-sm"
+    class="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 z-[100] flex flex-col gap-2 pointer-events-none sm:max-w-sm"
   >
     <div
       v-for="toast in toasts"

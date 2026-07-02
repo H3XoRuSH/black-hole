@@ -20,10 +20,10 @@
     <div class="flex-grow flex items-center justify-center py-2 sm:py-4 w-full">
       <!-- Grid wrapper with clean dark plastic container look -->
       <div
-        class="bg-slate-900 border border-slate-800 p-3 sm:p-4 rounded-2xl shadow-xl w-full max-w-[280px] xs:max-w-[340px] sm:max-w-[430px] md:max-w-[480px]"
+        class="bg-slate-900 border border-slate-800 p-2 sm:p-4 rounded-2xl shadow-xl w-full max-w-[260px] xs:max-w-[320px] sm:max-w-[430px] md:max-w-[480px]"
       >
         <!-- Columns Grid -->
-        <div class="grid grid-cols-7 gap-1.5 sm:gap-3">
+        <div class="grid grid-cols-7 gap-1 sm:gap-3">
           <!-- Hover & Interactive Columns -->
           <div
             v-for="colIndex in 7"
@@ -31,9 +31,9 @@
             class="flex flex-col space-y-1.5 sm:space-y-3 cursor-pointer group rounded-lg p-1 hover:bg-slate-800/50 transition-colors duration-150 relative"
             @click="makeMove(colIndex - 1)"
           >
-            <!-- Preview slot at the top (only on desktop/hover) -->
+            <!-- Preview slot at the top (desktop hover, mobile always shows) -->
             <div
-              class="absolute -top-10 left-1/2 -translate-x-1/2 hidden md:group-hover:block pointer-events-none"
+              class="absolute -top-10 left-1/2 -translate-x-1/2 md:group-hover:block pointer-events-none hidden md:block"
             >
               <div
                 v-if="canPlayColumn(colIndex - 1)"
