@@ -5,44 +5,7 @@
       <div class="flex transition-transform duration-500 ease-in-out"
         :style="{ transform: `translateX(-${currentIndex * 100}%)` }">
         <div v-for="game in games" :key="game.id" class="w-full flex-shrink-0 p-1">
-          <div
-            class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-8 flex flex-col justify-between h-[360px] relative overflow-hidden border-t-4"
-            :style="{ borderTopColor: game.color }">
-            <div>
-              <div class="flex items-center justify-between mb-4">
-                <div class="flex items-center space-x-2.5 min-w-0">
-                  <div v-if="game.icon" class="w-8 h-8 flex-shrink-0" :style="{ color: game.color }" v-html="game.icon"></div>
-                  <h2 class="text-xl sm:text-2xl font-bold text-gray-800 truncate">
-                    {{ game.name }}
-                  </h2>
-                </div>
-                <span
-                  v-if="game.supportsAI"
-                  class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200 flex-shrink-0 ml-1"
-                >
-                  Play vs AI
-                </span>
-                <span
-                  v-if="game.singlePlayer"
-                  class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 flex-shrink-0 ml-1"
-                >
-                  Single Player
-                </span>
-              </div>
-              <p class="text-gray-600 text-sm leading-relaxed mb-6">
-                {{ game.description }}
-              </p>
-            </div>
-
-            <button @click="$emit('select-game', game.id)"
-              class="w-full text-white font-bold py-3.5 px-4 rounded-xl transition-all duration-200 text-center block shadow-md hover:shadow-lg hover:brightness-90 active:scale-[0.98] cursor-pointer"
-              :style="{
-                backgroundColor: game.color,
-                boxShadow: `0 4px 12px ${game.color}40`,
-              }">
-              Host Game
-            </button>
-          </div>
+          <GameCard :game="game" variant="carousel" @select-game="(id: string) => $emit('select-game', id)" />
         </div>
       </div>
     </div>
@@ -79,9 +42,11 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import type { MenuGame } from '../../types/shared.js';
+import GameCard from './GameCard.vue';
 
 export default defineComponent({
   name: 'CarouselView',
+  components: { GameCard },
   props: {
     games: {
       type: Array as PropType<MenuGame[]>,

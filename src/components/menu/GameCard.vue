@@ -1,0 +1,85 @@
+<template>
+  <!-- List variant -->
+  <div v-if="variant === 'list'"
+    class="bg-white rounded-2xl shadow-md border border-gray-200 p-5 flex items-center justify-between transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 border-l-4"
+    :style="{ borderLeftColor: game.color }">
+    <div class="flex-grow pr-4">
+      <div class="flex items-center space-x-2 mb-1">
+        <div v-if="game.icon" class="w-7 h-7 flex-shrink-0" :style="{ color: game.color }" v-html="game.icon"></div>
+        <h2 class="text-base sm:text-lg font-bold text-gray-800">{{ game.name }}</h2>
+        <span v-if="game.supportsAI" class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200 flex-shrink-0">Play vs AI</span>
+        <span v-if="game.singlePlayer" class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 flex-shrink-0">Single Player</span>
+      </div>
+      <p class="text-gray-500 text-xs sm:text-sm line-clamp-2 leading-relaxed">{{ game.description }}</p>
+    </div>
+    <button @click="$emit('select-game', game.id)"
+      class="flex-shrink-0 text-white font-bold py-2 px-4 rounded-lg text-xs sm:text-sm transition-all duration-200 text-center block shadow-sm hover:brightness-90 active:scale-95 cursor-pointer border-none"
+      :style="{ backgroundColor: game.color, boxShadow: `0 2px 6px ${game.color}30` }">
+      Host
+    </button>
+  </div>
+
+  <!-- Grid variant -->
+  <div v-else-if="variant === 'grid'"
+    class="bg-white rounded-2xl shadow-md border border-gray-200 p-4 sm:p-5 flex flex-col justify-between h-[230px] transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 border-t-4"
+    :style="{ borderTopColor: game.color }">
+    <div>
+      <div class="flex items-center justify-between mb-2 min-w-0">
+        <div class="flex items-center space-x-1.5 min-w-0">
+          <div v-if="game.icon" class="w-5 h-5 flex-shrink-0" :style="{ color: game.color }" v-html="game.icon"></div>
+          <h2 class="text-sm sm:text-base font-bold text-gray-800 line-clamp-1">{{ game.name }}</h2>
+        </div>
+        <span v-if="game.supportsAI" class="px-1.5 py-0.2 text-[8px] font-bold rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200 flex-shrink-0 ml-1">Play vs AI</span>
+        <span v-if="game.singlePlayer" class="px-1.5 py-0.2 text-[8px] font-bold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 flex-shrink-0 ml-1">Single Player</span>
+      </div>
+      <p class="text-gray-500 text-[11px] sm:text-xs leading-relaxed line-clamp-4">{{ game.description }}</p>
+    </div>
+    <button @click="$emit('select-game', game.id)"
+      class="w-full text-white font-bold py-2 px-3 rounded-lg text-xs sm:text-sm transition-all duration-200 text-center block shadow-sm hover:brightness-90 active:scale-95 mt-3 cursor-pointer border-none"
+      :style="{ backgroundColor: game.color, boxShadow: `0 2px 6px ${game.color}30` }">
+      Host
+    </button>
+  </div>
+
+  <!-- Carousel variant (default) -->
+  <div v-else
+    class="bg-white rounded-2xl shadow-lg border border-gray-200 p-6 sm:p-8 flex flex-col justify-between h-[360px] relative overflow-hidden border-t-4"
+    :style="{ borderTopColor: game.color }">
+    <div>
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center space-x-2.5 min-w-0">
+          <div v-if="game.icon" class="w-8 h-8 flex-shrink-0" :style="{ color: game.color }" v-html="game.icon"></div>
+          <h2 class="text-xl sm:text-2xl font-bold text-gray-800 truncate">{{ game.name }}</h2>
+        </div>
+        <span v-if="game.supportsAI" class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200 flex-shrink-0 ml-1">Play vs AI</span>
+        <span v-if="game.singlePlayer" class="px-2.5 py-0.5 text-xs font-bold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 flex-shrink-0 ml-1">Single Player</span>
+      </div>
+      <p class="text-gray-600 text-sm leading-relaxed">{{ game.description }}</p>
+    </div>
+    <button @click="$emit('select-game', game.id)"
+      class="w-full text-white font-bold py-3.5 px-4 rounded-xl transition-all duration-200 text-center block shadow-md hover:shadow-lg hover:brightness-90 active:scale-[0.98] cursor-pointer"
+      :style="{ backgroundColor: game.color, boxShadow: `0 4px 12px ${game.color}40` }">
+      Host Game
+    </button>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent, PropType } from 'vue';
+import type { MenuGame } from '../../types/shared.js';
+
+export default defineComponent({
+  name: 'GameCard',
+  props: {
+    game: {
+      type: Object as PropType<MenuGame>,
+      required: true,
+    },
+    variant: {
+      type: String as PropType<'carousel' | 'list' | 'grid'>,
+      default: 'carousel',
+    },
+  },
+  emits: ['select-game'],
+});
+</script>
