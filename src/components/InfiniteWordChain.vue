@@ -91,81 +91,61 @@
     </div>
 
     <!-- Recap Modal -->
-    <Teleport to="body">
-      <Transition
-        enter-active-class="transition duration-300 ease-out"
-        enter-from-class="opacity-0"
-        enter-to-class="opacity-100"
-        leave-active-class="transition duration-200 ease-in"
-        leave-from-class="opacity-100"
-        leave-to-class="opacity-0"
-      >
-        <div
-          v-if="gameOver"
-          class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/65 backdrop-blur-sm"
-        >
-          <Transition
-            enter-active-class="transition duration-300 ease-out"
-            enter-from-class="opacity-0 scale-95 translate-y-4"
-            enter-to-class="opacity-100 scale-100 translate-y-0"
-            leave-active-class="transition duration-200 ease-in"
-            leave-from-class="opacity-100 scale-100 translate-y-0"
-            leave-to-class="opacity-0 scale-95 translate-y-4"
-          >
-            <div
-              v-if="gameOver"
-              class="bg-slate-900 border border-slate-800 text-white rounded-2xl max-w-sm w-full shadow-2xl p-6 flex flex-col items-center max-h-[90vh] overflow-y-auto"
-            >
-              <p class="text-lg font-bold text-violet-400 mb-4">{{ gameState.winner }}</p>
+    <BaseModal
+      :is-open="gameOver"
+      max-width="max-w-sm"
+      :show-close-button="false"
+      :close-on-backdrop="false"
+      @close="() => {}"
+    >
+      <div class="flex flex-col items-center">
+        <p class="text-lg font-bold text-violet-400 mb-4">{{ gameState.winner }}</p>
 
-              <div class="w-full bg-slate-800/50 border border-slate-700 rounded-xl p-4 mb-4">
-                <p class="text-xs text-gray-500 font-bold uppercase tracking-wider text-center mb-3">Recap</p>
-                <div class="space-y-2 text-sm">
-                  <div class="flex justify-between">
-                    <span class="text-gray-400">Pairs completed</span>
-                    <span class="text-white font-bold">{{ gameState.score || 0 }}</span>
-                  </div>
-                  <div class="flex justify-between">
-                    <span class="text-gray-400">Mistakes</span>
-                    <span class="text-rose-400 font-bold">{{ gameState.mistakes || 0 }}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div v-if="solvedPairs.length > 0" class="w-full bg-slate-800/50 border border-slate-700 rounded-xl p-4 mb-4 max-h-32 overflow-y-auto">
-                <p class="text-xs text-gray-500 font-bold uppercase tracking-wider text-center mb-3">Your Chain</p>
-                <div class="flex flex-wrap gap-1.5 justify-center">
-                  <span
-                    v-for="(word, idx) in solvedPairs"
-                    :key="idx"
-                    class="text-xs font-mono px-2 py-0.5 rounded"
-                    :class="idx % 2 === 0 ? 'bg-indigo-500/20 text-indigo-300' : 'bg-emerald-500/20 text-emerald-300'"
-                  >
-                    {{ word }}
-                  </span>
-                </div>
-              </div>
-
-              <div class="flex flex-col w-full space-y-2">
-                <button
-                  @click="handlePlayAgain"
-                  :disabled="waiting"
-                  class="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-600 text-white font-bold py-2.5 px-8 rounded-xl shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <span v-if="waiting">Waiting<WaitingIndicator /></span>
-                  <span v-else>Play Again</span>
-                </button>
-                <router-link to="/menu"
-                  class="w-full block text-center bg-slate-800 hover:bg-slate-700 text-gray-300 font-bold py-2.5 px-8 rounded-xl transition-all duration-200"
-                >
-                  Main Menu
-                </router-link>
-              </div>
+        <div class="w-full bg-slate-800/50 border border-slate-700 rounded-xl p-4 mb-4">
+          <p class="text-xs text-gray-500 font-bold uppercase tracking-wider text-center mb-3">Recap</p>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between">
+              <span class="text-gray-400">Pairs completed</span>
+              <span class="text-white font-bold">{{ gameState.score || 0 }}</span>
             </div>
-          </Transition>
+            <div class="flex justify-between">
+              <span class="text-gray-400">Mistakes</span>
+              <span class="text-rose-400 font-bold">{{ gameState.mistakes || 0 }}</span>
+            </div>
+          </div>
         </div>
-      </Transition>
-    </Teleport>
+
+        <div v-if="solvedPairs.length > 0" class="w-full bg-slate-800/50 border border-slate-700 rounded-xl p-4 mb-4 max-h-32 overflow-y-auto">
+          <p class="text-xs text-gray-500 font-bold uppercase tracking-wider text-center mb-3">Your Chain</p>
+          <div class="flex flex-wrap gap-1.5 justify-center">
+            <span
+              v-for="(word, idx) in solvedPairs"
+              :key="idx"
+              class="text-xs font-mono px-2 py-0.5 rounded"
+              :class="idx % 2 === 0 ? 'bg-indigo-500/20 text-indigo-300' : 'bg-emerald-500/20 text-emerald-300'"
+            >
+              {{ word }}
+            </span>
+          </div>
+        </div>
+
+        <div class="flex flex-col w-full space-y-2">
+          <button
+            @click="handlePlayAgain"
+            :disabled="waiting"
+            class="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-600 text-white font-bold py-2.5 px-8 rounded-xl shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <span v-if="waiting">Waiting<WaitingIndicator /></span>
+            <span v-else>Play Again</span>
+          </button>
+          <router-link to="/menu"
+            class="w-full block text-center bg-slate-800 hover:bg-slate-700 text-gray-300 font-bold py-2.5 px-8 rounded-xl transition-all duration-200"
+          >
+            Main Menu
+          </router-link>
+        </div>
+      </div>
+    </BaseModal>
   </div>
   <div v-else class="h-full flex flex-col items-center justify-center p-6">
     <p class="text-lg text-gray-500 font-medium">Invalid game state. Redirecting to lobby...</p>
@@ -178,10 +158,11 @@ import { Socket } from 'socket.io-client';
 import { useGame } from '../composables/useGame.js';
 import type { InfiniteWordChainGameState as GameState } from '../types/shared.js';
 import WaitingIndicator from './WaitingIndicator.vue';
+import BaseModal from './BaseModal.vue';
 
 export default defineComponent({
   name: 'InfiniteWordChain',
-  components: { WaitingIndicator },
+  components: { WaitingIndicator, BaseModal },
   emits: ['update-connection-status', 'update-player', 'update-room-key'],
   props: {
     socket: { type: Object as PropType<Socket>, required: true },

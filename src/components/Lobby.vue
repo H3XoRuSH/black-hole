@@ -291,63 +291,22 @@
   </div>
 
   <!-- QR Code Modal -->
-  <Teleport to="body">
-    <Transition
-      enter-active-class="transition duration-300 ease-out"
-      enter-from-class="opacity-0"
-      enter-to-class="opacity-100"
-      leave-active-class="transition duration-200 ease-in"
-      leave-from-class="opacity-100"
-      leave-to-class="opacity-0"
-    >
-      <div
-        v-if="isQRModalOpen"
-        class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/65 backdrop-blur-sm"
-        @click.self="closeQRModal"
-      >
-        <Transition
-          enter-active-class="transition duration-300 ease-out"
-          enter-from-class="opacity-0 scale-95 translate-y-4"
-          enter-to-class="opacity-100 scale-100 translate-y-0"
-          leave-active-class="transition duration-200 ease-in"
-          leave-from-class="opacity-100 scale-100 translate-y-0"
-          leave-to-class="opacity-0 scale-95 translate-y-4"
-        >
-          <div
-            v-if="isQRModalOpen"
-            class="bg-slate-900 border border-slate-800 text-white rounded-2xl max-w-sm w-full shadow-2xl p-6 flex flex-col items-center relative"
-          >
-            <!-- Close Button -->
-            <button
-              @click="closeQRModal"
-              class="absolute top-4 right-4 text-slate-400 hover:text-white hover:bg-slate-800/80 p-1.5 rounded-lg transition-colors cursor-pointer active:scale-95"
-              aria-label="Close"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-
-            <!-- Header -->
-            <div class="mb-4 text-center mt-2">
-              <h3 class="text-lg font-bold tracking-tight">Scan to Join Game</h3>
-              <p class="text-xs text-indigo-400 font-bold uppercase tracking-widest mt-1">Room: {{ roomKey }}</p>
-            </div>
-
-            <!-- QR Code Canvas -->
-            <div class="bg-white p-3 rounded-2xl shadow-inner border border-slate-700/50 mb-4 flex items-center justify-center">
-              <canvas ref="qrCanvas" class="w-48 h-48 sm:w-56 sm:h-56"></canvas>
-            </div>
-
-            <!-- Footer Info -->
-            <p class="text-xs text-slate-400 text-center leading-relaxed max-w-[260px]">
-              Scan this QR code with a friend's phone camera to join this game room instantly.
-            </p>
-          </div>
-        </Transition>
+  <BaseModal
+    :is-open="isQRModalOpen"
+    title="Scan to Join Game"
+    :subtitle="'Room: ' + roomKey"
+    max-width="max-w-sm"
+    @close="closeQRModal"
+  >
+    <div class="flex flex-col items-center">
+      <div class="bg-white p-3 rounded-2xl shadow-inner border border-slate-700/50 mb-4 flex items-center justify-center">
+        <canvas ref="qrCanvas" class="w-48 h-48 sm:w-56 sm:h-56"></canvas>
       </div>
-    </Transition>
-  </Teleport>
+      <p class="text-xs text-slate-400 text-center leading-relaxed max-w-[260px]">
+        Scan this QR code with a friend's phone camera to join this game room instantly.
+      </p>
+    </div>
+  </BaseModal>
 </template>
 
 <script lang="ts">
@@ -355,10 +314,11 @@ import { defineComponent, PropType } from 'vue';
 import { Socket } from 'socket.io-client';
 import QRCode from 'qrcode';
 import WaitingIndicator from './WaitingIndicator.vue';
+import BaseModal from './BaseModal.vue';
 import gamesData from '../assets/games.json';
 
 export default defineComponent({
-  components: { WaitingIndicator },
+  components: { WaitingIndicator, BaseModal },
   emits: ['update-connection-status', 'update-player', 'update-room-key'],
   props: {
     socket: {
