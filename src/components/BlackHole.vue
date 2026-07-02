@@ -42,7 +42,7 @@
             <!-- Slow spinning Vortex for Black Hole -->
             <img
               v-if="showBlackHoleIcon(row, col)"
-              src="/icon.png"
+              src="/icons/black-hole.svg"
               alt="Black Hole"
               class="w-[85%] h-[85%] object-contain p-0.5 animate-[spin_8s_linear_infinite]"
             />
