@@ -2,6 +2,7 @@ import { callDeepSeek, isDeepSeekConfigured } from './deepseek.js';
 import { getSystemPrompt, getRecapPrompt, getRecapConversationPrompt } from './prompts.js';
 
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
+const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
 function getGameName(gameId: string): string {
   switch (gameId) {
@@ -177,8 +178,8 @@ export async function recapConversation(
 }
 
 export async function generateRecap(gameId: string, gameState: any): Promise<string> {
-  if (!DEEPSEEK_API_KEY) {
-    console.warn('DEEPSEEK_API_KEY is not configured. Using local mock generator.');
+  if (!DEEPSEEK_API_KEY && !OPENROUTER_API_KEY) {
+    console.warn('LLM API keys are not configured. Using local mock generator.');
     return generateMockRecap(gameId, gameState);
   }
 
