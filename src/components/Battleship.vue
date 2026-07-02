@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isValidGame" class="flex-grow flex flex-col items-center justify-between h-full p-3 sm:p-4 select-none bg-gray-100 text-gray-800">
+  <div v-if="isValidGame" class="flex-grow flex flex-col items-center justify-between h-full p-3 sm:p-4 select-none bg-gray-100 dark:bg-slate-900 text-gray-800 dark:text-gray-200">
     <!-- Tactical Command Header -->
     <GameHeader
       title="Battleship"
@@ -15,7 +15,7 @@
 
     <!-- Game Log Alert Area -->
     <div class="w-full max-w-lg mt-1 flex-shrink-0 text-center">
-      <div v-if="gameState.lastShotResult" class="inline-block bg-white border border-gray-200 rounded-full px-4 py-1.5 text-xs font-mono shadow-sm">
+      <div v-if="gameState.lastShotResult" class="inline-block bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-full px-4 py-1.5 text-xs font-mono shadow-sm">
         <span class="text-gray-400">SALVO RADAR:</span>
         <span :class="gameState.lastShotResult.player === 1 ? 'text-blue-600' : 'text-rose-600'" class="font-bold ml-1">
           P{{ gameState.lastShotResult.player }}
@@ -37,12 +37,12 @@
     <div class="flex-grow flex flex-col items-center justify-center py-2 w-full min-h-0 overflow-hidden">
       <!-- 1. FLEET PLACEMENT PHASE -->
       <div v-if="gameState.phase === 'placement'" class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 w-full h-full max-w-5xl min-h-0 overflow-hidden p-2">
-        <div v-if="hasPlaced" class="flex flex-col items-center justify-center p-8 bg-white border border-gray-200 rounded-2xl max-w-md text-center shadow-md">
+        <div v-if="hasPlaced" class="flex flex-col items-center justify-center p-8 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl max-w-md text-center shadow-md">
           <svg class="w-16 h-16 text-emerald-500 mb-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
           </svg>
-          <h2 class="text-xl font-bold text-gray-800 mb-2">Fleet Deployed</h2>
-          <p class="text-sm text-gray-500 flex items-center justify-center">Waiting for the enemy commander to finish positioning their ships<WaitingIndicator /></p>
+          <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">Fleet Deployed</h2>
+          <p class="text-sm text-gray-500 dark:text-gray-400 flex items-center justify-center">Waiting for the enemy commander to finish positioning their ships<WaitingIndicator /></p>
         </div>
 
         <template v-else>

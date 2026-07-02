@@ -17,7 +17,7 @@
     />
 
     <!-- Score Info -->
-    <div class="flex space-x-8 mb-4 text-sm font-bold text-gray-700">
+    <div class="flex space-x-8 mb-4 text-sm font-bold text-gray-700 dark:text-gray-200">
       <div class="flex items-center space-x-2">
         <div class="w-3.5 h-3.5 rounded-full bg-blue-500 shadow"></div>
         <span>{{ p1Name }} (Blue): {{ gameState.scores.player1 }}</span>
@@ -140,7 +140,7 @@
     </div>
   </div>
   <div v-else class="h-full flex flex-col items-center justify-center p-6">
-    <p class="text-lg text-gray-500 font-medium">
+    <p class="text-lg text-gray-500 dark:text-gray-400 font-medium">
       Invalid game state. Redirecting to lobby...
     </p>
   </div>
