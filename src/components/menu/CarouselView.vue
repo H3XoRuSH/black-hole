@@ -12,7 +12,7 @@
 
     <!-- Navigation Arrows -->
     <button @click="prevSlide"
-      class="absolute -left-12 top-1/2 -translate-y-1/2 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 border border-gray-200 dark:border-slate-600 text-gray-600 dark:text-gray-300 w-11 h-11 rounded-full hidden sm:flex items-center justify-center shadow-md transition-all duration-200 z-10 active:scale-95 cursor-pointer select-none"
+      class="absolute -left-12 top-1/2 -translate-y-1/2 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 border border-gray-200 dark:border-slate-600 text-gray-600 dark:text-gray-300 w-11 h-11 rounded-full hidden sm:flex items-center justify-center shadow-md transition-transform duration-200 z-10 active:scale-95 cursor-pointer select-none"
       :class="{ 'opacity-30 pointer-events-none': currentIndex === 0 }">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 sm:h-6 sm:w-6" fill="none" viewBox="0 0 24 24"
         stroke="currentColor">
@@ -20,7 +20,7 @@
       </svg>
     </button>
     <button @click="nextSlide"
-      class="absolute -right-12 top-1/2 -translate-y-1/2 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 border border-gray-200 dark:border-slate-600 text-gray-600 dark:text-gray-300 w-11 h-11 rounded-full hidden sm:flex items-center justify-center shadow-md transition-all duration-200 z-10 active:scale-95 cursor-pointer select-none"
+      class="absolute -right-12 top-1/2 -translate-y-1/2 bg-white dark:bg-slate-700 hover:bg-gray-50 dark:hover:bg-slate-600 border border-gray-200 dark:border-slate-600 text-gray-600 dark:text-gray-300 w-11 h-11 rounded-full hidden sm:flex items-center justify-center shadow-md transition-transform duration-200 z-10 active:scale-95 cursor-pointer select-none"
       :class="{
         'opacity-30 pointer-events-none': currentIndex === games.length - 1,
       }">
@@ -33,7 +33,7 @@
     <!-- Pagination Dots -->
     <div class="flex justify-center space-x-2 mt-4">
       <button v-for="(game, index) in games" :key="`dot-${game.id}`" @click="goToSlide(index)"
-        class="w-2 h-2 rounded-full transition-all duration-300 cursor-pointer"
+        class="w-2 h-2 rounded-full transition-[width] duration-300 cursor-pointer"
         :class="index === currentIndex ? 'bg-gray-800 dark:bg-gray-200 w-5' : 'bg-gray-300 dark:bg-gray-600'"></button>
     </div>
   </div>
