@@ -1,49 +1,17 @@
 <template>
   <div class="space-y-4 w-full">
-    <div v-for="game in games" :key="game.id"
-      class="bg-white rounded-2xl shadow-md border border-gray-200 p-5 flex items-center justify-between transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 border-l-4"
-      :style="{ borderLeftColor: game.color }">
-      <div class="flex-grow pr-4">
-        <div class="flex items-center space-x-2 mb-1">
-          <div v-if="game.icon" class="w-7 h-7 flex-shrink-0" :style="{ color: game.color }" v-html="game.icon"></div>
-          <h2 class="text-base sm:text-lg font-bold text-gray-800">
-            {{ game.name }}
-          </h2>
-          <span
-            v-if="game.supportsAI"
-            class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200"
-          >
-            Play vs AI
-          </span>
-          <span
-            v-if="game.singlePlayer"
-            class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200"
-          >
-            Single Player
-          </span>
-        </div>
-        <p class="text-gray-500 text-xs sm:text-sm line-clamp-2 leading-relaxed">
-          {{ game.description }}
-        </p>
-      </div>
-      <button @click="$emit('select-game', game.id)"
-        class="flex-shrink-0 text-white font-bold py-2 px-4 rounded-lg text-xs sm:text-sm transition-all duration-200 text-center block shadow-sm hover:brightness-90 active:scale-95 cursor-pointer border-none"
-        :style="{
-          backgroundColor: game.color,
-          boxShadow: `0 2px 6px ${game.color}30`,
-        }">
-        Host
-      </button>
-    </div>
+    <GameCard v-for="game in games" :key="game.id" :game="game" variant="list" @select-game="(id: string) => $emit('select-game', id)" />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import type { MenuGame } from '../../types/shared.js';
+import GameCard from './GameCard.vue';
 
 export default defineComponent({
   name: 'ListView',
+  components: { GameCard },
   props: {
     games: {
       type: Array as PropType<MenuGame[]>,
