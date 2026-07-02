@@ -77,6 +77,7 @@ import type { CheckersGameState as GameState } from '../types/shared.js';
 export default defineComponent({
   name: 'Checkers',
   components: { GameHeader, WaitingIndicator },
+  emits: ['update-connection-status', 'update-player', 'update-room-key'],
   props: {
     socket: { type: Object as PropType<Socket>, required: true },
     player: { type: Number, required: true },

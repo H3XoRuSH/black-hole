@@ -99,6 +99,7 @@ export default defineComponent({
     GameHeader,
     WaitingIndicator,
   },
+  emits: ['update-connection-status', 'update-player', 'update-room-key'],
   props: {
     socket: {
       type: Object as PropType<Socket>,

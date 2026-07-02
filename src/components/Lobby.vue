@@ -359,6 +359,7 @@ import gamesData from '../assets/games.json';
 
 export default defineComponent({
   components: { WaitingIndicator },
+  emits: ['update-connection-status', 'update-player', 'update-room-key'],
   props: {
     socket: {
       type: Object as PropType<Socket>,

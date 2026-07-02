@@ -182,6 +182,7 @@ import WaitingIndicator from './WaitingIndicator.vue';
 export default defineComponent({
   name: 'InfiniteWordChain',
   components: { WaitingIndicator },
+  emits: ['update-connection-status', 'update-player', 'update-room-key'],
   props: {
     socket: { type: Object as PropType<Socket>, required: true },
     player: { type: Number, required: true },
