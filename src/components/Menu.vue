@@ -108,58 +108,97 @@
       </div>
     </div>
 
-    <!-- View Toggle Control -->
-    <div
-      class="flex bg-gray-200/80 backdrop-blur-sm p-1 rounded-xl mb-5 sm:mb-6 space-x-1 w-full max-w-[180px] justify-center shadow-inner">
-      <button
-        @click="viewMode = 'carousel'"
-        :class="viewMode === 'carousel'
-          ? 'bg-white text-gray-900 shadow-sm'
-          : 'text-gray-500 hover:text-gray-800'
-        "
-        class="flex-grow py-2 rounded-lg transition-all duration-200 cursor-pointer flex items-center justify-center"
-        title="Carousel View"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <rect x="7" y="4" width="10" height="16" rx="2" />
-          <rect x="2" y="6" width="3" height="12" rx="1" opacity="0.6" />
-          <rect x="19" y="6" width="3" height="12" rx="1" opacity="0.6" />
-        </svg>
-      </button>
-      <button
-        @click="viewMode = 'list'"
-        :class="viewMode === 'list'
-          ? 'bg-white text-gray-900 shadow-sm'
-          : 'text-gray-500 hover:text-gray-800'
-        "
-        class="flex-grow py-2 rounded-lg transition-all duration-200 cursor-pointer flex items-center justify-center"
-        title="List View"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01" stroke-width="2.5" />
-        </svg>
-      </button>
-      <button
-        @click="viewMode = 'grid'"
-        :class="viewMode === 'grid'
-          ? 'bg-white text-gray-900 shadow-sm'
-          : 'text-gray-500 hover:text-gray-800'
-        "
-        class="flex-grow py-2 rounded-lg transition-all duration-200 cursor-pointer flex items-center justify-center"
-        title="Grid View"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <rect x="4" y="4" width="6" height="6" rx="1" />
-          <rect x="14" y="4" width="6" height="6" rx="1" />
-          <rect x="4" y="14" width="6" height="6" rx="1" />
-          <rect x="14" y="14" width="6" height="6" rx="1" />
-        </svg>
-      </button>
+    <!-- Filter Bar -->
+    <div class="w-full max-w-md px-4 sm:px-0 mb-4">
+      <div class="flex space-x-2">
+        <!-- View Mode Dropdown -->
+        <div class="relative">
+          <button
+            @click="showViewDropdown = !showViewDropdown"
+            @blur="closeViewDropdown"
+            class="h-10 px-3 border border-gray-200 rounded-xl bg-gradient-to-b from-white to-gray-50/80 cursor-pointer shadow-sm flex items-center focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+          >
+            <span v-html="currentViewIcon"></span>
+          </button>
+          <transition name="fade">
+            <div
+              v-if="showViewDropdown"
+              class="absolute left-0 top-full mt-1 w-40 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden"
+            >
+              <button
+                v-for="v in viewModes"
+                :key="v.value"
+                @mousedown.prevent="selectViewMode(v.value)"
+                class="w-full px-4 py-2.5 text-left text-sm transition-colors duration-150 cursor-pointer flex items-center space-x-3"
+                :class="viewMode === v.value
+                  ? 'bg-indigo-50 text-indigo-700 font-semibold'
+                  : 'text-gray-700 hover:bg-gray-50'
+                "
+              >
+                <span v-html="v.icon" class="w-5 h-5 flex-shrink-0"></span>
+                <span>{{ v.label }}</span>
+              </button>
+            </div>
+          </transition>
+        </div>
+
+        <!-- Search Input -->
+        <div class="relative flex-1">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            v-model="searchQuery"
+            type="text"
+            placeholder="Search games..."
+            class="w-full pl-10 pr-4 h-10 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm bg-white/80"
+          />
+        </div>
+
+        <!-- Category Filter Dropdown -->
+        <div class="relative">
+          <button
+            @click="showFilterDropdown = !showFilterDropdown"
+            @blur="closeFilterDropdown"
+            class="h-10 pl-3 pr-9 border border-gray-200 rounded-xl bg-gradient-to-b from-white to-gray-50/80 text-sm text-gray-700 font-medium cursor-pointer shadow-sm flex items-center whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-[130px]"
+          >
+            {{ currentFilterLabel }}
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          <transition name="fade">
+            <div
+              v-if="showFilterDropdown"
+              class="absolute right-0 top-full mt-1 w-44 bg-white border border-gray-200 rounded-xl shadow-xl z-50 overflow-hidden"
+            >
+              <button
+                v-for="f in filters"
+                :key="f.value"
+                @mousedown.prevent="selectFilter(f.value)"
+                class="w-full px-4 py-2.5 text-left text-sm transition-colors duration-150 cursor-pointer"
+                :class="activeFilter === f.value
+                  ? 'bg-indigo-50 text-indigo-700 font-semibold'
+                  : 'text-gray-700 hover:bg-gray-50'
+                "
+              >
+                <span class="flex items-center space-x-2.5">
+                  <svg v-if="activeFilter === f.value" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span v-else class="w-4" />
+                  <span>{{ f.label }}</span>
+                </span>
+              </button>
+            </div>
+          </transition>
+        </div>
+      </div>
     </div>
 
     <!-- Games Display Section -->
     <main class="w-full max-w-md relative px-4 sm:px-0">
-      <component :is="activeComponent" :games="games" @select-game="handleSelectGame" />
+      <component :is="activeComponent" :games="filteredGames" @select-game="handleSelectGame" />
     </main>
 
     <!-- Footer -->
@@ -205,6 +244,20 @@ export default defineComponent({
       showScanner: false,
       html5Qrcode: null as Html5Qrcode | null,
       scannerError: '',
+      activeFilter: 'all',
+      searchQuery: '',
+      showFilterDropdown: false,
+      showViewDropdown: false,
+      filters: [
+        { label: 'All', value: 'all' },
+        { label: 'Play Vs AI', value: 'ai' },
+        { label: 'Single Player', value: 'single' },
+      ],
+      viewModes: [
+        { label: 'Carousel', value: 'carousel', icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="7" y="4" width="10" height="16" rx="2" /><rect x="2" y="6" width="3" height="12" rx="1" opacity="0.6" /><rect x="19" y="6" width="3" height="12" rx="1" opacity="0.6" /></svg>' },
+        { label: 'List', value: 'list', icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01" stroke-width="2.5" /></svg>' },
+        { label: 'Grid', value: 'grid', icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="6" height="6" rx="1" /><rect x="14" y="4" width="6" height="6" rx="1" /><rect x="4" y="14" width="6" height="6" rx="1" /><rect x="14" y="14" width="6" height="6" rx="1" /></svg>' },
+      ],
     };
   },
   computed: {
@@ -212,6 +265,32 @@ export default defineComponent({
       if (this.viewMode === 'list') return 'ListView';
       if (this.viewMode === 'grid') return 'GridView';
       return 'CarouselView';
+    },
+    filteredGames() {
+      let result = this.games;
+      const query = this.searchQuery.toLowerCase().trim();
+
+      if (this.activeFilter === 'ai') {
+        result = result.filter((g: any) => g.supportsAI);
+      } else if (this.activeFilter === 'single') {
+        result = result.filter((g: any) => g.singlePlayer);
+      }
+
+      if (query) {
+        result = result.filter((g: any) =>
+          g.name.toLowerCase().includes(query)
+        );
+      }
+
+      return result;
+    },
+    currentFilterLabel() {
+      const found = this.filters.find((f: any) => f.value === this.activeFilter);
+      return found ? found.label : 'All';
+    },
+    currentViewIcon() {
+      const found = this.viewModes.find((v: any) => v.value === this.viewMode);
+      return found ? found.icon : '';
     },
   },
   watch: {
@@ -343,6 +422,24 @@ export default defineComponent({
     },
     openBugReport() {
       window.dispatchEvent(new CustomEvent('open-bug-report'));
+    },
+    selectFilter(value: string) {
+      this.activeFilter = value;
+      this.showFilterDropdown = false;
+    },
+    closeFilterDropdown() {
+      setTimeout(() => {
+        this.showFilterDropdown = false;
+      }, 120);
+    },
+    selectViewMode(value: string) {
+      this.viewMode = value;
+      this.showViewDropdown = false;
+    },
+    closeViewDropdown() {
+      setTimeout(() => {
+        this.showViewDropdown = false;
+      }, 120);
     },
   },
 });

@@ -95,6 +95,11 @@ export default defineComponent({
       touchEndX: 0,
     };
   },
+  watch: {
+    games() {
+      this.currentIndex = 0;
+    },
+  },
   methods: {
     nextSlide() {
       if (this.currentIndex < this.games.length - 1) {
