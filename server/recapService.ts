@@ -155,7 +155,8 @@ export async function recapConversation(
   }
 
   const formattedHistory = formatMoveHistory(gameId, gameState);
-  const playerNames = gameState.players?.map((p: any) => p.name).filter(Boolean) || [];
+  const sortedPlayers = [...(gameState.players || [])].sort((a: any, b: any) => a.player - b.player);
+  const playerNames = sortedPlayers.map((p: any) => p.name).filter(Boolean);
   const conversationPrompt = getRecapConversationPrompt(
     getGameName(gameId), formattedHistory, originalRecap, question, gameId, playerNames
   );
@@ -184,7 +185,8 @@ export async function generateRecap(gameId: string, gameState: any): Promise<str
   }
 
   const formattedHistory = formatMoveHistory(gameId, gameState);
-  const playerNames = gameState.players?.map((p: any) => p.name).filter(Boolean) || [];
+  const sortedPlayers = [...(gameState.players || [])].sort((a: any, b: any) => a.player - b.player);
+  const playerNames = sortedPlayers.map((p: any) => p.name).filter(Boolean);
   const prompt = getRecapPrompt(getGameName(gameId), formattedHistory, gameId, playerNames);
 
   try {
