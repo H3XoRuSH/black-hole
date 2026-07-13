@@ -323,6 +323,10 @@ export default defineComponent({
       if (this.gameState.winner.includes('Score')) return 'text-violet-400';
       const w = this.gameState.winner.toLowerCase();
       if (w.includes('tie')) return 'text-gray-400';
+      const me = this.players.find((p: any) => p.player === this.player);
+      if (me && me.name && w.includes(me.name.toLowerCase())) {
+        return 'text-emerald-400';
+      }
       if (w.includes(`player ${this.player}`)) return 'text-emerald-400';
       return 'text-rose-400';
     },

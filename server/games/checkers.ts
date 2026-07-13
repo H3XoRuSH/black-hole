@@ -269,10 +269,12 @@ export const makeMove = (
   gameState.players.forEach((p: any) => (p.ready = false));
 
   const oppPieces = countPieces(board, gameState.currentPlayer);
+  const oppPlayer = opponent(gameState.currentPlayer);
+  const oppPlayerName = gameState.players.find((p) => p.player === oppPlayer)?.name || `Player ${oppPlayer}`;
   if (oppPieces === 0) {
-    gameState.winner = `Player ${opponent(gameState.currentPlayer)} wins!`;
+    gameState.winner = `${oppPlayerName} wins!`;
   } else if (!hasLegalMoves(board, gameState.currentPlayer)) {
-    gameState.winner = `Player ${opponent(gameState.currentPlayer)} wins!`;
+    gameState.winner = `${oppPlayerName} wins!`;
   } else {
     // Check if all remaining pieces on the board are kings
     let regularCount = 0;
@@ -291,10 +293,12 @@ export const makeMove = (
       }
     }
     if (regularCount === 0 && (p1Kings > 0 || p2Kings > 0)) {
+      const p1Name = gameState.players.find((p) => p.player === 1)?.name || 'Player 1';
+      const p2Name = gameState.players.find((p) => p.player === 2)?.name || 'Player 2';
       if (p1Kings > p2Kings) {
-        gameState.winner = 'Player 1 wins!';
+        gameState.winner = `${p1Name} wins!`;
       } else if (p2Kings > p1Kings) {
-        gameState.winner = 'Player 2 wins!';
+        gameState.winner = `${p2Name} wins!`;
       } else {
         gameState.winner = 'Draw!';
       }
