@@ -119,7 +119,8 @@ export const makeMove = (
 
   const winnerPlayer = checkConnectFourWinner(gameState.board);
   if (winnerPlayer) {
-    gameState.winner = `Player ${winnerPlayer} wins!`;
+    const winnerName = gameState.players.find((p) => p.player === winnerPlayer)?.name || `Player ${winnerPlayer}`;
+    gameState.winner = `${winnerName} wins!`;
   } else if (gameState.totalMoves >= 42) {
     gameState.winner = 'Tie game!';
   }

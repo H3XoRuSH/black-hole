@@ -123,10 +123,12 @@ export const makeMove = (
 
   const completedBoxes = Object.keys(gameState.boxes).length;
   if (completedBoxes === 16) {
+    const p1Name = gameState.players.find((p) => p.player === 1)?.name || 'Player 1';
+    const p2Name = gameState.players.find((p) => p.player === 2)?.name || 'Player 2';
     if (gameState.scores.player1 > gameState.scores.player2) {
-      gameState.winner = 'Player 1 wins!';
+      gameState.winner = `${p1Name} wins!`;
     } else if (gameState.scores.player2 > gameState.scores.player1) {
-      gameState.winner = 'Player 2 wins!';
+      gameState.winner = `${p2Name} wins!`;
     } else {
       gameState.winner = 'Tie game!';
     }

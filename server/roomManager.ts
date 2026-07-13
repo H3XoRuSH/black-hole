@@ -125,7 +125,9 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       if (s.players.length <= 1) {
         s.winner = `Final Score: ${s.scores[1] || 0}/${s.questions.length}`;
       } else if (winners.length === 1) {
-        s.winner = `Player ${winners[0]} wins!`;
+        const winningPlayer = s.players.find((p) => p.player === winners[0]);
+        const winnerName = winningPlayer?.name || `Player ${winners[0]}`;
+        s.winner = `${winnerName} wins!`;
       } else {
         s.winner = `Tie game!`;
       }

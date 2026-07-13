@@ -158,7 +158,8 @@ export const makeMove = (
     }
     const daubedSet = new Set(gameState.daubed[player.player] || []);
     if (checkBingo(card, daubedSet)) {
-      gameState.winner = `Player ${player.player} wins!`;
+      const winnerName = player.name || `Player ${player.player}`;
+      gameState.winner = `${winnerName} wins!`;
       gameState.phase = 'game-over';
       gameState.players.forEach((p: any) => (p.ready = false));
       return true;

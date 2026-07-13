@@ -308,6 +308,10 @@ export default defineComponent({
       if (!this.winner) return '';
       const winnerLower = this.winner.toLowerCase();
       if (winnerLower.includes('tie') || winnerLower.includes('draw')) return 'text-gray-600';
+      const me = this.players.find((p: any) => p.player === this.player);
+      if (me && me.name && winnerLower.includes(me.name.toLowerCase())) {
+        return 'text-green-600';
+      }
       if (winnerLower.includes(`player ${this.player}`))
         return 'text-green-600';
       return 'text-red-600';

@@ -231,6 +231,10 @@ export default defineComponent({
       if (winnerText.includes('tie')) {
         return 'text-gray-600';
       }
+      const me = this.gameState.players.find((p: any) => p.player === this.player);
+      if (me && me.name && winnerText.includes(me.name.toLowerCase())) {
+        return 'text-green-600';
+      }
       if (winnerText.includes(`player ${this.player} wins`)) {
         return 'text-green-600';
       }

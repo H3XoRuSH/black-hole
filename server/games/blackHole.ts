@@ -67,10 +67,12 @@ export const calculateScores = (
 export const getWinner = (gameState: BlackHoleGameState): string => {
   if (gameState.totalMoves < gameState.maxTurnsPerPlayer * 2) return '';
   const { player1, player2 } = calculateScores(gameState);
+  const p1Name = gameState.players.find((p) => p.player === 1)?.name || 'Player 1';
+  const p2Name = gameState.players.find((p) => p.player === 2)?.name || 'Player 2';
   if (player1 < player2 || (player1 === 0 && player2 === 0)) {
-    return 'Player 1 wins!';
+    return `${p1Name} wins!`;
   } else if (player2 < player1) {
-    return 'Player 2 wins!';
+    return `${p2Name} wins!`;
   } else {
     return 'Tie game!';
   }

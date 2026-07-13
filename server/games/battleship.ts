@@ -187,7 +187,8 @@ export const makeMove = (
 
     if (allOpponentShipsSunk) {
       gameState.phase = 'game-over';
-      gameState.winner = `Player ${playerNum} wins!`;
+      const winnerName = gameState.players.find((p) => p.player === playerNum)?.name || `Player ${playerNum}`;
+      gameState.winner = `${winnerName} wins!`;
     } else {
       gameState.currentPlayer = playerNum === 1 ? 2 : 1;
     }
