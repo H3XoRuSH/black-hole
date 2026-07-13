@@ -47,8 +47,40 @@
 
     <!-- Main Content -->
     <div class="flex-grow flex flex-col items-center justify-center w-full max-w-lg overflow-y-auto py-2">
+      <!-- Game Over Summary Card -->
+      <div v-if="gameOver" class="w-full bg-slate-900 border border-slate-800 rounded-2xl shadow-xl p-6 text-center space-y-6 flex flex-col items-center justify-center">
+        <!-- Animated Trophy Icon -->
+        <div class="w-20 h-20 bg-amber-500/10 border border-amber-500/20 rounded-full flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-10 w-10 text-amber-400">
+            <path d="M17 3H21C21.5523 3 22 3.44772 22 4V9C22 10.375 21.0503 11.5283 19.7824 11.8541C19.1417 14.1266 17.2995 15.8924 15 16.6343V19H18V21H6V19H9V16.6343C6.70054 15.8924 4.85834 14.1266 4.21762 11.8541C2.94974 11.5283 2 10.375 2 9V4C2 3.44772 2.44772 3 3 3H7V1H17V3ZM15 3H9V15C9 16.6569 10.3431 18 12 18C13.6569 18 15 16.6569 15 15V3ZM4 5V9C4 9.38793 4.2125 9.7262 4.54291 9.89141L5 10.12V5H4ZM20 5H19V10.12L19.4571 9.89141C19.7875 9.7262 20 9.38793 20 9V5Z"/>
+          </svg>
+        </div>
+
+        <div>
+          <h2 class="text-2xl font-black text-white tracking-wide uppercase">Game Over</h2>
+          <p class="text-sm text-slate-400 mt-1">Final Standings &amp; Scores</p>
+        </div>
+
+        <!-- Leaderboard -->
+        <div class="w-full space-y-2.5 max-w-xs">
+          <div
+            v-for="(p, idx) in sortedPlayers"
+            :key="p.player"
+            class="flex items-center justify-between px-4 py-3 rounded-xl border transition-all duration-300"
+            :class="idx === 0 ? 'bg-amber-500/10 border-amber-500/30 text-amber-200 shadow-lg shadow-amber-500/5' : 'bg-slate-800/50 border-slate-700/50 text-slate-300'"
+          >
+            <div class="flex items-center space-x-2.5">
+              <span class="font-mono text-sm font-bold text-slate-400 w-4">#{{ idx + 1 }}</span>
+              <span class="w-2.5 h-2.5 rounded-full" :class="getDotClass(p.player)"></span>
+              <span class="font-bold text-sm">{{ p.name || playerLabel(p.player) }}</span>
+            </div>
+            <span class="font-mono font-black text-sm">{{ gameState.scores?.[p.player] || 0 }} pts</span>
+          </div>
+        </div>
+      </div>
+
       <!-- Loading State -->
-      <div v-if="!currentQuestion" class="flex flex-col items-center space-y-3 text-gray-400">
+      <div v-else-if="!currentQuestion" class="flex flex-col items-center space-y-3 text-gray-400">
         <div class="w-8 h-8 border-4 border-violet-500 border-t-transparent rounded-full animate-spin"></div>
         <span class="text-sm animate-pulse">Loading questions...</span>
       </div>
@@ -329,6 +361,14 @@ export default defineComponent({
       }
       if (w.includes(`player ${this.player}`)) return 'text-emerald-400';
       return 'text-rose-400';
+    },
+    sortedPlayers(): any[] {
+      const list = [...this.players];
+      return list.sort((a, b) => {
+        const scoreA = this.gameState.scores?.[a.player] || 0;
+        const scoreB = this.gameState.scores?.[b.player] || 0;
+        return scoreB - scoreA;
+      });
     },
   },
   methods: {
