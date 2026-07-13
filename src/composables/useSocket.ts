@@ -22,6 +22,7 @@ export function useSocket(router: any) {
   const roomKey = ref('');
   const gameId = ref('black-hole');
   const connectionStatus = ref('Connecting to server...');
+  const isInitialLoading = ref(true);
   const gameState = ref<GameState>({
     circles: {},
     currentPlayer: 1,
@@ -60,17 +61,19 @@ export function useSocket(router: any) {
 
     if (!socket.value) return;
 
-    // Start a 3-second timer to check if we connect. If not, redirect to /offline
+    // Start a 2-second timer to check if we connect. If not, redirect to /offline
     offlineTimeout = setTimeout(() => {
       if (socket.value && !socket.value.connected) {
+        isInitialLoading.value = false;
         connectionStatus.value = 'offline';
         if (router.currentRoute.value.path !== '/offline') {
           router.push('/offline');
         }
       }
-    }, 3000);
+    }, 2000);
 
     socket.value.on('connect', () => {
+      isInitialLoading.value = false;
       if (offlineTimeout) {
         clearTimeout(offlineTimeout);
       }
@@ -106,6 +109,7 @@ export function useSocket(router: any) {
     });
 
     socket.value.on('connect_error', () => {
+      isInitialLoading.value = false;
       connectionStatus.value = 'offline';
       if (router.currentRoute.value.path !== '/offline') {
         router.push('/offline');
@@ -250,5 +254,6 @@ export function useSocket(router: any) {
     gameId,
     connectionStatus,
     gameState,
+    isInitialLoading,
   };
 }
