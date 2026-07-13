@@ -51,7 +51,7 @@ VITE_BACKEND_URL=http://localhost:3000
 Start the Express / Socket.io game backend server (runs on port `3000`):
 
 ```sh
-npm start
+npm run server-dev
 ```
 
 In a separate terminal, start the Vite client frontend server (runs on port `5173`):
