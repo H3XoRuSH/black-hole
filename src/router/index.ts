@@ -9,8 +9,15 @@ import Checkers from '../components/Checkers.vue';
 import Bingo from '../components/Bingo.vue';
 import Trivia from '../components/Trivia.vue';
 import InfiniteWordChain from '../components/InfiniteWordChain.vue';
+import Offline from '../components/Offline.vue';
 
 const routes: Array<RouteRecordRaw> = [
+  {
+    path: '/offline',
+    name: 'Offline',
+    component: Offline,
+    meta: { title: 'Offline - Gab\'s Arcade' },
+  },
   {
     path: '/menu',
     name: 'Menu',

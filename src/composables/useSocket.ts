@@ -52,13 +52,36 @@ export function useSocket(router: any) {
     };
   }
 
+  let offlineTimeout: any = null;
+
   onMounted(() => {
-    socket.value = io();
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
+    socket.value = io(backendUrl);
 
     if (!socket.value) return;
 
+    // Start a 3-second timer to check if we connect. If not, redirect to /offline
+    offlineTimeout = setTimeout(() => {
+      if (socket.value && !socket.value.connected) {
+        connectionStatus.value = 'offline';
+        if (router.currentRoute.value.path !== '/offline') {
+          router.push('/offline');
+        }
+      }
+    }, 3000);
+
     socket.value.on('connect', () => {
+      if (offlineTimeout) {
+        clearTimeout(offlineTimeout);
+      }
       connectionStatus.value = '';
+
+      if (router.currentRoute.value.path === '/offline') {
+        const { showToast } = useToast();
+        showToast('Connected! Welcome back to the arcade.', 'success');
+        router.push('/menu');
+        return;
+      }
 
       const saved = sessionStorage.getItem('roomData');
       if (saved) {
@@ -79,6 +102,25 @@ export function useSocket(router: any) {
         router.push('/menu').finally(() => {
           router.isLeavingDueToDisconnect = false;
         });
+      }
+    });
+
+    socket.value.on('connect_error', () => {
+      connectionStatus.value = 'offline';
+      if (router.currentRoute.value.path !== '/offline') {
+        router.push('/offline');
+      }
+    });
+
+    socket.value.on('disconnect', (reason) => {
+      console.log('Socket disconnected:', reason);
+      if (reason === 'io server disconnect' || reason === 'transport close' || reason === 'transport error') {
+        connectionStatus.value = 'offline';
+        if (router.currentRoute.value.path !== '/offline') {
+          const { showToast } = useToast();
+          showToast('Connection lost! Trying to reconnect...', 'error');
+          router.push('/offline');
+        }
       }
     });
 
@@ -195,6 +237,9 @@ export function useSocket(router: any) {
   });
 
   onBeforeUnmount(() => {
+    if (offlineTimeout) {
+      clearTimeout(offlineTimeout);
+    }
     socket.value?.disconnect();
   });
 

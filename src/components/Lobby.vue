@@ -405,7 +405,10 @@ export default defineComponent({
       this.$nextTick(() => {
         const canvas = this.$refs.qrCanvas as HTMLCanvasElement;
         if (canvas) {
-          const joinUrl = `${window.location.origin}/menu?join=${this.roomKey}`;
+          const relativePath = this.$router.resolve({ name: 'Menu', query: { join: this.roomKey } }).href;
+          const joinUrl = relativePath.startsWith('#')
+            ? window.location.origin + window.location.pathname + relativePath
+            : window.location.origin + relativePath;
           QRCode.toCanvas(
             canvas,
             joinUrl,

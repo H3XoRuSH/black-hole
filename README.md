@@ -29,21 +29,40 @@ A real-time, multiplayer online arcade featuring classic strategic board and pen
 npm install
 ```
 
-### 2. Run the Servers (Local Development)
+### 2. Configure Environment Variables
 
-Start the Express / Socket.io game server:
+Create a `.env` file in the root directory to configure the local environment:
+
+```env
+# Optional: Backend API keys (simulated fallbacks are used if omitted)
+DEEPSEEK_API_KEY=your_deepseek_api_key
+OPENROUTER_API_KEY=your_openrouter_api_key
+GITHUB_TOKEN=your_github_personal_access_token
+
+# Optional: Frontend target backend URL (defaults to relative proxy if omitted)
+VITE_BACKEND_URL=http://localhost:3000
+```
+
+> [!NOTE]
+> All API keys (such as `DEEPSEEK_API_KEY`, `OPENROUTER_API_KEY`, and `GITHUB_TOKEN`) are entirely **optional** for running the game. If they are omitted, the application will gracefully fall back to local mock behavior (e.g., providing simulated AI game recaps).
+
+### 3. Run the Servers
+
+Start the Express / Socket.io game backend server (runs on port `3000`):
 
 ```sh
 npm start
 ```
 
-In a separate terminal, start the Vite development server for client-side hot-reloading:
+In a separate terminal, start the Vite client frontend server (runs on port `5173`):
 
 ```sh
 npm run dev
 ```
 
-### 3. Production Build
+*Note: With `VITE_BACKEND_URL` set in your `.env`, the frontend client on port `5173` will connect directly to the backend server on port `3000`.*
+
+### 4. Production Build
 
 Compile production assets:
 
