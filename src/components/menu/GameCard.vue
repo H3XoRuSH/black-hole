@@ -1,7 +1,7 @@
 <template>
   <!-- List variant -->
   <div v-if="variant === 'list'"
-    class="bg-white dark:bg-slate-800 rounded-2xl shadow-md border border-gray-200 dark:border-slate-700 p-5 flex items-center justify-between transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 border-l-4"
+    class="bg-white dark:bg-slate-800 rounded-2xl shadow-md border border-gray-200 dark:border-slate-700 p-5 flex items-center justify-between transition-[transform,box-shadow] duration-300 hover:shadow-lg hover:-translate-y-0.5 border-l-4"
     :style="{ borderLeftColor: game.color }">
     <div class="flex-grow pr-4">
       <div class="flex items-center space-x-2 mb-1">
@@ -21,7 +21,7 @@
 
   <!-- Grid variant -->
   <div v-else-if="variant === 'grid'"
-    class="bg-white dark:bg-slate-800 rounded-2xl shadow-md border border-gray-200 dark:border-slate-700 p-4 sm:p-5 flex flex-col justify-between h-[230px] transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 border-t-4"
+    class="bg-white dark:bg-slate-800 rounded-2xl shadow-md border border-gray-200 dark:border-slate-700 p-4 sm:p-5 flex flex-col justify-between h-[230px] transition-[transform,box-shadow] duration-300 hover:shadow-lg hover:-translate-y-0.5 border-t-4"
     :style="{ borderTopColor: game.color }">
     <div>
       <div class="flex items-center justify-between mb-2 min-w-0">
