@@ -233,6 +233,27 @@
             </div>
           </div>
 
+          <!-- Pictionary Options (host only) -->
+          <div v-if="gameId === 'pictionary' && isHost" class="pt-4 border-t border-gray-100 dark:border-slate-700">
+            <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Timer Settings</h4>
+            <div class="flex gap-2 mb-2">
+              <div class="flex-1">
+                <label class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1 block">Round Duration</label>
+                <select
+                  v-model="pictionaryTimer"
+                  @change="updatePictionaryOptions"
+                  class="w-full text-xs font-semibold py-2 px-3 bg-white dark:bg-slate-600 border border-gray-300 dark:border-slate-500 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer dark:text-gray-200"
+                >
+                  <option :value="30">30 seconds</option>
+                  <option :value="60">60 seconds</option>
+                  <option :value="90">90 seconds</option>
+                  <option :value="120">120 seconds</option>
+                  <option :value="180">180 seconds</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
           <!-- Toggle Ready and Start Game buttons -->
           <div class="space-y-2.5 pt-4 border-t border-gray-100 dark:border-slate-700">
             <button
@@ -351,6 +372,7 @@ export default defineComponent({
       newName: '',
       triviaCategory: null as string | null,
       triviaDifficulty: '',
+      pictionaryTimer: 60,
     };
   },
   computed: {
@@ -455,6 +477,13 @@ export default defineComponent({
         categorySlug: this.triviaCategory || undefined,
         categoryName: cat?.name,
         difficulty: this.triviaDifficulty || undefined,
+      });
+    },
+    updatePictionaryOptions() {
+      if (!this.socket || !this.roomKey) return;
+      this.socket.emit('set-pictionary-options', {
+        roomKey: this.roomKey,
+        timerDuration: this.pictionaryTimer,
       });
     },
     toggleReady() {

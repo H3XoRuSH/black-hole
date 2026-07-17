@@ -41,6 +41,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
   const disconnectTimers = new Map<string, ReturnType<typeof setTimeout>>();
   const bingoIntervals = new Map<string, ReturnType<typeof setInterval>>();
   const triviaTimers = new Map<string, ReturnType<typeof setTimeout>[]>();
+  const pictionaryTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
   function startBingoTimer(roomKey: string, room: Room, io: SocketIOServer) {
     stopBingoTimer(roomKey);
@@ -97,6 +98,55 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
     if (timers) {
       timers.forEach(clearTimeout);
       triviaTimers.delete(roomKey);
+    }
+    stopPictionaryTimer(roomKey);
+  }
+
+  function startPictionaryTimer(roomKey: string, room: Room, io: SocketIOServer) {
+    stopPictionaryTimer(roomKey);
+    if (room.gameId !== 'pictionary') return;
+    const gameState = room.gameState as any;
+    if (gameState.phase !== 'drawing') return;
+    const duration = (gameState.timerDuration || 60) * 1000;
+    const interval = setInterval(() => {
+      const currentRoom = rooms.get(roomKey);
+      if (!currentRoom || !currentRoom.gameStarted || currentRoom.gameState.winner || currentRoom.gameState.phase !== 'drawing') {
+        clearInterval(interval);
+        pictionaryTimers.delete(roomKey);
+        return;
+      }
+      const gs = currentRoom.gameState as any;
+      gs.timeRemaining = Math.max(0, gs.timeRemaining - 1);
+      broadcastGameState(roomKey, currentRoom, io);
+    }, 1000);
+    const timer = setTimeout(() => {
+      clearInterval(interval);
+      pictionaryTimers.delete(roomKey);
+      const currentRoom = rooms.get(roomKey);
+      if (!currentRoom || !currentRoom.gameStarted) return;
+      const gs = currentRoom.gameState as any;
+      if (gs.phase === 'drawing') {
+        const mod = gamesRegistry['pictionary'];
+        if (mod && (mod as any).timeUp) {
+          (mod as any).timeUp(currentRoom);
+          broadcastGameState(roomKey, currentRoom, io);
+        }
+      }
+    }, duration);
+    pictionaryTimers.set(roomKey, timer);
+    pictionaryTimers.set(roomKey + '-interval', interval as any);
+  }
+
+  function stopPictionaryTimer(roomKey: string) {
+    const timer = pictionaryTimers.get(roomKey);
+    if (timer) {
+      clearTimeout(timer);
+      pictionaryTimers.delete(roomKey);
+    }
+    const interval = pictionaryTimers.get(roomKey + '-interval');
+    if (interval) {
+      clearInterval(interval as any);
+      pictionaryTimers.delete(roomKey + '-interval');
     }
   }
 
@@ -206,11 +256,21 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       const bs = gamesRegistry['battleship'] as any;
       return bs.getFilteredState(room.gameState, playerNum);
     }
+    if (room.gameId === 'pictionary') {
+      const gs = { ...room.gameState };
+      const isDrawer = gs.currentDrawer === playerNum;
+      const isOver = gs.phase === 'reveal' || gs.phase === 'game-over';
+      if (!isDrawer && !isOver) {
+        gs.currentWord = '';
+        gs.wordChoices = [];
+      }
+      return gs;
+    }
     return room.gameState;
   }
 
   function broadcastGameState(roomKey: string, room: Room, io: SocketIOServer) {
-    if (room.gameId === 'battleship') {
+    if (room.gameId === 'battleship' || room.gameId === 'pictionary') {
       room.gameState.players.forEach((p: any) => {
         io.to(p.id).emit('game-state', getFilteredState(room, p.player));
       });
@@ -621,10 +681,22 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
             stopTriviaTimers(roomKey);
           }
 
+          if (room.gameId === 'pictionary') {
+            if (room.gameState.phase !== 'drawing') {
+              stopPictionaryTimer(roomKey);
+            }
+          }
+
           broadcastGameState(roomKey, room, io);
 
           if (room.gameId === 'trivia') {
             scheduleTriviaNextPhase(roomKey, io);
+          }
+
+          if (room.gameId === 'pictionary') {
+            if (room.gameState.phase === 'drawing' && room.gameState.drawerReady) {
+              startPictionaryTimer(roomKey, room, io);
+            }
           }
 
           triggerAIMoveIfActive(roomKey, room, io);
@@ -780,6 +852,21 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
               });
             }
           }
+
+          if (room.gameId === 'pictionary') {
+            stopPictionaryTimer(roomKey);
+            const mod = gamesRegistry['pictionary'];
+            if (mod?.onGameStart) {
+              const p = mod.onGameStart(room);
+              const promise = p ? Promise.resolve(p) : Promise.resolve();
+              promise.then(() => {
+                const r = rooms.get(roomKey);
+                if (r) {
+                  broadcastGameState(roomKey, r, io);
+                }
+              });
+            }
+          }
         }
       }
     },
@@ -850,6 +937,18 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
         categoryName: data.categoryName,
         difficulty: data.difficulty,
       };
+      broadcastGameState(roomKey, room, io);
+    },
+
+    setPictionaryOptions(roomKey: string, socket: Socket, data: { timerDuration: number }, io: SocketIOServer) {
+      if (!rooms.has(roomKey)) return;
+      const room = rooms.get(roomKey)!;
+      if (room.gameId !== 'pictionary') return;
+      const host = room.gameState.players.find((p: any) => p.id === socket.id);
+      if (!host || host.player !== 1) return;
+      const duration = Math.max(15, Math.min(180, data.timerDuration));
+      room.gameState.timerDuration = duration;
+      room.gameState.timeRemaining = duration;
       broadcastGameState(roomKey, room, io);
     },
 

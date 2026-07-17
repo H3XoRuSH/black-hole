@@ -9,6 +9,7 @@ import Checkers from '../components/Checkers.vue';
 import Bingo from '../components/Bingo.vue';
 import Trivia from '../components/Trivia.vue';
 import InfiniteWordChain from '../components/InfiniteWordChain.vue';
+import Pictionary from '../components/Pictionary.vue';
 import Offline from '../components/Offline.vue';
 
 const routes: Array<RouteRecordRaw> = [
@@ -121,6 +122,20 @@ const routes: Array<RouteRecordRaw> = [
     component: Checkers,
     props: true,
     meta: { title: 'Checkers - Gab\'s Arcade' },
+  },
+  {
+    path: '/pictionary/lobby',
+    name: 'PictionaryLobby',
+    component: Lobby,
+    props: { gameId: 'pictionary', gameName: 'Pictionary' },
+    meta: { title: 'Pictionary - Gab\'s Arcade' },
+  },
+  {
+    path: '/pictionary/game/:roomKey',
+    name: 'PictionaryGame',
+    component: Pictionary,
+    props: true,
+    meta: { title: 'Pictionary - Gab\'s Arcade' },
   },
   {
     path: '/battleship/lobby',

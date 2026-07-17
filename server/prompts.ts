@@ -4,7 +4,12 @@ export function getSystemPrompt(): string {
 
 export function getRecapConversationPrompt(gameName: string, formattedHistory: string, originalRecap: string, question: string, gameId?: string, playerNames?: string[]): string {
   let playerRef = '';
-  if (gameId === 'bingo') {
+  if (gameId === 'pictionary') {
+    const namesList = playerNames && playerNames.length > 0
+      ? playerNames.map((name) => `"${name}"`).join(', ')
+      : '"Player 1", "Player 2"';
+    playerRef = `Refer to players by their names: ${namesList}. This was a cooperative game.`;
+  } else if (gameId === 'bingo') {
     const namesList = playerNames && playerNames.length > 0
       ? playerNames.map((name) => `"${name}"`).join(', ')
       : '"Player 1" and "Player 2"';
@@ -31,7 +36,16 @@ export function getRecapPrompt(gameName: string, formattedHistory: string, gameI
   let playerRef = '';
   let wordCountLimit = '40-60 words';
 
-  if (gameId === 'bingo') {
+  if (gameId === 'pictionary') {
+    const namesList = playerNames && playerNames.length > 0
+      ? playerNames.map((name) => `"${name}"`).join(', ')
+      : '"Player 1", "Player 2"';
+    playerRef = `Refer to players by their names: ${namesList}. This was a cooperative game — all players worked together as a team.`;
+    if (playerNames && playerNames.length > 2) {
+      playerRef += `. Be sure to briefly mention each player who participated: ${namesList}`;
+      wordCountLimit = '60-80 words';
+    }
+  } else if (gameId === 'bingo') {
     const namesList = playerNames && playerNames.length > 0
       ? playerNames.map((name) => `"${name}"`).join(', ')
       : '"Player 1" and "Player 2"';

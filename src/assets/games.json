@@ -222,6 +222,39 @@
     ]
   },
   {
+    "id": "pictionary",
+    "name": "Pictionary",
+    "minPlayers": 2,
+    "maxPlayers": 4,
+    "description": "A cooperative drawing and guessing game for 2-4 players. Take turns drawing a secret word while everyone else guesses. Work together to score as many points as possible!",
+    "route": "/pictionary/lobby",
+    "status": "active",
+    "color": "#6366f1",
+    "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 20h9\"/><path d=\"M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z\"/></svg>",
+    "rules": [
+      {
+        "title": "Teams Up",
+        "desc": "2 to 4 players work together. Each round, one player is the Drawer and the rest are Guessers."
+      },
+      {
+        "title": "Drawing",
+        "desc": "The Drawer sees a secret word and draws it on the canvas. No letters, numbers, or speaking!"
+      },
+      {
+        "title": "Guessing",
+        "desc": "Guessers type their guesses. If anyone guesses the word correctly, the whole team scores 1 point!"
+      },
+      {
+        "title": "Rotation",
+        "desc": "After each round, the Drawer role rotates to the next player. The game ends after everyone has drawn twice."
+      },
+      {
+        "title": "Winning",
+        "desc": "The team's final score is the total number of words guessed correctly. Aim for a perfect score!"
+      }
+    ]
+  },
+  {
     "id": "bingo",
     "name": "Bingo",
     "minPlayers": 2,

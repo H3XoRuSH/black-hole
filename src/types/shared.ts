@@ -165,6 +165,26 @@ export interface TriviaGameState {
   moveHistory?: any[];
 }
 
+export interface PictionaryGameState {
+  phase: 'lobby' | 'choosing' | 'drawing' | 'reveal' | 'game-over';
+  currentDrawer: number;
+  currentWord: string;
+  wordChoices: string[];
+  roundNumber: number;
+  totalRounds: number;
+  scores: Record<number, number>;
+  winner: string;
+  players: Player[];
+  currentPlayer: number;
+  totalMoves: number;
+  wordHistory: string[];
+  guessesThisRound: string[];
+  drawerReady: boolean;
+  timerDuration: number;
+  timeRemaining: number;
+  moveHistory?: any[];
+}
+
 export interface InfiniteWordChainGameState {
   pairs: [string, string][];
   currentPairIndex: number;
