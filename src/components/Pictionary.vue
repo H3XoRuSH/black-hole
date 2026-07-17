@@ -432,10 +432,11 @@ export default defineComponent({
         return;
       }
       isDrawing.value = true;
-      currentStroke = [{ ...getCanvasPos(clientX, clientY) }];
+      lastEmitTime = Date.now();
+      const pos = getCanvasPos(clientX, clientY);
+      currentBatch = [pos];
       const ctx = getCtx();
       if (!ctx) return;
-      const pos = getCanvasPos(clientX, clientY);
       ctx.beginPath();
       ctx.strokeStyle = eraserMode.value ? '#ffffff' : selectedColor.value;
       ctx.lineWidth = selectedSize.value;
@@ -444,7 +445,9 @@ export default defineComponent({
       ctx.moveTo(pos.x, pos.y);
     };
 
-    let currentStroke: { x: number; y: number }[] = [];
+    const EMIT_THROTTLE_MS = 30;
+    let currentBatch: { x: number; y: number }[] = [];
+    let lastEmitTime = 0;
 
     const moveStroke = (clientX: number, clientY: number) => {
       if (!isDrawing.value) return;
@@ -453,17 +456,26 @@ export default defineComponent({
       const pos = getCanvasPos(clientX, clientY);
       ctx.lineTo(pos.x, pos.y);
       ctx.stroke();
-      currentStroke.push(pos);
+      currentBatch.push(pos);
+      const now = Date.now();
+      if (now - lastEmitTime >= EMIT_THROTTLE_MS) {
+        lastEmitTime = now;
+        if (currentBatch.length >= 2) {
+          const color = eraserMode.value ? '#ffffff' : selectedColor.value;
+          emitStroke(currentBatch, color, selectedSize.value);
+          currentBatch = [currentBatch[currentBatch.length - 1]];
+        }
+      }
     };
 
     const endStroke = () => {
       if (!isDrawing.value) return;
       isDrawing.value = false;
-      if (currentStroke.length >= 2) {
+      if (currentBatch.length >= 2) {
         const color = eraserMode.value ? '#ffffff' : selectedColor.value;
-        emitStroke(currentStroke, color, selectedSize.value);
+        emitStroke(currentBatch, color, selectedSize.value);
       }
-      currentStroke = [];
+      currentBatch = [];
     };
 
     function floodFill(clientX: number, clientY: number) {
