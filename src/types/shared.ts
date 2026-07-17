@@ -115,12 +115,20 @@ export interface RecapChatMessage {
   content: string;
 }
 
+export interface ChatMessage {
+  player: number;
+  playerName: string;
+  text: string;
+  timestamp: number;
+}
+
 export interface Room {
   gameId: string;
   gameState: any;
   gameStarted?: boolean;
   recaps?: Map<number, RecapEntry>;
   recapConversations?: Map<number, RecapChatMessage[]>;
+  chatMessages?: ChatMessage[];
 }
 
 export interface MenuGame {

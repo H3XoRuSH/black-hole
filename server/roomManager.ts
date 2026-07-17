@@ -1,5 +1,5 @@
 import { Socket, Server as SocketIOServer } from 'socket.io';
-import type { Room, TriviaGameState as TGS } from '../src/types/shared.js';
+import type { Room, TriviaGameState as TGS, ChatMessage } from '../src/types/shared.js';
 import { readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -22,6 +22,7 @@ export interface GameModule {
   noTurns?: boolean;
   onGameStart?: (room: Room) => void | Promise<void>;
   getAIMove?: (gameState: any) => Promise<any>;
+  revealNextLetter?: (gameState: any) => void;
 }
 
 const generateRoomKey = (): string => {
@@ -108,6 +109,10 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
     const gameState = room.gameState as any;
     if (gameState.phase !== 'drawing') return;
     const duration = (gameState.timerDuration || 60) * 1000;
+    const mod = gamesRegistry['pictionary'] as any;
+    const totalReveals = gameState.revealPositions?.length || 0;
+    const revealInterval = totalReveals > 0 ? duration / totalReveals : Infinity;
+    let nextRevealAt = revealInterval;
     const interval = setInterval(() => {
       const currentRoom = rooms.get(roomKey);
       if (!currentRoom || !currentRoom.gameStarted || currentRoom.gameState.winner || currentRoom.gameState.phase !== 'drawing') {
@@ -116,7 +121,12 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
         return;
       }
       const gs = currentRoom.gameState as any;
+      const elapsed = (gs.timerDuration || 60) * 1000 - gs.timeRemaining * 1000 + 1000;
       gs.timeRemaining = Math.max(0, gs.timeRemaining - 1);
+      if (mod?.revealNextLetter && elapsed >= nextRevealAt && gs.revealedLetters?.length < totalReveals) {
+        mod.revealNextLetter(gs);
+        nextRevealAt += revealInterval;
+      }
       broadcastGameState(roomKey, currentRoom, io);
     }, 1000);
     const timer = setTimeout(() => {
@@ -261,7 +271,14 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       const isDrawer = gs.currentDrawer === playerNum;
       const isOver = gs.phase === 'reveal' || gs.phase === 'game-over';
       if (!isDrawer && !isOver) {
-        gs.currentWord = '';
+        if (gs.phase === 'drawing' && gs.currentWord) {
+          const revealed = (gs.revealedLetters || []) as number[];
+          gs.currentWord = gs.currentWord.split('').map((ch: string, i: number) =>
+            ch === ' ' ? ' ' : revealed.includes(i) ? ch : '_'
+          ).join('');
+        } else {
+          gs.currentWord = '';
+        }
         gs.wordChoices = [];
       }
       return gs;
@@ -370,7 +387,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       initialGameState.maxPlayers = gameConfig?.maxPlayers ?? 2;
 
       initialGameState.players[0].name = initialGameState.players[0].name || 'Player 1';
-      rooms.set(roomKey, { gameId, gameState: initialGameState, gameStarted: false, recaps: new Map(), recapConversations: new Map() });
+      rooms.set(roomKey, { gameId, gameState: initialGameState, gameStarted: false, recaps: new Map(), recapConversations: new Map(), chatMessages: [] });
       socket.join(roomKey);
       socketRooms.set(socket.id, { roomKey, playerNumber: 1 });
       socket.emit('waiting-for-player', { roomKey, player: 1, gameId, gameState: initialGameState });
@@ -398,7 +415,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       socket.join(roomKey);
       socketRooms.set(socket.id, { roomKey, playerNumber });
 
-      socket.emit('waiting-for-player', { roomKey, player: playerNumber, gameId: room.gameId, gameState: getFilteredState(room, playerNumber) });
+      socket.emit('waiting-for-player', { roomKey, player: playerNumber, gameId: room.gameId, gameState: getFilteredState(room, playerNumber), chatMessages: room.chatMessages || [] });
       broadcastGameState(roomKey, room, io);
     },
 
@@ -572,6 +589,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
         gameId: room.gameId,
         gameState: getFilteredState(room, playerNumber),
         gameStarted,
+        chatMessages: room.chatMessages || [],
       });
       socket.to(roomKey).emit('player-reconnected', {
         message: 'Your opponent has reconnected!',
@@ -950,6 +968,24 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       room.gameState.timerDuration = duration;
       room.gameState.timeRemaining = duration;
       broadcastGameState(roomKey, room, io);
+    },
+
+    sendChat(roomKey: string, socket: Socket, data: { text: string }, io: SocketIOServer) {
+      if (!rooms.has(roomKey)) return;
+      const room = rooms.get(roomKey)!;
+      const player = room.gameState.players.find((p: any) => p.id === socket.id);
+      if (!player) return;
+      const text = (data.text || '').trim().slice(0, 200);
+      if (!text) return;
+      const message: ChatMessage = {
+        player: player.player,
+        playerName: player.name || `Player ${player.player}`,
+        text,
+        timestamp: Date.now(),
+      };
+      if (!room.chatMessages) room.chatMessages = [];
+      room.chatMessages.push(message);
+      io.to(roomKey).emit('chat-message', message);
     },
 
     getSocketRoom(socketId: string) {

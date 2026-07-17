@@ -176,10 +176,10 @@ export function useSocket(router: any) {
       clearRoomData();
       connectionStatus.value = message;
       roomKey.value = '';
-      player.value = null;
       resetGameState();
       router.isLeavingDueToDisconnect = true;
       router.push(`/${gameId.value}/lobby`).finally(() => {
+        player.value = null;
         router.isLeavingDueToDisconnect = false;
       });
     });
@@ -193,11 +193,11 @@ export function useSocket(router: any) {
       clearRoomData();
       connectionStatus.value = message;
       roomKey.value = '';
-      player.value = null;
       resetGameState();
       const targetGameId = gId || gameId.value || 'black-hole';
       router.isLeavingDueToDisconnect = true;
       router.push(`/${targetGameId}/lobby`).finally(() => {
+        player.value = null;
         router.isLeavingDueToDisconnect = false;
       });
     });
@@ -226,10 +226,10 @@ export function useSocket(router: any) {
       clearRoomData();
       connectionStatus.value = message;
       roomKey.value = '';
-      player.value = null;
       const targetGameId = gameId.value || 'black-hole';
       router.isLeavingDueToDisconnect = true;
       router.push(`/${targetGameId}/lobby`).finally(() => {
+        player.value = null;
         router.isLeavingDueToDisconnect = false;
       });
     });
