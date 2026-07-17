@@ -1,4 +1,5 @@
 import type { Player, Room } from '../../src/types/shared.js';
+import { pickWords, shuffleArray } from './pictionaryWords.js';
 
 export interface PictionaryGameState {
   phase: 'lobby' | 'choosing' | 'drawing' | 'reveal' | 'game-over';
@@ -17,38 +18,12 @@ export interface PictionaryGameState {
   drawerReady: boolean;
   timerDuration: number;
   timeRemaining: number;
+  revealedLetters: number[];
+  revealPositions: number[];
 }
-
-const WORDS = [
-  'cat', 'dog', 'house', 'tree', 'sun', 'moon', 'star', 'fish', 'bird', 'book',
-  'apple', 'banana', 'guitar', 'piano', 'castle', 'bridge', 'train', 'plane', 'ship', 'cake',
-  'mountain', 'river', 'ocean', 'forest', 'desert', 'flower', 'garden', 'cloud', 'rain', 'snow',
-  'pizza', 'burger', 'cookie', 'candy', 'coffee', 'pencil', 'paint', 'camera', 'watch', 'money',
-  'spider', 'snake', 'eagle', 'whale', 'tiger', 'bear', 'wolf', 'fox', 'owl', 'bat',
-  'sword', 'shield', 'crown', 'ring', 'key', 'door', 'window', 'chair', 'table', 'lamp',
-  'rocket', 'robot', 'alien', 'ghost', 'witch', 'dragon', 'knight', 'pirate', 'ninja', 'wizard',
-  'violin', 'drum', 'flute', 'bell', 'whistle', 'balloon', 'kite', 'bubble', 'ribbon', 'arrow',
-  'island', 'cave', 'volcano', 'waterfall', 'lighthouse', 'tent', 'fence', 'tower', 'wall', 'stair',
-  'wagon', 'sled', 'canoe', 'raft', 'wings', 'feather', 'shell', 'web', 'nest', 'hive',
-];
 
 const ROUNDS_PER_PLAYER = 2;
 const DEFAULT_TIMER = 60;
-
-function shuffleArray<T>(arr: T[]): T[] {
-  const a = [...arr];
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-function pickWords(count: number, usedWords: string[]): string[] {
-  const available = WORDS.filter((w) => !usedWords.includes(w));
-  const pool = available.length >= count ? available : WORDS;
-  return shuffleArray(pool).slice(0, count);
-}
 
 function getNextDrawer(currentPlayer: number, players: Player[]): number {
   const playerNums = players.map((p) => p.player).sort();
@@ -74,6 +49,8 @@ export const createInitialState = (playerId: string): PictionaryGameState => {
     drawerReady: false,
     timerDuration: DEFAULT_TIMER,
     timeRemaining: DEFAULT_TIMER,
+    revealedLetters: [],
+    revealPositions: [],
   };
 };
 
@@ -95,6 +72,8 @@ export const resetState = (players: Player[]): PictionaryGameState => {
     drawerReady: false,
     timerDuration: DEFAULT_TIMER,
     timeRemaining: DEFAULT_TIMER,
+    revealedLetters: [],
+    revealPositions: [],
   };
 };
 
@@ -116,12 +95,25 @@ function prepareRound(gameState: PictionaryGameState): void {
   gameState.phase = 'choosing';
   gameState.totalMoves = 0;
   gameState.timeRemaining = gameState.timerDuration;
+  gameState.revealedLetters = [];
+  gameState.revealPositions = [];
 }
 
 function startDrawing(gameState: PictionaryGameState): void {
   gameState.drawerReady = true;
   gameState.phase = 'drawing';
   gameState.timeRemaining = gameState.timerDuration;
+  const letterPositions = gameState.currentWord.split('').map((ch, i) => ch !== ' ' ? i : -1).filter((i) => i !== -1);
+  const numReveals = Math.max(1, letterPositions.length - 1);
+  gameState.revealPositions = shuffleArray(letterPositions).slice(0, numReveals);
+  gameState.revealedLetters = [];
+}
+
+export function revealNextLetter(gameState: PictionaryGameState): void {
+  const nextIdx = gameState.revealedLetters.length;
+  if (nextIdx >= gameState.revealPositions.length) return;
+  gameState.revealedLetters.push(gameState.revealPositions[nextIdx]);
+  gameState.revealedLetters.sort((a: number, b: number) => a - b);
 }
 
 function endGame(gameState: PictionaryGameState): void {

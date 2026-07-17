@@ -80,7 +80,6 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { Socket } from 'socket.io-client';
 import { useToast } from '../composables/useToast.js';
 import BaseModal from './BaseModal.vue';
 
@@ -89,7 +88,7 @@ export default defineComponent({
   components: { BaseModal },
   props: {
     socket: {
-      type: Object as PropType<Socket | null>,
+      type: Object as PropType<any>,
       default: null
     }
   },

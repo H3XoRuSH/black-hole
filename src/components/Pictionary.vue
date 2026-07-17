@@ -65,23 +65,23 @@
       <!-- Game Over -->
       <div v-if="gameOver" class="w-full h-full flex flex-col items-center justify-center space-y-6">
         <div class="w-20 h-20 bg-amber-500/10 border border-amber-500/20 rounded-full flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-10 w-10 text-amber-400">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-10 w-10 text-amber-500 dark:text-amber-400">
             <path d="M17 3H21C21.5523 3 22 3.44772 22 4V9C22 10.375 21.0503 11.5283 19.7824 11.8541C19.1417 14.1266 17.2995 15.8924 15 16.6343V19H18V21H6V19H9V16.6343C6.70054 15.8924 4.85834 14.1266 4.21762 11.8541C2.94974 11.5283 2 10.375 2 9V4C2 3.44772 2.44772 3 3 3H7V1H17V3ZM15 3H9V15C9 16.6569 10.3431 18 12 18C13.6569 18 15 16.6569 15 15V3ZM4 5V9C4 9.38793 4.2125 9.7262 4.54291 9.89141L5 10.12V5H4ZM20 5H19V10.12L19.4571 9.89141C19.7875 9.7262 20 9.38793 20 9V5Z"/>
           </svg>
         </div>
         <div class="text-center">
-          <h2 class="text-2xl font-black text-white tracking-wide uppercase">Game Over</h2>
-          <p class="text-sm text-slate-400 mt-1">Final Scores</p>
+          <h2 class="text-2xl font-black text-gray-900 dark:text-white tracking-wide uppercase">Game Over</h2>
+          <p class="text-sm text-gray-500 dark:text-slate-400 mt-1">Final Scores</p>
         </div>
         <div class="w-full max-w-xs space-y-2">
           <div
             v-for="(p, idx) in sortedPlayers"
             :key="p.player"
             class="flex items-center justify-between px-4 py-3 rounded-xl border transition-all duration-300"
-            :class="idx === 0 ? 'bg-amber-500/10 border-amber-500/30 text-amber-200' : 'bg-slate-800/50 border-slate-700/50 text-slate-300'"
+            :class="idx === 0 ? 'bg-amber-50 dark:bg-amber-500/10 border-amber-300 dark:border-amber-500/30 text-amber-700 dark:text-amber-200' : 'bg-white dark:bg-slate-800/50 border-gray-200 dark:border-slate-700/50 text-gray-600 dark:text-slate-300'"
           >
             <div class="flex items-center space-x-2.5">
-              <span class="font-mono text-sm font-bold text-slate-400 w-4">#{{ idx + 1 }}</span>
+              <span class="font-mono text-sm font-bold text-gray-400 dark:text-slate-500 w-4">#{{ idx + 1 }}</span>
               <span class="w-2.5 h-2.5 rounded-full" :class="getDotClass(p.player)"></span>
               <span class="font-bold text-sm">{{ p.name || playerLabel(p.player) }}</span>
             </div>
@@ -115,11 +115,13 @@
           </div>
         </div>
 
-        <!-- Word Display (Drawer Only) -->
-        <div v-if="amDrawer && gameState.drawerReady && gameState.phase === 'drawing'" class="w-full mb-2 flex-shrink-0">
+        <!-- Word Display -->
+        <div v-if="gameState.drawerReady && gameState.phase === 'drawing'" class="w-full mb-2 flex-shrink-0">
           <div class="bg-indigo-500/10 border border-indigo-500/30 rounded-xl px-4 py-2 text-center">
-            <span class="text-xs text-indigo-400 font-semibold uppercase tracking-wider">Your Word</span>
-            <p class="text-xl font-black text-gray-900 dark:text-white mt-0.5 tracking-wide">{{ secretWord }}</p>
+            <span class="text-xs text-indigo-400 font-semibold uppercase tracking-wider">{{ amDrawer ? 'Your Word' : 'Word' }}</span>
+            <p class="text-xl font-mono font-black text-gray-900 dark:text-white mt-0.5 flex flex-wrap justify-center gap-x-0.5">
+              <span v-for="(ch, i) in (amDrawer ? secretWord : gameState.currentWord)" :key="i" :class="ch === ' ' ? 'w-3' : ''">{{ ch }}</span>
+            </p>
           </div>
         </div>
 
@@ -380,17 +382,14 @@ export default defineComponent({
       return Math.max(0, Math.min(100, (rem / dur) * 100));
     });
 
-    let canvasCtx: CanvasRenderingContext2D | null = null;
     let drawStrokeHandler: any = null;
     let clearCanvasHandler: any = null;
     let wordAssignedHandler: any = null;
 
     const getCtx = () => {
-      if (canvasCtx) return canvasCtx;
       const canvas = canvasRef.value;
       if (!canvas) return null;
-      canvasCtx = canvas.getContext('2d');
-      return canvasCtx;
+      return canvas.getContext('2d');
     };
 
     const getCanvasPos = (clientX: number, clientY: number): { x: number; y: number } => {
@@ -653,7 +652,8 @@ export default defineComponent({
         const ctx = getCtx();
         const canvas = canvasRef.value;
         if (ctx && canvas) {
-          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
       }
     });
@@ -767,6 +767,7 @@ export default defineComponent({
         return scoreB - scoreA;
       });
     },
+
   },
   methods: {
     playerLabel(num: number) {

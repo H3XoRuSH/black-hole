@@ -27,6 +27,11 @@
     </div>
     <ToastContainer />
     <BugReportModal :socket="socket" />
+    <ChatBox
+      :socket="socket"
+      :room-key="roomKey"
+      :players="gameState?.players || []"
+    />
   </div>
 </template>
 
@@ -36,8 +41,9 @@ import { useRouter } from 'vue-router';
 import { useSocket } from './composables/useSocket.js';
 import ToastContainer from './components/ToastContainer.vue';
 import BugReportModal from './components/BugReportModal.vue';
+import ChatBox from './components/ChatBox.vue';
 export default defineComponent({
-  components: { ToastContainer, BugReportModal },
+  components: { ToastContainer, BugReportModal, ChatBox },
   setup() {
     const router = useRouter() as any;
     return { ...useSocket(router) };

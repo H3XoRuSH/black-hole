@@ -143,6 +143,10 @@ io.on('connection', (socket: Socket) => {
     rooms.setPictionaryOptions(roomKey, socket, { timerDuration }, io);
   });
 
+  socket.on('send-chat', ({ roomKey, text }: { roomKey: string; text: string }) => {
+    rooms.sendChat(roomKey, socket, { text }, io);
+  });
+
   socket.on('draw-stroke', ({ roomKey, stroke }: { roomKey: string; stroke: any }) => {
     socket.to(roomKey).emit('draw-stroke', { stroke });
   });
