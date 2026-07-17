@@ -12,6 +12,7 @@ import * as checkers from './server/games/checkers.js';
 import * as bingo from './server/games/bingo.js';
 import * as trivia from './server/games/trivia.js';
 import * as infiniteWordChain from './server/games/infinite-word-chain.js';
+import * as pictionary from './server/games/pictionary.js';
 import { createRoomManager } from './server/roomManager.js';
 import { evaluateBugReport, createGitHubIssue } from './server/bugReportService.js';
 
@@ -71,6 +72,7 @@ const rooms = createRoomManager({
   'bingo': bingo as any,
   'trivia': trivia as any,
   'infinite-word-chain': infiniteWordChain as any,
+  'pictionary': pictionary as any,
 });
 
 io.on('connection', (socket: Socket) => {
@@ -135,6 +137,18 @@ io.on('connection', (socket: Socket) => {
 
   socket.on('set-trivia-options', ({ roomKey, categorySlug, categoryName, difficulty }: { roomKey: string; categorySlug?: string; categoryName?: string; difficulty?: string }) => {
     rooms.setTriviaOptions(roomKey, socket, { categorySlug, categoryName, difficulty }, io);
+  });
+
+  socket.on('set-pictionary-options', ({ roomKey, timerDuration }: { roomKey: string; timerDuration: number }) => {
+    rooms.setPictionaryOptions(roomKey, socket, { timerDuration }, io);
+  });
+
+  socket.on('draw-stroke', ({ roomKey, stroke }: { roomKey: string; stroke: any }) => {
+    socket.to(roomKey).emit('draw-stroke', { stroke });
+  });
+
+  socket.on('clear-canvas', ({ roomKey }: { roomKey: string }) => {
+    socket.to(roomKey).emit('clear-canvas');
   });
 
   socket.on('report-bug', async (data) => {

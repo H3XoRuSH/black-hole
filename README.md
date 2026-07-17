@@ -14,6 +14,7 @@ A real-time, multiplayer online arcade featuring classic strategic board and pen
 - <img src="public/icons/bingo.svg" width="20" height="20" style="vertical-align: middle; margin-right: 8px;" alt=""> **Bingo**: A classic multiplayer game for 2-8 players. The host draws numbers and players daub their unique 5x5 cards. First to complete a row, column, or diagonal calls BINGO!
 - <img src="public/icons/trivia.svg" width="20" height="20" style="vertical-align: middle; margin-right: 8px;" alt=""> **Trivia**: A real-time quiz game for 1-8 players. Questions are fetched from Open Trivia DB across multiple categories and difficulties. Each answer starts fully hidden — letters are gradually revealed and the first player to type the correct answer scores a point. Most points after 10 questions wins!
 - <img src="public/icons/infinite-word-chain.svg" width="20" height="20" style="vertical-align: middle; margin-right: 8px;" alt=""> **Infinite Word Chain**: A single-player word chain game powered by AI. Guess the missing word that completes a common two-word phrase. Wrong guesses reveal more letters as hints. Each correct answer continues the chain infinitely — how many can you get?
+- <img src="public/icons/pictionary.svg" width="20" height="20" style="vertical-align: middle; margin-right: 8px;" alt=""> **Pictionary**: A cooperative drawing and guessing game for 2-4 players. Take turns drawing a secret word while everyone else guesses. Work together to score as many points as possible!
   
 ## Tech Stack
 

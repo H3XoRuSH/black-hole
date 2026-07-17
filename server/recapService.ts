@@ -12,6 +12,7 @@ function getGameName(gameId: string): string {
     case 'battleship': return 'Battleship';
     case 'checkers': return 'Checkers';
     case 'bingo': return 'Bingo';
+    case 'pictionary': return 'Pictionary';
     default: return 'Arcade Game';
   }
 }
@@ -75,6 +76,14 @@ function formatMoveHistory(gameId: string, gameState: any): string {
       if (isPromotion) desc += ' (king promotion)';
       logs.push(`Move ${index + 1}: ${playerRef(move.player)} ${desc}`);
     });
+  } else if (gameId === 'pictionary') {
+    history.forEach((move: any, index: number) => {
+      if (move.action === 'guess') {
+        logs.push(`Round ${Math.floor(index / gameState.players.length) + 1}: ${playerRef(move.player)} guessed "${move.guess}"`);
+      }
+    });
+    const pScores = gameState.players?.map((p: any) => `${p.name || 'Player ' + p.player}: ${gameState.scores?.[p.player] || 0}`).join(', ');
+    logs.push(`Final Scores: ${pScores}`);
   } else if (gameId === 'bingo') {
     let drawIdx = 0;
     history.forEach((move: any, index: number) => {
@@ -117,6 +126,11 @@ function generateMockRecap(gameId: string, gameState: any): string {
     if (capCount > 0) analysis += ` A total of ${capCount} capture${capCount > 1 ? 's' : ''} were made, steadily thinning the opponent's ranks.`;
     if (promoCount > 0) analysis += ` ${promoCount} piece${promoCount > 1 ? 's were' : ' was'} promoted to king, adding powerful ranged threats.`;
     analysis += ` The endgame came down to piece advantage and positional control, where one player outmaneuvered the other to seal the victory.`;
+  } else if (gameId === 'pictionary') {
+    const totalRounds = gameState.roundNumber || 0;
+    const wordCount = gameState.wordHistory?.length || 0;
+    const totalGuesses = (Object.values(gameState.scores || {}) as number[]).reduce((a, b) => a + b, 0);
+    analysis = `The team played ${totalRounds} rounds of cooperative Pictionary. Each player took turns drawing while the rest guessed. The team managed to correctly guess ${totalGuesses} words out of ${wordCount} total rounds.`;
   } else if (gameId === 'bingo') {
     const totalDraws = gameState.drawnNumbers?.length || 0;
     analysis = `The caller drew ${totalDraws} numbers out of 75 total. Players daubed their cards, watching their rows, columns, and diagonals fill up. The tension built with every call until one player finally completed a winning pattern and shouted BINGO!`;
