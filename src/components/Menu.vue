@@ -114,7 +114,10 @@
     </div>
 
     <!-- Filter Bar -->
-    <div class="w-full max-w-5xl px-4 sm:px-0 mb-5">
+    <div
+      class="w-full px-4 sm:px-0 mb-5 transition-[max-width] duration-300"
+      :class="viewMode === 'carousel' ? 'max-w-md' : 'max-w-5xl'"
+    >
       <div class="flex flex-wrap items-center gap-2">
         <!-- View Mode Dropdown -->
         <div class="relative">
