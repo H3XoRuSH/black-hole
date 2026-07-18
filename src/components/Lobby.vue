@@ -1,15 +1,18 @@
 <template>
-  <div class="flex flex-col items-center justify-start min-h-full bg-gray-100 dark:bg-slate-900 p-4 sm:py-12 select-none">
+  <div class="flex flex-col items-center justify-start min-h-full bg-gray-100 dark:bg-transparent p-4 sm:py-12 select-none">
     <!-- Header Section -->
-    <header class="text-center mb-4 sm:mb-6 max-w-md w-full">
-      <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+    <header class="text-center mb-4 sm:mb-6 max-w-md w-full animate-fade-in">
+      <div class="inline-flex items-center gap-2 px-3 py-1 mb-3 rounded-full glass-light dark:glass text-[11px] font-semibold uppercase tracking-[0.2em] text-indigo-600 dark:text-neon-cyan">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-neon-green animate-[neon-pulse_2s_ease-in-out_infinite]"></span>
+        Game Lobby
+      </div>
+      <h1 class="font-display text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-white mb-1 text-balance">
         {{ gameName }}
       </h1>
-      <p class="text-gray-500 dark:text-gray-400 text-sm">Game Lobby</p>
     </header>
 
     <!-- Main Card -->
-    <div class="w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200/80 dark:border-slate-700 p-5 sm:p-8 text-center">
+    <div class="w-full max-w-md glass-light dark:glass rounded-2xl p-5 sm:p-8 text-center animate-fade-in">
       <div v-if="roomKey">
         <!-- Connection Status Banner -->
         <div
@@ -22,7 +25,7 @@
           <span>{{ connectionStatus }}</span>
         </div>
 
-        <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-bold mb-3">
+        <p class="text-xs text-gray-500 dark:text-slate-400 uppercase tracking-wider font-bold mb-3">
           Share this Room Code
         </p>
 
@@ -31,12 +34,12 @@
           <!-- Copy Room Code Button -->
           <button
             @click="copyRoomKey"
-            class="relative group cursor-pointer flex-grow flex items-center justify-center bg-indigo-50 dark:bg-indigo-900/40 hover:bg-indigo-100/70 dark:hover:bg-indigo-900/60 border border-indigo-100 dark:border-indigo-800/50 rounded-2xl px-6 transition-all duration-200 h-16"
+            class="relative group cursor-pointer flex-grow flex items-center justify-center bg-indigo-50 dark:bg-neon-cyan/10 hover:bg-indigo-100/70 dark:hover:bg-neon-cyan/15 border border-indigo-100 dark:border-neon-cyan/30 dark:hover:border-neon-cyan/50 rounded-2xl px-6 transition-all duration-200 h-16 dark:hover:shadow-[0_0_20px_-6px_rgba(34,211,238,0.6)]"
           >
-            <span class="text-3xl sm:text-4xl font-extrabold font-mono tracking-widest text-indigo-600 dark:text-indigo-400">
+            <span class="text-3xl sm:text-4xl font-extrabold font-mono tracking-widest text-indigo-600 dark:text-neon-cyan">
               {{ roomKey }}
             </span>
-            <div class="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 bg-white dark:bg-slate-700 text-indigo-500 dark:text-indigo-400 rounded-lg shadow-sm border border-indigo-50 dark:border-slate-600 group-hover:scale-110 transition-transform duration-200 flex-shrink-0">
+            <div class="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 bg-white dark:bg-slate-800 text-indigo-500 dark:text-neon-cyan rounded-lg shadow-sm border border-indigo-50 dark:border-slate-600 group-hover:scale-110 transition-transform duration-200 flex-shrink-0">
               <!-- Copy Icon -->
               <svg v-if="!copied" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
@@ -48,7 +51,7 @@
             </div>
 
             <!-- Copy Tooltip -->
-            <span class="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[9px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 group-hover:text-indigo-500 dark:group-hover:text-indigo-400 transition-colors duration-200 whitespace-nowrap">
+            <span class="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[9px] font-bold uppercase tracking-wider text-gray-400 dark:text-slate-500 group-hover:text-indigo-500 dark:group-hover:text-neon-cyan transition-colors duration-200 whitespace-nowrap">
               {{ copied ? 'Copied!' : 'Click to copy' }}
             </span>
           </button>
@@ -56,7 +59,7 @@
           <!-- Show QR Code Button -->
           <button
             @click="openQRModal"
-            class="cursor-pointer flex items-center justify-center bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 border border-slate-200 dark:border-slate-600 rounded-2xl w-16 h-16 text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-100 dark:hover:border-indigo-500 shadow-sm transition-all duration-200 flex-shrink-0"
+            class="cursor-pointer flex items-center justify-center bg-white dark:bg-slate-800/70 dark:backdrop-blur hover:bg-slate-50 dark:hover:bg-slate-700/80 border border-slate-200 dark:border-slate-700/70 rounded-2xl w-16 h-16 text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-neon-cyan hover:border-indigo-100 dark:hover:border-neon-cyan/40 shadow-sm transition-all duration-200 flex-shrink-0"
             title="Show QR Code"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -66,14 +69,14 @@
         </div>
 
         <!-- Players List -->
-        <div class="mt-5 border-t border-gray-100 dark:border-slate-700 pt-5 text-left">
-          <h4 class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">Players ({{ players.length }}/{{ maxPlayers }})</h4>
+        <div class="mt-5 border-t border-gray-100 dark:border-white/10 pt-5 text-left">
+          <h4 class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400 mb-3">Players ({{ players.length }}/{{ maxPlayers }})</h4>
           <div class="space-y-2.5 mb-6 max-h-72 overflow-y-auto">
             <!-- Dynamic Players List -->
             <div
               v-for="p in players"
               :key="p.player"
-              class="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-700/50 border border-gray-100 dark:border-slate-600 rounded-xl"
+              class="flex items-center justify-between p-3 bg-gray-50 dark:bg-white/[0.04] border border-gray-100 dark:border-white/10 rounded-xl transition-colors dark:hover:bg-white/[0.07]"
             >
               <div class="flex items-center space-x-3 min-w-0 flex-shrink">
                 <div
@@ -91,24 +94,24 @@
                         @blur="submitRename"
                         @keyup.escape="cancelRename"
                         ref="nameInput"
-                        class="text-sm font-medium text-gray-800 dark:text-gray-200 bg-white dark:bg-slate-600 border border-gray-300 dark:border-slate-500 rounded-lg px-2 py-1 w-28 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                        class="text-sm font-medium text-gray-800 dark:text-white bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg px-2 py-1 w-28 focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:focus:ring-neon-cyan"
                         maxlength="10"
                         autofocus
                       />
                     </template>
                     <template v-else-if="p.isAI">
-                      <p class="text-sm font-medium text-gray-800 dark:text-gray-200 truncate max-w-[120px]">
+                      <p class="text-sm font-medium text-gray-800 dark:text-slate-100 truncate max-w-[120px]">
                         Computer
                       </p>
                     </template>
                     <template v-else>
-                      <p class="text-sm font-medium text-gray-800 dark:text-gray-200 truncate max-w-[120px]">
+                      <p class="text-sm font-medium text-gray-800 dark:text-slate-100 truncate max-w-[120px]">
                         {{ p.name || (p.player === 1 ? 'Host' : `Player ${p.player}`) }}
                       </p>
                       <button
                         v-if="p.id === socket?.id"
                         @click="startEditing"
-                        class="p-1 text-gray-400 dark:text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 rounded-lg transition-colors cursor-pointer flex-shrink-0"
+                        class="p-1 text-gray-400 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-neon-cyan hover:bg-indigo-50 dark:hover:bg-neon-cyan/10 rounded-lg transition-colors cursor-pointer flex-shrink-0"
                         title="Change name"
                       >
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -116,9 +119,9 @@
                         </svg>
                       </button>
                     </template>
-                    <span v-if="p.id === socket?.id" class="text-[10px] text-gray-400 dark:text-gray-500 font-medium flex-shrink-0">(You)</span>
+                    <span v-if="p.id === socket?.id" class="text-[10px] text-gray-400 dark:text-slate-500 font-medium flex-shrink-0">(You)</span>
                   </div>
-                  <p class="text-[10px] text-gray-500 dark:text-gray-400">Player {{ p.player }}</p>
+                  <p class="text-[10px] text-gray-500 dark:text-slate-400">Player {{ p.player }}</p>
                 </div>
                </div>
                <div>
@@ -127,7 +130,7 @@
                      <select
                        :value="p.difficulty || 'hard'"
                        @change="changeDifficulty($event)"
-                       class="text-xs font-semibold py-1 px-2.5 bg-white dark:bg-slate-600 border border-gray-300 dark:border-slate-500 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer dark:text-gray-200"
+                       class="text-xs font-semibold py-1 px-2.5 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-neon-cyan cursor-pointer dark:text-slate-100"
                      >
                        <option value="easy">Easy</option>
                        <option value="medium">Medium</option>
@@ -176,10 +179,10 @@
              <div
                v-for="i in Math.max(0, maxPlayers - players.length)"
                :key="'waiting-' + i"
-               class="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-700/30 border border-gray-100 dark:border-slate-600/50 border-dashed rounded-xl text-gray-400 dark:text-gray-500"
+               class="flex items-center justify-between p-3 bg-gray-50 dark:bg-white/[0.02] border border-gray-100 dark:border-white/10 border-dashed rounded-xl text-gray-400 dark:text-slate-500"
              >
                <div class="flex items-center space-x-3">
-                 <div class="w-8 h-8 rounded-full bg-gray-100 dark:bg-slate-700 border border-dashed border-gray-300 dark:border-slate-500 flex items-center justify-center text-gray-400 dark:text-gray-500 text-sm">
+                 <div class="w-8 h-8 rounded-full bg-gray-100 dark:bg-white/5 border border-dashed border-gray-300 dark:border-slate-600 flex items-center justify-center text-gray-400 dark:text-slate-500 text-sm">
                    ?
                  </div>
                  <div>
@@ -191,7 +194,7 @@
                  <button
                    v-if="isHost && players.length === 1 && supportsAI"
                    @click="addAIOpponent('hard')"
-                   class="text-xs font-bold py-1.5 px-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-all duration-200 cursor-pointer shadow-sm active:scale-95 flex items-center gap-1.5"
+                   class="text-xs font-bold py-1.5 px-3 bg-indigo-600 hover:bg-indigo-700 dark:bg-neon-cyan dark:hover:bg-cyan-300 dark:text-slate-950 text-white rounded-lg transition-all duration-200 cursor-pointer shadow-sm dark:shadow-[0_0_16px_-4px_rgba(34,211,238,0.7)] active:scale-95 flex items-center gap-1.5"
                  >
                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
                      <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
@@ -203,26 +206,26 @@
           </div>
 
           <!-- Trivia Options (host only) -->
-          <div v-if="gameId === 'trivia' && isHost" class="pt-4 border-t border-gray-100 dark:border-slate-700">
-            <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Trivia Settings</h4>
+          <div v-if="gameId === 'trivia' && isHost" class="pt-4 border-t border-gray-100 dark:border-white/10">
+            <h4 class="text-sm font-semibold text-gray-700 dark:text-slate-200 mb-3">Trivia Settings</h4>
             <div class="flex gap-2 mb-2">
               <div class="flex-1">
-                <label class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1 block">Category</label>
+                <label class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400 mb-1 block">Category</label>
                 <select
                   v-model="triviaCategory"
                   @change="updateTriviaOptions"
-                  class="w-full text-xs font-semibold py-2 px-3 bg-white dark:bg-slate-600 border border-gray-300 dark:border-slate-500 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer dark:text-gray-200"
+                  class="w-full text-xs font-semibold py-2 px-3 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-neon-cyan cursor-pointer dark:text-slate-100"
                 >
                   <option :value="null">Any Category</option>
                   <option v-for="cat in categories" :key="cat.slug" :value="cat.slug">{{ cat.name }}</option>
                 </select>
               </div>
               <div class="flex-1">
-                <label class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1 block">Difficulty</label>
+                <label class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400 mb-1 block">Difficulty</label>
                 <select
                   v-model="triviaDifficulty"
                   @change="updateTriviaOptions"
-                  class="w-full text-xs font-semibold py-2 px-3 bg-white dark:bg-slate-600 border border-gray-300 dark:border-slate-500 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer dark:text-gray-200"
+                  class="w-full text-xs font-semibold py-2 px-3 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-neon-cyan cursor-pointer dark:text-slate-100"
                 >
                   <option value="">Any Difficulty</option>
                   <option value="easy">Easy</option>
@@ -234,15 +237,15 @@
           </div>
 
           <!-- Pictionary Options (host only) -->
-          <div v-if="gameId === 'pictionary' && isHost" class="pt-4 border-t border-gray-100 dark:border-slate-700">
-            <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Timer Settings</h4>
+          <div v-if="gameId === 'pictionary' && isHost" class="pt-4 border-t border-gray-100 dark:border-white/10">
+            <h4 class="text-sm font-semibold text-gray-700 dark:text-slate-200 mb-3">Timer Settings</h4>
             <div class="flex gap-2 mb-2">
               <div class="flex-1">
-                <label class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1 block">Round Duration</label>
+                <label class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-slate-400 mb-1 block">Round Duration</label>
                 <select
                   v-model="pictionaryTimer"
                   @change="updatePictionaryOptions"
-                  class="w-full text-xs font-semibold py-2 px-3 bg-white dark:bg-slate-600 border border-gray-300 dark:border-slate-500 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer dark:text-gray-200"
+                  class="w-full text-xs font-semibold py-2 px-3 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-600 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-neon-cyan cursor-pointer dark:text-slate-100"
                 >
                   <option :value="30">30 seconds</option>
                   <option :value="60">60 seconds</option>
@@ -255,13 +258,13 @@
           </div>
 
           <!-- Toggle Ready and Start Game buttons -->
-          <div class="space-y-2.5 pt-4 border-t border-gray-100 dark:border-slate-700">
+          <div class="space-y-2.5 pt-4 border-t border-gray-100 dark:border-white/10">
             <button
               @click="toggleReady"
               class="w-full font-bold py-3 px-4 rounded-xl transition-all duration-200 shadow-sm text-sm cursor-pointer border"
               :class="isReady
                 ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-700/50 hover:bg-amber-100 dark:hover:bg-amber-900/40'
-                : 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-600'"
+                : 'bg-emerald-600 hover:bg-emerald-700 dark:bg-neon-green dark:hover:bg-emerald-400 dark:text-slate-950 text-white border-emerald-600 dark:border-transparent dark:shadow-[0_0_20px_-6px_rgba(74,222,128,0.7)]'"
             >
               {{ isReady ? 'Mark as Not Ready' : 'Mark as Ready' }}
             </button>
@@ -270,8 +273,8 @@
               v-if="isHost"
               @click="startGame"
               :disabled="!canStartGame"
-              class="w-full font-bold py-3 px-4 rounded-xl transition-all duration-200 shadow-sm text-sm text-white"
-              :class="canStartGame ? 'bg-indigo-600 hover:bg-indigo-700 cursor-pointer shadow-md' : 'bg-gray-300 dark:bg-slate-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'"
+              class="w-full font-bold py-3 px-4 rounded-xl transition-all duration-200 shadow-sm text-sm"
+              :class="canStartGame ? 'bg-indigo-600 hover:bg-indigo-700 dark:bg-neon-cyan dark:hover:bg-cyan-300 dark:text-slate-950 text-white cursor-pointer shadow-md dark:shadow-[0_0_24px_-4px_rgba(34,211,238,0.7)]' : 'bg-gray-300 dark:bg-slate-700/60 text-gray-500 dark:text-slate-500 cursor-not-allowed'"
             >
               Start Game
             </button>
@@ -287,25 +290,25 @@
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
           </div>
-          <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-2">Connection Lost</h3>
-          <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{{ connectionStatus }}</p>
+          <h3 class="text-lg font-bold text-gray-800 dark:text-white mb-2">Connection Lost</h3>
+          <p class="text-sm text-gray-600 dark:text-slate-400 leading-relaxed">{{ connectionStatus }}</p>
         </div>
         <div v-else class="mb-6">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 dark:text-gray-500 mb-4 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 dark:text-slate-500 mb-4 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
-          <p class="text-sm text-gray-500 dark:text-gray-400">No active game room detected.</p>
+          <p class="text-sm text-gray-500 dark:text-slate-400">No active game room detected.</p>
         </div>
-        <router-link to="/menu" class="inline-block bg-gray-800 hover:bg-gray-900 dark:bg-slate-600 dark:hover:bg-slate-500 text-white font-bold py-2.5 px-6 rounded-xl transition-all duration-200 mt-2">
+        <router-link to="/menu" class="inline-block bg-gray-800 hover:bg-gray-900 dark:bg-neon-cyan dark:hover:bg-cyan-300 dark:text-slate-950 text-white font-bold py-2.5 px-6 rounded-xl transition-all duration-200 mt-2 dark:shadow-[0_0_24px_-6px_rgba(34,211,238,0.7)]">
           Back to Main Menu
         </router-link>
       </div>
 
       <!-- Leave / Cancel Button (only shown if room exists) -->
-      <div v-if="roomKey" class="mt-4 sm:mt-6 pt-3 border-t border-gray-100 dark:border-slate-700/50">
+      <div v-if="roomKey" class="mt-4 sm:mt-6 pt-3 border-t border-gray-100 dark:border-white/10">
         <router-link
           to="/menu"
-          class="inline-block w-full text-gray-400 dark:text-gray-500 hover:text-rose-500 dark:hover:text-rose-400 text-xs font-semibold text-center py-2 rounded-lg transition-colors duration-200"
+          class="inline-block w-full text-gray-400 dark:text-slate-500 hover:text-rose-500 dark:hover:text-rose-400 text-xs font-semibold text-center py-2 rounded-lg transition-colors duration-200"
         >
           {{ isHost ? 'Cancel & Close Room' : 'Leave Room' }}
         </router-link>
