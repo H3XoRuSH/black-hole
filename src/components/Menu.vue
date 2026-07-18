@@ -1,26 +1,31 @@
 <template>
-  <div class="flex flex-col items-center justify-start min-h-full bg-gray-100 dark:bg-slate-900 p-4 pt-8 sm:pt-10 pb-8 select-none">
+  <div class="flex flex-col items-center justify-start min-h-full bg-gray-100 dark:bg-transparent p-4 pt-8 sm:pt-12 pb-8 select-none">
     <!-- Header Section -->
-    <header class="text-center mb-5 sm:mb-6 max-w-md w-full">
-      <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">
-        Gab's Arcade
+    <header class="text-center mb-6 sm:mb-8 max-w-2xl w-full animate-fade-in">
+      <div class="inline-flex items-center gap-2 px-3 py-1 mb-4 rounded-full glass-light dark:glass text-[11px] font-semibold uppercase tracking-[0.2em] text-indigo-600 dark:text-neon-cyan">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-neon-green animate-[neon-pulse_2s_ease-in-out_infinite]"></span>
+        Live Arcade
+      </div>
+      <h1 class="font-display text-4xl sm:text-6xl font-bold tracking-tight text-gray-900 dark:text-white mb-3 text-balance">
+        Gab's
+        <span class="bg-gradient-to-r from-neon-purple via-neon-cyan to-neon-green bg-clip-text text-transparent">Arcade</span>
       </h1>
-      <p class="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
-        Select a game to start playing with your friends.
+      <p class="text-gray-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed text-pretty">
+        Pick a game, grab a room code, and start playing with your friends.
       </p>
     </header>
 
     <!-- Join via Room Code Card -->
-    <div class="w-full max-w-md bg-white dark:bg-slate-800 border border-gray-200/80 dark:border-slate-700 rounded-2xl p-6 shadow-sm mb-5 sm:mb-6 hover:shadow-md">
+    <div class="w-full max-w-xl glass-light dark:glass rounded-2xl p-6 mb-6 sm:mb-8 transition-shadow duration-300 hover:shadow-[0_0_0_1px_rgba(34,211,238,0.25),0_20px_50px_-20px_rgba(34,211,238,0.35)] animate-fade-in">
       <div class="flex items-center space-x-2.5 mb-4">
-        <div class="p-2 bg-indigo-50 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 rounded-lg">
+        <div class="p-2 bg-indigo-50 dark:bg-neon-cyan/10 text-indigo-600 dark:text-neon-cyan rounded-lg dark:ring-1 dark:ring-neon-cyan/30">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
           </svg>
         </div>
         <div>
-          <h2 class="text-base font-bold text-gray-800 dark:text-gray-100">Join via Room Code</h2>
-          <p class="text-xs text-gray-500 dark:text-gray-400">Enter a 6-digit code to jump directly into the game</p>
+          <h2 class="text-base font-bold text-gray-800 dark:text-white">Join via Room Code</h2>
+          <p class="text-xs text-gray-500 dark:text-slate-400">Enter a 6-digit code to jump directly into the game</p>
         </div>
       </div>
 
@@ -33,13 +38,13 @@
             type="text"
             placeholder="ENTER CODE"
             maxlength="6"
-            class="w-full pl-4 pr-12 h-[52px] border border-gray-200 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-center font-mono tracking-widest text-lg placeholder:font-sans placeholder:tracking-normal placeholder:text-sm text-gray-800 dark:text-gray-200 uppercase bg-gray-50/50 dark:bg-slate-700/50"
+            class="w-full pl-4 pr-12 h-[52px] border border-gray-200 dark:border-slate-600/70 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-neon-cyan dark:focus:border-neon-cyan/50 text-center font-mono tracking-widest text-lg placeholder:font-sans placeholder:tracking-normal placeholder:text-sm text-gray-800 dark:text-white uppercase bg-gray-50/50 dark:bg-slate-900/50"
             :disabled="isValidating"
           />
           <!-- Camera Scan QR Button inside input -->
           <button
             @click="startScanner"
-            class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-indigo-600 transition-colors duration-200 cursor-pointer"
+            class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-indigo-600 dark:hover:text-neon-cyan transition-colors duration-200 cursor-pointer"
             title="Scan QR Code"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -51,7 +56,7 @@
         <button
           @click="joinRoomByCode"
           :disabled="isValidating || roomCode.length !== 6"
-           class="px-6 h-[52px] bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-bold rounded-xl shadow-sm active:scale-95 disabled:from-gray-300 disabled:to-gray-300 dark:disabled:from-slate-600 dark:disabled:to-slate-600 dark:disabled:text-slate-400 disabled:cursor-not-allowed disabled:scale-100 cursor-pointer flex items-center justify-center min-w-[120px]"
+           class="px-6 h-[52px] bg-gradient-to-r from-indigo-600 to-blue-600 dark:from-neon-cyan dark:to-blue-500 dark:text-slate-950 hover:from-indigo-700 hover:to-blue-700 text-white font-bold rounded-xl shadow-sm dark:shadow-[0_0_20px_-4px_rgba(34,211,238,0.6)] active:scale-95 disabled:from-gray-300 disabled:to-gray-300 dark:disabled:from-slate-700 dark:disabled:to-slate-700 dark:disabled:text-slate-500 dark:disabled:shadow-none disabled:cursor-not-allowed disabled:scale-100 cursor-pointer flex items-center justify-center min-w-[120px] transition-all duration-200"
         >
           <span v-if="isValidating" class="flex items-center space-x-1.5">
             <svg class="animate-spin -ml-1 mr-1 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -109,21 +114,21 @@
     </div>
 
     <!-- Filter Bar -->
-    <div class="w-full max-w-md px-4 sm:px-0 mb-4">
+    <div class="w-full max-w-5xl px-4 sm:px-0 mb-5">
       <div class="flex flex-wrap items-center gap-2">
         <!-- View Mode Dropdown -->
         <div class="relative">
           <button
             @click="showViewDropdown = !showViewDropdown"
             @blur="closeViewDropdown"
-            class="h-10 px-3 border border-gray-200 dark:border-slate-600 rounded-xl bg-gradient-to-b from-white to-gray-50/80 dark:from-slate-700 dark:to-slate-800 cursor-pointer shadow-sm flex items-center focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:text-gray-200"
+            class="h-10 px-3 border border-gray-200 dark:border-slate-700/70 rounded-xl bg-gradient-to-b from-white to-gray-50/80 dark:from-slate-800/70 dark:to-slate-900/70 dark:backdrop-blur cursor-pointer shadow-sm flex items-center focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-neon-cyan dark:text-slate-200 dark:hover:text-neon-cyan transition-colors"
           >
             <span v-html="currentViewIcon"></span>
           </button>
           <transition name="fade">
             <div
               v-if="showViewDropdown"
-              class="absolute left-0 top-full mt-1 w-40 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl shadow-xl z-50 overflow-hidden"
+              class="absolute left-0 top-full mt-2 w-40 bg-white dark:bg-slate-900/95 dark:backdrop-blur-xl border border-gray-200 dark:border-slate-700/70 rounded-xl shadow-xl dark:shadow-[0_20px_50px_-20px_rgba(0,0,0,0.8)] z-50 overflow-hidden"
             >
               <button
                 v-for="v in viewModes"
@@ -131,8 +136,8 @@
                 @mousedown.prevent="selectViewMode(v.value)"
                 class="w-full px-4 py-2.5 text-left text-sm transition-colors duration-150 cursor-pointer flex items-center space-x-3"
                 :class="viewMode === v.value
-                  ? 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-semibold'
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-600'
+                  ? 'bg-indigo-50 dark:bg-neon-cyan/10 text-indigo-700 dark:text-neon-cyan font-semibold'
+                  : 'text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800/80'
                 "
               >
                 <span v-html="v.icon" class="w-5 h-5 flex-shrink-0"></span>
@@ -143,7 +148,7 @@
         </div>
 
         <!-- Search Input -->
-        <div class="relative flex-1">
+        <div class="relative flex-1 min-w-[160px] order-last sm:order-none w-full sm:w-auto">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
@@ -151,7 +156,7 @@
             v-model="searchQuery"
             type="text"
             placeholder="Search games..."
-            class="w-full pl-10 pr-4 h-10 border border-gray-200 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm bg-white/80 dark:bg-slate-700/80 dark:text-gray-200 dark:placeholder-gray-400"
+            class="w-full pl-10 pr-4 h-10 border border-gray-200 dark:border-slate-700/70 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-neon-cyan dark:focus:border-neon-cyan/50 text-sm bg-white/80 dark:bg-slate-900/60 dark:backdrop-blur dark:text-white dark:placeholder-slate-500 transition-colors"
           />
         </div>
 
@@ -160,7 +165,7 @@
           <button
             @click="showFilterDropdown = !showFilterDropdown"
             @blur="closeFilterDropdown"
-            class="h-10 pl-3 pr-9 border border-gray-200 dark:border-slate-600 rounded-xl bg-gradient-to-b from-white to-gray-50/80 dark:from-slate-700 dark:to-slate-800 text-sm text-gray-700 dark:text-gray-300 font-medium cursor-pointer shadow-sm flex items-center focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-[100px]"
+            class="h-10 pl-3 pr-9 border border-gray-200 dark:border-slate-700/70 rounded-xl bg-gradient-to-b from-white to-gray-50/80 dark:from-slate-800/70 dark:to-slate-900/70 dark:backdrop-blur text-sm text-gray-700 dark:text-slate-200 font-medium cursor-pointer shadow-sm flex items-center focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-neon-cyan w-[100px] transition-colors"
           >
             <span class="truncate">{{ currentFilterLabel }}</span>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -170,7 +175,7 @@
           <transition name="fade">
             <div
               v-if="showFilterDropdown"
-              class="absolute right-0 top-full mt-1 w-44 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl shadow-xl z-50 overflow-hidden"
+              class="absolute right-0 top-full mt-2 w-44 bg-white dark:bg-slate-900/95 dark:backdrop-blur-xl border border-gray-200 dark:border-slate-700/70 rounded-xl shadow-xl dark:shadow-[0_20px_50px_-20px_rgba(0,0,0,0.8)] z-50 overflow-hidden"
             >
               <button
                 v-for="f in filters"
@@ -178,12 +183,12 @@
                 @mousedown.prevent="selectFilter(f.value)"
                 class="w-full px-4 py-2.5 text-left text-sm transition-colors duration-150 cursor-pointer"
                 :class="activeFilter === f.value
-                  ? 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-semibold'
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-600'
+                  ? 'bg-indigo-50 dark:bg-neon-cyan/10 text-indigo-700 dark:text-neon-cyan font-semibold'
+                  : 'text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800/80'
                 "
               >
                 <span class="flex items-center space-x-2.5">
-                  <svg v-if="activeFilter === f.value" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <svg v-if="activeFilter === f.value" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-600 dark:text-neon-cyan" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                   <span v-else class="w-4" />
@@ -198,14 +203,31 @@
     </div>
 
     <!-- Games Display Section -->
-    <main class="w-full max-w-md relative px-4 sm:px-0">
-      <component :is="activeComponent" :games="filteredGames" @select-game="handleSelectGame" />
+    <main
+      class="w-full relative px-4 sm:px-0"
+      :class="viewMode === 'carousel' ? 'max-w-md' : 'max-w-5xl'"
+    >
+      <transition name="fade" mode="out-in">
+        <component
+          :is="activeComponent"
+          :key="viewMode + activeFilter + searchQuery"
+          :games="filteredGames"
+          @select-game="handleSelectGame"
+        />
+      </transition>
+      <!-- Empty state -->
+      <div
+        v-if="filteredGames.length === 0"
+        class="text-center py-16 text-gray-500 dark:text-slate-500 text-sm"
+      >
+        No games match your search.
+      </div>
     </main>
 
     <!-- Footer -->
-    <footer class="mt-12 pb-6 text-gray-500 dark:text-gray-400 text-xs text-center flex flex-col items-center space-y-1">
+    <footer class="mt-14 pb-6 text-gray-500 dark:text-slate-500 text-xs text-center flex flex-col items-center space-y-1">
       <p>© 2026 Gab Samonte.</p>
-      <button @click="openBugReport" class="hover:text-indigo-600 dark:hover:text-indigo-400 transition cursor-pointer underline text-[11px] font-medium">
+      <button @click="openBugReport" class="hover:text-indigo-600 dark:hover:text-neon-cyan transition cursor-pointer underline text-[11px] font-medium">
         Report a Bug
       </button>
     </footer>
