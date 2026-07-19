@@ -123,7 +123,7 @@ const data: EscapeRoomData = {
       ]
     },
     {
-      id: 'chapel-1',
+      id: 'chapel-3',
       locationId: 'chapel',
       narrative: 'The lantern light falls across the chapel\'s organ bench. A concealed compartment has sprung open. Inside rests a priest\'s torn card and a small wooden mallet bearing the magistrate\'s seal. The card contains a compact piece of stage-language.',
       question: 'The card reads:\n\nGRAVE - R + L\n\nThe L is stamped at the far right edge of the card. The final object is the judge\'s wooden hammer. What five-letter word is wanted?',
