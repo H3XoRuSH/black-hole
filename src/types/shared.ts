@@ -194,6 +194,17 @@ export interface PictionaryGameState {
   moveHistory?: any[];
 }
 
+export interface SoundNote {
+  pitch?: 'C4' | 'D4' | 'E4' | 'F4' | 'G4' | 'A4' | 'B4' | 'C5' | 'low' | 'medium' | 'high';
+  dur: number;
+  rest: boolean;
+}
+
+export interface SoundPuzzle {
+  type: 'rhythm' | 'melody' | 'pitch-sequence';
+  notes: SoundNote[];
+}
+
 export interface EscapeRoomPuzzle {
   id: string;
   locationId: string;
@@ -202,6 +213,7 @@ export interface EscapeRoomPuzzle {
   answer: string;
   hints: string[];
   solved?: boolean;
+  sound?: SoundPuzzle;
 }
 
 export interface EscapeRoomLocation {
