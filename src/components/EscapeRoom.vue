@@ -32,7 +32,7 @@
       </div>
     </div>
 
-    <div class="flex-grow flex flex-col items-center justify-start w-full overflow-y-auto py-1">
+    <div class="flex-grow flex flex-col items-center justify-start w-full overflow-y-auto py-1 custom-scroll">
       <div v-if="!escaped" class="w-full max-w-xl space-y-3">
         <div
           v-if="showIntro"
@@ -442,3 +442,28 @@ export default defineComponent({
   },
 });
 </script>
+
+<style>
+.custom-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background: rgb(100 116 139 / 0.3);
+  border-radius: 999px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgb(100 116 139 / 0.5);
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .custom-scroll {
+    scrollbar-width: none;
+  }
+}
+</style>
