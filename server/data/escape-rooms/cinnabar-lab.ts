@@ -26,7 +26,7 @@ const data: EscapeRoomData = {
       question: 'The north door\'s keypad has a sticker: "CONVERT THE EIGHT-ENERGY PATTERN TO DECIMAL."\n\nThe keypad blinks, waiting.',
       answer: '150',
       hints: [
-        'Treat Awakened (active) as 1 and Slumbering (dormant) as 0. Write the bits left to right: 1 0 0 1 0 1 1 0.',
+        'The plaque says dormant shells count for nothing, active bursts for everything. Think in two states — on and off, one and zero.',
         '1 0 0 1 0 1 1 0 in binary is 128 + 16 + 4 + 2 = 150.'
       ]
     },
@@ -37,7 +37,7 @@ const data: EscapeRoomData = {
       question: 'The terminal demands a four-part passcode: "SPEAK THE GRID NUMBERS OF THE FOUR THAT OPENED THE GATE."\n\nThe cursor pulses. Four digits.',
       answer: '2697',
       hints: [
-        'The four type icons are: Fire (flame), Ice (snowflake), Ground (fissure), Fighting (fist). Find each on the grid.',
+        'The access log showed four type icons. Match a flame to Fire, a snowflake to Ice, a fissure to Ground, and a fist to Fighting on the numbered grid.',
         'Fire = 2, Ice = 6, Ground = 9, Fighting = 7. Concatenated in order: 2697.'
       ]
     },
@@ -48,7 +48,7 @@ const data: EscapeRoomData = {
       question: 'That four-letter word is the password to the encrypted directory.',
       answer: 'CALL',
       hints: [
-        'Old phone keypads map letters to digits: 2=ABC, 3=DEF, 4=GHI, 5=JKL, 6=MNO, 7=PQRS, 8=TUV, 9=WXYZ. Each press of a digit cycles to the next letter on that key.',
+        'The screen looks like an old mobile phone — the kind where you pressed a digit multiple times to cycle through letters. Key 2 cycles A-B-C, key 5 cycles J-K-L.',
         'Key 2 struck 3 times: A(1st), B(2nd), C(3rd) → C. Key 2 struck once → A. Key 5 struck 3 times: J(1st), K(2nd), L(3rd) → L. Key 5 struck 3 times → L. The word is CALL.'
       ]
     },
@@ -59,7 +59,7 @@ const data: EscapeRoomData = {
       question: 'The vault\'s biometric latch expects that final number.',
       answer: '159',
       hints: [
-        'Study how each number relates to the one before it. 4 to 9: (4 × 2) + 1 = 9. 9 to 19: (9 × 2) + 1 = 19. Does the pattern hold for every step?',
+        'A living culture doesn\'t just add — it splits and spawns. Each count doubles itself, then adds one more. Watch the pattern.',
         'The rule is n × 2 + 1. Apply it to 79: (79 × 2) + 1 = 159.'
       ]
     },
@@ -70,8 +70,8 @@ const data: EscapeRoomData = {
       question: 'The seven cries, laid end to end, sang a single word — a name shared by creator and creation alike.',
       answer: 'PSYCHIC',
       hints: [
-        'Each cry duration, in tenths of a second, maps directly to a letter position in the alphabet. An ancient script with 26 runes — the alphabet itself — hides in plain sight.',
-        '16 = P, 19 = S, 25 = Y, 3 = C, 8 = H, 9 = I, 3 = C. The word is PSYCHIC — the type of both Mew and Mewtwo.'
+        'Seven voices, each measured in tenths of a second. There are twenty-six runes in the ancient script — one for every letter of the alphabet. Each duration names a rune.',
+        '16 = P, 19 = S, 25 = Y, 3 = C, 8 = H, 9 = I, 3 = C. The word is PSYCHIC — the type shared by Mew and Mewtwo.'
       ]
     },
     {
@@ -81,7 +81,7 @@ const data: EscapeRoomData = {
       question: 'Beneath the trainer profiles, Fuji had scratched a note to himself — the combination to the specimen manifest:\n\n"Let their names decide the order. Let their arts decide the numbers. Three digits, no spaces."',
       answer: '845',
       hints: [
-        'The Pallet Town boy is Ash Ketchum — his Pikachu crackles with static. The Cerulean girl is Misty — gym leader of Water types. The Pewter man is Brock — gym leader of Rock types. Order them alphabetically.',
+        'Three strangers came to Cinnabar years ago. A boy from Pallet with lightning in his pocket. A girl from Cerulean who swam before she walked. A man from Pewter carved from the mountain. Their names, in alphabetical order, hold the sequence.',
         'Ash (Electric = 8 letters), Brock (Rock = 4 letters), Misty (Water = 5 letters). Concatenated in alphabetical order: 845.'
       ]
     },
@@ -92,18 +92,18 @@ const data: EscapeRoomData = {
       question: 'Seven jars, seven clues. Left to right, they give up a single word — one letter each.',
       answer: 'RELEASE',
       hints: [
-        'Identify each Pokémon from Dr. Fuji\'s descriptions: turtle = Squirtle, sparrow = Spearow, seed-carrier = Bulbasaur, pigeon = Pidgey, electric mouse = Pikachu, flowering lizard = Venusaur, evolution child = Eevee.',
+        'Fuji spoke in riddles to protect his specimens. A turtle, a sparrow, a seed-carrier — each one hides a letter at the depth he specified. Seven jars, seven letters.',
         'Extract the letters by position: Squirtle 5th = R, Spearow 3rd = E, Bulbasaur 3rd = L, Pidgey 5th = E, Pikachu 4th = A, Venusaur 5th = S, Eevee 1st = E. The word is RELEASE.'
       ]
     },
     {
       id: 'vault-4',
       locationId: 'containment-vault',
-      narrative: 'The master terminal hums to life as you approach. Seven Unown — the Symbol Pokémon — drift across the screen, each taking the shape of a different letter. One by one they arrange themselves into a sequence, then fade, leaving seven empty input boxes on the display.\n\nA final log entry from Dr. Fuji renders onscreen:\n\n"IF YOU HAVE TRULY FOLLOWED MY RESEARCH, YOU HOLD SEVEN KEYS. THE UNOWN WILL JUDGE WHETHER YOU ARE WORTHY OF THE EIGHTH."\n\nBelow the entry, each input box bears a cryptic label:\n\n"THE BINARY EGG\'S FIRST SPARK."\n"THE TYPING GRID\'S FINAL EDGE."\n"THE POLTERGEIST\'S SECOND TAP."\n"THE DIVIDING CELL\'S THIRD BLOOM."\n"THE SUBJECT\'S PLEA — ITS SECOND PULSE."\n"THE TRAINERS\' OPENING COUNT."\n"THE CODED WORD\'S FINAL SOUND."',
-      question: 'Seven have judged you. Speak the word they seek, and the vault will yield.',
+      narrative: 'The master terminal hums to life as you approach. Seven Unown — the Symbol Pokémon — drift across the screen, each taking the shape of a different letter. One by one they arrange themselves into a sequence, then fade, leaving seven empty input boxes on the display.\n\nA final log entry from Dr. Fuji renders onscreen:\n\n"IF YOU HAVE TRULY FOLLOWED MY RESEARCH, YOU HOLD SEVEN KEYS. THE UNOWN WILL JUDGE WHETHER YOU ARE WORTHY OF THE EIGHTH. TYPE ALL SEVEN IN ORDER — NUMBERS AND LETTERS, NO SPACES BETWEEN THEM."\n\nBelow the entry, each input box bears a cryptic label:\n\n"THE BINARY EGG\'S FIRST SPARK."\n"THE TYPING GRID\'S FINAL EDGE."\n"THE POLTERGEIST\'S SECOND TAP."\n"THE DIVIDING CELL\'S THIRD BLOOM."\n"THE SUBJECT\'S PLEA — ITS SECOND PULSE."\n"THE TRAINERS\' OPENING COUNT."\n"THE CODED WORD\'S FINAL SOUND."',
+      question: 'Seven input boxes await, one for each label. The terminal expects the seven characters typed as a single passcode — no spaces. What code opens the vault?',
       answer: '17A9S8E',
       hints: [
-        'Each cryptic label tells you which solved puzzle to look at, and which character to extract:\n• Binary egg = puzzle 1 (150) → first spark = 1st digit → 1\n• Typing grid = puzzle 2 (2697) → final edge = last digit → 7\n• Poltergeist\'s tap = puzzle 3 (CALL) → second tap = 2nd letter → A\n• Dividing cell = puzzle 4 (159) → third bloom = 3rd digit → 9\n• Subject\'s plea = puzzle 5 (PSYCHIC) → second pulse = 2nd letter → S\n• Trainers\' count = puzzle 6 (845) → opening count = 1st digit → 8\n• Coded word = puzzle 7 (RELEASE) → final sound = last letter → E',
+        'The Unown speak in echoes. "The binary egg" points to the first door you unlocked. Each label is a map back to a puzzle you\'ve already solved — extract exactly the character they describe.',
         'Concatenate the seven extracted characters in order: 1 + 7 + A + 9 + S + 8 + E = 17A9S8E.'
       ]
     }

@@ -41,7 +41,7 @@ const data: EscapeRoomData = {
       question: 'The strip is stamped:\n\nTHE ROMAN SIGN FOR FIVE\nAN INDEFINITE ARTICLE\nTHE LONELY SELF\nTHE SOUND THAT STOPS A STAGE WHISPER\n\nThe impressions sit beneath one another. The latch has six letter slots. What word is hidden in the fragments?',
       answer: 'vanish',
       hints: [
-        'The four definitions resolve to V, AN, I, and SH: a Roman five, an indefinite article, the solitary self, and a magician\'s signal for silence.',
+        'Silas worked in fragments. A Roman numeral, a small grammar word, the solitary self, and a stage whisper — each gives up a sound when you name it.',
         'Join the fragments in order: V + AN + I + SH = VANISH.'
       ]
     },
@@ -52,7 +52,7 @@ const data: EscapeRoomData = {
       question: 'On the card:\n\nEQCRGJ\n\nAround it: SILAS\n\nA line in purple ink reads: A name turns every letter; the same name returns when the road ends.\n\nWhat six-letter word is concealed?',
       answer: 'mirror',
       hints: [
-        'Treat SILAS as a repeating key, so the six key letters are S I L A S S.',
+        'The magician signed his name around the edge. His name is the key that turns every letter back to what it once was.',
         'With A=0, subtract each key value from the matching ciphertext value: E-S=M, Q-I=I, C-L=R, R-A=R, G-S=O, J-S=R. The result is MIRROR.'
       ]
     },
@@ -63,7 +63,7 @@ const data: EscapeRoomData = {
       question: 'The ladder is marked:\n\nCAGE\n[____]\nCAST\nLAST\nLOST\n\nA line beneath it reads: The missing rung is the matter the court hears. Every neighboring rung differs by one letter. What four-letter word belongs in the gap?',
       answer: 'case',
       hints: [
-        'Each neighbor changes in one position only. The completed chain is CAGE -> CASE -> CAST -> LAST -> LOST.',
+        'The ladder has only five rungs. Each step changes just one thing about the word before it — a single letter shifts, and everything else stays the same.',
         'CASE is the legal matter heard by a court.'
       ]
     },
@@ -74,29 +74,18 @@ const data: EscapeRoomData = {
       question: 'The evidence ledger is out of order:\n\n* - torn testimony\n= - court docket\n# - judicial seal\n? - exhibit ledger\n& - smudged fingerprint\n+ - inmate\'s key\n% - unsigned confession\n\nSilas has written: The marks keep nothing of their wards except the beginning.\n\nThe cabinet repeats:\n\n# % & * + = ?\n\nWhat word should the cabinet accept?',
       answer: 'justice',
       hints: [
-        'Read the opening letter of each item named after the symbol: judicial, unsigned, smudged, torn, inmate\'s, court, exhibit.',
+        'Silas replaced every label with a symbol. Each symbol keeps only one thing from its ward — the very first letter of what it stands for.',
         'The marks therefore spell J-U-S-T-I-C-E, so enter JUSTICE.'
-      ]
-    },
-    {
-      id: 'evidence-office-2',
-      locationId: 'evidence-office',
-      narrative: 'The cabinet opens a narrow drawer containing three brass tokens: a mask, a feather, and a ring. Their weights have been recorded on a slate, but the final evidence seal has been scratched blank. The objects look like props from Silas\'s act rather than anything from a murder scene.',
-      question: 'A slate records:\n\nmask + mask + feather = 17\nfeather + ring = 11\nmask + ring + ring = 13\n\nThe seal beneath them is marked:\n\n(mask x ring) + feather\n\nWhat number belongs on the seal?',
-      answer: '27',
-      hints: [
-        'Let the mask, feather, and ring be m, f, and r. The equations resolve to m=5, f=7, r=4.',
-        'The seal is (5 x 4) + 7, which is 27.'
       ]
     },
     {
       id: 'evidence-office-3',
       locationId: 'evidence-office',
-      narrative: 'The seal releases a case file bound in red thread. Three lines remain on its missing witness page, each ending at a torn edge. The same blank appears in three different grammatical positions.',
+      narrative: 'The cabinet swings open, and a case file bound in red thread slides out from the bottom shelf. Three lines remain on its missing witness page, each ending at a torn edge. The same blank appears in three different grammatical positions.',
       question: 'The page shows:\n\nEYE ______\nSTAR ______\n______ STAND\n\nSilas has left one sentence: The same unseen person belongs to every line. The court erased the name.\n\nWhat word fills all three spaces?',
       answer: 'witness',
       hints: [
-        'EYEWITNESS, STAR WITNESS, and WITNESS STAND all contain the same missing word.',
+        'The torn page ends the same way in three different places. One word fits every blank — a person the court erased from the record.',
         'That word is WITNESS.'
       ]
     },
@@ -107,7 +96,7 @@ const data: EscapeRoomData = {
       question: 'Four drawers stand from left to right. Each drawer has one color - red, blue, green, or gold - and holds one object - a key, lens, deck, or wire. No color or object repeats.\n\nThe wire is in the far-right drawer.\nThe blue drawer is immediately left of the lens.\nThe deck is somewhere left of the green drawer.\nThe key is to the right of the deck.\nThe key is not in the blue drawer.\nThe green drawer holds neither the lens nor the wire.\n\nWhich color holds the key?',
       answer: 'green',
       hints: [
-        'If blue were second, the lens would be third, forcing the deck first and the key second; the key would then be in blue, which is forbidden.',
+        'Four drawers, four colors, four objects — none repeated. The wire guards the far-right spot. Start there and work inward, one rule at a time.',
         'Blue is first, lens second, deck first, key third, and wire fourth. Green cannot be first, second, or fourth, so it is third and holds the key.'
       ]
     },
@@ -118,52 +107,30 @@ const data: EscapeRoomData = {
       question: 'The log reads:\n\nAt second bell, the guaard remained at the north gate.\nThe inner door was cllosed before the rain.\nA brass lens lay insiide the glove box.\nThe warden\'s report was befobre the judge.\nNo one saw the lantern beyond the stiair.\n\nFive words are counterfeit. Silas wrote underneath: "Find the intruder and listen to what they whisper together." What word do they spell?',
       answer: 'alibi',
       hints: [
-        'Each suspicious word contains one extra letter: guaard -> guard leaves A; cllosed -> closed leaves L; insiide -> inside leaves I; befobre -> before leaves B; stiair -> stair leaves I.',
+        'The typewriter stammered. In five places, the same key was struck twice. What letter snuck in where it doesn\'t belong?',
         'Those intruders read ALIBI.'
       ]
     },
     {
       id: 'clockwork-workshop-3',
       locationId: 'clockwork-workshop',
-      narrative: 'When the false letters are spoken aloud, a panel in the automaton\'s chest opens. Inside is a paper strip creased into three long channels, as if it was threaded through a stage prop. An arrow descends beside the channels and then climbs back.',
+      narrative: 'When the false letters are spoken aloud, a panel in the automaton\'s chest opens. Inside is a paper strip creased into three long channels, as if it was threaded through a stage prop. An arrow descends beside the channels and then climbs back. Through the automaton\'s open chest, a lantern flickers to life — its flame catches a draft and ignites sconces beyond a crack in the wall, revealing a hidden passage to the ash-covered chapel.',
       question: 'The surviving letters are:\n\nLNRTAEN\n\nThe strip has three creased channels with an arrow tracing a path that drops down one channel at a time and climbs back. Place each letter along the arrow\'s path.\n\nSilas has scrawled beneath: "The lantern reveals what the arrow hides."',
       answer: 'lantern',
       hints: [
-        'The arrow steps through the channels in order: first channel, second channel, third channel, then second channel, first channel, second channel, third channel.',
+        'The paper was threaded through a stage prop — up and down, weaving through three channels like a zigzag. Read the letters as the arrow descends and climbs.',
         'Channel 1 holds L and A. Channel 2 holds N, T, E. Channel 3 holds R and N. Reading down: LA + NTE + RN = LANTERN.'
       ]
     },
     {
       id: 'chapel-1',
       locationId: 'chapel',
-      narrative: 'The lantern\'s flame reaches the chapel foundations. A hidden door opens into the ash-covered chapel, where the blackened altar tile shines like a mirror without reflecting your face. A riddle has been scratched into it.',
-      question: 'The tile says:\n\nI borrow the prisoner\'s outline but none of his guilt.\nAt noon I kneel; at dusk I stretch.\nA candle can banish me, yet a brighter lamp may make me sharper.\nI pass beneath a door without opening it.\nSilas calls me his twin without a face.\n\nWhat six-letter companion is named?',
-      answer: 'shadow',
-      hints: [
-        'It is a silhouette that follows a body, stretches with changing light, and cannot be held.',
-        'The six-letter answer is SHADOW.'
-      ]
-    },
-    {
-      id: 'chapel-2',
-      locationId: 'chapel',
-      narrative: 'The answer makes the altar tile slide aside. Behind it, organ pipes rise around a stained-glass panel with one broken pane. Six brass numbers are etched beneath the keys, and the organ gives a single low note.',
-      question: 'A row of six brass numbers beneath the organ reads:\n\n2 - 6 - 12 - 20 - 30 - ??\n\nThe chapel\'s inscription reads: Each pane is bordered by the next two numbers. What number belongs in the broken pane?',
-      answer: '42',
-      hints: [
-        'The terms are consecutive products: 1x2, 2x3, 3x4, 4x5, 5x6.',
-        'The next is 6x7, or 42.'
-      ]
-    },
-    {
-      id: 'chapel-3',
-      locationId: 'chapel',
-      narrative: 'The new number releases a compartment in the organ bench. Inside is a priest\'s torn card and a small wooden mallet bearing the magistrate\'s seal. The card contains a compact piece of stage-language.',
+      narrative: 'The lantern light falls across the chapel\'s organ bench. A concealed compartment has sprung open. Inside rests a priest\'s torn card and a small wooden mallet bearing the magistrate\'s seal. The card contains a compact piece of stage-language.',
       question: 'The card reads:\n\nGRAVE - R + L\n\nThe L is stamped at the far right edge of the card. The final object is the judge\'s wooden hammer. What five-letter word is wanted?',
       answer: 'gavel',
       hints: [
-        'Removing R from GRAVE leaves GAVE.',
-        'Putting the card\'s far-right L after it makes GAVEL, the judge\'s hammer.'
+        'The card holds a word with a letter scratched out and another stamped at the far edge. Remove what\'s crossed out, then add what\'s pushed to the margin.',
+        'Putting the card\'s far-right L after GAVE makes GAVEL, the judge\'s hammer.'
       ]
     },
     {
@@ -173,7 +140,7 @@ const data: EscapeRoomData = {
       question: 'The key has left this rhythm, with each slash marking a pause:\n\n./.../-.-./.-/.--./.\n\nSilas wrote beside it: Short breath. Long breath. The dead telegraph still knows the way.\n\nWhat word is tapped out?',
       answer: 'escape',
       hints: [
-        'The slashes separate Morse characters: . is E, ... is S, -.-. is C, .- is A, .--. is P, and . is E.',
+        'The telegraph spoke in dots and dashes — a language with no alphabet, only rhythm. Each cluster between the pauses is one letter.',
         'Together they spell ESCAPE.'
       ]
     },
@@ -184,7 +151,7 @@ const data: EscapeRoomData = {
       question: 'The floor bears:\n\n16  3  2 13\n ? 10 11  8\n 9  6  7 12\n 4 15 14  1\n\nThe magician\'s mark says every completed row, column, and long diagonal balances to the same total. What number belongs in the blank?',
       answer: '5',
       hints: [
-        'The second row must satisfy ? + 10 + 11 + 8 = 34.',
+        'Every row, column, and diagonal balances to the same weight. Look at a row you can already see completely — that total is your target.',
         'The blank is 5; the first column, 16 + 5 + 9 + 4, confirms it.'
       ]
     },
@@ -195,8 +162,8 @@ const data: EscapeRoomData = {
       question: 'Silas\'s final card reads:\n\nThe reflection leads.\nThe cell\'s confession lends its second breath.\nThe judge\'s hammer speaks first.\nThe square\'s number points into the cabinet\'s word.\nThe escape leaves its third mark.\n\nThe iron lock has five letter slots. What word belongs in them?',
       answer: 'magic',
       hints: [
-        'The reflection puzzle answered MIRROR, so its leading letter is M. The cell confession answered VANISH, so its second letter is A; the judge\'s hammer was GAVEL, giving G.',
-        'The square answered 5, so the fifth letter of JUSTICE is I. The telegraph answer was ESCAPE, whose third letter is C. The lock word is MAGIC.'
+        'Silas left one last card. Every line in it points backward — to locks you\'ve already turned and words you\'ve already spoken.',
+        'The reflection puzzle answered MIRROR, so its leading letter is M. The cell confession answered VANISH, so its second letter is A; the judge\'s hammer was GAVEL, giving G. The square answered 5, so the fifth letter of JUSTICE is I. The telegraph answer was ESCAPE, whose third letter is C. The lock word is MAGIC.'
       ]
     }
   ]

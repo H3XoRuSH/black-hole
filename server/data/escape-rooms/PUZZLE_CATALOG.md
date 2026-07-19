@@ -41,19 +41,16 @@ heart-1: crossword clue — double definition: "tree" and "fire remains" = ASH
 heart-2: word chain — one letter changes per step: MUST→MUSK→DUSK→DUST
 heart-3: meta-puzzle — pick letters from bedroom-1, heart-1, threshold-2, heart-2, bedroom-3
 
-## Magician's Alibi (15) — Difficulty: ★★★★☆ (Hard)
+## Magician's Alibi (12) — Difficulty: ★★★★☆ (Hard)
 Morse code, magic square, rail fence cipher, logic grids, word ladders, and the toughest meta-puzzles. For experienced solvers.
 cell-17-1: word fragments — concatenate 4 crossword-style clues: V + AN + I + SH = VANISH
 cell-17-2: vigenère cipher — EQCRGJ decodes with repeating key SILAS → MIRROR
 cell-17-3: word ladder — fill the gap in CAGE→?→CAST→LAST→LOST (one letter change each step)
 evidence-office-1: symbol mapping — symbols #%&*+=? map to first letter of item names → JUSTICE
-evidence-office-2: system-of-equations — mask+mask+feather=17, feather+ring=11, mask+ring+ring=13 → solve (mask×ring)+feather
 evidence-office-3: compound word fill-in — same word fits EYE___, STAR___, ___STAND = WITNESS
 clockwork-workshop-1: logic grid — assign 4 colors + 4 objects to 4 drawers via clues
 clockwork-workshop-2: hidden word — each misspelled word has 1 extra letter, collect extras → ALIBI
 clockwork-workshop-3: rail fence zigzag — arrange LNRTAEN on 3 channels, read row-by-row → LANTERN
-chapel-1: riddle — "borrows outline but no guilt, stretches at dusk" = shadow
-chapel-2: number sequence — consecutive products 1×2, 2×3, 3×4; 5×6=30 → next 6×7=42
 chapel-3: word manipulation — GRAVE - R + L = GAVEL
 understage-1: morse code — decode ./.../-.-./.-/.--./. → ESCAPE
 understage-2: magic square — 4×4 grid missing one number (each row/col/diag=34)
@@ -86,7 +83,7 @@ heart-room-2: logic-puzzle — four plaques, exactly two tell the truth; find th
 heart-room-3: meta-puzzle — extract letters from six earlier answers (BELLKEYLAMP, SEAMS, YELLOW, JOY, WING, DUST) via caret positions → BEYOND
 
 ## Frequency
-meta-puzzle: 6 | riddle: 4 | cipher (caesar/atbash/vigenère/rail): 5 | system-of-equations: 3 | logic-grid: 4 | number-sequence: 4 | acrostic: 3 | anagram: 2 | hidden-word: 2 | number-sum: 2 | word-manipulation: 2 | letter-number: 2 | logic-puzzle: 3 | word-chain: 2 | binary-encoding: 1 | compound-word: 1 | crossword-fragment: 1 | double-definition: 1 | letter-count: 1 | letter-position-extraction: 1 | magic-square: 1 | morse-code: 1 | multi-tap-phone-keypad: 1 | number-code: 1 | pattern-recognition: 1 | periodic-table: 1 | roman-numerals: 1 | steganography: 1 | symbol-mapping: 1 | type-chart-lookup: 1 | word-ladder: 1
+meta-puzzle: 6 | riddle: 3 | cipher (caesar/atbash/vigenère/rail): 5 | system-of-equations: 2 | logic-grid: 4 | number-sequence: 3 | acrostic: 3 | anagram: 2 | hidden-word: 2 | number-sum: 2 | word-manipulation: 2 | letter-number: 2 | logic-puzzle: 3 | word-chain: 2 | binary-encoding: 1 | compound-word: 1 | crossword-fragment: 1 | double-definition: 1 | letter-count: 1 | letter-position-extraction: 1 | magic-square: 1 | morse-code: 1 | multi-tap-phone-keypad: 1 | number-code: 1 | pattern-recognition: 1 | periodic-table: 1 | roman-numerals: 1 | steganography: 1 | symbol-mapping: 1 | type-chart-lookup: 1 | word-ladder: 1
 sound-puzzle: 2 | ascii-art: 5 | shared-edge-extraction: 1
 
 ## New Capabilities (available for new rooms)

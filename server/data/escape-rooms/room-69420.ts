@@ -10,17 +10,17 @@ const data: EscapeRoomData = {
     {
       id: 'threshold',
       name: 'The Threshold',
-      description: 'A narrow entryway wallpapered in peeling lambs and faded stars. A child\'s drawings are pinned everywhere. The air smells of old crayons and something darker. Two doors lead deeper: one to the bedroom, one sealed shut.'
+      description: 'A narrow entryway wallpapered in peeling lambs and faded stars. A child\'s drawings are pinned everywhere. The air smells of old crayons and something darker. A tarnished brass number — 69420 — hangs from a single bent nail on the doorframe. Two doors lead deeper: one to the bedroom, one sealed shut.'
     },
     {
       id: 'bedroom',
       name: 'Gab\'s Bedroom',
-      description: 'A small, cold bedroom frozen in time. A race-car bed, a half-built solar-system mobile, a music box, and walls covered in crayon. In the far corner, a door has been wallpapered over — someone wanted it forgotten.'
+      description: 'A small, cold bedroom frozen in time. A race-car bed, a half-built solar-system mobile, a music box, and walls covered in crayon. The number 69420 has been scratched into the floorboards beside the bed, over and over. In the far corner, a door has been wallpapered over — someone wanted it forgotten.'
     },
     {
       id: 'heart',
       name: 'The Heart of the Room',
-      description: 'The wallpaper has been torn away to reveal a second door, and beyond it a windowless chamber. A single bare bulb swings overhead. Here Gab\'s voice is loudest, and the truth of his last night waits to be spoken aloud.'
+      description: 'The wallpaper has been torn away to reveal a second door, and beyond it a windowless chamber. A single bare bulb swings overhead. A faded case file lies on the floor — "WARD 69420 — GAB" stamped in red across the cover. Here Gab\'s voice is loudest, and the truth of his last night waits to be spoken aloud.'
     }
   ],
   puzzles: [
@@ -53,7 +53,7 @@ const data: EscapeRoomData = {
       question: '3 — 18 — 25\n\nWhat word does Gab want you to speak?',
       answer: 'CRY',
       hints: [
-        'Each number points to a letter\'s position in the alphabet.',
+        'The alphabet has twenty-six houses. Each number knocks on a different door.',
         '3 = C, 18 = R, 25 = Y.'
       ]
     },
@@ -64,7 +64,7 @@ const data: EscapeRoomData = {
       question: 'Two calendars:\n\n"I arrived" — MCMLXXIII\n"I left" — MCMLXXXVI\n\nHow old was Gab?',
       answer: '13',
       hints: [
-        'The markings are Roman numerals.',
+        'The calendars use an ancient counting system — one the Romans left everywhere they touched.',
         'MCMLXXIII = 1973. MCMLXXXVI = 1986. 1986 − 1973 = 13.'
       ]
     },
@@ -75,7 +75,7 @@ const data: EscapeRoomData = {
       question: 'Ciphertext: NAVLKPUM\nKey: HAUNT\n\nWhat is the boy\'s full name?',
       answer: 'GABYRIUS',
       hints: [
-        'Use the grid as the card instructs — key letter gives the row, cipher letter is found in that row, and the column reveals the true letter.',
+        'The card found in the desk shows a grid where each row shifts the alphabet by one letter. Follow the key HAUNT through the cipher, letter by letter.',
         'N row H = G, A row A = A, V row U = B, L row N = Y, K row T = R, P row H = I, U row A = U, M row T = S → GABYRIUS.'
       ]
     },
@@ -97,7 +97,7 @@ const data: EscapeRoomData = {
       question: 'The poem reads:\n\nDarkness fills my little room,\nEvery shadow wears his face,\nAnd though I try not to be afraid,\nThe door still opens in the night,\nHush now — he is coming up the stairs.\n\nWhat word does Gab hide?',
       answer: 'DEATH',
       hints: [
-        'An acrostic is formed from specific positions — often the starts of things.',
+        'The note says the first step is always the most important. Look at how each line of the poem begins.',
         'The first letter of each line: D, E, A, T, H.'
       ]
     },
@@ -108,7 +108,7 @@ const data: EscapeRoomData = {
       question: '"O — the breath I lost."\n\nHow many protons left me?',
       answer: '8',
       hints: [
-        'O is the chemical symbol for an element on the periodic table.',
+        'The science workbook is open to the periodic table. Oxygen — the breath we breathe — has a number all its own.',
         'O is oxygen. Its atomic number — equal to its proton count — is 8.'
       ]
     },
@@ -119,7 +119,7 @@ const data: EscapeRoomData = {
       question: 'The chart pairs each letter with the one beneath it.\n\nThe scratched word: KIZB\n\nWhat does it spell?',
       answer: 'PRAY',
       hints: [
-        'Each letter in the word swaps with the letter directly below it in the chart.',
+        'The alphabet is split in two — the first half sits above, the second half below. Each letter stares into its mirror opposite.',
         'K↔P, I↔R, Z↔A, B↔Y → PRAY.'
       ]
     },
@@ -130,7 +130,7 @@ const data: EscapeRoomData = {
       question: 'The underlined entry reads:\n\n"What\'s left of a burning tree — or the tree itself (3)."',
       answer: 'ASH',
       hints: [
-        'It is a double definition: two meanings, one word.',
+        'Some words wear two faces. A kind of tree and what the fire leaves behind share the same three-letter name.',
         'ASH — a kind of tree, and the grey powder left after fire.'
       ]
     },
@@ -141,7 +141,7 @@ const data: EscapeRoomData = {
       question: 'The scratched chain reads:\n\nMUST → MUSK → DUSK → ????\n\nGab\'s nail rests beneath the faded final link.',
       answer: 'DUST',
       hints: [
-        'Look closely at how each word differs from the one before it — only one letter changes each time.',
+        'Each word is a single thread pulled from the one before it. The chain changes one link at a time.',
         'DUSK → DUST (the K becomes a T).'
       ]
     },
@@ -152,7 +152,7 @@ const data: EscapeRoomData = {
       question: 'Gab whispers:\n\n"Take the first breath of the name locked in song,\nthe third of what fire leaves behind,\nthe second of the chamber of the dead,\nthe third of the ladder\'s ending,\nand the fourth of what the poem spells."\n\nGab waits for you to speak.',
       answer: 'GHOST',
       hints: [
-        'Each line points to an answer you have already found elsewhere in the room.',
+        'Gab scattered pieces of himself through every puzzle you\'ve solved. Each line points to a word you\'ve already spoken — take the letter at the position he\'s asking for.',
         'GABYRIUS[1] = G, ASH[3] = H, TOMB[2] = O, DUST[3] = S, DEATH[4] = T → GHOST.'
       ]
     }
