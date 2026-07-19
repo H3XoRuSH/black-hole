@@ -268,6 +268,21 @@
             </div>
           </div>
 
+          <!-- Escape Room Options (host only) -->
+          <div v-if="gameId === 'escape-room' && isHost" class="pt-4 border-t border-gray-100 dark:border-slate-700">
+            <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Escape Room</h4>
+            <div>
+              <label class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1 block">Select Room</label>
+              <select
+                v-model="selectedEscapeRoom"
+                @change="updateEscapeRoomOptions"
+                class="w-full text-xs font-semibold py-2 px-3 bg-white dark:bg-slate-600 border border-gray-300 dark:border-slate-500 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer dark:text-gray-200"
+              >
+                <option v-for="room in availableEscapeRooms" :key="room.id" :value="room.id">{{ room.name }}</option>
+              </select>
+            </div>
+          </div>
+
           <!-- Toggle Ready and Start Game buttons -->
           <div class="space-y-2.5 pt-4 border-t border-gray-100 dark:border-slate-700">
             <button
@@ -388,6 +403,7 @@ export default defineComponent({
       triviaDifficulty: '',
       pictionaryTimer: 60,
       pictionaryRounds: 2,
+      selectedEscapeRoom: 'abandoned-lab',
     };
   },
   computed: {
@@ -428,11 +444,19 @@ export default defineComponent({
         { slug: 'food_and_drink', name: 'Food & Drink' },
       ];
     },
+    availableEscapeRooms(): Array<{ id: string; name: string; description: string }> {
+      return this.initialGameState?.availableRooms || [];
+    },
   },
   watch: {
     'players.length'(newLength) {
       if (newLength >= this.maxPlayers && this.isQRModalOpen) {
         this.closeQRModal();
+      }
+    },
+    'initialGameState.selectedRoomId'(newVal) {
+      if (newVal) {
+        this.selectedEscapeRoom = newVal;
       }
     },
   },
@@ -500,6 +524,13 @@ export default defineComponent({
         roomKey: this.roomKey,
         timerDuration: this.pictionaryTimer,
         roundsPerPlayer: this.pictionaryRounds,
+      });
+    },
+    updateEscapeRoomOptions() {
+      if (!this.socket || !this.roomKey) return;
+      this.socket.emit('set-escape-room-options', {
+        roomKey: this.roomKey,
+        roomId: this.selectedEscapeRoom,
       });
     },
     toggleReady() {

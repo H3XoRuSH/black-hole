@@ -194,6 +194,52 @@ export interface PictionaryGameState {
   moveHistory?: any[];
 }
 
+export interface EscapeRoomPuzzle {
+  id: string;
+  locationId: string;
+  narrative: string;
+  question: string;
+  answer: string;
+  hints: string[];
+  solved?: boolean;
+}
+
+export interface EscapeRoomLocation {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export interface EscapeRoomData {
+  id: string;
+  name: string;
+  description: string;
+  intro: string;
+  locations: EscapeRoomLocation[];
+  puzzles: EscapeRoomPuzzle[];
+}
+
+export interface EscapeRoomGameState {
+  phase: 'playing' | 'escaped';
+  selectedRoomId: string | null;
+  roomName?: string;
+  roomDescription?: string;
+  roomIntro?: string;
+  availableRooms?: { id: string; name: string; description: string }[];
+  currentPuzzleIndex: number;
+  puzzles: EscapeRoomPuzzle[];
+  locations: EscapeRoomLocation[];
+  players: Player[];
+  winner: string;
+  totalMoves: number;
+  attemptsThisPuzzle: number;
+  hintsUsed: number;
+  maxHints: number;
+  solvedPuzzles: number[];
+  lastAction: { playerNumber: number; action: string; correct: boolean } | null;
+  moveHistory?: any[];
+}
+
 export interface InfiniteWordChainGameState {
   pairs: [string, string][];
   currentPairIndex: number;

@@ -10,6 +10,7 @@ import Bingo from '../components/Bingo.vue';
 import Trivia from '../components/Trivia.vue';
 import InfiniteWordChain from '../components/InfiniteWordChain.vue';
 import Pictionary from '../components/Pictionary.vue';
+import EscapeRoom from '../components/EscapeRoom.vue';
 import Offline from '../components/Offline.vue';
 
 const routes: Array<RouteRecordRaw> = [
@@ -150,6 +151,20 @@ const routes: Array<RouteRecordRaw> = [
     component: Battleship,
     props: true,
     meta: { title: 'Battleship - Gab\'s Arcade' },
+  },
+  {
+    path: '/escape-room/lobby',
+    name: 'EscapeRoomLobby',
+    component: Lobby,
+    props: { gameId: 'escape-room', gameName: 'Escape Room' },
+    meta: { title: 'Escape Room - Gab\'s Arcade' },
+  },
+  {
+    path: '/escape-room/game/:roomKey',
+    name: 'EscapeRoomGame',
+    component: EscapeRoom,
+    props: true,
+    meta: { title: 'Escape Room - Gab\'s Arcade' },
   },
   {
     path: '/:pathMatch(.*)*',
