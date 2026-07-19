@@ -8,6 +8,7 @@ export interface PictionaryGameState {
   wordChoices: string[];
   roundNumber: number;
   totalRounds: number;
+  roundsPerPlayer: number;
   scores: Record<number, number>;
   winner: string;
   players: Player[];
@@ -22,7 +23,6 @@ export interface PictionaryGameState {
   revealPositions: number[];
 }
 
-const ROUNDS_PER_PLAYER = 2;
 const DEFAULT_TIMER = 60;
 
 function getNextDrawer(currentPlayer: number, players: Player[]): number {
@@ -39,6 +39,7 @@ export const createInitialState = (playerId: string): PictionaryGameState => {
     wordChoices: [],
     roundNumber: 0,
     totalRounds: 0,
+    roundsPerPlayer: 2,
     scores: {},
     winner: '',
     players: [{ id: playerId, player: 1, ready: false }],
@@ -62,6 +63,7 @@ export const resetState = (players: Player[]): PictionaryGameState => {
     wordChoices: [],
     roundNumber: 0,
     totalRounds: 0,
+    roundsPerPlayer: 2,
     scores: {},
     winner: '',
     players: players.map((p) => ({ ...p, ready: false })),
@@ -82,7 +84,7 @@ export const onGameStart = (room: Room): void => {
   gameState.players.forEach((p: any) => {
     gameState.scores[p.player] = 0;
   });
-  gameState.totalRounds = gameState.players.length * ROUNDS_PER_PLAYER;
+  gameState.totalRounds = gameState.players.length * gameState.roundsPerPlayer;
   prepareRound(gameState);
 };
 

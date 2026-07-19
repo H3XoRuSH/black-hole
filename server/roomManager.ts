@@ -958,7 +958,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       broadcastGameState(roomKey, room, io);
     },
 
-    setPictionaryOptions(roomKey: string, socket: Socket, data: { timerDuration: number }, io: SocketIOServer) {
+    setPictionaryOptions(roomKey: string, socket: Socket, data: { timerDuration: number; roundsPerPlayer?: number }, io: SocketIOServer) {
       if (!rooms.has(roomKey)) return;
       const room = rooms.get(roomKey)!;
       if (room.gameId !== 'pictionary') return;
@@ -967,6 +967,10 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       const duration = Math.max(15, Math.min(180, data.timerDuration));
       room.gameState.timerDuration = duration;
       room.gameState.timeRemaining = duration;
+      if (data.roundsPerPlayer !== undefined) {
+        const rpp = Math.max(1, Math.min(10, data.roundsPerPlayer));
+        room.gameState.roundsPerPlayer = rpp;
+      }
       broadcastGameState(roomKey, room, io);
     },
 

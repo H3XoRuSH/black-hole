@@ -235,8 +235,22 @@
 
           <!-- Pictionary Options (host only) -->
           <div v-if="gameId === 'pictionary' && isHost" class="pt-4 border-t border-gray-100 dark:border-slate-700">
-            <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Timer Settings</h4>
+            <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Game Settings</h4>
             <div class="flex gap-2 mb-2">
+              <div class="flex-1">
+                <label class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1 block">Rounds Per Player</label>
+                <select
+                  v-model="pictionaryRounds"
+                  @change="updatePictionaryOptions"
+                  class="w-full text-xs font-semibold py-2 px-3 bg-white dark:bg-slate-600 border border-gray-300 dark:border-slate-500 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer dark:text-gray-200"
+                >
+                  <option :value="1">1 round</option>
+                  <option :value="2">2 rounds</option>
+                  <option :value="3">3 rounds</option>
+                  <option :value="4">4 rounds</option>
+                  <option :value="5">5 rounds</option>
+                </select>
+              </div>
               <div class="flex-1">
                 <label class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1 block">Round Duration</label>
                 <select
@@ -373,6 +387,7 @@ export default defineComponent({
       triviaCategory: null as string | null,
       triviaDifficulty: '',
       pictionaryTimer: 60,
+      pictionaryRounds: 2,
     };
   },
   computed: {
@@ -484,6 +499,7 @@ export default defineComponent({
       this.socket.emit('set-pictionary-options', {
         roomKey: this.roomKey,
         timerDuration: this.pictionaryTimer,
+        roundsPerPlayer: this.pictionaryRounds,
       });
     },
     toggleReady() {
