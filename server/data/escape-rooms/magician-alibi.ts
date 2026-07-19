@@ -79,7 +79,7 @@ const data: EscapeRoomData = {
       ]
     },
     {
-      id: 'evidence-office-3',
+      id: 'evidence-office-2',
       locationId: 'evidence-office',
       narrative: 'The cabinet swings open, and a case file bound in red thread slides out from the bottom shelf. Three lines remain on its missing witness page, each ending at a torn edge. The same blank appears in three different grammatical positions.',
       question: 'The page shows:\n\nEYE ______\nSTAR ______\n______ STAND\n\nSilas has left one sentence: The same unseen person belongs to every line. The court erased the name.\n\nWhat word fills all three spaces?',
@@ -123,7 +123,7 @@ const data: EscapeRoomData = {
       ]
     },
     {
-      id: 'chapel-3',
+      id: 'chapel-1',
       locationId: 'chapel',
       narrative: 'The lantern light falls across the chapel\'s organ bench. A concealed compartment has sprung open. Inside rests a priest\'s torn card and a small wooden mallet bearing the magistrate\'s seal. The card contains a compact piece of stage-language.',
       question: 'The card reads:\n\nGRAVE - R + L\n\nThe L is stamped at the far right edge of the card. The final object is the judge\'s wooden hammer. What five-letter word is wanted?',

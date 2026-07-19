@@ -47,14 +47,14 @@ cell-17-1: word fragments — concatenate 4 crossword-style clues: V + AN + I + 
 cell-17-2: vigenère cipher — EQCRGJ decodes with repeating key SILAS → MIRROR
 cell-17-3: word ladder — fill the gap in CAGE→?→CAST→LAST→LOST (one letter change each step)
 evidence-office-1: symbol mapping — symbols #%&*+=? map to first letter of item names → JUSTICE
-evidence-office-3: compound word fill-in — same word fits EYE___, STAR___, ___STAND = WITNESS
+evidence-office-2: compound word fill-in — same word fits EYE___, STAR___, ___STAND = WITNESS
 clockwork-workshop-1: logic grid — assign 4 colors + 4 objects to 4 drawers via clues
 clockwork-workshop-2: hidden word — each misspelled word has 1 extra letter, collect extras → ALIBI
 clockwork-workshop-3: rail fence zigzag — arrange LNRTAEN on 3 channels, read row-by-row → LANTERN
-chapel-3: word manipulation — GRAVE - R + L = GAVEL
+chapel-1: word manipulation — GRAVE - R + L = GAVEL
 understage-1: morse code — decode ./.../-.-./.-/.--./. → ESCAPE
 understage-2: magic square — 4×4 grid missing one number (each row/col/diag=34)
-understage-3: meta-puzzle — pick letters from cell-17-1, cell-17-2, chapel-3, understage-2, evidence-office-1, understage-1
+understage-3: meta-puzzle — pick letters from cell-17-1, cell-17-2, chapel-1, understage-2, evidence-office-1, understage-1
 
 ## The Cinnabar Lab (8) — Difficulty: ★★★☆☆ (Medium)
 A Team Rocket cloning facility beneath Cinnabar Island. Multi-tap phone keypad, binary encoding, type-chart lookup, and a disguised letter-number cipher. Novel mechanics keep solvers off-balance.
