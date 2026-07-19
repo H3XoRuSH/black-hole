@@ -5,7 +5,7 @@ const data: EscapeRoomData = {
   name: 'The Abandoned Lab',
   description: 'A mysterious laboratory abandoned decades ago. Solve the puzzles left behind by the missing scientists to escape!',
   difficulty: 'very-easy',
-  intro: 'You push open the rusted metal door and step inside. Dust particles dance in the faint light filtering through cracked windows. A flickering terminal on the reception desk crackles to life, displaying a message:\n\n"IF YOU ARE READING THIS, I AM ALREADY GONE. THE LAB IS LOCKED DOWN. FIND MY RESEARCH, SOLVE THE PUZZLES I LEFT BEHIND, AND ESCAPE BEFORE THEY COME BACK.\n— DR. HARRISON"\n\nThe terminal flickers and dies. You are trapped. The only way out is forward.',
+  intro: 'The emergency lights died three hours ago. You\'ve been reading Dr. Harrison\'s field journal by the flicker of a dying flashlight, piecing together what happened here. The pages are frantic: containment failures, research that crossed lines, a lockdown initiated from the inside. His last entry reads:\n\n"If someone finds this, I\'ve sealed the lab to protect what\'s outside — and what\'s inside. I\'ve left my work scattered like breadcrumbs. Follow them. Find the exit I couldn\'t reach."\n\nThe flashlight sputters out. Somewhere, a generator kicks in — the lab is still alive. And you are still inside.',
   locations: [
     {
       id: 'foyer',
@@ -15,7 +15,7 @@ const data: EscapeRoomData = {
     {
       id: 'lab',
       name: 'The Laboratory',
-      description: 'A sprawling lab filled with beakers, bubbling vials, and strange glowing substances. Diagrams of molecular structures cover the walls. A massive centrifuge hums quietly in the corner.'
+      description: 'A sprawling lab filled with beakers, bubbling vials, and strange glowing substances. Diagrams of molecular structures cover the walls, and a tattered periodic table poster hangs crookedly above the centrifuge — atomic numbers scrawled beside each symbol in faded red marker. A massive centrifuge hums quietly in the corner.'
     },
     {
       id: 'vault',
@@ -31,7 +31,7 @@ const data: EscapeRoomData = {
       question: 'A yellowed sticky note on the monitor reads: "The drawer code is my birthday, but backwards." The calendar on the wall has May 18th, 1953 circled in red — Dr. Harrison\'s birthday: 5/18/53.\n\nThe drawer\'s keypad awaits five digits.',
       answer: '35815',
       hints: [
-        'Write the birthday as digits: 5-18-53 → 51853. Now reverse it.',
+        'The calendar shows his birthday circled, and the code is that date read the other way around.',
         'Read 51853 backwards: 3, 5, 8, 1, 5 → 35815.'
       ]
     },
@@ -42,7 +42,7 @@ const data: EscapeRoomData = {
       question: 'The notebook reads:\nAlice — ★★★\nBob — ★\nCarol — ★★★★\nDave — ★★\nEve — ★★★★★\n\n"Dr. Harrison\'s lab assistant has the MOST stars. Their locker combination is: the number of letters in their name, followed by their number of stars."',
       answer: '35',
       hints: [
-        'The person with the most stars is Eve (5 stars).',
+        'Count the stars beside each name. The person with the most is Dr. Harrison\'s lab assistant.',
         'Eve has 3 letters in her name, and 5 stars. The combination is 35.'
       ]
     },
@@ -53,18 +53,18 @@ const data: EscapeRoomData = {
       question: 'The torn paper shows three equations scratched in pen:\n△ + ○ = 7\n○ + □ = 9\n□ + △ = 8\n\nThe reinforced door keypad blinks, expecting three digits.',
       answer: '345',
       hints: [
-        'Add all three equations together: 2(△ + ○ + □) = 24, so △ + ○ + □ = 12.',
+        'If you combine all three equations, you can find the value of each symbol one at a time.',
         'Since ○ + □ = 9, △ must be 3. Then ○ = 4 and □ = 5. Code: 345.'
       ]
     },
     {
       id: 'lab-1',
       locationId: 'lab',
-      narrative: 'The reinforced door clicks open. You step into a vast laboratory. Beakers bubble on hot plates and a luminescent blue liquid drips from a cracked flask overhead. On the central workbench, a dusty tablet displays a chemical puzzle.',
-      question: 'The tablet screen reads:\n"H (1) + O (8) + C (6) + K (19) + Fe (26) = LOCK"\n\n"What is the sum of the atomic numbers?"',
+      narrative: 'The reinforced door clicks open. You step into a vast laboratory. Beakers bubble on hot plates and a luminescent blue liquid drips from a cracked flask overhead. On the central workbench, a dusty tablet displays a chemical puzzle — it\'s referencing the periodic table poster above the centrifuge.',
+      question: 'The tablet screen reads:\n"H + O + C + K + Fe = LOCK"\n\n"What is the sum of the atomic numbers?"',
       answer: '60',
       hints: [
-        'Add up all the numbers in parentheses: 1 + 8 + 6 + 19 + 26.',
+        'The periodic table poster above the centrifuge has the atomic numbers you need — find each element and sum them.',
         '1 + 8 = 9, then 9 + 6 = 15, then 15 + 19 = 34, then 34 + 26 = 60.'
       ]
     },
@@ -75,7 +75,7 @@ const data: EscapeRoomData = {
       question: 'The metal bench reads:\n3 — 3 — 5 — 4 — 4 — 3 — 5 — 5 — 4 — ??\n\nA sticky note nearby says: "Count the letters. One, two, three..."',
       answer: '3',
       hints: [
-        'Count letters in number words: one(3), two(3), three(5), four(4), five(4), six(3), seven(5), eight(5), nine(4)...',
+        'Say each number out loud and count the letters in its name — "one" has 3, "two" has 3, "three" has 5...',
         '"Ten" has 3 letters. The next number in the sequence is 3.'
       ]
     },
@@ -97,7 +97,7 @@ const data: EscapeRoomData = {
       question: 'The terminal shows:\n0 — 1 — 1 — 2 — 3 — 5 — 8 — 13 — 21 — ??\n\nA note taped to the monitor reads: "Fibonacci knew the key."\n\nThe cursor pulses beside the final entry.',
       answer: '34',
       hints: [
-        'Each number is the sum of the two before it.',
+        'Look at how each pair of neighbors adds up to the next number in the chain.',
         '13 + 21 = 34.'
       ]
     },
@@ -108,8 +108,8 @@ const data: EscapeRoomData = {
       question: 'A holographic display shows:\n\nDigit 1 — The MIDDLE digit from the foyer drawer code.\nDigit 2 — The FIRST digit of the laboratory atomic sum.\nDigit 3 — The number of LETTERS in the riddle\'s answer.\nDigit 4 — The LAST digit of the Fibonacci number.\n\nThe exit keypad glows, awaiting the final sequence.',
       answer: '8634',
       hints: [
-        'Foyer drawer code was 35815 — the middle digit (3rd of 5) is 8.',
-        'Atomic sum was 60 — first digit is 6. Riddle answer "map" has 3 letters. Fibonacci was 34 — last digit is 4.'
+        'Retrace your steps through the lab. The drawer, the formula, the riddle, and the number sequence each left a digit behind.',
+        'Foyer drawer code was 35815 — the middle digit is 8. Atomic sum was 60 — first digit is 6. Riddle answer "map" has 3 letters. Fibonacci was 34 — last digit is 4. Code: 8634.'
       ]
     }
   ]
