@@ -93,9 +93,31 @@
             </div>
 
             <div class="bg-slate-100/60 dark:bg-slate-800/60 border border-slate-300/50 dark:border-slate-700/50 rounded-xl p-3 sm:p-4 mb-4">
-              <p class="text-sm text-slate-600 dark:text-slate-400 italic mb-2 leading-relaxed whitespace-pre-line">{{ currentPuzzle.narrative }}</p>
+              <template v-for="(seg, i) in splitArtSegments(currentPuzzle.narrative)" :key="'nar-'+i">
+                <pre v-if="seg.type === 'art'" class="text-sm text-slate-600 dark:text-slate-400 mb-2 font-mono leading-snug overflow-x-auto">{{ seg.content }}</pre>
+                <p v-else class="text-sm text-slate-600 dark:text-slate-400 italic mb-2 leading-relaxed whitespace-pre-line">{{ seg.content }}</p>
+              </template>
               <div class="border-t border-slate-300/50 dark:border-slate-700/30 my-3"></div>
-              <p class="text-base text-slate-800 dark:text-slate-200 whitespace-pre-line leading-relaxed">{{ currentPuzzle.question }}</p>
+              <template v-for="(seg, i) in splitArtSegments(currentPuzzle.question)" :key="'q-'+i">
+                <pre v-if="seg.type === 'art'" class="text-base text-slate-800 dark:text-slate-200 font-mono leading-snug overflow-x-auto">{{ seg.content }}</pre>
+                <p v-else class="text-base text-slate-800 dark:text-slate-200 whitespace-pre-line leading-relaxed">{{ seg.content }}</p>
+              </template>
+            </div>
+
+            <div v-if="currentPuzzle.sound" class="flex justify-center mb-4">
+              <button
+                @click="playPuzzleSound"
+                :disabled="isSoundPlaying"
+                class="bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-300 dark:disabled:bg-slate-700 disabled:text-slate-500 text-white font-medium px-4 py-2 rounded-xl transition-all duration-150 cursor-pointer active:scale-95 text-sm flex items-center space-x-1.5"
+              >
+                <svg v-if="!isSoundPlaying" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M17.95 6.05a8 8 0 010 11.9M6.5 8.8l4.7-3.5a.5.5 0 01.8.4v12.6a.5.5 0 01-.8.4l-4.7-3.5H4a1 1 0 01-1-1v-4a1 1 0 011-1h2.5z" />
+                </svg>
+                <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M17.95 6.05a8 8 0 010 11.9M6.5 8.8l4.7-3.5a.5.5 0 01.8.4v12.6a.5.5 0 01-.8.4l-4.7-3.5H4a1 1 0 01-1-1v-4a1 1 0 011-1h2.5z" />
+                </svg>
+                <span>{{ isSoundPlaying ? 'Playing...' : 'Play Sound' }}</span>
+              </button>
             </div>
 
             <div v-if="revealedHints.length > 0" class="mb-4 space-y-1.5">
@@ -228,7 +250,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed, watch } from 'vue';
+import { defineComponent, PropType, ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { Socket } from 'socket.io-client';
 import { useGame } from '../composables/useGame.js';
 import { useToast } from '../composables/useToast.js';
@@ -272,6 +294,16 @@ export default defineComponent({
     const prevSolvedCount = ref(0);
     const localHintCount = ref(0);
 
+    const audioCtx = ref<AudioContext | null>(null);
+    const isSoundPlaying = ref(false);
+    const activeOscillators: OscillatorNode[] = [];
+
+    const NOTE_FREQS: Record<string, number> = {
+      C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23,
+      G4: 392.00, A4: 440.00, B4: 493.88, C5: 523.25,
+      low: 220, medium: 440, high: 880
+    };
+
     const isHowToPlayOpen = ref(false);
     const openHowToPlay = () => {
       isHowToPlayOpen.value = true;
@@ -279,6 +311,135 @@ export default defineComponent({
     const closeHowToPlay = () => {
       isHowToPlayOpen.value = false;
     };
+
+    function stopSound() {
+      for (const osc of activeOscillators) {
+        try {
+          osc.stop();
+        } catch {
+          /* already stopped */
+        }
+      }
+      activeOscillators.length = 0;
+      isSoundPlaying.value = false;
+    }
+
+    async function playPuzzleSound() {
+      const puzzle = gameState.value.puzzles?.find((p: EscapeRoomPuzzle) => !p.solved);
+      if (!puzzle?.sound) return;
+
+      stopSound();
+
+      if (!audioCtx.value) {
+        audioCtx.value = new AudioContext();
+      }
+      if (audioCtx.value.state === 'suspended') {
+        await audioCtx.value.resume();
+      }
+
+      const ctx = audioCtx.value;
+      const { notes } = puzzle.sound;
+      let timeOffset = 0;
+
+      for (const note of notes) {
+        if (note.rest || !note.pitch) {
+          timeOffset += note.dur / 1000;
+          continue;
+        }
+        const freq = NOTE_FREQS[note.pitch];
+        if (!freq) {
+          timeOffset += note.dur / 1000;
+          continue;
+        }
+
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.value = freq;
+
+        const startTime = ctx.currentTime + timeOffset;
+        const endTime = startTime + note.dur / 1000;
+
+        gain.gain.setValueAtTime(0, startTime);
+        gain.gain.linearRampToValueAtTime(0.3, startTime + 0.015);
+        gain.gain.setValueAtTime(0.3, endTime - 0.015);
+        gain.gain.linearRampToValueAtTime(0, endTime);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(startTime);
+        osc.stop(endTime + 0.02);
+
+        activeOscillators.push(osc);
+        timeOffset += note.dur / 1000;
+      }
+
+      isSoundPlaying.value = true;
+      const totalMs = timeOffset * 1000 + 100;
+      setTimeout(() => {
+        isSoundPlaying.value = false;
+      }, totalMs);
+    }
+
+    function splitArtSegments(text: string): { type: 'text' | 'art'; content: string }[] {
+      if (!text) return [{ type: 'text', content: '' }];
+
+      const lines = text.split('\n');
+      const isArt = lines.map((line: string) => {
+        const trimmed = line.trim();
+        if (!trimmed) return false;
+        if (trimmed.includes('|')) return true;
+        const structural = (trimmed.match(/[\\/\-_.:*#@+~^\[\]{}()<>v^<>]/g) || []).length;
+        const alphanum = (trimmed.match(/[a-zA-Z0-9]/g) || []).length;
+        return structural > 0 && structural > alphanum * 2;
+      });
+
+      for (let j = 1; j < isArt.length - 1; j++) {
+        if (!isArt[j] && isArt[j - 1] && isArt[j + 1]) {
+          const alphanum = (lines[j].match(/[a-zA-Z0-9]/g) || []).length;
+          if (alphanum <= 2) {
+            isArt[j] = true;
+          }
+        }
+      }
+
+      const ranges: [number, number][] = [];
+      let i = 0;
+      while (i < isArt.length) {
+        if (isArt[i]) {
+          const start = i;
+          while (i < isArt.length && (isArt[i] || lines[i].trim() === '')) i++;
+          const artCount = isArt.slice(start, i).filter(Boolean).length;
+          if (artCount >= 2) {
+            ranges.push([start, i - 1]);
+          }
+        } else {
+          i++;
+        }
+      }
+
+      if (ranges.length === 0) return [{ type: 'text', content: text }];
+
+      const segments: { type: 'text' | 'art'; content: string }[] = [];
+      let lastEnd = -1;
+
+      for (const [start, end] of ranges) {
+        if (start > lastEnd + 1) {
+          const textLines = lines.slice(lastEnd + 1, start).join('\n').trim();
+          if (textLines) segments.push({ type: 'text', content: textLines });
+        }
+        const artLines = lines.slice(start, end + 1).join('\n');
+        segments.push({ type: 'art', content: artLines });
+        lastEnd = end;
+      }
+
+      if (lastEnd < lines.length - 1) {
+        const textLines = lines.slice(lastEnd + 1).join('\n').trim();
+        if (textLines) segments.push({ type: 'text', content: textLines });
+      }
+
+      return segments;
+    }
 
     const getPuzzleLocationName = (puzzle: EscapeRoomPuzzle): string => {
       const loc = gameState.value.locations?.find((l: EscapeRoomLocation) => l.id === puzzle.locationId);
@@ -289,6 +450,7 @@ export default defineComponent({
       () => gameState.value.solvedPuzzles?.length || 0,
       (newCount) => {
         if (newCount > prevSolvedCount.value && newCount > 0) {
+          stopSound();
           localHintCount.value = 0;
           const justSolved = gameState.value.puzzles[gameState.value.solvedPuzzles[newCount - 1]];
           if (justSolved) {
@@ -307,6 +469,18 @@ export default defineComponent({
       }
     );
 
+    onMounted(() => {
+      // no init needed
+    });
+
+    onUnmounted(() => {
+      stopSound();
+      if (audioCtx.value) {
+        audioCtx.value.close();
+        audioCtx.value = null;
+      }
+    });
+
     const game = useGame({
       socket: props.socket as any,
       player: props.player,
@@ -317,6 +491,7 @@ export default defineComponent({
       onGameState: (newState: any) => {
         gameState.value = newState;
         if (newState.totalMoves === 0 && !newState.puzzles?.length) {
+          stopSound();
           answer.value = '';
           showIntro.value = true;
           showSolvedPuzzles.value = false;
@@ -367,6 +542,9 @@ export default defineComponent({
       getPuzzleLocationName,
       locationOrder,
       localHintCount,
+      isSoundPlaying,
+      playPuzzleSound,
+      splitArtSegments,
     };
   },
   computed: {

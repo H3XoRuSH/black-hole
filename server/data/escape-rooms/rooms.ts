@@ -4,6 +4,7 @@ import pharaohsTomb from './pharaohs-tomb.js';
 import room69420 from './room-69420.js';
 import magicianAlibi from './magician-alibi.js';
 import cinnabarLab from './cinnabar-lab.js';
+import houseThatDrawsItself from './house-that-draws-itself.js';
 
 const rooms: Record<string, EscapeRoomData> = {
   'abandoned-lab': abandonedLab,
@@ -11,6 +12,7 @@ const rooms: Record<string, EscapeRoomData> = {
   'room-69420': room69420,
   'magician-alibi': magicianAlibi,
   'cinnabar-lab': cinnabarLab,
+  'house-that-draws-itself': houseThatDrawsItself,
 };
 
 export default rooms;

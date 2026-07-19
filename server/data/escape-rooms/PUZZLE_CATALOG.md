@@ -70,8 +70,35 @@ vault-2: logic grid — deduce 3 trainers' types from profiles, count letters al
 vault-3: letter-position extraction — identify 7 Pokémon from cryptic descriptions, extract specified letter positions → RELEASE
 vault-4: meta-puzzle — extract characters from all 7 earlier answers via cryptic Unown labels → 17A9S8E
 
+## The House That Draws Itself (12) — Difficulty: ★★★★★ (Extreme)
+A surreal architectural nightmare where rooms nest inside one another. Heavy use of sound puzzles, ASCII art diagrams, and a multi-step meta-puzzle. Novel shared-edge extraction mechanic debuts here.
+borrowed-entrance-1: sound-puzzle (pitch-sequence) + ascii-art — hear high/medium/low tones, match to windows on a floor-plan diagram → BELLKEYLAMP
+borrowed-entrance-2: shared-edge extraction — find the letter shared between five word pairs (STAIRS/STONE, FIREPLACE/EAVE…) → SEAMS
+borrowed-entrance-3: ascii-art — follow arrows through a directional floor plan, find the third doorway → BELL
+backstairs-1: word-chain — last two letters become first two of next: FLOOR→ORBIT→ITCH→CHIMNEY→EYE→[???]→OWLET → YELLOW
+backstairs-2: acrostic — first letter of January, October, Year → JOY
+backstairs-3: logic-puzzle — five shelves each omit one object from a set; initials of missing objects → GHOST
+between-floors-1: ascii-art — grid lookup: nail heads mark coordinates A1, D4, C1, B4 on a lettered table → WING
+between-floors-2: sound-puzzle (rhythm) — count knock groups separated by long rests: 2, 1, 3 → 213
+between-floors-3: ascii-art — nested rooms with matching bracket pairs; innermost room → CELLAR
+heart-room-1: ascii-art — 4×4 letter grid with rotating shutter mask, read visible cells at four positions → THEHOUSEWANTSYOU
+heart-room-2: logic-puzzle — four plaques, exactly two tell the truth; find the unique-answer door → DUST
+heart-room-3: meta-puzzle — extract letters from six earlier answers (BELLKEYLAMP, SEAMS, YELLOW, JOY, WING, DUST) via caret positions → BEYOND
+
 ## Frequency
-meta-puzzle: 5 | riddle: 4 | cipher (caesar/atbash/vigenère/rail): 5 | system-of-equations: 3 | logic-grid: 4 | number-sequence: 4 | acrostic: 2 | anagram: 2 | hidden-word: 2 | number-sum: 2 | word-manipulation: 2 | letter-number: 2 | binary-encoding: 1 | compound-word: 1 | crossword-fragment: 1 | double-definition: 1 | letter-count: 1 | letter-position-extraction: 1 | logic-puzzle: 1 | magic-square: 1 | morse-code: 1 | multi-tap-phone-keypad: 1 | number-code: 1 | pattern-recognition: 1 | periodic-table: 1 | roman-numerals: 1 | steganography: 1 | symbol-mapping: 1 | type-chart-lookup: 1 | word-chain: 1 | word-ladder: 1
+meta-puzzle: 6 | riddle: 4 | cipher (caesar/atbash/vigenère/rail): 5 | system-of-equations: 3 | logic-grid: 4 | number-sequence: 4 | acrostic: 3 | anagram: 2 | hidden-word: 2 | number-sum: 2 | word-manipulation: 2 | letter-number: 2 | logic-puzzle: 3 | word-chain: 2 | binary-encoding: 1 | compound-word: 1 | crossword-fragment: 1 | double-definition: 1 | letter-count: 1 | letter-position-extraction: 1 | magic-square: 1 | morse-code: 1 | multi-tap-phone-keypad: 1 | number-code: 1 | pattern-recognition: 1 | periodic-table: 1 | roman-numerals: 1 | steganography: 1 | symbol-mapping: 1 | type-chart-lookup: 1 | word-ladder: 1
+sound-puzzle: 2 | ascii-art: 5 | shared-edge-extraction: 1
+
+## New Capabilities (available for new rooms)
+
+### Sound Puzzles
+Puzzles can include an optional `sound: { type, notes }` field. The client renders a "Play Sound" button that synthesizes audio via the Web Audio API. Three types:
+- **rhythm** — tapping pattern, all notes same pitch, gaps via `rest: true`
+- **melody** — note sequence as musical clue, pitches `"C4"` through `"C5"`
+- **pitch-sequence** — low/medium/high tones, pairs with a visual reference in narrative/location description
+
+### ASCII Art
+The `question` field can contain ASCII art (box drawings, diagrams, maps) using `|`, `-`, `+`, `^`, `v`, `<`, `>` characters. The client auto-detects and renders in monospace font. No schema change needed — embed directly in the question string using `\n` line breaks.
 
 ## When generating new rooms
 Meta-puzzles are always required as the final puzzle. For the rest, prefer types with count ≤ 1. Avoid repeating ciphers, riddles, system-of-equations, logic-grids, number-sequences, acrostics, anagrams, and hidden-word.
