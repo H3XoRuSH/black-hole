@@ -180,6 +180,7 @@ export interface PictionaryGameState {
   wordChoices: string[];
   roundNumber: number;
   totalRounds: number;
+  roundsPerPlayer: number;
   scores: Record<number, number>;
   winner: string;
   players: Player[];

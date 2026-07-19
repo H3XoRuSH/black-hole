@@ -139,8 +139,8 @@ io.on('connection', (socket: Socket) => {
     rooms.setTriviaOptions(roomKey, socket, { categorySlug, categoryName, difficulty }, io);
   });
 
-  socket.on('set-pictionary-options', ({ roomKey, timerDuration }: { roomKey: string; timerDuration: number }) => {
-    rooms.setPictionaryOptions(roomKey, socket, { timerDuration }, io);
+  socket.on('set-pictionary-options', ({ roomKey, timerDuration, roundsPerPlayer }: { roomKey: string; timerDuration: number; roundsPerPlayer?: number }) => {
+    rooms.setPictionaryOptions(roomKey, socket, { timerDuration, roundsPerPlayer }, io);
   });
 
   socket.on('send-chat', ({ roomKey, text }: { roomKey: string; text: string }) => {

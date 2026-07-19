@@ -225,8 +225,8 @@
     "id": "pictionary",
     "name": "Pictionary",
     "minPlayers": 2,
-    "maxPlayers": 4,
-    "description": "A cooperative drawing and guessing game for 2-4 players. Take turns drawing a secret word while everyone else guesses. Work together to score as many points as possible!",
+    "maxPlayers": 8,
+    "description": "A cooperative drawing and guessing game for 2-8 players. Take turns drawing a secret word while everyone else guesses. Work together to score as many points as possible!",
     "route": "/pictionary/lobby",
     "status": "active",
     "color": "#6366f1",
@@ -234,7 +234,7 @@
     "rules": [
       {
         "title": "Teams Up",
-        "desc": "2 to 4 players work together. Each round, one player is the Drawer and the rest are Guessers."
+        "desc": "2 to 8 players work together. Each round, one player is the Drawer and the rest are Guessers."
       },
       {
         "title": "Drawing",
@@ -246,7 +246,7 @@
       },
       {
         "title": "Rotation",
-        "desc": "After each round, the Drawer role rotates to the next player. The game ends after everyone has drawn twice."
+        "desc": "After each round, the Drawer role rotates to the next player. The game ends after everyone has drawn the configured number of times."
       },
       {
         "title": "Winning",
