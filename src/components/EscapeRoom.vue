@@ -4,10 +4,10 @@
   >
     <div class="w-full max-w-xl flex flex-wrap items-center justify-between gap-x-2 gap-y-1 mb-2 flex-shrink-0">
       <div class="flex items-center space-x-2">
-        <span class="text-xs text-amber-400/80 font-mono tracking-wider">
+        <span class="text-sm text-amber-400/80 font-mono tracking-wider">
           {{ solvedCount }}/{{ totalPuzzles }} solved
         </span>
-        <span class="text-xs text-slate-600 font-mono">
+        <span class="text-sm text-slate-600 font-mono">
           Hints: {{ gameState.hintsUsed }}/{{ gameState.maxHints }}
         </span>
       </div>
@@ -36,17 +36,17 @@
       <div v-if="!escaped" class="w-full max-w-xl space-y-3">
         <div
           v-if="showIntro"
-          class="bg-slate-900/90 border border-amber-700/30 rounded-2xl p-4 sm:p-6 shadow-xl"
+          class="bg-white/90 dark:bg-slate-900/90 border border-amber-300/40 dark:border-amber-700/30 rounded-2xl p-4 sm:p-6 shadow-xl"
         >
           <h2 class="text-lg font-bold text-amber-400 mb-2">{{ gameState.roomName || 'Escape Room' }}</h2>
-          <p class="text-xs text-slate-400 mb-4 leading-relaxed">{{ gameState.roomDescription }}</p>
-          <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-4">
-            <p class="text-sm text-slate-300 whitespace-pre-line leading-relaxed">{{ gameState.roomIntro }}</p>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">{{ gameState.roomDescription }}</p>
+          <div class="bg-slate-100/80 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl p-4">
+            <p class="text-base text-slate-700 dark:text-slate-300 whitespace-pre-line leading-relaxed">{{ gameState.roomIntro }}</p>
           </div>
           <div class="flex justify-center mt-4">
             <button
               @click="showIntro = false"
-              class="bg-amber-600 hover:bg-amber-500 text-white font-semibold px-6 py-2.5 rounded-xl transition-all duration-150 cursor-pointer active:scale-95 text-sm"
+              class="bg-amber-600 hover:bg-amber-500 text-white font-semibold px-6 py-2.5 rounded-xl transition-all duration-150 cursor-pointer active:scale-95 text-base"
             >
               Begin
             </button>
@@ -54,15 +54,15 @@
         </div>
 
         <div v-if="!showIntro && currentLocation" class="space-y-3">
-          <div class="bg-slate-900/80 border border-slate-800 rounded-2xl px-4 py-3 shadow-lg">
+          <div class="bg-white/80 dark:bg-slate-900/80 border border-slate-300 dark:border-slate-800 rounded-2xl px-4 py-3 shadow-lg">
             <div class="flex items-center space-x-2 mb-1">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
-              <span class="text-sm font-bold text-amber-400 uppercase tracking-wider">{{ currentLocation.name }}</span>
+              <span class="text-base font-bold text-amber-400 uppercase tracking-wider">{{ currentLocation.name }}</span>
             </div>
-            <p class="text-xs text-slate-500 italic whitespace-pre-line">{{ currentLocation.description }}</p>
+            <p class="text-sm text-slate-600 dark:text-slate-500 italic whitespace-pre-line">{{ currentLocation.description }}</p>
           </div>
 
           <div class="flex items-center justify-center space-x-2">
@@ -82,30 +82,30 @@
             </div>
           </div>
 
-          <div v-if="currentPuzzle" class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl">
+          <div v-if="currentPuzzle" class="bg-white/90 dark:bg-slate-900/90 border border-slate-300 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl">
             <div class="flex items-center justify-between mb-3">
-              <h3 class="text-xs font-bold text-amber-500/70 uppercase tracking-widest">
+              <h3 class="text-sm font-bold text-amber-500/70 uppercase tracking-widest">
                 Puzzle {{ solvedCount + 1 }} of {{ totalPuzzles }}
               </h3>
-              <span class="text-xs text-slate-600 font-mono">
+              <span class="text-sm text-slate-500 dark:text-slate-600 font-mono">
                 Attempts: {{ gameState.attemptsThisPuzzle }}
               </span>
             </div>
 
-            <div class="bg-slate-800/60 border border-slate-700/50 rounded-xl p-3 sm:p-4 mb-4">
-              <p class="text-xs text-slate-400 italic mb-2 leading-relaxed whitespace-pre-line">{{ currentPuzzle.narrative }}</p>
-              <div class="border-t border-slate-700/30 my-3"></div>
-              <p class="text-sm text-slate-200 whitespace-pre-line leading-relaxed">{{ currentPuzzle.question }}</p>
+            <div class="bg-slate-100/60 dark:bg-slate-800/60 border border-slate-300/50 dark:border-slate-700/50 rounded-xl p-3 sm:p-4 mb-4">
+              <p class="text-sm text-slate-600 dark:text-slate-400 italic mb-2 leading-relaxed whitespace-pre-line">{{ currentPuzzle.narrative }}</p>
+              <div class="border-t border-slate-300/50 dark:border-slate-700/30 my-3"></div>
+              <p class="text-base text-slate-800 dark:text-slate-200 whitespace-pre-line leading-relaxed">{{ currentPuzzle.question }}</p>
             </div>
 
             <div v-if="revealedHints.length > 0" class="mb-4 space-y-1.5">
               <div
                 v-for="(hint, idx) in revealedHints"
                 :key="idx"
-                class="bg-amber-900/15 border border-amber-700/20 rounded-lg px-3 py-2 flex items-start space-x-2"
+                class="bg-amber-100/80 dark:bg-amber-900/15 border border-amber-300/40 dark:border-amber-700/20 rounded-lg px-3 py-2 flex items-start space-x-2"
               >
-                <span class="text-amber-500 font-bold text-xs flex-shrink-0 mt-px">Hint {{ idx + 1 }}:</span>
-                <span class="text-xs text-amber-300/90 leading-relaxed">{{ hint }}</span>
+                <span class="text-amber-600 dark:text-amber-500 font-bold text-sm flex-shrink-0 mt-px">Hint {{ idx + 1 }}:</span>
+                <span class="text-sm text-amber-700 dark:text-amber-300/90 leading-relaxed">{{ hint }}</span>
               </div>
             </div>
 
@@ -114,14 +114,14 @@
                 v-model="answer"
                 type="text"
                 placeholder="Type your answer..."
-                class="flex-grow bg-slate-800 border border-slate-700 rounded-xl px-3 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition-all"
+                class="flex-grow bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2.5 text-base text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition-all"
                 @keyup.enter="submitAnswer"
                 :disabled="escaped"
               />
               <button
                 @click="submitAnswer"
                 :disabled="escaped || !answer.trim()"
-                class="bg-amber-600 hover:bg-amber-500 disabled:bg-slate-700 disabled:text-slate-500 text-white font-semibold px-4 py-2.5 rounded-xl transition-all duration-150 cursor-pointer active:scale-95 text-sm flex-shrink-0"
+                class="bg-amber-600 hover:bg-amber-500 disabled:bg-slate-200 dark:disabled:bg-slate-700 disabled:text-slate-400 dark:disabled:text-slate-500 text-white font-semibold px-4 py-2.5 rounded-xl transition-all duration-150 cursor-pointer active:scale-95 text-base flex-shrink-0"
               >
                 Submit
               </button>
@@ -131,14 +131,14 @@
               <button
                 @click="requestHint"
                 :disabled="gameState.hintsUsed >= gameState.maxHints || currentPuzzleHintsRemaining === 0"
-                class="text-xs text-amber-400/80 hover:text-amber-300 disabled:text-slate-600 disabled:cursor-not-allowed transition-colors flex items-center space-x-1"
+                class="text-sm text-amber-600/80 dark:text-amber-400/80 hover:text-amber-500 dark:hover:text-amber-300 disabled:text-slate-400 dark:disabled:text-slate-600 disabled:cursor-not-allowed transition-colors flex items-center space-x-1"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                 </svg>
                 <span>{{ hintButtonText }}</span>
               </button>
-              <span class="text-xs text-slate-600 font-mono">
+              <span class="text-sm text-slate-500 dark:text-slate-600 font-mono">
                 Total attempts: {{ gameState.totalMoves }}
               </span>
             </div>
@@ -147,7 +147,7 @@
           <div v-if="solvedPuzzlesList.length > 0" class="mt-3">
             <button
               @click="showSolvedPuzzles = !showSolvedPuzzles"
-              class="w-full flex items-center justify-between bg-slate-900/60 border border-slate-800 rounded-xl px-4 py-2.5 text-xs text-slate-400 hover:text-slate-300 hover:border-slate-700 transition-colors cursor-pointer"
+              class="w-full flex items-center justify-between bg-gray-100/80 dark:bg-slate-900/60 border border-gray-300 dark:border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-gray-400 dark:hover:border-slate-700 transition-colors cursor-pointer"
             >
               <span>Previously Solved ({{ solvedPuzzlesList.length }})</span>
               <svg
@@ -159,56 +159,56 @@
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
-            <div v-if="showSolvedPuzzles" class="bg-slate-900/50 border border-slate-800 rounded-xl mt-1 divide-y divide-slate-800/50">
+            <div v-if="showSolvedPuzzles" class="bg-gray-50/80 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-800 rounded-xl mt-1 divide-y divide-gray-300/50 dark:divide-slate-800/50">
               <div
                 v-for="p in solvedPuzzlesList"
                 :key="p.id"
                 class="px-4 py-2.5"
               >
                 <div class="flex items-center justify-between mb-1">
-                  <span class="text-xs font-medium text-emerald-400">{{ getPuzzleLocationName(p) }} — Lock {{ gameState.puzzles.indexOf(p) + 1 }}</span>
-                  <span class="text-[10px] text-slate-600 font-mono">Answer: {{ p.answer }}</span>
+                  <span class="text-sm font-medium text-emerald-600 dark:text-emerald-400">{{ getPuzzleLocationName(p) }} — Lock {{ gameState.puzzles.indexOf(p) + 1 }}</span>
+                  <span class="text-xs text-slate-500 dark:text-slate-600 font-mono">Answer: {{ p.answer }}</span>
                 </div>
-                <p class="text-[11px] text-slate-500 line-clamp-2">{{ p.narrative }}</p>
+                <p class="text-xs text-slate-600 dark:text-slate-500 line-clamp-2">{{ p.narrative }}</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div v-if="!showIntro && !currentPuzzle && !escaped" class="text-center text-slate-500 py-12">
+        <div v-if="!showIntro && !currentPuzzle && !escaped" class="text-center text-slate-600 dark:text-slate-500 py-12">
           <div class="w-8 h-8 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-          <p class="text-sm">Loading puzzles...</p>
+          <p class="text-base">Loading puzzles...</p>
         </div>
       </div>
 
       <div v-if="escaped" class="w-full max-w-xl">
-        <div class="bg-slate-900/90 border border-amber-700/30 rounded-2xl p-6 sm:p-8 shadow-xl text-center">
+        <div class="bg-white/90 dark:bg-slate-900/90 border border-amber-300/40 dark:border-amber-700/30 rounded-2xl p-6 sm:p-8 shadow-xl text-center">
           <div class="text-6xl mb-4">&#x1F513;</div>
           <h2 class="text-2xl font-bold text-amber-400 mb-2">You Escaped!</h2>
-          <p class="text-sm text-slate-400 mb-6">The team solved all {{ totalPuzzles }} puzzles and escaped "{{ gameState.roomName }}"!</p>
+          <p class="text-base text-slate-500 dark:text-slate-400 mb-6">The team solved all {{ totalPuzzles }} puzzles and escaped "{{ gameState.roomName }}"!</p>
 
-          <div class="bg-slate-800/60 border border-slate-700/50 rounded-xl p-4 mb-4 text-left space-y-1.5">
-            <p class="text-xs text-slate-500 uppercase tracking-wider mb-2">Puzzle Summary</p>
+          <div class="bg-slate-100/60 dark:bg-slate-800/60 border border-slate-300/50 dark:border-slate-700/50 rounded-xl p-4 mb-4 text-left space-y-1.5">
+            <p class="text-sm text-slate-600 dark:text-slate-500 uppercase tracking-wider mb-2">Puzzle Summary</p>
             <p
               v-for="(p, idx) in gameState.puzzles"
               :key="p.id"
-              class="text-xs flex items-center space-x-2"
+              class="text-sm flex items-center space-x-2"
             >
-              <span :class="p.solved ? 'text-emerald-400' : 'text-red-400'">&#9679;</span>
-              <span class="text-slate-300">{{ getPuzzleLocationName(p) }} — Lock {{ idx + 1 }}</span>
-              <span class="text-slate-600">
+              <span :class="p.solved ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'">&#9679;</span>
+              <span class="text-slate-700 dark:text-slate-300">{{ getPuzzleLocationName(p) }} — Lock {{ idx + 1 }}</span>
+              <span class="text-slate-500 dark:text-slate-600">
                 {{ p.solved ? 'Solved' : 'Unsolved' }}
               </span>
             </p>
           </div>
 
-          <p class="text-xs text-slate-500 mb-4">
-            Total attempts: <span class="text-slate-300 font-bold">{{ gameState.totalMoves }}</span> |
-            Hints used: <span class="text-slate-300 font-bold">{{ gameState.hintsUsed }}/{{ gameState.maxHints }}</span>
+          <p class="text-sm text-slate-600 dark:text-slate-500 mb-4">
+            Total attempts: <span class="text-slate-700 dark:text-slate-300 font-bold">{{ gameState.totalMoves }}</span> |
+            Hints used: <span class="text-slate-700 dark:text-slate-300 font-bold">{{ gameState.hintsUsed }}/{{ gameState.maxHints }}</span>
           </p>
 
           <router-link to="/menu"
-            class="inline-block bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold py-2.5 px-8 rounded-xl shadow-md transition-all duration-200 cursor-pointer active:scale-95 text-sm"
+            class="inline-block bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-bold py-2.5 px-8 rounded-xl shadow-md transition-all duration-200 cursor-pointer active:scale-95 text-base"
           >
             Back to Menu
           </router-link>
