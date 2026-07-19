@@ -62,7 +62,7 @@
               </svg>
               <span class="text-sm font-bold text-amber-400 uppercase tracking-wider">{{ currentLocation.name }}</span>
             </div>
-            <p class="text-xs text-slate-500 italic">{{ currentLocation.description }}</p>
+            <p class="text-xs text-slate-500 italic whitespace-pre-line">{{ currentLocation.description }}</p>
           </div>
 
           <div class="flex items-center justify-center space-x-2">
@@ -93,7 +93,7 @@
             </div>
 
             <div class="bg-slate-800/60 border border-slate-700/50 rounded-xl p-3 sm:p-4 mb-4">
-              <p class="text-xs text-slate-400 italic mb-2 leading-relaxed">{{ currentPuzzle.narrative }}</p>
+              <p class="text-xs text-slate-400 italic mb-2 leading-relaxed whitespace-pre-line">{{ currentPuzzle.narrative }}</p>
               <div class="border-t border-slate-700/30 my-3"></div>
               <p class="text-sm text-slate-200 whitespace-pre-line leading-relaxed">{{ currentPuzzle.question }}</p>
             </div>

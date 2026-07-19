@@ -4,6 +4,7 @@ const data: EscapeRoomData = {
   id: 'abandoned-lab',
   name: 'The Abandoned Lab',
   description: 'A mysterious laboratory abandoned decades ago. Solve the puzzles left behind by the missing scientists to escape!',
+  difficulty: 'very-easy',
   intro: 'You push open the rusted metal door and step inside. Dust particles dance in the faint light filtering through cracked windows. A flickering terminal on the reception desk crackles to life, displaying a message:\n\n"IF YOU ARE READING THIS, I AM ALREADY GONE. THE LAB IS LOCKED DOWN. FIND MY RESEARCH, SOLVE THE PUZZLES I LEFT BEHIND, AND ESCAPE BEFORE THEY COME BACK.\n— DR. HARRISON"\n\nThe terminal flickers and dies. You are trapped. The only way out is forward.',
   locations: [
     {
@@ -27,7 +28,7 @@ const data: EscapeRoomData = {
       id: 'foyer-1',
       locationId: 'foyer',
       narrative: 'You approach the reception desk. Among scattered papers and a stone-cold coffee mug, you spot a keypad lock securing a drawer. The keys labeled 1, 3, 5, and 8 are worn smooth from repeated use.',
-      question: 'A yellowed sticky note on the monitor reads: "The drawer code is my birthday, but backwards." The calendar on the wall has May 18th, 1953 circled in red — Dr. Harrison\'s birthday: 5/18/53.\n\nEnter the 5-digit code.',
+      question: 'A yellowed sticky note on the monitor reads: "The drawer code is my birthday, but backwards." The calendar on the wall has May 18th, 1953 circled in red — Dr. Harrison\'s birthday: 5/18/53.\n\nThe drawer\'s keypad awaits five digits.',
       answer: '35815',
       hints: [
         'Write the birthday as digits: 5-18-53 → 51853. Now reverse it.',
@@ -49,7 +50,7 @@ const data: EscapeRoomData = {
       id: 'foyer-3',
       locationId: 'foyer',
       narrative: 'The locker creaks open, revealing a lab coat, safety goggles, and a torn scrap of paper with symbols. The reinforced door to the east blocks your path — its keypad expects a 3-digit code.',
-      question: 'The torn paper shows three equations scratched in pen:\n△ + ○ = 7\n○ + □ = 9\n□ + △ = 8\n\nSolve for each symbol, then enter them in order: Triangle, Circle, Square.',
+      question: 'The torn paper shows three equations scratched in pen:\n△ + ○ = 7\n○ + □ = 9\n□ + △ = 8\n\nThe reinforced door keypad blinks, expecting three digits.',
       answer: '345',
       hints: [
         'Add all three equations together: 2(△ + ○ + □) = 24, so △ + ○ + □ = 12.',
@@ -93,7 +94,7 @@ const data: EscapeRoomData = {
       id: 'vault-1',
       locationId: 'vault',
       narrative: 'The filing cabinet swings open, revealing blueprints for a vault door and a keycard. You swipe it at the steel door at the end of the lab. With a deep grinding sound, the vault slides open.\n\nInside, servers hum and indicator lights blink. A terminal on the central podium displays a single sequence.',
-      question: 'The terminal shows:\n0 — 1 — 1 — 2 — 3 — 5 — 8 — 13 — 21 — ??\n\nA note taped to the monitor reads: "Fibonacci knew the key."\n\nEnter the next number.',
+      question: 'The terminal shows:\n0 — 1 — 1 — 2 — 3 — 5 — 8 — 13 — 21 — ??\n\nA note taped to the monitor reads: "Fibonacci knew the key."\n\nThe cursor pulses beside the final entry.',
       answer: '34',
       hints: [
         'Each number is the sum of the two before it.',
@@ -104,7 +105,7 @@ const data: EscapeRoomData = {
       id: 'vault-2',
       locationId: 'vault',
       narrative: 'The terminal flashes green. A final message from Dr. Harrison appears:\n\n"You\'ve come far. I\'m impressed. But one lock remains — the exit. I encoded it using clues from the puzzles you just solved. Think carefully."\n\nThe exit keypad glows with four empty digits.',
-      question: 'A holographic display shows:\n\nDigit 1 — The MIDDLE digit from the foyer drawer code.\nDigit 2 — The FIRST digit of the laboratory atomic sum.\nDigit 3 — The number of LETTERS in the riddle\'s answer.\nDigit 4 — The LAST digit of the Fibonacci number.\n\nEnter the 4-digit exit code.',
+      question: 'A holographic display shows:\n\nDigit 1 — The MIDDLE digit from the foyer drawer code.\nDigit 2 — The FIRST digit of the laboratory atomic sum.\nDigit 3 — The number of LETTERS in the riddle\'s answer.\nDigit 4 — The LAST digit of the Fibonacci number.\n\nThe exit keypad glows, awaiting the final sequence.',
       answer: '8634',
       hints: [
         'Foyer drawer code was 35815 — the middle digit (3rd of 5) is 8.',

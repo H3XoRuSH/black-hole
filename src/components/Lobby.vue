@@ -271,15 +271,38 @@
           <!-- Escape Room Options (host only) -->
           <div v-if="gameId === 'escape-room' && isHost" class="pt-4 border-t border-gray-100 dark:border-slate-700">
             <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Escape Room</h4>
-            <div>
+            <div class="relative">
               <label class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1 block">Select Room</label>
-              <select
-                v-model="selectedEscapeRoom"
-                @change="updateEscapeRoomOptions"
-                class="w-full text-xs font-semibold py-2 px-3 bg-white dark:bg-slate-600 border border-gray-300 dark:border-slate-500 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer dark:text-gray-200"
+              <button
+                @click="roomDropdownOpen = !roomDropdownOpen"
+                class="w-full flex items-center justify-between text-xs font-semibold py-2 px-3 bg-white dark:bg-slate-600 border border-gray-300 dark:border-slate-500 rounded-xl shadow-sm cursor-pointer dark:text-gray-200 hover:border-gray-400 dark:hover:border-slate-400 transition-colors"
               >
-                <option v-for="room in availableEscapeRooms" :key="room.id" :value="room.id">{{ room.name }}</option>
-              </select>
+                <span class="flex items-center gap-2">
+                  <span :class="starColor(selectedRoomDifficulty)" class="text-[18px] leading-none">{{ roomStars(selectedRoomDifficulty) }}</span>
+                  <span>{{ selectedRoomName }}</span>
+                </span>
+                <svg class="w-4 h-4 text-gray-400 transition-transform" :class="{ 'rotate-180': roomDropdownOpen }" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              <div
+                v-if="roomDropdownOpen"
+                class="absolute z-20 mt-1 w-full bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl shadow-lg overflow-hidden"
+              >
+                <div
+                  v-for="room in availableEscapeRooms"
+                  :key="room.id"
+                  @click="selectRoom(room.id)"
+                  class="flex items-center gap-2 px-3 py-2.5 text-xs font-semibold cursor-pointer transition-colors"
+                  :class="room.id === selectedEscapeRoom
+                    ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300'
+                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-600'"
+                >
+                  <span :class="starColor(room.difficulty)" class="text-[18px] leading-none">{{ roomStars(room.difficulty) }}</span>
+                  <span class="text-xs">{{ room.name }}</span>
+                </div>
+              </div>
+              <div v-if="roomDropdownOpen" @click="roomDropdownOpen = false" class="fixed inset-0 z-10"></div>
             </div>
           </div>
 
@@ -404,6 +427,7 @@ export default defineComponent({
       pictionaryTimer: 60,
       pictionaryRounds: 2,
       selectedEscapeRoom: 'abandoned-lab',
+      roomDropdownOpen: false,
     };
   },
   computed: {
@@ -444,8 +468,16 @@ export default defineComponent({
         { slug: 'food_and_drink', name: 'Food & Drink' },
       ];
     },
-    availableEscapeRooms(): Array<{ id: string; name: string; description: string }> {
+    availableEscapeRooms(): Array<{ id: string; name: string; description: string; difficulty: string }> {
       return this.initialGameState?.availableRooms || [];
+    },
+    selectedRoomName(): string {
+      const room = this.availableEscapeRooms.find((r) => r.id === this.selectedEscapeRoom);
+      return room?.name || '';
+    },
+    selectedRoomDifficulty(): string {
+      const room = this.availableEscapeRooms.find((r) => r.id === this.selectedEscapeRoom);
+      return room?.difficulty || '';
     },
   },
   watch: {
@@ -526,6 +558,11 @@ export default defineComponent({
         roundsPerPlayer: this.pictionaryRounds,
       });
     },
+    selectRoom(id: string) {
+      this.selectedEscapeRoom = id;
+      this.roomDropdownOpen = false;
+      this.updateEscapeRoomOptions();
+    },
     updateEscapeRoomOptions() {
       if (!this.socket || !this.roomKey) return;
       this.socket.emit('set-escape-room-options', {
@@ -578,6 +615,37 @@ export default defineComponent({
     },
     cancelRename() {
       this.editingName = false;
+    },
+    difficultyLabel(difficulty: string): string {
+      const labels: Record<string, string> = {
+        'very-easy': 'Very Easy',
+        'easy': 'Easy',
+        'medium': 'Medium',
+        'hard': 'Hard',
+        'extreme': 'Extreme',
+      };
+      return labels[difficulty] || difficulty;
+    },
+    starColor(difficulty: string): string {
+      const colors: Record<string, string> = {
+        'very-easy': 'text-emerald-500 dark:text-emerald-400',
+        'easy': 'text-cyan-500 dark:text-cyan-400',
+        'medium': 'text-amber-500 dark:text-amber-400',
+        'hard': 'text-rose-500 dark:text-rose-400',
+        'extreme': 'text-purple-500 dark:text-purple-400',
+      };
+      return colors[difficulty] || 'text-gray-400';
+    },
+    roomStars(difficulty: string): string {
+      const count: Record<string, number> = {
+        'very-easy': 1,
+        'easy': 2,
+        'medium': 3,
+        'hard': 4,
+        'extreme': 5,
+      };
+      const n = count[difficulty] || 0;
+      return '★'.repeat(n) + '☆'.repeat(5 - n);
     },
     playerColorClasses(playerNum: number) {
       const colors = [

@@ -4,6 +4,7 @@ const data: EscapeRoomData = {
   id: 'room-69420',
   name: 'Room 69420',
   description: 'A haunted room in the abandoned Greyfield Children\'s Home, stalked by the spirit of a boy named Gab who died within its walls. Decipher his final messages to free his soul.',
+  difficulty: 'medium',
   intro: 'Room 69420 sits at the dead end of the Greyfield Children\'s Home, behind a door scarred with fingernail scratches. They say a boy named Gab died here — not quickly, and not kindly — and that some part of him never left.\n\nThe door swings open before you touch it. A cold breath carries a child\'s whisper: "...help me remember..." You step inside. The door slams shut, and the lock clicks home.\n\nTo free Gab, you must walk through his final night.',
   locations: [
     {
@@ -137,7 +138,7 @@ const data: EscapeRoomData = {
       id: 'heart-2',
       locationId: 'heart',
       narrative: 'On the floor, a chain of words has been scratched in crayon, each one almost the same as the last. The final word has been gouged out, as if the boy couldn\'t bear to finish it.',
-      question: 'The scratched chain reads:\n\nMUST → MUSK → DUSK → ????\n\nComplete the final word.',
+      question: 'The scratched chain reads:\n\nMUST → MUSK → DUSK → ????\n\nGab\'s nail rests beneath the faded final link.',
       answer: 'DUST',
       hints: [
         'Look closely at how each word differs from the one before it — only one letter changes each time.',
@@ -148,7 +149,7 @@ const data: EscapeRoomData = {
       id: 'heart-3',
       locationId: 'heart',
       narrative: 'The bare bulb flares. At the back of the chamber stands a final door with no handle and no lock — only a slot, as if for a spoken word. Gab\'s voice surrounds you, fragile and tired: \'say what I became... take what you\'ve already found...\'',
-      question: 'Gab whispers:\n\n"Take the first breath of the name locked in song,\nthe third of what fire leaves behind,\nthe second of the chamber of the dead,\nthe third of the ladder\'s ending,\nand the fourth of what the poem spells."\n\nSpeak the five-letter word.',
+      question: 'Gab whispers:\n\n"Take the first breath of the name locked in song,\nthe third of what fire leaves behind,\nthe second of the chamber of the dead,\nthe third of the ladder\'s ending,\nand the fourth of what the poem spells."\n\nGab waits for you to speak.',
       answer: 'GHOST',
       hints: [
         'Each line points to an answer you have already found elsewhere in the room.',
