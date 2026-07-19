@@ -1,25 +1,7 @@
 import type { Player, EscapeRoomGameState, EscapeRoomPuzzle, EscapeRoomData, EscapeRoomLocation, Room } from '../../src/types/shared.js';
-import { readdirSync, readFileSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
+import escapeRooms from '../data/escape-rooms/rooms.js';
 
 export type { Player, EscapeRoomGameState, EscapeRoomPuzzle, EscapeRoomData, EscapeRoomLocation, Room };
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-const ROOMS_DIR = join(__dirname, '../data/escape-rooms');
-
-function loadRooms(): Record<string, EscapeRoomData> {
-  const rooms: Record<string, EscapeRoomData> = {};
-  const files = readdirSync(ROOMS_DIR).filter((f) => f.endsWith('.json'));
-  for (const file of files) {
-    const data = JSON.parse(readFileSync(join(ROOMS_DIR, file), 'utf-8')) as EscapeRoomData;
-    rooms[data.id] = data;
-  }
-  return rooms;
-}
-
-const escapeRooms: Record<string, EscapeRoomData> = loadRooms();
 
 const MAX_GLOBAL_HINTS = 5;
 
