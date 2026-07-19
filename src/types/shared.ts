@@ -214,6 +214,7 @@ export interface EscapeRoomData {
   id: string;
   name: string;
   description: string;
+  difficulty: 'very-easy' | 'easy' | 'medium' | 'hard' | 'extreme';
   intro: string;
   locations: EscapeRoomLocation[];
   puzzles: EscapeRoomPuzzle[];
@@ -225,7 +226,7 @@ export interface EscapeRoomGameState {
   roomName?: string;
   roomDescription?: string;
   roomIntro?: string;
-  availableRooms?: { id: string; name: string; description: string }[];
+  availableRooms?: { id: string; name: string; description: string; difficulty: string }[];
   currentPuzzleIndex: number;
   puzzles: EscapeRoomPuzzle[];
   locations: EscapeRoomLocation[];

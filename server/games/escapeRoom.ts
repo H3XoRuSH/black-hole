@@ -5,11 +5,12 @@ export type { Player, EscapeRoomGameState, EscapeRoomPuzzle, EscapeRoomData, Esc
 
 const MAX_GLOBAL_HINTS = 5;
 
-export const getAvailableRooms = (): { id: string; name: string; description: string }[] => {
+export const getAvailableRooms = (): { id: string; name: string; description: string; difficulty: string }[] => {
   return Object.values(escapeRooms).map((r) => ({
     id: r.id,
     name: r.name,
     description: r.description,
+    difficulty: r.difficulty,
   }));
 };
 

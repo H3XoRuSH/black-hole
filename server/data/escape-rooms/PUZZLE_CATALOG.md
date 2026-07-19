@@ -1,6 +1,7 @@
 # Escape Room Puzzle Catalog
 
-## Abandoned Lab (8)
+## Abandoned Lab (8) — Difficulty: ★☆☆☆☆ (Very Easy)
+Straightforward number codes, basic arithmetic, and simple riddles. Ideal for first-time players.
 foyer-1: number code — reverse birthday digits 5/18/53 → 35815
 foyer-2: logic puzzle — find person with most stars, combine name length + star count
 foyer-3: system-of-equations — solve △+○=7, ○+□=9, □+△=8 for 3-digit code
@@ -10,7 +11,8 @@ lab-3: riddle — "cities but no houses, mountains but no trees" = map
 vault-1: number sequence — Fibonacci (0,1,1,2,3,5,8,13,21,?)
 vault-2: meta-puzzle — pick digits from foyer-1, lab-1, lab-3, vault-1 answers
 
-## Pharaoh's Tomb (12)
+## Pharaoh's Tomb (12) — Difficulty: ★★☆☆☆ (Easy)
+Caesar ciphers, logic grids, anagrams, and riddles with an Egyptian theme. A gentle step up.
 entrance-1: caesar cipher — shift WRPE back by 3 letters
 entrance-2: acrostic — first letter of 5 sentences → HORUS
 entrance-3: number sum — convert Egyptian symbols to numbers, add 3 cartouches
@@ -24,7 +26,8 @@ vault-1: riddle — "throne hieroglyph, wife of Osiris" = Isis
 vault-2: number sequence — gaps increase by 1 each step (0,1,2,3,4,5→+6)
 vault-3: meta-puzzle — pick digits from entrance-3, vault-1, pillar-2, vault-2
 
-## Room 69420 (12)
+## Room 69420 (12) — Difficulty: ★★★☆☆ (Medium)
+Introduces Vigenère and Atbash ciphers, steganography, and a word chain. Moderate challenge.
 threshold-1: steganography — oversized capitals in "tHe End of Lost Play" → HELP
 threshold-2: anagram — letter blocks M,T,O,B → TOMB
 threshold-3: letter-number mapping — A1Z26: 3=C, 18=R, 25=Y → CRY
@@ -38,7 +41,8 @@ heart-1: crossword clue — double definition: "tree" and "fire remains" = ASH
 heart-2: word chain — one letter changes per step: MUST→MUSK→DUSK→DUST
 heart-3: meta-puzzle — pick letters from bedroom-1, heart-1, threshold-2, heart-2, bedroom-3
 
-## Magician's Alibi (15)
+## Magician's Alibi (15) — Difficulty: ★★★★☆ (Hard)
+Morse code, magic square, rail fence cipher, logic grids, word ladders, and the toughest meta-puzzles. For experienced solvers.
 cell-17-1: word fragments — concatenate 4 crossword-style clues: V + AN + I + SH = VANISH
 cell-17-2: vigenère cipher — EQCRGJ decodes with repeating key SILAS → MIRROR
 cell-17-3: word ladder — fill the gap in CAGE→?→CAST→LAST→LOST (one letter change each step)
@@ -55,8 +59,19 @@ understage-1: morse code — decode ./.../-.-./.-/.--./. → ESCAPE
 understage-2: magic square — 4×4 grid missing one number (each row/col/diag=34)
 understage-3: meta-puzzle — pick letters from cell-17-1, cell-17-2, chapel-3, understage-2, evidence-office-1, understage-1
 
+## The Cinnabar Lab (8) — Difficulty: ★★★☆☆ (Medium)
+A Team Rocket cloning facility beneath Cinnabar Island. Multi-tap phone keypad, binary encoding, type-chart lookup, and a disguised letter-number cipher. Novel mechanics keep solvers off-balance.
+research-1: binary encoding — Poké Ball open(1)/closed(0) states → 8-bit binary to decimal 150
+research-2: type-chart lookup — 18 types in 6×3 grid numbered 1–18, map type icons to positions → 2697
+research-3: multi-tap phone keypad — Rotom keypresses: 2×3, 2×1, 5×3, 5×3 → CALL
+research-4: number sequence — mitosis ×2+1: 4, 9, 19, 39, 79, ? → 159
+vault-1: letter-number (disguised) — cry durations in tenths-of-seconds map to alphabet positions → PSYCHIC
+vault-2: logic grid — deduce 3 trainers' types from profiles, count letters alphabetically → 845
+vault-3: letter-position extraction — identify 7 Pokémon from cryptic descriptions, extract specified letter positions → RELEASE
+vault-4: meta-puzzle — extract characters from all 7 earlier answers via cryptic Unown labels → 17A9S8E
+
 ## Frequency
-meta-puzzle: 4 | riddle: 4 | cipher (caesar/atbash/vigenère/rail): 5 | system-of-equations: 3 | logic-grid: 3 | number-sequence: 3 | acrostic: 2 | anagram: 2 | hidden-word: 2 | number-sum: 2 | word-manipulation: 2 | compound-word: 1 | crossword-fragment: 1 | double-definition: 1 | letter-count: 1 | letter-number: 1 | logic-puzzle: 1 | magic-square: 1 | morse-code: 1 | number-code: 1 | pattern-recognition: 1 | periodic-table: 1 | roman-numerals: 1 | steganography: 1 | symbol-mapping: 1 | word-chain: 1 | word-ladder: 1
+meta-puzzle: 5 | riddle: 4 | cipher (caesar/atbash/vigenère/rail): 5 | system-of-equations: 3 | logic-grid: 4 | number-sequence: 4 | acrostic: 2 | anagram: 2 | hidden-word: 2 | number-sum: 2 | word-manipulation: 2 | letter-number: 2 | binary-encoding: 1 | compound-word: 1 | crossword-fragment: 1 | double-definition: 1 | letter-count: 1 | letter-position-extraction: 1 | logic-puzzle: 1 | magic-square: 1 | morse-code: 1 | multi-tap-phone-keypad: 1 | number-code: 1 | pattern-recognition: 1 | periodic-table: 1 | roman-numerals: 1 | steganography: 1 | symbol-mapping: 1 | type-chart-lookup: 1 | word-chain: 1 | word-ladder: 1
 
 ## When generating new rooms
 Meta-puzzles are always required as the final puzzle. For the rest, prefer types with count ≤ 1. Avoid repeating ciphers, riddles, system-of-equations, logic-grids, number-sequences, acrostics, anagrams, and hidden-word.

@@ -3,12 +3,14 @@ import abandonedLab from './abandoned-lab.js';
 import pharaohsTomb from './pharaohs-tomb.js';
 import room69420 from './room-69420.js';
 import magicianAlibi from './magician-alibi.js';
+import cinnabarLab from './cinnabar-lab.js';
 
 const rooms: Record<string, EscapeRoomData> = {
   'abandoned-lab': abandonedLab,
   'pharaohs-tomb': pharaohsTomb,
   'room-69420': room69420,
   'magician-alibi': magicianAlibi,
+  'cinnabar-lab': cinnabarLab,
 };
 
 export default rooms;

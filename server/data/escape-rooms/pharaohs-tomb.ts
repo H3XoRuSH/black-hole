@@ -4,6 +4,7 @@ const data: EscapeRoomData = {
   id: 'pharaohs-tomb',
   name: 'The Pharaoh\'s Tomb',
   description: 'An ancient Egyptian tomb sealed for millennia. Solve the pharaoh\'s riddles, pass the trials of the gods, and uncover the treasure within!',
+  difficulty: 'easy',
   intro: 'Your footsteps echo against ancient stone as you descend into the tomb. The air grows thick and stale with the weight of millennia. Faint torchlight flickers ahead, illuminating hieroglyphs etched into the walls. A stone slab at the entrance bears an inscription in crumbling hieroglyphs and ancient Greek:\n\n"TO THOSE WHO SEEK THE TREASURE OF PHARAOH AMENHOTEP: FOUR CHAMBERS GUARD THE PRIZE. EACH ONE TESTS THE MIND AS THE PYRAMID TESTS THE BODY. SOLVE THE RIDDLES OF THE DEAD, AND THE PATH WILL OPEN. FAIL, AND YOU WILL REST HERE FOREVERMORE."\n\nThe slab crumbles to dust at your touch. The entrance behind you seals with a thunderous BOOM. You are trapped. The only way out is forward.',
   locations: [
     {
@@ -65,7 +66,7 @@ const data: EscapeRoomData = {
       id: 'ante-1',
       locationId: 'antechamber',
       narrative: 'Four alabaster jars sit on a marble shelf — one GOLD, one GREEN, one BLUE, one RED. A scroll tied to the statue of Anubis lists four clues. "One jar contains the key to the next chamber. The others are traps."',
-      question: 'Read the clues:\n\n1. The key is in the BLUE jar.\n2. The GREEN jar is immediately to the LEFT of the key\'s jar.\n3. The RED jar is immediately to the RIGHT of the BLUE jar.\n4. The GOLD jar is at the far left.\n\nIn what POSITION (1st, 2nd, 3rd, or 4th) is the BLUE jar?',
+      question: 'A faded inscription beneath the scroll demands: "Speak the rank of the azure vessel."\n\nThe scroll is marked with four clues:\n\n1. The key is in the BLUE jar.\n2. The GREEN jar is immediately to the LEFT of the key\'s jar.\n3. The RED jar is immediately to the RIGHT of the BLUE jar.\n4. The GOLD jar is at the far left.',
       answer: '3',
       hints: [
         'Use clue 4 to place GOLD at position 1.',
@@ -109,7 +110,7 @@ const data: EscapeRoomData = {
       id: 'pillar-2',
       locationId: 'hall',
       narrative: 'A sundial is carved into the stone floor between the pillars. Its gnomon — a tall bronze obelisk — casts a shadow that moves as the torches flicker. An inscription reads: "The sun\'s shadow shrinks by half with each passing hour. Read the pattern."',
-      question: 'The sundial marks:\n\nSunrise: 128 cubits\nHour 1: 64 cubits\nHour 2: 32 cubits\nHour 3: 16 cubits\nHour 4: ?\n\nWhat is the shadow length at the FOURTH hour?',
+      question: 'The sundial marks:\n\nSunrise: 128 cubits\nHour 1: 64 cubits\nHour 2: 32 cubits\nHour 3: 16 cubits\nHour 4: ?\n\nThe stone beside the dial is engraved: "The priest who cannot name the fourth shadow shall not pass."',
       answer: '8',
       hints: [
         'Each hour, the shadow length is divided by 2.',
@@ -153,7 +154,7 @@ const data: EscapeRoomData = {
       id: 'vault-3',
       locationId: 'vault',
       narrative: 'The pharaoh\'s sarcophagus is sealed with a stone dial bearing four symbols. A final inscription glows faintly in the dark: "You have passed the trials. Now remember what you learned. The seal breaks for those who see."',
-      question: 'The stone dial has four positions, each marked with an Egyptian symbol and a clue:\n\n☥ (Ankh) — The FIRST digit of the cartouche sum from the Entrance Chamber.\n𓂀 (Eye of Horus) — The number of LETTERS in the goddess\'s name from the riddle in this vault.\n𓆼 (Lotus) — The shadow length at the FOURTH hour on the sundial.\n𓋹 (Scarab) — The LAST digit of the missing number from the dial sequence.\n\nEnter the 4-digit code.',
+      question: 'The stone dial has four positions, each marked with an Egyptian symbol and a clue:\n\n☥ (Ankh) — The FIRST digit of the cartouche sum from the Entrance Chamber.\n𓂀 (Eye of Horus) — The number of LETTERS in the goddess\'s name from the riddle in this vault.\n𓆼 (Lotus) — The shadow length at the FOURTH hour on the sundial.\n𓋹 (Scarab) — The LAST digit of the missing number from the dial sequence.\n\nThe great door waits for four digits.',
       answer: '1482',
       hints: [
         'Look back at the puzzle answers you collected. The cartouche sum was 1453.',

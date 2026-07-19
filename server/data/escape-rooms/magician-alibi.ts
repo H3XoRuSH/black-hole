@@ -4,6 +4,7 @@ const data: EscapeRoomData = {
   id: 'magician-alibi',
   name: 'The Magician\'s Alibi',
   description: 'Condemned for a magistrate\'s murder you did not commit, you have one night in Blackthorn Prison. A vanished illusionist has hidden a chain of puzzles that can expose the real culprit and open a path to freedom.',
+  difficulty: 'hard',
   intro: 'The execution bell is due at dawn. In Blackthorn Prison, your cell has been sealed since Magistrate Vale was killed, though the bloodied knife was found in another man\'s hand and your protest was buried beneath the verdict. Tonight, a deck of cards slides under the door. The ace of spades has been cut open. Inside is a note in violet ink:\n\nI performed at Vale\'s theater the night he died. You were framed. The real evidence is locked beneath the prison, and the warden has buried the only alibi. Follow my marks. Do not trust any sentence that looks too clean.\n- Silas Vane\n\nA key turns somewhere beyond the wall. The corridor lights go dark. If Silas is still helping you, he has chosen riddles instead of ropes.',
   locations: [
     {
@@ -125,7 +126,7 @@ const data: EscapeRoomData = {
       id: 'clockwork-workshop-3',
       locationId: 'clockwork-workshop',
       narrative: 'When the false letters are spoken aloud, a panel in the automaton\'s chest opens. Inside is a paper strip creased into three long channels, as if it was threaded through a stage prop. An arrow descends beside the channels and then climbs back.',
-      question: 'The surviving letters are:\n\nLNRTAEN\n\nThe strip has three creased channels with an arrow tracing a path that drops down one channel at a time and climbs back. Place each letter along the arrow\'s path.\n\nWhat word appears when you read across all three channels, from the top row down?',
+      question: 'The surviving letters are:\n\nLNRTAEN\n\nThe strip has three creased channels with an arrow tracing a path that drops down one channel at a time and climbs back. Place each letter along the arrow\'s path.\n\nSilas has scrawled beneath: "The lantern reveals what the arrow hides."',
       answer: 'lantern',
       hints: [
         'The arrow steps through the channels in order: first channel, second channel, third channel, then second channel, first channel, second channel, third channel.',
