@@ -286,5 +286,39 @@
         "desc": "If you daub all 5 cells in a row, column, or diagonal, click the BINGO! button to win. The server validates your card."
       }
     ]
+  },
+  {
+    "id": "escape-room",
+    "name": "Escape Room",
+    "minPlayers": 1,
+    "maxPlayers": 8,
+    "singlePlayer": true,
+    "description": "A cooperative puzzle-solving adventure! Work together to crack codes, solve riddles, and unravel mysteries to escape a themed room. Multiple escape rooms available!",
+    "route": "/escape-room/lobby",
+    "status": "active",
+    "color": "#84cc16",
+    "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4\"/></svg>",
+    "rules": [
+      {
+        "title": "Cooperative Play",
+        "desc": "1 to 4 players work together to solve puzzles and escape the room. There are no turns — everyone contributes!"
+      },
+      {
+        "title": "Solve the Puzzles",
+        "desc": "Each escape room has a series of puzzles: codes, riddles, patterns, and logic challenges. Read the clues carefully and submit your answers."
+      },
+      {
+        "title": "Wrong Answers",
+        "desc": "If you submit a wrong answer, the team gets notified and you can try again. Keep track of your attempts!"
+      },
+      {
+        "title": "Hints",
+        "desc": "Stuck? Any player can request a hint. Use them wisely — each puzzle has limited hints!"
+      },
+      {
+        "title": "Escape!",
+        "desc": "Solve all puzzles to unlock the final door and escape! The fewer attempts you use, the better your team performance."
+      }
+    ]
   }
 ]

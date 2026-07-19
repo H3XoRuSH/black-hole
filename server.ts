@@ -13,6 +13,7 @@ import * as bingo from './server/games/bingo.js';
 import * as trivia from './server/games/trivia.js';
 import * as infiniteWordChain from './server/games/infinite-word-chain.js';
 import * as pictionary from './server/games/pictionary.js';
+import * as escapeRoom from './server/games/escapeRoom.js';
 import { createRoomManager } from './server/roomManager.js';
 import { evaluateBugReport, createGitHubIssue } from './server/bugReportService.js';
 
@@ -73,6 +74,7 @@ const rooms = createRoomManager({
   'trivia': trivia as any,
   'infinite-word-chain': infiniteWordChain as any,
   'pictionary': pictionary as any,
+  'escape-room': escapeRoom as any,
 });
 
 io.on('connection', (socket: Socket) => {
@@ -141,6 +143,10 @@ io.on('connection', (socket: Socket) => {
 
   socket.on('set-pictionary-options', ({ roomKey, timerDuration, roundsPerPlayer }: { roomKey: string; timerDuration: number; roundsPerPlayer?: number }) => {
     rooms.setPictionaryOptions(roomKey, socket, { timerDuration, roundsPerPlayer }, io);
+  });
+
+  socket.on('set-escape-room-options', ({ roomKey, roomId }: { roomKey: string; roomId: string }) => {
+    rooms.setEscapeRoomOptions(roomKey, socket, { roomId }, io);
   });
 
   socket.on('send-chat', ({ roomKey, text }: { roomKey: string; text: string }) => {

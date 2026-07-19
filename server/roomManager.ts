@@ -974,6 +974,19 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       broadcastGameState(roomKey, room, io);
     },
 
+    setEscapeRoomOptions(roomKey: string, socket: Socket, data: { roomId: string }, io: SocketIOServer) {
+      if (!rooms.has(roomKey)) return;
+      const room = rooms.get(roomKey)!;
+      if (room.gameId !== 'escape-room') return;
+      const host = room.gameState.players.find((p: any) => p.id === socket.id);
+      if (!host || host.player !== 1) return;
+      const game = gamesRegistry['escape-room'] as any;
+      if (game.setRoom) {
+        game.setRoom(room, data.roomId);
+      }
+      broadcastGameState(roomKey, room, io);
+    },
+
     sendChat(roomKey: string, socket: Socket, data: { text: string }, io: SocketIOServer) {
       if (!rooms.has(roomKey)) return;
       const room = rooms.get(roomKey)!;
