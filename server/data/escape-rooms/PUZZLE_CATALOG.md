@@ -82,8 +82,24 @@ heart-room-1: ascii-art — 4×4 letter grid with rotating shutter mask, read vi
 heart-room-2: logic-puzzle — four plaques, exactly two tell the truth; find the unique-answer door → DUST
 heart-room-3: meta-puzzle — extract letters from six earlier answers (BELLKEYLAMP, SEAMS, YELLOW, JOY, WING, DUST) via caret positions → BEYOND
 
+## The Meridian Engine (12) — Difficulty: ★★★★★ (Extreme)
+A mathematical observatory built around a machine that can bend space itself. Modular arithmetic, combinatorics, graph theory, prime factorization, area calculation, and a digit-sum meta-puzzle. Puzzles explain their own mechanisms — the challenge is applying them correctly.
+archive-1: modular-arithmetic — three pressure dials (cycles 7,9,11) read 4,2,8 after identical strike count → 74
+archive-2: area-calculation — 10×8 rectangle minus right triangle (6×4 half) minus 2×7 channel → 54
+archive-3: combinatorics — pick 3 of 6 handles summing to multiple of 3; handles 1 and 6 can't both be sealed → 6
+archive-4: prime-factorization — factor tree of 7560; product of distinct primes + count of all divisors → 274
+gallery-1: shortest-path — weighted graph of 6 stations A–F, find cheapest route from A to F → 12
+gallery-2: median — seven readings sorted, find center value, sum absolute gaps from center → 33
+gallery-3: number-sequence — differences between readings grow by 4 each step: -3, +1, +5, ? → 16
+gallery-4: combinatorics — count favorable pairs from 5 even-mass + 7 odd-mass moons (odd sum) → 35
+core-1: number-sum — sum the first five odd numbers: 1 + 3 + 5 + 7 + 9 → 25
+core-2: inclusion-exclusion — count numbers 1–360 not divisible by 2, 3, or 5; then add the 3 seals → 99
+core-3: modular-arithmetic — 7ⁿ mod 1000 cycles every 20 turns; final three digits after 2026 turns → 649
+core-4: meta-puzzle — sum each chamber's numbers, keep only the last digit per band, combine into 3-digit code → 863
+
 ## Frequency
-meta-puzzle: 6 | riddle: 3 | cipher (caesar/atbash/vigenère/rail): 5 | system-of-equations: 2 | logic-grid: 4 | number-sequence: 3 | acrostic: 3 | anagram: 2 | hidden-word: 2 | number-sum: 2 | word-manipulation: 2 | letter-number: 2 | logic-puzzle: 3 | word-chain: 2 | binary-encoding: 1 | compound-word: 1 | crossword-fragment: 1 | double-definition: 1 | letter-count: 1 | letter-position-extraction: 1 | magic-square: 1 | morse-code: 1 | multi-tap-phone-keypad: 1 | number-code: 1 | pattern-recognition: 1 | periodic-table: 1 | roman-numerals: 1 | steganography: 1 | symbol-mapping: 1 | type-chart-lookup: 1 | word-ladder: 1
+meta-puzzle: 7 | riddle: 3 | cipher (caesar/atbash/vigenère/rail): 5 | system-of-equations: 2 | logic-grid: 4 | number-sequence: 4 | acrostic: 3 | anagram: 2 | hidden-word: 2 | number-sum: 3 | word-manipulation: 2 | letter-number: 2 | logic-puzzle: 3 | word-chain: 2 | binary-encoding: 1 | compound-word: 1 | crossword-fragment: 1 | double-definition: 1 | letter-count: 1 | letter-position-extraction: 1 | magic-square: 1 | morse-code: 1 | multi-tap-phone-keypad: 1 | number-code: 1 | pattern-recognition: 1 | periodic-table: 1 | roman-numerals: 1 | steganography: 1 | symbol-mapping: 1 | type-chart-lookup: 1 | word-ladder: 1
+modular-arithmetic: 2 | area-calculation: 1 | combinatorics: 2 | prime-factorization: 1 | shortest-path: 1 | median: 1 | inclusion-exclusion: 1
 sound-puzzle: 2 | ascii-art: 5 | shared-edge-extraction: 1
 
 ## New Capabilities (available for new rooms)
