@@ -36,8 +36,9 @@ const data: EscapeRoomData = {
       question: 'The slab reads: "WRPE".\n\nWhat word is hidden?',
       answer: 'TOMB',
       hints: [
-        'Beside the slab, a student scribe\'s practice tablet is chipped into the wall: A ↔ X, B ↔ Y, C ↔ Z. The lesson was never completed.',
-        'W becomes T, R becomes O, P becomes M, E becomes B. The decoded word is TOMB.'
+        'The Egyptian scribes believed the language of the gods was written in reverse — each letter hides three steps away from the truth.',
+        'Beside the slab, a student scribe\'s practice tablet is chipped into the wall: A ↔ X, B ↔ Y, C ↔ Z. Shift each letter of WRPE three steps back through the alphabet.',
+        'W → T, R → O, P → M, E → B. The decoded word is TOMB.'
       ]
     },
     {
@@ -47,8 +48,9 @@ const data: EscapeRoomData = {
       question: 'The captions whisper a name when you look past the surface:\n\n1. "Hieroglyphs cover every surface."\n2. "Oarsmen once rowed boats down this corridor."\n3. "Ra\'s light guides the way."\n4. "Underneath the stone, gold waits in the dark."\n5. "Sphinx statues guard each corner."\n\nWhat message do they hide?',
       answer: 'HORUS',
       hints: [
-        'Speak just the opening letter of each caption — the gods speak in initials.',
-        'H, O, R, U, S — the name of the falcon-headed sky god.'
+        'Five paintings, five whispers. The first word of every prayer is always the loudest.',
+        'Speak just the opening letter of each caption and string them together: the first letters form a name.',
+        'H (Hieroglyphs), O (Oarsmen), R (Ra\'s), U (Underneath), S (Sphinx) — the name is HORUS, the falcon-headed sky god.'
       ]
     },
     {
@@ -58,8 +60,9 @@ const data: EscapeRoomData = {
       question: 'Cartouche 1: 1 Ankh, 4 Lotus, 5 Eyes\nCartouche 2: 3 Scarabs, 4 Lotus\nCartouche 3: 6 Lotus, 8 Eyes\n\nWhat is the SUM of all three cartouches?',
       answer: '1453',
       hints: [
-        'Each symbol has a value carved into the reference below. Add up inside each cartouche first, then combine them.',
-        'Cartouche 1: 1000 + 40 + 5 = 1045. Cartouche 2: 300 + 40 = 340. Cartouche 3: 60 + 8 = 68. Total: 1045 + 340 + 68 = 1453.'
+        'The reference table is a key — each symbol is worth a different amount depending on its shape. Tally each cartouche\'s symbols one at a time.',
+        'Cartouche 1: 1 Ankh (1000) + 4 Lotus (40) + 5 Eyes (5) = 1045. Cartouche 2: 3 Scarabs (300) + 4 Lotus (40) = 340. Cartouche 3: 6 Lotus (60) + 8 Eyes (8) = 68.',
+        'Add the subtotals: 1045 + 340 + 68 = 1453.'
       ]
     },
     {
@@ -69,8 +72,9 @@ const data: EscapeRoomData = {
       question: 'A faded inscription beneath the scroll demands: "Speak the rank of the azure vessel."\n\nThe scroll is marked with four clues:\n\n1. The key is in the BLUE jar.\n2. The GREEN jar is immediately to the LEFT of the key\'s jar.\n3. The RED jar is immediately to the RIGHT of the BLUE jar.\n4. The GOLD jar is at the far left.',
       answer: '3',
       hints: [
-        'The scroll says GOLD anchors the leftmost spot. From there, the remaining jars must obey the rules about who sits beside whom.',
-        'Clues 2 and 3 mean GREEN-BLUE-RED occupy positions 2, 3, 4 in that order. BLUE is at position 3.'
+        'Place the GOLD jar first, then arrange the others so each clue is satisfied. One jar\'s position forces everything else into place.',
+        'If GOLD is at the far left (position 1), and GREEN is immediately left of BLUE (clue 2), and RED is immediately right of BLUE (clue 3), then GREEN, BLUE, RED must occupy positions 2, 3, 4.',
+        'The order is: GOLD (1), GREEN (2), BLUE (3), RED (4). The azure (BLUE) jar is at rank 3.'
       ]
     },
     {
@@ -80,8 +84,9 @@ const data: EscapeRoomData = {
       question: 'The tablet reads: "AHOPHAR — KING OF THE NILE"\n\nWhat title do these scattered letters reveal?',
       answer: 'PHARAOH',
       hints: [
-        'The tablet holds the same letters as the ruler\'s title — they\'ve just been scattered out of order.',
-        'PHARAOH uses the letters P, H, A, R, A, O, H — the exact same letters.'
+        'The tablet holds the same letters as the ruler\'s title — they\'ve just been scattered out of order. An Egyptian ruler\'s title, not just a name.',
+        'Rearrange the seven letters of "AHOPHAR" to form the title of an Egyptian ruler. It starts with P.',
+        'PHARAOH uses the letters P, H, A, R, A, O, H — the exact same letters as AHOPHAR.'
       ]
     },
     {
@@ -91,8 +96,9 @@ const data: EscapeRoomData = {
       question: 'The scroll reads:\nPile A + Pile B = 15 stone\nPile B + Pile C = 20 stone\nPile A + Pile C = 13 stone\n\nHow many stone does Pile B contain?',
       answer: '11',
       hints: [
-        'All three equations share the same three piles. Combine them to find how much all three weigh together.',
-        'Pile B = 24 - (A + C) = 24 - 13 = 11.'
+        'The scroll only tells you the weight of pairs, not individual piles. But if you knew the weight of all three together, you could subtract any pair to find the third.',
+        'Add all three equations: (A+B) + (B+C) + (A+C) = 15 + 20 + 13. That gives 2A + 2B + 2C = 48, so A + B + C = 24.',
+        'With all three weighing 24 stone, subtract Pile A + Pile C (13): B = 24 - 13 = 11. Pile B weighs 11 stone.'
       ]
     },
     {
@@ -103,7 +109,8 @@ const data: EscapeRoomData = {
       answer: 'OSIRIS',
       hints: [
         'Anubis guards the rear — that much is certain. For the rest, Ra must walk before Isis. Work forward from the back.',
-        'Since Ra must come BEFORE Isis, Isis cannot be at position 1. So Isis = 3, Osiris = 2, Ra = 1.'
+        'With Anubis at position 4, and Isis not at position 2 (clue 4) or 1 (because Ra must come before her), Isis must be at position 3. Ra must be before her, so Ra = 1. That leaves Osiris at position 2.',
+        'The order is: Ra (1st), Osiris (2nd), Isis (3rd), Anubis (4th). The SECOND pillar is OSIRIS.'
       ]
     },
     {
@@ -114,7 +121,8 @@ const data: EscapeRoomData = {
       answer: '8',
       hints: [
         'The sun\'s light wanes as the day passes. Watch how each hour shrinks what came before it.',
-        '64 ÷ 2 = 32. 32 ÷ 2 = 16. 16 ÷ 2 = 8.'
+        'Each hour, the shadow is exactly half the length of the previous hour. The pattern is: divide by 2 each time.',
+        'The fourth shadow: 16 ÷ 2 = 8 cubits.'
       ]
     },
     {
@@ -125,7 +133,8 @@ const data: EscapeRoomData = {
       answer: 'THOTH',
       hints: [
         'The Egyptians carved their writing with the beak of a bird — a bird-headed god watches over all words and records.',
-        'This is THOTH — the divine scribe, measurer of time, and inventor of writing.'
+        'This ibis-headed god was the scribe of the underworld, recording the verdict of the weighing of the heart ceremony. His name is five letters, starting with T.',
+        'The god is THOTH — divine scribe, counterpart to the Greek Hermes, depicted with an ibis head.'
       ]
     },
     {
@@ -136,7 +145,8 @@ const data: EscapeRoomData = {
       answer: 'ISIS',
       hints: [
         'She wore a throne upon her head, and her name is woven into every story of Osiris and Horus.',
-        'She is the wife of Osiris and mother of Horus — the goddess ISIS.'
+        'This goddess used her magic to resurrect Osiris and protect her son Horus. Her name is short — only four letters.',
+        'The goddess is ISIS — protector of the dead, goddess of magic, wife of Osiris, and mother of Horus.'
       ]
     },
     {
@@ -147,7 +157,8 @@ const data: EscapeRoomData = {
       answer: '22',
       hints: [
         'The spaces between the numbers tell their own story — each gap grows by the same small step.',
-        'The gaps are 0, 1, 2, 3, 4, 5 — the next gap is 6. So 16 + 6 = 22.'
+        'Subtract each number from the next: 1−1=0, 2−1=1, 4−2=2, 7−4=3, 11−7=4, 16−11=5. The differences increase by 1 each time.',
+        'The next difference after 5 is 6. So: 16 + 6 = 22.'
       ]
     },
     {
@@ -158,7 +169,8 @@ const data: EscapeRoomData = {
       answer: '1482',
       hints: [
         'The stone remembers everything you\'ve proven. Each symbol asks for a piece of an answer you gave earlier in the tomb.',
-        'First digit = 1. ISIS has 4 letters. Shadow at hour 4 = 8. Sequence ends with 22, last digit = 2. Code: 1-4-8-2.'
+        'Ankh: Look back at the cartouche sum (1453) — its first digit. Eye of Horus: Count the letters in the goddess from this vault. Lotus: Recall the sundial\'s fourth shadow. Scarab: The final dial number ends with which digit?',
+        'Ankh = 1 (from 1453). Eye of Horus = 4 (ISIS has 4 letters). Lotus = 8 (fourth shadow on sundial). Scarab = 2 (22 ends in 2). Code: 1-4-8-2.'
       ]
     }
   ]

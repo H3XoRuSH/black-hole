@@ -31,9 +31,9 @@ const data: EscapeRoomData = {
       question: 'A plaque beside the pipe asks: "How many times did the bell strike?"\n\nThe three dials after the bell fell silent:\n\n   Iron (7 ticks):    0, 1, 2, 3, [4], 5, 6  -> back to 0\n   Brass (9 ticks):    0, 1, [2], 3, 4, 5, 6, 7, 8  -> back to 0\n   Copper (11 ticks):  0, 1, 2, 3, 4, 5, 6, 7, [8], 9, 10  -> back to 0\n\nThe brass window beneath the dials displays n = ____.',
       answer: '74',
       hints: [
-        'Start with the iron dial. If the bell struck 4 times, the needle lands at 4. After 4 + 7 = 11 strikes, it is back at 4. Write out this list: 4, 11, 18, 25... Do the same for the brass dial (starting at 2, adding 9 each time) and the copper dial (starting at 8, adding 11).',
-        'You now have three lists of possible strike counts. Find the smallest number that appears in all three — that is the earliest moment every needle simultaneously matched this arrangement.',
-        'The three lists grow at different speeds. Keep writing them out — their first shared number is further along than the first few entries of any single list.'
+        'Start with the iron dial. Every 7 strikes bring it back to where it started. If it reads 4 now, the strike count could be 4, or 4+7=11, or 4+7+7=18, and so on. Make a list of these possibilities for each dial using its own full cycle length.',
+        'Compare the three lists. Look for a number that shows up on all of them — that is the earliest moment every dial matched its current reading at the same time.',
+        'The number you need is bigger than the first few entries of any single list. Keep adding each dial\'s full cycle length and checking — the shared number will appear eventually.'
       ]
     },
     {
@@ -44,8 +44,8 @@ const data: EscapeRoomData = {
       answer: '54',
       hints: [
         'The full rectangle covers 10 by 8 meters. That gives you a starting area. Now look at the two missing pieces one at a time.',
-        'The triangular corner was cut from a 4-by-6 rectangle. Think about what fraction of that rectangle the triangle occupies. The channel is a plain rectangle, 2 by 7.',
-        'Subtract the areas of both missing pieces from the full rectangle. The dry floor is whatever remains.'
+        'The triangular corner is exactly half of a 4-by-6 rectangle. The channel is a plain rectangle, 2 by 7.',
+        'Subtract the areas of both missing pieces from the full rectangle. What\'s left is the dry floor.'
       ]
     },
     {
@@ -55,28 +55,28 @@ const data: EscapeRoomData = {
       question: 'The counter beneath the gate displays VALID SETS = ____.\n\n   The six sluice handles:\n\n   |   [1]   [2]   [3]\n   |   [4]   [5]   [6]\n\nPick exactly three handles. Their numbers must sum to a multiple of 3. Handles 1 and 6 can never be sealed together.',
       answer: '6',
       hints: [
-        'A sum is a multiple of 3 when the remainders of its parts — after dividing each by 3 — also add up to a multiple of 3. Check what each handle number leaves behind when divided by 3.',
-        'Handles 3 and 6 are already divisible by 3 (remainder 0). Handles 1 and 4 give remainder 1. Handles 2 and 5 give remainder 2. You need three remainders that total a multiple of 3. Since no group has three members, you cannot pick all three from the same group.',
-        'That leaves only one pattern of remainders that works — one from each group. Count how many ways to choose that way, then remove any combination that pairs handle 1 with handle 6.'
+        'When you split a number into groups of three, what is left over? Check what each handle number leaves behind after taking away as many full groups of three as possible.',
+        'Handles 3 and 6 make clean groups of three — nothing leftover. Handles 1 and 4 each leave 1 leftover. Handles 2 and 5 each leave 2 leftover. You need three leftovers that together make a clean group of three. Since no leftover group has enough members, you must pick one from each group.',
+        'The only way is to take one handle from each leftover group. Count every possible set of three that follows this rule. Then remove any set that pairs handle 1 with handle 6.'
       ]
     },
     {
       id: 'archive-4',
       locationId: 'flooded-archive',
       narrative: 'The final brass drawer contains a black stone stamped 7560. Along its edge, tiny compartments are labelled with the smallest whole-number pieces that can be multiplied to rebuild the stamp. A second ring has a place for every whole number that divides 7560 evenly.',
-      question: 'The drawer carries a scratched formula:\n\n   S = different building pieces multiplied together + exact dividers counted\n\n   Factor tree of the stamp:\n\n   |   7560\n   |    /\\\n   |   2  3780\n   |       /\\\n   |      2  1890\n   |          /\\\n   |         2  945\n   |             /\\\n   |            3  315\n   |                /\\\n   |               3  105\n   |                   /\\\n   |                  3  35\n   |                      /\\\n   |                     5  7\n\nThe final window reads S = ____.',
+      question: 'The drawer carries a scratched formula:\n\n   S = one of each type of building piece multiplied together + all exact dividers counted up\n\n   Factor tree of the stamp:\n\n   |   7560\n   |    /\\\n   |   2  3780\n   |       /\\\n   |      2  1890\n   |          /\\\n   |         2  945\n   |             /\\\n   |            3  315\n   |                /\\\n   |               3  105\n   |                   /\\\n   |                  3  35\n   |                      /\\\n   |                     5  7\n\nThe final window reads S = ____.',
       answer: '274',
       hints: [
-        'The "building pieces" are the prime numbers at the bottom of the tree — the leaves that cannot be split any further. Each distinct prime appears only once in the product, no matter how many times it shows up in the tree.',
-        'For counting exact dividers: consider how many copies of each prime you may include. You can take 0, 1, 2, or 3 copies of 2 (four choices). Same for 3. For 5 and 7, you can take either 0 or 1 copy. Multiply the number of choices together.',
-        'The formula adds the product of distinct primes to the total number of divisors. Sum them to get S.'
+        'The building pieces are the smallest numbers at the bottom of the tree — the ones that can\'t be split into anything smaller. Each type of piece is used only once in the product, no matter how many times it shows up in the tree.',
+        'For counting exact dividers: think about how many copies of each building piece you could include. You can take 0, 1, 2, or 3 copies of piece 2 (four choices). Same for piece 3. For pieces 5 and 7, you can take 0 or 1 copy. Multiply the number of choices together.',
+        'The formula adds the product of one copy of each building piece to the total number of exact dividers. Add them to get S.'
       ]
     },
     {
       id: 'gallery-1',
       locationId: 'orrery-gallery',
       narrative: 'The iron stairwell opens into the orrery. Narrow brass rails connect six planetary stations. Each rail segment bears the energy cost of crossing it, etched into the metal. The engine will only accept the least costly route through the moving model.',
-      question: 'The route plate lists these rails:\n\n   A-B: 4    B-D: 5\n   A-C: 7    C-D: 1\n   B-C: 2    C-E: 6    E-F: 2\n              D-E: 3    D-F: 9\n\n   The rail network:\n\n   |   [A] --4-- [B]\n   |    |      /|\n   |    |     / |\n   |    |    /  |\n   |    7   2   5\n   |    |  /    |\n   |    | /     |\n   |    |/      |\n   |   [C] --1- [D]\n   |    |      /|\n   |    |     / |\n   |    |    /  |\n   |    6   3   9\n   |    |  /    |\n   |    | /     |\n   |    |/      |\n   |   [E] --2- [F]\n\nThe starting lens is A and the exit lens is F. The route counter waits at ____.',
+      question: 'The route plate lists these rails:\n\n   A-B: 2    B-D: 5\n   A-C: 6    C-D: 1\n   B-C: 3    C-E: 4    E-F: 4\n              D-E: 2    D-F: 7\n\n   The rail network:\n\n   |   [A] --2-- [B]\n   |    |      /|\n   |    |     / |\n   |    |    /  |\n   |    6   3   5\n   |    |  /    |\n   |    | /     |\n   |    |/      |\n   |   [C] --1- [D]\n   |    |      /|\n   |    |     / |\n   |    |    /  |\n   |    4   2   7\n   |    |  /    |\n   |    | /     |\n   |    |/      |\n   |   [E] --4- [F]\n\nThe starting lens is A and the exit lens is F. The route counter waits at ____.',
       answer: '12',
       hints: [
         'Trace different paths from A to F along the rails, adding the cost of each segment you travel. The rails cost the same in both directions, so you can move either way along a connection.',
@@ -99,13 +99,13 @@ const data: EscapeRoomData = {
     {
       id: 'gallery-3',
       locationId: 'orrery-gallery',
-      narrative: 'A lens assembly is engraved with four calibration readings. A brass slider has five notches, but the fifth notch is dark and unmarked. A grease-pencil line runs beneath the notches.',
-      question: 'The first four notches read 4, 1, 2, 7. The grease-pencil note says: "The change between readings grows by four each notch."\n\n   Brass slider and notches:\n\n   [4]----[1]----[2]----[7]----[?]\n     \\      /      /      /\n   |   -3    +1     +5     ?\n\nThe fifth notch is marked ____.',
-      answer: '16',
+      narrative: 'A brass scale in the center of the orrery holds four unlabeled planet models. Their names have worn away, but a ledger next to the scale records their combined masses.',
+      question: 'The ledger reads:\n\n   Mars  +  Venus  =  23\n   Mars  +  Jupiter =  31\n   Venus +  Jupiter =  28\n   Saturn +  Mars   =  39\n\nEach planet has a different mass, measured in stone units. Find Saturn\'s mass alone.\n\nThe scale counter reads ____.',
+      answer: '26',
       hints: [
-        'Look at how the readings change from one notch to the next: from 4 to 1 is a drop of 3, then up by 1, then up by 5. The note says these changes themselves follow a pattern.',
-        'If each change grows by 4 compared to the previous change, what would the next change be? Start with -3, add 4 to get +1, add 4 to get +5, add 4 once more.',
-        'Apply the fourth change to the reading at notch four (7) to reveal the missing fifth value.'
+        'Look at the first two entries. Both include Mars. The difference between their totals tells you how much heavier Jupiter is than Venus.',
+        'If Jupiter is 8 heavier than Venus, and together they make 28, you can find them both. One must be 10 and the other 18.',
+        'Venus is 10 and Jupiter is 18. That makes Mars 13 (since Mars + 10 = 23). Saturn + 13 = 39, so Saturn is 26.'
       ]
     },
     {
@@ -123,13 +123,13 @@ const data: EscapeRoomData = {
     {
       id: 'core-1',
       locationId: 'meridian-core',
-      narrative: 'The gallery floor folds upward, revealing the meridian core. Five concentric brass rings orbit the column of white light, each ring lined with obsidian focusing lenses. Starting from the innermost ring, each ring holds two more lenses than the one inside it.',
-      question: 'The innermost ring holds 1 lens.\nThe second ring holds 3 lenses.\nThe third ring holds 5 lenses.\nThe fourth ring holds 7 lenses.\nThe fifth ring holds 9 lenses.\n\nA brass plate reads: "All lenses together focus the engine."\n\nThe core display waits for ____.',
-      answer: '25',
+      narrative: 'The gallery floor folds upward, revealing the meridian core. Five concentric brass rings are interlocked around the column of light, their rims lined with gear teeth.',
+      question: 'The innermost ring (Ring 1) has 4 teeth. Each ring outward follows the same rule: take the inner ring\'s tooth count, double it, then add two more.\n\n   Ring 1: 4 teeth\n   Ring 2: 4 doubled + 2 = ?\n   Ring 3: ? doubled + 2 = ?\n   Ring 4: ? doubled + 2 = ?\n   Ring 5: ? doubled + 2 = ?\n\nHow many teeth does the outermost ring (Ring 5) have?\n\nThe core display waits for ____.',
+      answer: '94',
       hints: [
-        'Add the lens counts from all five rings: 1, 3, 5, 7, and 9. These are the first five odd numbers.',
-        'Group the numbers to add quickly: the innermost and outermost rings together hold 1 + 9 lenses. The second and fourth together hold 3 + 7. Then add the middle ring.',
-        'The pairs give 10 + 10, plus the middle ring\'s 5, for a total of 25.'
+        'Work outward one ring at a time. Each new ring\'s teeth depend only on the ring just inside it. Start with Ring 1\'s 4 teeth and follow the rule.',
+        'Ring 2 has 10 teeth. Ring 3 has 22 teeth. Keep going — the numbers grow faster than you might expect.',
+        '4 → 10 → 22 → 46 → 94. The fifth ring has 94 teeth.'
       ]
     },
     {
@@ -139,9 +139,9 @@ const data: EscapeRoomData = {
       question: 'The gate ledger reads: G = accepted tickets + the three seals.\n\n   Gate mechanism:\n\n        +-------------------+\n        |      GATE 360     |\n        |                   |\n        |  Accept if NOT    |\n        |  divisible by:    |\n        |   [2]  [3]  [5]   |\n        +-------------------+\n\nThe core window displays G = ____.',
       answer: '99',
       hints: [
-        'First, count how many numbers from 1 to 360 are rejected — those divisible by 2, by 3, or by 5. Be careful: some numbers are divisible by more than one of these and would be counted multiple times.',
-        'Numbers like 6 are divisible by both 2 and 3 — you must subtract these overlaps so they are not counted twice. Do the same for numbers divisible by both 2 and 5, and by both 3 and 5.',
-        'Numbers divisible by 2, 3, and 5 all at once (meaning divisible by 30) were subtracted too many times in the previous step. Add them back once. Subtract the final rejected count from 360, then add the 3 seals as the formula says.'
+        'First, count how many numbers from 1 to 360 can be split evenly into groups of 2, of 3, or of 5. Be careful: some numbers can be split by more than one of these and would be counted multiple times.',
+        'A number like 6 can be split into equal groups of 2 AND into equal groups of 3. You must subtract these overlapping numbers so they are not counted twice. Do the same for numbers that split into 2 and 5, and for 3 and 5.',
+        'Numbers that split into 2, 3, and 5 all at once (like 30, 60, 90) were subtracted too many times. Add them back once. Remove the final rejected count from 360, then add the 3 seals.'
       ]
     },
     {
@@ -152,16 +152,16 @@ const data: EscapeRoomData = {
       answer: '649',
       hints: [
         'Twenty turns bring the wheel full circle. Any complete group of 20 turns can be ignored — you only need to count the leftover turns. Find how many full groups of 20 fit into 2026.',
-        'Divide 2026 by 20 and keep the remainder. That remainder is the actual number of turns you must apply to the starting value of 1.',
-        'Multiply 1 by 7 for each remaining turn. After each multiplication, keep only the last three digits. The final three digits are your answer.'
+        'Split 2026 into groups of 20. The leftover singles are all that matter — that is how many turns you actually need to apply.',
+        'Start from 1 and multiply by 7 once for each leftover turn. After each multiplication, keep only the last three digits. Those three digits are the answer.'
       ]
     },
     {
       id: 'core-4',
       locationId: 'meridian-core',
       narrative: 'The engine stops. Three brass bands slide into view, each carrying the numbers recovered from one chamber. The first remembers the archive, the second remembers the gallery, and the third remembers the core.',
-      question: 'The bands carry these marks:\n\n   Archive:  74   54    6   274\n   Gallery:  12   33   16    35\n   Core:     25   99   649\n\nBeneath them, an old rule is carved: "Add each band. Tie away bundles of ten. Let only what cannot make a bundle pass into the three windows."\n\nThe final windows are A | G | C. Their combined code is ____.',
-      answer: '863',
+      question: 'The bands carry these marks:\n\n   Archive:  74   54    6   274\n   Gallery:  12   33   26    35\n   Core:     94   99   649\n\nBeneath them, an old rule is carved: "Add each band. Tie away bundles of ten. Let only what cannot make a bundle pass into the three windows."\n\nThe final windows are A | G | C. Their combined code is ____.',
+      answer: '862',
       hints: [
         '"Tie away bundles of ten" means keep only the last digit of each sum — the remainder after removing every complete group of ten. Start by adding all the numbers on the Archive band.',
         'Add the Gallery band and find its last digit. Do the same for the Core band. You should have three single digits.',

@@ -32,7 +32,8 @@ const data: EscapeRoomData = {
       answer: 'HELP',
       hints: [
         'Not every letter was cut with the same force. Some are larger and carved deeper into the plaster.',
-        'The oversized letters, read in order, are H, E, L, P.'
+        'The oversized letters, read in order, are H, E, L, P.',
+        '"tHe End of Lost Play" — the deeper capitals spell H-E-L-P.'
       ]
     },
     {
@@ -43,7 +44,8 @@ const data: EscapeRoomData = {
       answer: 'TOMB',
       hints: [
         'It is a structure built to hold the dead.',
-        'M, T, O, B rearrange to T-O-M-B.'
+        'M, T, O, B rearrange to T-O-M-B.',
+        'The only four-letter word these blocks can form is TOMB.'
       ]
     },
     {
@@ -54,7 +56,8 @@ const data: EscapeRoomData = {
       answer: 'CRY',
       hints: [
         'The alphabet has twenty-six houses. Each number knocks on a different door.',
-        '3 = C, 18 = R, 25 = Y.'
+        '3 = C, 18 = R, 25 = Y.',
+        '3 is the third letter (C), 18 is the eighteenth (R), 25 is the twenty-fifth (Y) — together they spell CRY.'
       ]
     },
     {
@@ -65,7 +68,8 @@ const data: EscapeRoomData = {
       answer: '13',
       hints: [
         'The calendars use an ancient counting system — one the Romans left everywhere they touched.',
-        'MCMLXXIII = 1973. MCMLXXXVI = 1986. 1986 − 1973 = 13.'
+        'MCMLXXIII = 1973. MCMLXXXVI = 1986. 1986 − 1973 = 13.',
+        'Gab was born in 1973 and died in 1986 — he was 13 years old.'
       ]
     },
     {
@@ -76,6 +80,7 @@ const data: EscapeRoomData = {
       answer: 'GABYRIUS',
       hints: [
         'The card found in the desk shows a grid where each row shifts the alphabet by one letter. Follow the key HAUNT through the cipher, letter by letter.',
+        'Start with ciphertext N in key row H — the column tells you the true letter is G. Continue: A in row A = A, V in row U = B, L in row N = Y.',
         'N row H = G, A row A = A, V row U = B, L row N = Y, K row T = R, P row H = I, U row A = U, M row T = S → GABYRIUS.'
       ]
     },
@@ -87,7 +92,8 @@ const data: EscapeRoomData = {
       answer: 'SIN',
       hints: [
         'A verdict hidden where two words meet.',
-        'thiS INnocent — S, I, N.'
+        'thiS INnocent — S, I, N.',
+        'The capital letters at the boundary of "thiS" and "INnocent" spell SIN.'
       ]
     },
     {
@@ -98,7 +104,8 @@ const data: EscapeRoomData = {
       answer: 'DEATH',
       hints: [
         'The note says the first step is always the most important. Look at how each line of the poem begins.',
-        'The first letter of each line: D, E, A, T, H.'
+        'The first letter of each line: D, E, A, T, H.',
+        'Darkness → D, Every → E, And → A, The → T, Hush → H. Together: DEATH.'
       ]
     },
     {
@@ -109,7 +116,8 @@ const data: EscapeRoomData = {
       answer: '8',
       hints: [
         'The science workbook is open to the periodic table. Oxygen — the breath we breathe — has a number all its own.',
-        'O is oxygen. Its atomic number — equal to its proton count — is 8.'
+        'O is oxygen. Its atomic number — equal to its proton count — is 8.',
+        'Oxygen is element 8 on the periodic table — 8 protons left Gab when he lost his breath.'
       ]
     },
     {
@@ -120,7 +128,8 @@ const data: EscapeRoomData = {
       answer: 'PRAY',
       hints: [
         'The alphabet is split in two — the first half sits above, the second half below. Each letter stares into its mirror opposite.',
-        'K↔P, I↔R, Z↔A, B↔Y → PRAY.'
+        'K↔P, I↔R, Z↔A, B↔Y → PRAY.',
+        'K becomes P, I becomes R, Z becomes A, B becomes Y — the Atbash cipher gives you PRAY.'
       ]
     },
     {
@@ -131,7 +140,8 @@ const data: EscapeRoomData = {
       answer: 'ASH',
       hints: [
         'Some words wear two faces. A kind of tree and what the fire leaves behind share the same three-letter name.',
-        'ASH — a kind of tree, and the grey powder left after fire.'
+        'Both a type of tree and the grey powder left after fire.',
+        'The three-letter word is ASH — a tree, and what remains after burning.'
       ]
     },
     {
@@ -142,7 +152,8 @@ const data: EscapeRoomData = {
       answer: 'DUST',
       hints: [
         'Each word is a single thread pulled from the one before it. The chain changes one link at a time.',
-        'DUSK → DUST (the K becomes a T).'
+        'DUSK → DUST (the K becomes a T).',
+        'MUST → MUSK (T→K) → DUSK (M→D) → DUST (K→T).'
       ]
     },
     {
@@ -153,6 +164,7 @@ const data: EscapeRoomData = {
       answer: 'GHOST',
       hints: [
         'Gab scattered pieces of himself through every puzzle you\'ve solved. Each line points to a word you\'ve already spoken — take the letter at the position he\'s asking for.',
+        '"The name locked in song" is GABYRIUS, "what fire leaves behind" is ASH, "the chamber of the dead" is TOMB, "the ladder\'s ending" is DUST, "what the poem spells" is DEATH.',
         'GABYRIUS[1] = G, ASH[3] = H, TOMB[2] = O, DUST[3] = S, DEATH[4] = T → GHOST.'
       ]
     }

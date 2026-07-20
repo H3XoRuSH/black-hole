@@ -32,7 +32,8 @@ const data: EscapeRoomData = {
       answer: '35815',
       hints: [
         'The calendar shows his birthday circled, and the code is that date read the other way around.',
-        'Read 51853 backwards: 3, 5, 8, 1, 5 → 35815.'
+        'Read 51853 backwards.',
+        'The code is 35815 — type 3-5-8-1-5.'
       ]
     },
     {
@@ -43,7 +44,8 @@ const data: EscapeRoomData = {
       answer: '35',
       hints: [
         'Count the stars beside each name. The person with the most is Dr. Harrison\'s lab assistant.',
-        'Eve has 3 letters in her name, and 5 stars. The combination is 35.'
+        'Eve has 3 letters in her name, and 5 stars.',
+        'The combination is 35 — type 3-5.'
       ]
     },
     {
@@ -54,7 +56,8 @@ const data: EscapeRoomData = {
       answer: '345',
       hints: [
         'If you combine all three equations, you can find the value of each symbol one at a time.',
-        'Since ○ + □ = 9, △ must be 3. Then ○ = 4 and □ = 5. Code: 345.'
+        'Since ○ + □ = 9, △ must be 3. Then ○ = 4 and □ = 5.',
+        'The code is 345 — type 3-4-5.'
       ]
     },
     {
@@ -65,7 +68,8 @@ const data: EscapeRoomData = {
       answer: '60',
       hints: [
         'The periodic table poster above the centrifuge has the atomic numbers you need — find each element and sum them.',
-        '1 + 8 = 9, then 9 + 6 = 15, then 15 + 19 = 34, then 34 + 26 = 60.'
+        'Add the atomic numbers: H(1) + O(8) + C(6) + K(19) + Fe(26).',
+        'The sum is 60 — type 6-0.'
       ]
     },
     {
@@ -76,18 +80,20 @@ const data: EscapeRoomData = {
       answer: '3',
       hints: [
         'Say each number out loud and count the letters in its name — "one" has 3, "two" has 3, "three" has 5...',
-        '"Ten" has 3 letters. The next number in the sequence is 3.'
+        '"Ten" has 3 letters.',
+        'The answer is 3 — type 3.'
       ]
     },
     {
       id: 'lab-3',
       locationId: 'lab',
-      narrative: 'A filing cabinet in the corner is locked with a word dial — five rotating rings, each with letters A through Z. A clipboard hanging beside it has a riddle written in hasty handwriting.',
-      question: '"I have cities, but no houses.\nI have mountains, but no trees.\nI have rivers, but no water.\nI have borders, but no walls.\n\nWhat am I?"',
-      answer: 'map',
+      narrative: 'A filing cabinet in the corner is locked with a word dial — four rotating rings, each with letters A through Z. A clipboard hanging beside it has a riddle written in hasty handwriting.',
+      question: '"I have a nucleus but no brain.\nI have a membrane but no skin.\nI divide but never subtract.\nA microscope reveals my world.\n\nWhat am I?"',
+      answer: 'cell',
       hints: [
-        'It shows you where things are, but can be folded and carried.',
-        'Think of something flat that represents the world.'
+        'Think about what you would see through the microscope in this lab — the building blocks of life.',
+        'It has a nucleus and a membrane, and it divides to make more of itself.',
+        'The answer is CELL — turn the dial to C-E-L-L.'
       ]
     },
     {
@@ -98,18 +104,20 @@ const data: EscapeRoomData = {
       answer: '34',
       hints: [
         'Look at how each pair of neighbors adds up to the next number in the chain.',
-        '13 + 21 = 34.'
+        '13 and 21 are the last two numbers — add them together.',
+        'The next number is 34 — type 3-4.'
       ]
     },
     {
       id: 'vault-2',
       locationId: 'vault',
       narrative: 'The terminal flashes green. A final message from Dr. Harrison appears:\n\n"You\'ve come far. I\'m impressed. But one lock remains — the exit. I encoded it using clues from the puzzles you just solved. Think carefully."\n\nThe exit keypad glows with four empty digits.',
-      question: 'A holographic display shows:\n\nDigit 1 — The MIDDLE digit from the foyer drawer code.\nDigit 2 — The FIRST digit of the laboratory atomic sum.\nDigit 3 — The number of LETTERS in the riddle\'s answer.\nDigit 4 — The LAST digit of the Fibonacci number.\n\nThe exit keypad glows, awaiting the final sequence.',
-      answer: '8634',
+      question: 'A holographic display shows:\n\nDigit 1 — The THIRD digit from the foyer drawer code.\nDigit 2 — The FIRST digit of the laboratory atomic sum.\nDigit 3 — The number of LETTERS in the riddle\'s answer.\nDigit 4 — The LAST digit of the Fibonacci number.\n\nThe exit keypad glows, awaiting the final sequence.',
+      answer: '8644',
       hints: [
         'Retrace your steps through the lab. The drawer, the formula, the riddle, and the number sequence each left a digit behind.',
-        'Foyer drawer code was 35815 — the middle digit is 8. Atomic sum was 60 — first digit is 6. Riddle answer "map" has 3 letters. Fibonacci was 34 — last digit is 4. Code: 8634.'
+        'Foyer drawer code was 35815 — the third digit is 8. Atomic sum was 60 — first digit is 6. Riddle answer "cell" has 4 letters. Fibonacci was 34 — last digit is 4.',
+        'The exit code is 8644 — type 8-6-4-4.'
       ]
     }
   ]

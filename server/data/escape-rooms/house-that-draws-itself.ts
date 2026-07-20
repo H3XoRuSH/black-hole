@@ -4,7 +4,7 @@ const data: EscapeRoomData = {
   id: 'house-that-draws-itself',
   name: 'The House That Draws Itself',
   description: 'A house assembled from floor plans rather than rooms. Its corridors fold around absent courtyards, and every door opens onto another impossible threshold. Somewhere in its architecture, the missing outside has been hidden as a name.',
-  difficulty: 'extreme',
+  difficulty: 'hard',
   intro: 'You wake with your cheek against wallpaper that is warm as skin. Someone has drawn a floor plan across the ceiling in pencil, but the route begins beneath your own name, which you do not remember writing. A toy house rests on your chest, its tiny front door opening and closing with your breathing. Through its windows you see a corridor that cannot fit inside the room around you.\n\nA muffled child counts from somewhere beyond the walls. On "four," the house changes shape: the ceiling becomes a stair, the stair becomes a wall, and a photograph falls face-down beside your hand. On its back, in a different handwriting, are six words:\n\nDO NOT LOOK FOR THE EXIT.\nLOOK FOR THE ROOM THAT HAS NO OUTSIDE.\n\nThe child begins counting again. You stand before a door painted with a room number that is also your birth date, though you have never seen it before.',
   locations: [
     {
@@ -36,8 +36,9 @@ const data: EscapeRoomData = {
       question: 'A brass plate is blank except for three word slots. Above it, the little floor plan shows:\n\n+---------+\n| ATTIC   |\n|   BELL  |\n+---------+\n| GROUND  |\n|   KEY   |\n+---------+\n| BASEMENT|\n|   LAMP  |\n+---------+\n\nThe lock waits for the names in the tones\' order.',
       answer: 'bellkeylamp',
       hints: [
-        'Listen to where the chimes sit — high as an attic, low as a basement, or somewhere in between. The floor plan shows which object lives at each height.',
-        'Read the objects in that order: BELL, then KEY, then LAMP. The word is BELLKEYLAMP.',
+        'The house has three voices, one for each floor. Listen to which speaks first, which speaks second, and which speaks last.',
+        'Match each tone to the window at the same height — high for attic, medium for ground, low for basement. Read the objects in the order the tones play.',
+        'The tones play high, medium, low — so BELL, then KEY, then LAMP. Concatenated: BELLKEYLAMP.',
       ],
       sound: {
         type: 'pitch-sequence',
@@ -57,8 +58,9 @@ const data: EscapeRoomData = {
       question: 'The rubbings read:\n\nSTAIRS / STONE\nFIREPLACE / EAVE\nVERANDA / ARCH\nROOM / MIRROR\nHALLS / STAIR\n\nA carpenter\'s note is folded beneath them: "The house keeps only what can stand on both sides of a threshold." A five-letter recess waits.',
       answer: 'seams',
       hints: [
-        'The carpenter pressed two words together like doors meeting in a single frame. What sits exactly between each pair — the letter they both share as a boundary?',
-        'The shared edge letters are S, E, A, M, and S. They spell SEAMS.',
+        'A threshold belongs to two rooms at once. The carpenter pressed two words together — find the single letter that stands at the boundary of each pair.',
+        'For each word pair (STAIRS/STONE, FIREPLACE/EAVE, VERANDA/ARCH, ROOM/MIRROR, HALLS/STAIR), find the letter they share where they meet.',
+        'The shared edge letters are S, E, A, M, S — spelling SEAMS.',
       ],
     },
     {
@@ -68,8 +70,9 @@ const data: EscapeRoomData = {
       question: 'The plan has been burned into the plaster:\n\n+------+     +------+     +------+\n| FIRE |---->| HALL |<----| WELL |\n+------+     +------+     +------+\n                 |\n                 v\n              +------+\n              | ROOT |\n              +------+\n                 |\n                 v\n              +------+\n              | BELL |\n              +------+\n\nA brass label says: "Begin at FIRE. The third doorway has a name." The plan\'s nameplate is empty.',
       answer: 'bell',
       hints: [
-        'The fire lit the way. Let the arrows carry you from one room to the next, counting how many doorways you pass through.',
-        'The missing nameplate therefore reads BELL.',
+        'FIRE is the only warm mark on the plan — everything else is cold ash. Trace warmth\'s path through the doorways.',
+        'Begin at FIRE and follow each arrow. Count the doorways as you pass through them. The third doorway\'s room is the missing name.',
+        'First doorway → HALL, second → ROOT, third → BELL.',
       ],
     },
     {
@@ -79,8 +82,9 @@ const data: EscapeRoomData = {
       question: 'The strip of wallpaper reads:\n\nFLOOR -> ORBIT -> ITCH -> CHIMNEY -> EYE -> [      ] -> OWLET\n\nThe missing card is the word the stairwell accepts.',
       answer: 'yellow',
       hints: [
-        'Each room door shares its hinges with the next. Where one name ends, the other name begins — trace the overlapping letters.',
-        'EYE ends in YE, while OWLET begins in OW. The missing word must begin with YE and end with OW so both hinges meet. YELLOW fits.',
+        'The house refuses to let one room end before another begins — their names bleed into each other at the edges.',
+        'Each word\'s last two letters become the next word\'s first two letters. Find the word that connects EYE to OWLET.',
+        'EYE ends in YE, OWLET starts with OW. The missing word must start with YE and end with OW — YELLOW.',
       ],
     },
     {
@@ -90,8 +94,9 @@ const data: EscapeRoomData = {
       question: 'The surviving verse reads:\n\n"January whispers, October closes —\nbut year after year, the house remembers what the dark never knows."\n\nThe brass slot under the copybook waits for the word the poem describes.',
       answer: 'joy',
       hints: [
-        'The child whispered a secret to the seasons. Look at how the first month, the tenth month, and the measure of all twelve months each begin.',
-        'J from January, O from October, and Y from Year. Together they spell JOY.',
+        'The seasons guard something the dark never knows — a secret hidden at the threshold of each word the poem whispers.',
+        'Take the first letter of the first month, the first letter of the tenth month, and the first letter of the measure of all months.',
+        'J from January, O from October, Y from Year — the word is JOY.',
       ],
     },
     {
@@ -101,8 +106,9 @@ const data: EscapeRoomData = {
       question: 'The pantry inventories read:\n\nShelf I:   hook, oil, slate, thread\nShelf II:  glass, oil, slate, thread\nShelf III: glass, hook, slate, thread\nShelf IV:  glass, hook, oil, thread\nShelf V:   glass, hook, oil, slate\n\nA child\'s label says: "What a shelf refuses is the word that counts." The nursery lock has five letters.',
       answer: 'ghost',
       hints: [
-        'Five objects belong in the pantry — glass, hook, oil, slate, and thread. Each shelf stubbornly refuses exactly one of them. Which object is missing from each shelf?',
-        'Their initials are G, H, O, S, T. The lock wants GHOST.',
+        'A child set five shelves in order, but each one turns its back on a different thing. What a shelf refuses is more telling than what it keeps.',
+        'Five objects belong: glass, hook, oil, slate, thread. Each shelf is missing exactly one. Find the missing object\'s first letter from each shelf in order.',
+        'Shelf I misses glass (G), II misses hook (H), III misses oil (O), IV misses slate (S), V misses thread (T) — GHOST.',
       ],
     },
     {
@@ -112,8 +118,9 @@ const data: EscapeRoomData = {
       question: 'The survey grid reads:\n\n+---+---+---+---+---+---+\n|   | 1 | 2 | 3 | 4 | 5 |\n+---+---+---+---+---+---+\n| A | W | A | L | L | S |\n| B | W | I | N | G | S |\n| C | N | U | R | S | E |\n| D | S | T | A | I | R |\n| E | F | L | O | O | R |\n+---+---+---+---+---+---+\n\nThe nail heads mark A1, D4, C1, and B4. A lift cage below them has four blank letter windows.',
       answer: 'wing',
       hints: [
-        'The surveyor drove nails into four specific cells. Read the letter beneath each nail head, in the order they were hammered into the grid.',
-        'The four windows therefore read WING.',
+        'The surveyor measured the house by marking coordinates — four points where the house\'s shape anchors itself.',
+        'Find the cells A1, D4, C1, and B4 in the grid. Read the letter at each coordinate in that hammered order.',
+        'A1=W, D4=I, C1=N, B4=G — WING.',
       ],
     },
     {
@@ -123,8 +130,9 @@ const data: EscapeRoomData = {
       question: 'A sentence scratched beneath the windows reads: "One landing, one number. Do not count the silence." The three windows remain dark while the knocking repeats. They are waiting for a three-part footprint.',
       answer: '213',
       hints: [
-        'The house counts in clusters. Silence marks the end of each thought. How many knocks in the first group? The second? The last?',
-        'Write the group sizes in order. The footprint is 2-1-3, or 213.',
+        'Footsteps fall in clusters between landings. The house does not count the silence — only the steps themselves.',
+        'Listen for long pauses separating groups of knocks. Count the knocks in each group, then write the counts in order.',
+        'First group has 2 knocks, second has 1, third has 3 — the answer is 213.',
       ],
       sound: {
         type: 'rhythm',
@@ -150,8 +158,9 @@ const data: EscapeRoomData = {
       question: 'The cross-section is carved into the lift panel:\n\n+ HOUSE\n|  [ HALL\n|  |  ( NURSERY\n|  |  |  { CELLAR }\n|  |  |  )\n|  |  ]\n|  +\n\nEach pair of matching marks is a doorway. The key is in the room with no other room inside its pair.',
       answer: 'cellar',
       hints: [
-        'Each pair of matching marks — square brackets, parentheses, and curly braces — holds a room inside it like a nesting doll. The innermost doll is the one with nothing smaller cradled inside.',
-        'CELLAR is the innermost room, so it is the room with no smaller doorway inside it.',
+        'The carpenter carved rooms within rooms — each set of matching marks encloses everything inside it like a door that opens into another door.',
+        'Trace the nesting from outermost to innermost: [HALL (NURSERY {CELLAR})]. The room with no other room inside its matching marks is the innermost.',
+        'CELLAR is inside curly braces inside parentheses inside square brackets — the innermost room, the key tag\'s name.',
       ],
     },
     {
@@ -161,8 +170,9 @@ const data: EscapeRoomData = {
       question: 'In its unturned position, the shutter holes cover the cells marked with dark dots:\n\n● ● . .\n● ● . .\n. . . .\n. . . .\n\nThe letter tile beneath it reads:\n\n+---+---+---+---+\n| T | H | O | U |\n| E | H | S | E |\n| S | Y | W | A |\n| O | U | N | T |\n+---+---+---+---+\n\nA note inside the frame says: "Four positions. Read only what the shutter reveals." The brass lock has sixteen letter slots.',
       answer: 'thehousewantsyou',
       hints: [
-        'The shutter turns clockwise, revealing new letters with each quarter-rotation. Read what shows through the holes at each resting position.',
-        'Joining the groups without spaces gives THEHOUSEWANTSYOU.',
+        'The shutter only shows what it wants you to see. Turn it, and the holes reveal different pieces of the same sentence.',
+        'The shutter has four resting positions, one per quarter-turn clockwise. At each position, read the letters visible through the 2×2 hole pattern. Combine all four readings in order.',
+        'Position 1: THEH, Position 2: OUSE, Position 3: WANT, Position 4: SYOU — together: THEHOUSEWANTSYOU.',
       ],
     },
     {
@@ -172,8 +182,9 @@ const data: EscapeRoomData = {
       question: 'The rule above the doors reads:\n\n"Exactly two plaques tell the truth, and the door to the outside bears one of those truths."\n\nASH:   "The outside is behind DUST or CEDAR."\nDUST:  "The outside is behind DUST, CEDAR, or BONE."\nCEDAR: "The outside is behind ASH."\nBONE:  "The outside is behind ASH or CEDAR."\n\nOnly one handle is unlatched. Its plaque names the way out.',
       answer: 'dust',
       hints: [
-        'Some of these doors lie. Exactly two tell the truth, and the real way out wears one of those two truths. Try each possibility in your mind.',
-        'With the outside behind DUST, the DUST and ASH plaques are true, while CEDAR and BONE are false. DUST is one of the two true plaques, so DUST is the unique answer.',
+        'A rule binds all four doors: two speak truly, two speak falsely. The way out is spoken by one of the two true plaques.',
+        'Test each possibility — if the outside is behind ASH, which plaques are true? Check all four until you find one where exactly two plaques are true and the exit is one of them.',
+        'Only DUST works: ASH and DUST are true, CEDAR and BONE are false. The way out is behind DUST.',
       ],
     },
     {
@@ -183,8 +194,9 @@ const data: EscapeRoomData = {
       question: 'Six empty recesses bear these memories, in order: the three-height chime, the threshold pairs, the two-letter stair procession, the nursery music box, the nail-head survey, and the four-door oath. The caret marks the letter touched by each arrow:\n\n| CHIME      ^---------- |\n| THRESHOLD  -^---       |\n| STAIR      ^-----      |\n| MUSIC      -^-         |\n| SURVEY     --^-        |\n| OATH       ^---        |\n\nA final sentence is carved beneath the plan: "The touched letters are my name, and my name is what lies beyond."',
       answer: 'beyond',
       hints: [
-        'The house kept a record of everything you unlocked. Each arrow touches a specific letter in a word you\'ve already spoken — the chime, the threshold, the stair, the music box, the survey, and the door oath.',
-        'The arrows touch the first, second, first, second, third, and first letters: B, E, Y, O, N, D. The house\'s final name is BEYOND.',
+        'Every lock you opened left its mark on the house. The child has stopped counting — the house has finished drawing itself.',
+        'Each arrow points to a specific position in one of your previous answers. In order: the chime\'s 1st letter, the threshold\'s 2nd, the stair\'s 1st, the music box\'s 2nd, the survey\'s 3rd, the oath\'s 1st.',
+        'B from bellkeylamp, E from seams, Y from yellow, O from joy, N from wing, D from dust — BEYOND.',
       ],
     },
   ],
