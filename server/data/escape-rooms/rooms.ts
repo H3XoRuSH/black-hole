@@ -5,6 +5,7 @@ import room69420 from './room-69420.js';
 import magicianAlibi from './magician-alibi.js';
 import cinnabarLab from './cinnabar-lab.js';
 import houseThatDrawsItself from './house-that-draws-itself.js';
+import meridianEngine from './the-meridian-engine.js';
 
 const rooms: Record<string, EscapeRoomData> = {
   'abandoned-lab': abandonedLab,
@@ -13,6 +14,7 @@ const rooms: Record<string, EscapeRoomData> = {
   'magician-alibi': magicianAlibi,
   'cinnabar-lab': cinnabarLab,
   'house-that-draws-itself': houseThatDrawsItself,
+  'the-meridian-engine': meridianEngine,
 };
 
 export default rooms;

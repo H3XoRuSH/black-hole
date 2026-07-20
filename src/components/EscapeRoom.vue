@@ -45,7 +45,7 @@
           </div>
           <div class="flex justify-center mt-4">
             <button
-              @click="showIntro = false"
+              @click="beginGame"
               class="bg-amber-600 hover:bg-amber-500 text-white font-semibold px-6 py-2.5 rounded-xl transition-all duration-150 cursor-pointer active:scale-95 text-base"
             >
               Begin
@@ -289,10 +289,9 @@ export default defineComponent({
 
     const { showToast } = useToast();
     const answer = ref('');
-    const showIntro = ref(true);
+    const showIntro = computed(() => !gameState.value.introAcknowledged);
     const showSolvedPuzzles = ref(false);
     const prevSolvedCount = ref(0);
-    const localHintCount = ref(0);
 
     const audioCtx = ref<AudioContext | null>(null);
     const isSoundPlaying = ref(false);
@@ -451,7 +450,6 @@ export default defineComponent({
       (newCount) => {
         if (newCount > prevSolvedCount.value && newCount > 0) {
           stopSound();
-          localHintCount.value = 0;
           const justSolved = gameState.value.puzzles[gameState.value.solvedPuzzles[newCount - 1]];
           if (justSolved) {
             const currentLocId = justSolved.locationId;
@@ -493,10 +491,8 @@ export default defineComponent({
         if (newState.totalMoves === 0 && !newState.puzzles?.length) {
           stopSound();
           answer.value = '';
-          showIntro.value = true;
           showSolvedPuzzles.value = false;
           prevSolvedCount.value = 0;
-          localHintCount.value = 0;
         }
       },
     });
@@ -516,12 +512,19 @@ export default defineComponent({
       if (gameState.value.hintsUsed >= gameState.value.maxHints) return;
       const current = gameState.value.puzzles?.find((p: EscapeRoomPuzzle) => !p.solved);
       if (!current) return;
-      if (localHintCount.value >= current.hints.length) return;
+      if ((current.hintsRevealed || 0) >= current.hints.length) return;
       props.socket.emit('make-move', {
         roomKey: props.roomKey,
         action: 'request-hint',
       });
-      localHintCount.value++;
+    }
+
+    function beginGame() {
+      if (!props.socket || gameState.value.introAcknowledged) return;
+      props.socket.emit('make-move', {
+        roomKey: props.roomKey,
+        action: 'begin-game',
+      });
     }
 
     const locationOrder = computed(() => {
@@ -539,9 +542,9 @@ export default defineComponent({
       closeHowToPlay,
       submitAnswer,
       requestHint,
+      beginGame,
       getPuzzleLocationName,
       locationOrder,
-      localHintCount,
       isSoundPlaying,
       playPuzzleSound,
       splitArtSegments,
@@ -579,12 +582,12 @@ export default defineComponent({
     revealedHints(): string[] {
       const current = this.currentPuzzle;
       if (!current) return [];
-      return current.hints.slice(0, this.localHintCount);
+      return current.hints.slice(0, current.hintsRevealed || 0);
     },
     currentPuzzleHintsRemaining(): number {
       const current = this.currentPuzzle;
       if (!current) return 0;
-      return Math.max(0, current.hints.length - this.localHintCount);
+      return Math.max(0, current.hints.length - (current.hintsRevealed || 0));
     },
     hintButtonText(): string {
       const globalRemaining = (this.gameState.maxHints || 0) - (this.gameState.hintsUsed || 0);
