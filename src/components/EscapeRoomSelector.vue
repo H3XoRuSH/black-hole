@@ -9,7 +9,7 @@
   >
     <div class="space-y-4">
       <!-- Search & Filter -->
-      <div class="flex gap-2 mt-1">
+      <div class="sticky top-0 z-10 flex gap-2 mt-1" :class="theme === 'light' ? 'bg-white' : 'bg-slate-900'">
         <div class="relative flex-1">
           <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" :class="theme === 'light' ? 'text-gray-400' : 'text-slate-400'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -49,13 +49,17 @@
           v-for="room in sortedRooms"
           :key="room.id"
           @click="selectRoom(room.id)"
-          class="group text-left rounded-xl border-2 transition-all duration-200 overflow-hidden focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+          :disabled="!!roomImage(room.id) && !imagesLoaded[room.id]"
+          class="group text-left rounded-xl border-2 transition-all duration-200 overflow-hidden focus:outline-none focus:ring-2 focus:ring-indigo-500"
           :class="[
             room.id === selectedRoomId
               ? 'border-indigo-500 shadow-lg shadow-indigo-500/20'
               : theme === 'light'
                 ? 'border-gray-200 hover:border-gray-300 hover:shadow-md'
                 : 'border-slate-700 hover:border-slate-500 hover:shadow-md',
+            !!roomImage(room.id) && !imagesLoaded[room.id]
+              ? 'cursor-not-allowed opacity-60'
+              : 'cursor-pointer',
           ]"
         >
           <!-- Theme Image -->
@@ -67,8 +71,16 @@
               v-if="roomImage(room.id)"
               :src="roomImage(room.id)"
               :alt="room.name"
-              class="absolute inset-0 w-full h-full object-cover"
+              class="absolute inset-0 w-full h-full object-cover transition-opacity duration-300"
+              :class="imagesLoaded[room.id] ? 'opacity-100' : 'opacity-0'"
+              @load="onImageLoad(room.id)"
             />
+            <div
+              v-if="roomImage(room.id) && !imagesLoaded[room.id]"
+              class="absolute inset-0 flex items-center justify-center bg-black/40 z-10"
+            >
+              <span class="text-white text-3xl font-bold animate-pulse select-none">...</span>
+            </div>
             <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
             <div class="absolute bottom-2 right-2 z-10">
               <svg class="w-5 h-5 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
@@ -141,6 +153,11 @@ export default defineComponent({
   setup(props, { emit }) {
     const searchQuery = ref('');
     const difficultyFilter = ref('');
+    const imagesLoaded = ref<Record<string, boolean>>({});
+
+    const onImageLoad = (id: string) => {
+      imagesLoaded.value[id] = true;
+    };
 
     const difficultyOrder: Record<string, number> = {
       'very-easy': 0,
@@ -255,8 +272,10 @@ export default defineComponent({
     return {
       searchQuery,
       difficultyFilter,
+      imagesLoaded,
       sortedRooms,
       selectRoom,
+      onImageLoad,
       difficultyLabel,
       starColor,
       difficultyBadgeClass,
