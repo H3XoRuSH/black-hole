@@ -271,39 +271,19 @@
           <!-- Escape Room Options (host only) -->
           <div v-if="gameId === 'escape-room' && isHost" class="pt-4 border-t border-gray-100 dark:border-slate-700">
             <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Escape Room</h4>
-            <div class="relative">
-              <label class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1 block">Select Room</label>
-              <button
-                @click="roomDropdownOpen = !roomDropdownOpen"
-                class="w-full flex items-center justify-between text-xs font-semibold py-2 px-3 bg-white dark:bg-slate-600 border border-gray-300 dark:border-slate-500 rounded-xl shadow-sm cursor-pointer dark:text-gray-200 hover:border-gray-400 dark:hover:border-slate-400 transition-colors"
-              >
-                <span class="flex items-center gap-2">
-                  <span :class="starColor(selectedRoomDifficulty)" class="text-[18px] leading-none">{{ roomStars(selectedRoomDifficulty) }}</span>
-                  <span>{{ selectedRoomName }}</span>
-                </span>
-                <svg class="w-4 h-4 text-gray-400 transition-transform" :class="{ 'rotate-180': roomDropdownOpen }" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                </svg>
-              </button>
-              <div
-                v-if="roomDropdownOpen"
-                class="absolute z-20 mt-1 w-full bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl shadow-lg overflow-hidden"
-              >
-                <div
-                  v-for="room in availableEscapeRooms"
-                  :key="room.id"
-                  @click="selectRoom(room.id)"
-                  class="flex items-center gap-2 px-3 py-2.5 text-xs font-semibold cursor-pointer transition-colors"
-                  :class="room.id === selectedEscapeRoom
-                    ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-600'"
-                >
-                  <span :class="starColor(room.difficulty)" class="text-[18px] leading-none">{{ roomStars(room.difficulty) }}</span>
-                  <span class="text-xs">{{ room.name }}</span>
-                </div>
-              </div>
-              <div v-if="roomDropdownOpen" @click="roomDropdownOpen = false" class="fixed inset-0 z-10"></div>
-            </div>
+            <label class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1 block">Select Room</label>
+            <button
+              @click="openEscapeRoomSelector"
+              class="w-full flex items-center justify-between text-xs font-semibold py-2 px-3 bg-white dark:bg-slate-600 border border-gray-300 dark:border-slate-500 rounded-xl shadow-sm cursor-pointer dark:text-gray-200 hover:border-gray-400 dark:hover:border-slate-400 transition-colors"
+            >
+              <span class="flex items-center gap-2">
+                <span :class="starColor(selectedRoomDifficulty)" class="text-[18px] leading-none">{{ roomStars(selectedRoomDifficulty) }}</span>
+                <span>{{ selectedRoomName || 'Choose a room...' }}</span>
+              </span>
+              <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 8v8m4-8v8m4-8v8m4-8v8" />
+              </svg>
+            </button>
           </div>
 
           <!-- Toggle Ready and Start Game buttons -->
@@ -365,6 +345,16 @@
     </div>
   </div>
 
+  <!-- Escape Room Selector Modal -->
+  <EscapeRoomSelector
+    :is-open="isEscapeRoomSelectorOpen"
+    :available-rooms="availableEscapeRooms"
+    :selected-room-id="selectedEscapeRoom"
+    :theme="selectorTheme"
+    @close="closeEscapeRoomSelector"
+    @select-room="onSelectEscapeRoom"
+  />
+
   <!-- QR Code Modal -->
   <BaseModal
     :is-open="isQRModalOpen"
@@ -390,10 +380,11 @@ import { Socket } from 'socket.io-client';
 import QRCode from 'qrcode';
 import WaitingIndicator from './WaitingIndicator.vue';
 import BaseModal from './BaseModal.vue';
+import EscapeRoomSelector from './EscapeRoomSelector.vue';
 import gamesData from '../assets/games.json';
 
 export default defineComponent({
-  components: { WaitingIndicator, BaseModal },
+  components: { WaitingIndicator, BaseModal, EscapeRoomSelector },
   emits: ['update-connection-status', 'update-player', 'update-room-key'],
   props: {
     socket: {
@@ -427,7 +418,9 @@ export default defineComponent({
       pictionaryTimer: 60,
       pictionaryRounds: 2,
       selectedEscapeRoom: 'abandoned-lab',
-      roomDropdownOpen: false,
+      isEscapeRoomSelectorOpen: false,
+      pageDarkMode: document.documentElement.classList.contains('dark'),
+      darkModeObserver: null as MutationObserver | null,
     };
   },
   computed: {
@@ -478,6 +471,9 @@ export default defineComponent({
     selectedRoomDifficulty(): string {
       const room = this.availableEscapeRooms.find((r) => r.id === this.selectedEscapeRoom);
       return room?.difficulty || '';
+    },
+    selectorTheme(): string {
+      return this.pageDarkMode ? 'dark' : 'light';
     },
   },
   watch: {
@@ -558,9 +554,18 @@ export default defineComponent({
         roundsPerPlayer: this.pictionaryRounds,
       });
     },
+    openEscapeRoomSelector() {
+      this.isEscapeRoomSelectorOpen = true;
+    },
+    closeEscapeRoomSelector() {
+      this.isEscapeRoomSelectorOpen = false;
+    },
+    onSelectEscapeRoom(id: string) {
+      this.selectedEscapeRoom = id;
+      this.updateEscapeRoomOptions();
+    },
     selectRoom(id: string) {
       this.selectedEscapeRoom = id;
-      this.roomDropdownOpen = false;
       this.updateEscapeRoomOptions();
     },
     updateEscapeRoomOptions() {
@@ -668,6 +673,15 @@ export default defineComponent({
       this.socket.emit('leave-room', { roomKey: this.roomKey });
     }
     next();
+  },
+  mounted() {
+    this.darkModeObserver = new MutationObserver(() => {
+      this.pageDarkMode = document.documentElement.classList.contains('dark');
+    });
+    this.darkModeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+  },
+  beforeUnmount() {
+    this.darkModeObserver?.disconnect();
   },
 });
 </script>
