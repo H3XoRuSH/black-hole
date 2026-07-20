@@ -212,6 +212,7 @@ export interface EscapeRoomPuzzle {
   question: string;
   answer: string;
   hints: string[];
+  hintsRevealed?: number;
   solved?: boolean;
   sound?: SoundPuzzle;
 }
@@ -251,6 +252,7 @@ export interface EscapeRoomGameState {
   solvedPuzzles: number[];
   lastAction: { playerNumber: number; action: string; correct: boolean } | null;
   moveHistory?: any[];
+  introAcknowledged?: boolean;
 }
 
 export interface InfiniteWordChainGameState {

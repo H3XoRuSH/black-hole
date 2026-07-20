@@ -32,6 +32,7 @@ export const createInitialState = (playerId: string): EscapeRoomGameState => {
     maxHints: MAX_GLOBAL_HINTS,
     solvedPuzzles: [],
     lastAction: null,
+    introAcknowledged: false,
   };
 };
 
@@ -51,6 +52,7 @@ export const resetState = (players: Player[]): EscapeRoomGameState => {
     maxHints: MAX_GLOBAL_HINTS,
     solvedPuzzles: [],
     lastAction: null,
+    introAcknowledged: false,
   };
 };
 
@@ -61,7 +63,7 @@ export const onGameStart = (room: Room): void => {
     gameState.roomName = roomData.name;
     gameState.roomDescription = roomData.description;
     gameState.roomIntro = roomData.intro;
-    gameState.puzzles = roomData.puzzles.map((p) => ({ ...p, solved: false }));
+    gameState.puzzles = roomData.puzzles.map((p) => ({ ...p, solved: false, hintsRevealed: 0 }));
     gameState.locations = roomData.locations.map((l) => ({ ...l }));
   }
 };
@@ -128,7 +130,14 @@ export const makeMove = (
     }
 
     gameState.hintsUsed++;
+    currentPuzzle.hintsRevealed = (currentPuzzle.hintsRevealed || 0) + 1;
     gameState.lastAction = { playerNumber, action: 'request-hint', correct: true };
+    return true;
+  }
+
+  if (data.action === 'begin-game') {
+    gameState.introAcknowledged = true;
+    gameState.lastAction = { playerNumber, action: 'begin-game', correct: true };
     return true;
   }
 
