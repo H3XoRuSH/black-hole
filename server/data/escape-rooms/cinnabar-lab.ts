@@ -26,6 +26,7 @@ const data: EscapeRoomData = {
       question: 'The north door\'s keypad has a sticker: "CONVERT THE EIGHT-ENERGY PATTERN TO DECIMAL."\n\nThe keypad blinks, waiting.',
       answer: '150',
       hints: [
+        'Eight spheres, two possible states each — dormant or awakened. There\'s a classic counting system built on exactly two states.',
         'The plaque says dormant shells count for nothing, active bursts for everything. Think in two states — on and off, one and zero.',
         '1 0 0 1 0 1 1 0 in binary is 128 + 16 + 4 + 2 = 150.'
       ]
@@ -37,7 +38,8 @@ const data: EscapeRoomData = {
       question: 'The terminal demands a four-part passcode: "SPEAK THE GRID NUMBERS OF THE FOUR THAT OPENED THE GATE."\n\nThe cursor pulses. Four digits.',
       answer: '2697',
       hints: [
-        'The access log showed four type icons. Match a flame to Fire, a snowflake to Ice, a fissure to Ground, and a fist to Fighting on the numbered grid.',
+        'The security terminal flashed four type icons — flame, snowflake, fissure, fist. The type chart on the wall assigns every type a numbered grid coordinate.',
+        'Match a flame to Fire, a snowflake to Ice, a fissure to Ground, and a fist to Fighting on the numbered grid.',
         'Fire = 2, Ice = 6, Ground = 9, Fighting = 7. Concatenated in order: 2697.'
       ]
     },
@@ -48,6 +50,7 @@ const data: EscapeRoomData = {
       question: 'That four-letter word is the password to the encrypted directory.',
       answer: 'CALL',
       hints: [
+        'That antique display uses a system where each digit hides multiple letters, and the number of presses selects which one. The log recorded four deliberate presses.',
         'The screen looks like an old mobile phone — the kind where you pressed a digit multiple times to cycle through letters. Key 2 cycles A-B-C, key 5 cycles J-K-L.',
         'Key 2 struck 3 times: A(1st), B(2nd), C(3rd) → C. Key 2 struck once → A. Key 5 struck 3 times: J(1st), K(2nd), L(3rd) → L. Key 5 struck 3 times → L. The word is CALL.'
       ]
@@ -59,6 +62,7 @@ const data: EscapeRoomData = {
       question: 'The vault\'s biometric latch expects that final number.',
       answer: '159',
       hints: [
+        'The note says each generation doubles itself and spawns one more. That\'s a two-step operation applied to each number to get the next.',
         'A living culture doesn\'t just add — it splits and spawns. Each count doubles itself, then adds one more. Watch the pattern.',
         'The rule is n × 2 + 1. Apply it to 79: (79 × 2) + 1 = 159.'
       ]
@@ -70,6 +74,7 @@ const data: EscapeRoomData = {
       question: 'The seven cries, laid end to end, sang a single word — a name shared by creator and creation alike.',
       answer: 'PSYCHIC',
       hints: [
+        'The label mentions "runes of the ancient script" — one per tenth of a second. There are exactly twenty-six letters in the alphabet, and the durations are all twenty-six or below.',
         'Seven voices, each measured in tenths of a second. There are twenty-six runes in the ancient script — one for every letter of the alphabet. Each duration names a rune.',
         '16 = P, 19 = S, 25 = Y, 3 = C, 8 = H, 9 = I, 3 = C. The word is PSYCHIC — the type shared by Mew and Mewtwo.'
       ]
@@ -81,18 +86,20 @@ const data: EscapeRoomData = {
       question: 'Beneath the trainer profiles, Fuji had scratched a note to himself — the combination to the specimen manifest:\n\n"Let their names decide the order. Let their arts decide the numbers. Three digits, no spaces."',
       answer: '845',
       hints: [
-        'Three strangers came to Cinnabar years ago. A boy from Pallet with lightning in his pocket. A girl from Cerulean who swam before she walked. A man from Pewter carved from the mountain. Their names, in alphabetical order, hold the sequence.',
+        'Three trainers, three hometowns, three types. Their names are well-known in Kanto — sort them alphabetically, then count the letters of their mastered types.',
+        'The boy from Pallet is Ash (Electric), the girl from Cerulean is Misty (Water), the man from Pewter is Brock (Rock). Count the letters of each type, then order the three results by their trainer names alphabetically.',
         'Ash (Electric = 8 letters), Brock (Rock = 4 letters), Misty (Water = 5 letters). Concatenated in alphabetical order: 845.'
       ]
     },
     {
       id: 'vault-3',
       locationId: 'containment-vault',
-      narrative: 'Against the vault\'s rear wall, seven specimen jars sit in a precise row, each filled with pale blue preservative fluid. Faded labels identify the tissue donors, but the Pokémon names have dissolved away — only Dr. Fuji\'s cryptic shorthand remains, scrawled beneath each jar in fading ink:\n\n"The turtle — its fifth armored plate."\n"The sparrow — its third ruffled quill."\n"The seed-carrier — its third unfurling leaf."\n"The pigeon — its fifth downy feather."\n"The electric mouse — its fourth scarlet cheek-pouch."\n"The flowering lizard — its fifth blooming petal."\n"The evolution child — its very first breath."',
+      narrative: 'Against the vault\'s rear wall, seven specimen jars sit in a precise row, each filled with pale blue preservative fluid. Faded labels identify the tissue donors, but the Pokémon names have dissolved away — only Dr. Fuji\'s cryptic shorthand remains, scrawled beneath each jar in fading ink:\n\n"The turtle — its fifth armored plate."\n"The spear-beak — its third ruffled quill."\n"The bulb-carrier — its third unfurling leaf."\n"The pigeon — its fifth downy feather."\n"The electric mouse — its fourth scarlet cheek-pouch."\n"The flowering frog — its fifth blooming petal."\n"The evolution child — its very first breath."',
       question: 'Seven jars, seven clues. Left to right, they give up a single word — one letter each.',
       answer: 'RELEASE',
       hints: [
-        'Fuji spoke in riddles to protect his specimens. A turtle, a sparrow, a seed-carrier — each one hides a letter at the depth he specified. Seven jars, seven letters.',
+        'Each jar holds tissue from a distinct Pokémon. The riddles hint at both the species and a specific position within its name.',
+        'Fuji spoke in riddles to protect his specimens. A turtle, a spear-beak, a bulb-carrier — each one hides a letter at the depth he specified. Seven jars, seven letters.',
         'Extract the letters by position: Squirtle 5th = R, Spearow 3rd = E, Bulbasaur 3rd = L, Pidgey 5th = E, Pikachu 4th = A, Venusaur 5th = S, Eevee 1st = E. The word is RELEASE.'
       ]
     },
@@ -103,6 +110,7 @@ const data: EscapeRoomData = {
       question: 'Seven input boxes await, one for each label. The terminal expects the seven characters typed as a single passcode — no spaces. What code opens the vault?',
       answer: '17A9S8E',
       hints: [
+        'The Unown are testing your memory. Each cryptic label describes a specific character from one of your previous answers — listed in the order you solved them.',
         'The Unown speak in echoes. "The binary egg" points to the first door you unlocked. Each label is a map back to a puzzle you\'ve already solved — extract exactly the character they describe.',
         'Concatenate the seven extracted characters in order: 1 + 7 + A + 9 + S + 8 + E = 17A9S8E.'
       ]
