@@ -272,18 +272,37 @@
           <div v-if="gameId === 'escape-room' && isHost" class="pt-4 border-t border-gray-100 dark:border-slate-700">
             <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Escape Room</h4>
             <label class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1 block">Select Room</label>
-            <button
-              @click="openEscapeRoomSelector"
-              class="w-full flex items-center justify-between text-xs font-semibold py-2 px-3 bg-white dark:bg-slate-600 border border-gray-300 dark:border-slate-500 rounded-xl shadow-sm cursor-pointer dark:text-gray-200 hover:border-gray-400 dark:hover:border-slate-400 transition-colors"
-            >
-              <span class="flex items-center gap-2">
-                <span :class="starColor(selectedRoomDifficulty)" class="text-[18px] leading-none">{{ roomStars(selectedRoomDifficulty) }}</span>
-                <span>{{ selectedRoomName || 'Choose a room...' }}</span>
-              </span>
-              <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M4 8v8m4-8v8m4-8v8m4-8v8" />
-              </svg>
-            </button>
+            <div class="flex gap-2 mb-3">
+              <button
+                @click="openEscapeRoomSelector"
+                class="flex-1 flex items-center justify-between text-xs font-semibold py-2 px-3 bg-white dark:bg-slate-600 border border-gray-300 dark:border-slate-500 rounded-xl shadow-sm cursor-pointer dark:text-gray-200 hover:border-gray-400 dark:hover:border-slate-400 transition-colors"
+              >
+                <span class="flex items-center gap-2 overflow-hidden h-[22px]">
+                  <span class="text-[18px] leading-none roulette-cell" :class="[starColor(cyclingDifficulty || selectedRoomDifficulty), { 'roulette-cycling': diceSpinning }]">{{ roomStars(cyclingDifficulty || selectedRoomDifficulty) }}</span>
+                  <span class="roulette-cell" :class="{ 'roulette-cycling': diceSpinning }">{{ diceSpinning ? cyclingRoomName || '...' : (selectedRoomName || 'Choose a room...') }}</span>
+                </span>
+                <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M4 8v8m4-8v8m4-8v8m4-8v8" />
+                </svg>
+              </button>
+              <button
+                @click="randomEscapeRoom"
+                class="cursor-pointer flex items-center justify-center bg-white dark:bg-slate-600 border border-gray-300 dark:border-slate-500 rounded-xl w-[42px] h-[42px] text-gray-500 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-300 dark:hover:border-indigo-500 shadow-sm transition-all duration-200 flex-shrink-0"
+                title="Pick a random room"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" :class="{ 'dice-spin': diceSpinning }" @animationend="diceSpinning = false" viewBox="0 0 511.771 511.771" fill="currentColor">
+                  <path d="M506.771,100.257c0-4.289-2.415-7.773-5.734-8.942c-1.412-0.804-2.783-1.318-3.998-1.435L253.514-0.314c-1.829-0.914-4.571-0.914-6.4,0L11.09,81.386c-1.733,0.019-3.385,0.451-4.433,1.499c-0.566,0.566-1.126,1.228-1.638,1.943C3.765,86.354,3,88.275,3,90.2v310.857c0,3.657,1.829,7.314,5.486,8.229L246.2,509.857c0.914,0.914,2.743,0.914,3.657,0.914c0.627,0,1.253-0.007,1.88-0.302c0.849-0.261,1.616-0.665,2.198-1.107l245.522-90.934c3.657-0.914,6.4-4.571,6.4-8.229V104.338C506.437,103.194,506.771,101.838,506.771,100.257z M249.857,17.971l219.429,80.457l-219.429,73.143L38.657,90.2L249.857,17.971z M21.286,103.914l219.429,84.114v299.886L21.286,394.657V103.914z M259,487.914V188.943l228.571-76.19v290.133L259,487.914z" stroke="currentColor" stroke-width="15"/>
+                  <path d="M450.086,154.2c-10.057,0-17.371,10.057-17.371,21.943c0,11.886,8.229,21.943,17.371,21.943c10.057,0,17.371-10.057,17.371-21.943C467.457,164.257,459.229,154.2,450.086,154.2z"/>
+                  <path d="M378.771,263.914c-10.057,0-17.371,10.057-17.371,21.943c0,11.886,8.229,21.943,17.371,21.943c10.057,0,17.371-10.057,17.371-21.943C396.143,273.971,388.829,263.914,378.771,263.914z"/>
+                  <path d="M312.943,384.6c-10.057,0-17.371,10.057-17.371,21.943c0,11.886,8.229,21.943,17.371,21.943c10.057,0,17.371-10.057,17.371-21.943C330.314,394.657,322.086,384.6,312.943,384.6z"/>
+                  <path d="M189.514,199.914c-10.057,0-17.371,10.057-17.371,21.943c0,11.886,8.229,21.943,17.371,21.943c10.057,0,17.371-10.057,17.371-21.943C206.886,209.971,199.571,200.829,189.514,199.914z"/>
+                  <path d="M57.857,145.971c-9.143,0-17.371,10.057-17.371,21.943c0,11.886,8.229,21.943,17.371,21.943c10.057,0,17.371-10.057,17.371-21.943C75.229,155.114,67.914,145.971,57.857,145.971z"/>
+                  <path d="M186.771,391.914c-10.057,0-17.371,10.057-17.371,21.943s8.229,21.943,17.371,21.943c10.057,0,17.371-10.057,17.371-21.943C204.143,401.971,196.829,391.914,186.771,391.914z"/>
+                  <path d="M57.857,338.886c-10.057,0-17.371,10.057-17.371,21.943c0,11.886,8.229,21.943,17.371,21.943c9.143,0,16.457-10.057,16.457-21.943C74.314,348.943,67,338.886,57.857,338.886z"/>
+                  <path d="M271.8,93.857c0-10.057-10.057-17.371-21.943-17.371c-11.886,0-21.943,7.314-21.943,17.371c0,10.057,10.057,17.371,21.943,17.371C261.743,111.229,271.8,103,271.8,93.857z"/>
+                </svg>
+              </button>
+            </div>
           </div>
 
           <!-- Toggle Ready and Start Game buttons -->
@@ -419,6 +438,9 @@ export default defineComponent({
       pictionaryRounds: 2,
       selectedEscapeRoom: 'abandoned-lab',
       isEscapeRoomSelectorOpen: false,
+      diceSpinning: false,
+      cyclingRoomName: '',
+      cyclingDifficulty: '',
       pageDarkMode: document.documentElement.classList.contains('dark'),
       darkModeObserver: null as MutationObserver | null,
     };
@@ -445,7 +467,7 @@ export default defineComponent({
       return !!me?.ready;
     },
     canStartGame(): boolean {
-      return this.players.length >= this.minPlayers && this.players.every((p: any) => p.ready);
+      return !this.diceSpinning && this.players.length >= this.minPlayers && this.players.every((p: any) => p.ready);
     },
     categories(): Array<{ slug: string; name: string }> {
       return [
@@ -568,6 +590,25 @@ export default defineComponent({
       this.selectedEscapeRoom = id;
       this.updateEscapeRoomOptions();
     },
+    randomEscapeRoom() {
+      if (this.diceSpinning) return;
+      const rooms = this.availableEscapeRooms;
+      if (rooms.length === 0) return;
+      this.diceSpinning = true;
+      const cycle = setInterval(() => {
+        const r = rooms[Math.floor(Math.random() * rooms.length)];
+        this.cyclingRoomName = r.name;
+        this.cyclingDifficulty = r.difficulty;
+      }, 60);
+      setTimeout(() => {
+        clearInterval(cycle);
+        const random = rooms[Math.floor(Math.random() * rooms.length)];
+        this.cyclingRoomName = '';
+        this.cyclingDifficulty = '';
+        this.selectedEscapeRoom = random.id;
+        this.updateEscapeRoomOptions();
+      }, 500);
+    },
     updateEscapeRoomOptions() {
       if (!this.socket || !this.roomKey) return;
       this.socket.emit('set-escape-room-options', {
@@ -685,3 +726,23 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+@keyframes dice-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.dice-spin {
+  animation: dice-spin 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+.roulette-cell {
+  display: inline-block;
+}
+.roulette-cycling {
+  animation: roulette-flip 0.06s ease-in-out infinite alternate;
+}
+@keyframes roulette-flip {
+  from { transform: translateY(-2px); opacity: 0.6; }
+  to { transform: translateY(2px); opacity: 1; }
+}
+</style>
