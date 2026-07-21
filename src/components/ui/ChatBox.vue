@@ -99,7 +99,11 @@ export default defineComponent({
 
     let previousSocket: Socket | null = null;
 
-    const visible = computed(() => !!props.roomKey && !!props.socket);
+    const visible = computed(() => {
+      if (!props.roomKey || !props.socket) return false;
+      const humanPlayers = props.players.filter((p) => !p.isAI);
+      return humanPlayers.length >= 2;
+    });
 
     function scrollToBottom() {
       nextTick(() => {
