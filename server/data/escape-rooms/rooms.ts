@@ -7,6 +7,7 @@ import cinnabarLab from './cinnabar-lab.js';
 import houseThatDrawsItself from './house-that-draws-itself.js';
 import meridianEngine from './the-meridian-engine.js';
 import theBloodline from './the-bloodline.js';
+import cockroachNest from './cockroach-nest.js';
 
 const rooms: Record<string, EscapeRoomData> = {
   'abandoned-lab': abandonedLab,
@@ -17,6 +18,7 @@ const rooms: Record<string, EscapeRoomData> = {
   'house-that-draws-itself': houseThatDrawsItself,
   'the-meridian-engine': meridianEngine,
   'the-bloodline': theBloodline,
+  'cockroach-nest': cockroachNest,
 };
 
 export default rooms;
