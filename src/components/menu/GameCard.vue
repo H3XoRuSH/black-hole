@@ -114,7 +114,7 @@ export default defineComponent({
 }
 
 .dark .card-3d:hover {
-  transform: translateY(-6px) scale(1.02);
+  transform: translateY(-6px) scale(1.01);
   box-shadow:
     8px 7px 0 rgba(0,0,0,0.22),
     14px 15px 0 rgba(0,0,0,0.16),
