@@ -4,7 +4,7 @@ const data: EscapeRoomData = {
   id: 'abandoned-lab',
   name: 'The Abandoned Lab',
   description: 'A mysterious laboratory abandoned decades ago. Solve the puzzles left behind by the missing scientists to escape!',
-  difficulty: 'very-easy',
+  difficulty: 'easy',
   intro: 'The emergency lights died three hours ago. You\'ve been reading Dr. Harrison\'s field journal by the flicker of a dying flashlight, piecing together what happened here. The pages are frantic: containment failures, research that crossed lines, a lockdown initiated from the inside. His last entry reads:\n\n"If someone finds this, I\'ve sealed the lab to protect what\'s outside — and what\'s inside. I\'ve left my work scattered like breadcrumbs. Follow them. Find the exit I couldn\'t reach."\n\nThe flashlight sputters out. Somewhere, a generator kicks in — the lab is still alive. And you are still inside.',
   locations: [
     {

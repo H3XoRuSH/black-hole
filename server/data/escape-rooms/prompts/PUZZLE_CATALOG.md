@@ -1,7 +1,7 @@
 # Escape Room Puzzle Catalog
 
-## Abandoned Lab (8) — Difficulty: ★☆☆☆☆ (Very Easy)
-Straightforward number codes, basic arithmetic, and simple riddles. Ideal for first-time players.
+## Abandoned Lab (8) — Difficulty: ★★☆☆☆ (Easy)
+Straightforward number codes, basic arithmetic, and simple riddles. A gentle introduction with a few steps that require a moment of thought.
 foyer-1: number-code — reverse birthday digits 5/18/53 → 35815
 foyer-2: logic-puzzle — find person with most stars, combine name length + star count → 35
 foyer-3: system-of-equations — solve △+○=7, ○+□=9, □+△=8 for 3-digit code → 345
@@ -97,8 +97,8 @@ core-2: inclusion-exclusion — count numbers 1–360 not divisible by 2, 3, or 
 core-3: modular-arithmetic — 7ⁿ mod 1000 cycles every 20 turns; final three digits after 2026 turns → 649
 core-4: meta-puzzle — sum each chamber's numbers, keep only the last digit per band, combine into 3-digit code → 863
 
-## The Bloodline (8) — Difficulty: ★★☆☆☆ (Easy)
-A gothic vampire's keep. Mirror-reversal text, an epitaph riddle, a melody-spelling music box with labelled comb, a numbered cipher-grid, century-ordering acrostic, Roman numeral book pages, genealogy-tree BFS extraction, and a meta-puzzle.
+## The Bloodline (8) — Difficulty: ★☆☆☆☆ (Very Easy)
+A gothic vampire's keep. Mirror-reversal text, an epitaph riddle, a melody-spelling music box with labelled comb, a numbered cipher-grid, century-ordering acrostic, Roman numeral book pages, genealogy-tree BFS extraction, and a meta-puzzle. Pure single-step observation — no deduction chains.
 crypt-1: mirror-reversal — reverse-carved word E-T-A-G read in a mirror → gate
 crypt-2: riddle — epitaph asks what outlasts even vampire blood → dust
 crypt-3: sound-puzzle (melody) — music box plays D4,E4,A4,D4; labelled comb inside shows teeth C-D-E-F-G-A-B → dead
