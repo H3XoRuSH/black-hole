@@ -275,12 +275,12 @@
             <div class="flex gap-2 mb-3">
               <button
                 @click="openEscapeRoomSelector"
-                class="flex-1 flex items-center justify-between text-xs font-semibold py-2 px-3 bg-white dark:bg-slate-600 border border-gray-300 dark:border-slate-500 rounded-xl shadow-sm cursor-pointer dark:text-gray-200 hover:border-gray-400 dark:hover:border-slate-400 transition-colors"
+                class="flex-1 flex items-center justify-between text-sm font-semibold py-2 px-3 bg-white dark:bg-slate-600 border border-gray-300 dark:border-slate-500 rounded-xl shadow-sm cursor-pointer dark:text-gray-200 hover:border-gray-400 dark:hover:border-slate-400 transition-colors overflow-hidden min-w-0"
               >
-                <span class="flex items-center gap-2 overflow-hidden h-[22px]">
-                  <span class="text-[18px] leading-none roulette-cell" :class="[starColor(cyclingDifficulty || selectedRoomDifficulty), { 'roulette-cycling': diceSpinning }]">{{ roomStars(cyclingDifficulty || selectedRoomDifficulty) }}</span>
-                  <span class="roulette-cell" :class="{ 'roulette-cycling': diceSpinning }">{{ diceSpinning ? cyclingRoomName || '...' : (selectedRoomName || 'Choose a room...') }}</span>
-                </span>
+                  <span class="flex items-center gap-3 overflow-hidden h-[22px]">
+                    <span class="text-sm leading-none roulette-cell shrink-0" :class="[starColor(cyclingDifficulty || selectedRoomDifficulty), { 'roulette-cycling': diceSpinning }]">{{ roomStars(cyclingDifficulty || selectedRoomDifficulty) }}</span>
+                    <span class="roulette-cell truncate min-w-0" :class="{ 'roulette-cycling': diceSpinning }">{{ diceSpinning ? cyclingRoomName || '...' : (selectedRoomName || 'Choose a room...') }}</span>
+                  </span>
                 <svg class="w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M4 8v8m4-8v8m4-8v8m4-8v8" />
                 </svg>
@@ -691,7 +691,7 @@ export default defineComponent({
         'extreme': 5,
       };
       const n = count[difficulty] || 0;
-      return '★'.repeat(n) + '☆'.repeat(5 - n);
+      return `${n} ★`;
     },
     playerColorClasses(playerNum: number) {
       const colors = [
