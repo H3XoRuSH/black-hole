@@ -67,6 +67,17 @@ vault-2: logic-puzzle — deduce 3 trainers' types from profiles, count letters 
 vault-3: letter-position-extraction — identify 7 Pokémon from cryptic descriptions, extract specified letter positions → RELEASE
 vault-4: meta-puzzle — extract characters from all 7 earlier answers via cryptic Unown labels → 17A9S8E
 
+## The Cockroach Nest (8) — Difficulty: ★☆☆☆☆ (Very Easy)
+A cockroach-infested apartment where every puzzle is a single-step arithmetic, counting, or riddle observation. Straightforward and thematic.
+kitchen-1: number-sum — add roach dropping cluster sizes → 14
+kitchen-2: letter-count — count E's in five food labels → 6
+kitchen-3: number-sequence — even numbers +2: 2,4,6,8,? → 10
+livingroom-1: number-sum — product of three highlighted numbers → 30
+livingroom-2: word-problem — 12→×2→×2→+6 → 54
+livingroom-3: riddle — insect leg count → 6
+bedroom-1: shape-number — identify numbers from shapes: 8(figure-eight)+3(triangle)+7(L) → 18
+bedroom-2: meta-puzzle — combine digits from kitchen-1, kitchen-2, livingroom-2, bedroom-1 → 4648
+
 ## The House That Draws Itself (12) — Difficulty: ★★★★☆ (Hard)
 A surreal architectural nightmare where rooms nest inside one another. Heavy use of sound puzzles, ASCII art diagrams, and a multi-step meta-puzzle. Novel shared-edge extraction mechanic debuts here.
 borrowed-entrance-1: sound-puzzle (pitch-sequence) + ascii-art — hear high/medium/low tones, match to windows on a floor-plan diagram → BELLKEYLAMP
@@ -109,11 +120,11 @@ throne-1: genealogy-extraction (ascii-art) — BFS first-letter read of family t
 throne-2: meta-puzzle — letters in gate(4), letters in crypt(5), page of Book II(1), letters in dead(4) → 4514
 
 ## Frequency
-meta-puzzle: 8 | riddle: 4 | caesar-cipher: 1 | vigenère-cipher: 2 | atbash-cipher: 1 | rail-fence-cipher: 1 | system-of-equations: 3 | logic-grid: 3 | number-sequence: 5 | acrostic: 3 | anagram: 2 | hidden-word: 2 | number-sum: 2 | letter-number: 2 | logic-puzzle: 4 | word-chain: 2
-steganography: 1 | roman-numerals: 2 | periodic-table: 1 | double-definition: 1 | word-fragments: 1 | word-ladder: 1 | symbol-mapping: 1 | compound-word: 1 | word-manipulation: 1 | morse-code: 1 | magic-square: 1 | binary-encoding: 1 | type-chart-lookup: 1 | multi-tap-phone-keypad: 1 | letter-position-extraction: 1 | pattern-recognition: 1 | letter-count: 1 | number-code: 1
+meta-puzzle: 9 | riddle: 5 | caesar-cipher: 1 | vigenère-cipher: 2 | atbash-cipher: 1 | rail-fence-cipher: 1 | system-of-equations: 3 | logic-grid: 3 | number-sequence: 6 | acrostic: 3 | anagram: 2 | hidden-word: 2 | number-sum: 4 | letter-number: 2 | logic-puzzle: 4 | word-chain: 2
+steganography: 1 | roman-numerals: 2 | periodic-table: 1 | double-definition: 1 | word-fragments: 1 | word-ladder: 1 | symbol-mapping: 1 | compound-word: 1 | word-manipulation: 1 | morse-code: 1 | magic-square: 1 | binary-encoding: 1 | type-chart-lookup: 1 | multi-tap-phone-keypad: 1 | letter-position-extraction: 1 | pattern-recognition: 1 | letter-count: 2 | number-code: 1
 modular-arithmetic: 2 | area-calculation: 1 | combinatorics: 2 | prime-factorization: 1 | shortest-path: 1 | median: 1 | inclusion-exclusion: 1
 sound-puzzle: 3 | ascii-art: 6 | shared-edge-extraction: 1
-mirror-reversal: 1 | genealogy-extraction: 1 | century-ordering-acrostic: 1 | grid-lookup: 1
+mirror-reversal: 1 | genealogy-extraction: 1 | century-ordering-acrostic: 1 | grid-lookup: 1 | word-problem: 1 | shape-number: 1
 
 ## New Capabilities (available for new rooms)
 
