@@ -4,7 +4,7 @@ const data: EscapeRoomData = {
   id: 'the-bloodline',
   name: 'The Bloodline',
   description: 'You wake sealed inside a coffin in the crypt of an ancient vampire\'s keep. Three locked chambers stand between you and the dawn — each guarded by the castle\'s long memory.',
-  difficulty: 'easy',
+  difficulty: 'very-easy',
   intro: 'Cold. Dark. The smell of soil and candle wax.\n\nYour fingers find splinters — wood above you, wood below. A muffled thudding pulls you back to awareness: your own heartbeat, too loud, too close.\n\nYou push. The lid groans and gives, crashing aside into dust-choked air. You are in a crypt. You do not know how you got here. Your memory holds only a road, a storm, and a castle rising black against the lightning — and then nothing.\n\nPhosphorescent blue flames shiver in iron sconces along the stone walls. A great door at the top of a narrow stair stands sealed with layered locks. Below it, chalked in archaic lettering, a single line:\n\n"Only the knowing may pass."\n\nSomewhere above, in the dark, something stirs.',
   locations: [
     {
