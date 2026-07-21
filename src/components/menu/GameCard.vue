@@ -1,7 +1,7 @@
 <template>
   <!-- List variant -->
   <div v-if="variant === 'list'"
-    class="bg-white dark:bg-slate-800 rounded-2xl shadow-md border border-gray-200 dark:border-slate-700 p-5 flex items-center justify-between transition-[transform,box-shadow] duration-300 hover:shadow-lg hover:-translate-y-0.5 border-l-4"
+    class="bg-white dark:bg-slate-800 rounded-2xl card-3d border border-gray-200 dark:border-slate-700 p-5 flex items-center justify-between border-l-4"
     :style="{ borderLeftColor: game.color }">
     <div class="flex-grow pr-4">
       <div class="flex items-center space-x-2 mb-1">
@@ -21,7 +21,7 @@
 
   <!-- Grid variant -->
   <div v-else-if="variant === 'grid'"
-    class="bg-white dark:bg-slate-800 rounded-2xl shadow-md border border-gray-200 dark:border-slate-700 p-4 sm:p-5 flex flex-col justify-between h-[230px] transition-[transform,box-shadow] duration-300 hover:shadow-lg hover:-translate-y-0.5 border-t-4"
+    class="bg-white dark:bg-slate-800 rounded-2xl card-3d border border-gray-200 dark:border-slate-700 p-4 sm:p-5 flex flex-col justify-between h-[230px] border-t-4"
     :style="{ borderTopColor: game.color }">
     <div>
       <div class="flex items-center justify-between mb-2 min-w-0">
@@ -43,7 +43,7 @@
 
   <!-- Carousel variant (default) -->
   <div v-else
-    class="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-gray-200 dark:border-slate-700 p-6 sm:p-8 flex flex-col justify-between h-[360px] relative overflow-hidden border-t-4"
+    class="bg-white dark:bg-slate-800 rounded-2xl card-3d card-3d--carousel border border-gray-200 dark:border-slate-700 p-6 sm:p-8 flex flex-col justify-between h-[360px] relative border-t-4"
     :style="{ borderTopColor: game.color }">
     <div>
       <div class="flex items-center justify-between mb-4">
@@ -83,3 +83,47 @@ export default defineComponent({
   emits: ['select-game'],
 });
 </script>
+
+<style scoped>
+.card-3d {
+  box-shadow:
+    6px 5px 0 rgba(0,0,0,0.08),
+    11px 12px 0 rgba(0,0,0,0.05),
+    17px 16px 0 rgba(0,0,0,0.03);
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+
+.card-3d:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow:
+    8px 7px 0 rgba(0,0,0,0.1),
+    14px 15px 0 rgba(0,0,0,0.07),
+    22px 21px 0 rgba(0,0,0,0.04);
+}
+
+.card-3d--carousel:hover {
+  transform: none;
+  animation: wiggle 0.7s ease;
+}
+
+.dark .card-3d {
+  box-shadow:
+    6px 5px 0 rgba(0,0,0,0.16),
+    11px 12px 0 rgba(0,0,0,0.12),
+    17px 16px 0 rgba(0,0,0,0.08);
+}
+
+.dark .card-3d:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow:
+    8px 7px 0 rgba(0,0,0,0.22),
+    14px 15px 0 rgba(0,0,0,0.16),
+    22px 21px 0 rgba(0,0,0,0.1);
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  30% { transform: rotate(-0.4deg); }
+  60% { transform: rotate(0.4deg); }
+}
+</style>
