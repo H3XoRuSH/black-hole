@@ -97,11 +97,23 @@ core-2: inclusion-exclusion — count numbers 1–360 not divisible by 2, 3, or 
 core-3: modular-arithmetic — 7ⁿ mod 1000 cycles every 20 turns; final three digits after 2026 turns → 649
 core-4: meta-puzzle — sum each chamber's numbers, keep only the last digit per band, combine into 3-digit code → 863
 
+## The Bloodline (8) — Difficulty: ★★☆☆☆ (Easy)
+A gothic vampire's keep. Mirror-reversal text, an epitaph riddle, a melody-spelling music box with labelled comb, a numbered cipher-grid, century-ordering acrostic, Roman numeral book pages, genealogy-tree BFS extraction, and a meta-puzzle.
+crypt-1: mirror-reversal — reverse-carved word E-T-A-G read in a mirror → gate
+crypt-2: riddle — epitaph asks what outlasts even vampire blood → dust
+crypt-3: sound-puzzle (melody) — music box plays D4,E4,A4,D4; labelled comb inside shows teeth C-D-E-F-G-A-B → dead
+library-1: ascii-art + grid-lookup — candle bases scratched with two-digit row+col codes (21/12/23/34) on a cipher-table → fang
+library-2: century-ordering-acrostic — order 5 vampire elders youngest-to-oldest by Roman numeral century, read first initials → crypt
+library-3: roman-numerals — four open books with ribbon markers at pages III, I, IV, II → 3142
+throne-1: genealogy-extraction (ascii-art) — BFS first-letter read of family tree chiselled in marble → blood
+throne-2: meta-puzzle — letters in gate(4), letters in crypt(5), page of Book II(1), letters in dead(4) → 4514
+
 ## Frequency
-meta-puzzle: 7 | riddle: 3 | caesar-cipher: 1 | vigenère-cipher: 2 | atbash-cipher: 1 | rail-fence-cipher: 1 | system-of-equations: 3 | logic-grid: 3 | number-sequence: 5 | acrostic: 3 | anagram: 2 | hidden-word: 2 | number-sum: 2 | letter-number: 2 | logic-puzzle: 4 | word-chain: 2
-steganography: 1 | roman-numerals: 1 | periodic-table: 1 | double-definition: 1 | word-fragments: 1 | word-ladder: 1 | symbol-mapping: 1 | compound-word: 1 | word-manipulation: 1 | morse-code: 1 | magic-square: 1 | binary-encoding: 1 | type-chart-lookup: 1 | multi-tap-phone-keypad: 1 | letter-position-extraction: 1 | pattern-recognition: 1 | letter-count: 1 | number-code: 1
+meta-puzzle: 8 | riddle: 4 | caesar-cipher: 1 | vigenère-cipher: 2 | atbash-cipher: 1 | rail-fence-cipher: 1 | system-of-equations: 3 | logic-grid: 3 | number-sequence: 5 | acrostic: 3 | anagram: 2 | hidden-word: 2 | number-sum: 2 | letter-number: 2 | logic-puzzle: 4 | word-chain: 2
+steganography: 1 | roman-numerals: 2 | periodic-table: 1 | double-definition: 1 | word-fragments: 1 | word-ladder: 1 | symbol-mapping: 1 | compound-word: 1 | word-manipulation: 1 | morse-code: 1 | magic-square: 1 | binary-encoding: 1 | type-chart-lookup: 1 | multi-tap-phone-keypad: 1 | letter-position-extraction: 1 | pattern-recognition: 1 | letter-count: 1 | number-code: 1
 modular-arithmetic: 2 | area-calculation: 1 | combinatorics: 2 | prime-factorization: 1 | shortest-path: 1 | median: 1 | inclusion-exclusion: 1
-sound-puzzle: 2 | ascii-art: 5 | shared-edge-extraction: 1
+sound-puzzle: 3 | ascii-art: 6 | shared-edge-extraction: 1
+mirror-reversal: 1 | genealogy-extraction: 1 | century-ordering-acrostic: 1 | grid-lookup: 1
 
 ## New Capabilities (available for new rooms)
 
@@ -115,4 +127,4 @@ Puzzles can include an optional `sound: { type, notes }` field. The client rende
 The `question` field can contain ASCII art (box drawings, diagrams, maps) using `|`, `-`, `+`, `^`, `v`, `<`, `>` characters. The client auto-detects and renders in monospace font. No schema change needed — embed directly in the question string using `\n` line breaks.
 
 ## When generating new rooms
-Meta-puzzles are always required as the final puzzle. For the rest, prefer types with count ≤ 1. Avoid repeating ciphers, riddles, system-of-equations, logic-grids, number-sequences, acrostics, anagrams, and hidden-word.
+Meta-puzzles are always required as the final puzzle. For the rest, prefer types with count ≤ 1 (count = 0 is ALWAYS preferred over count = 1). Avoid repeating ciphers, riddles, system-of-equations, logic-grids, number-sequences, acrostics, anagrams, and hidden-word.
