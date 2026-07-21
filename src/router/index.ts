@@ -1,17 +1,17 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import Menu from '../components/Menu.vue';
 import Lobby from '../components/Lobby.vue';
-import BlackHole from '../components/BlackHole.vue';
-import ConnectFour from '../components/ConnectFour.vue';
-import DotsAndBoxes from '../components/DotsAndBoxes.vue';
-import Battleship from '../components/Battleship.vue';
-import Checkers from '../components/Checkers.vue';
-import Bingo from '../components/Bingo.vue';
-import Trivia from '../components/Trivia.vue';
-import InfiniteWordChain from '../components/InfiniteWordChain.vue';
-import Pictionary from '../components/Pictionary.vue';
-import EscapeRoom from '../components/EscapeRoom.vue';
-import Offline from '../components/Offline.vue';
+import BlackHole from '../components/games/BlackHole.vue';
+import ConnectFour from '../components/games/ConnectFour.vue';
+import DotsAndBoxes from '../components/games/DotsAndBoxes.vue';
+import Battleship from '../components/games/Battleship.vue';
+import Checkers from '../components/games/Checkers.vue';
+import Bingo from '../components/games/Bingo.vue';
+import Trivia from '../components/games/Trivia.vue';
+import InfiniteWordChain from '../components/games/InfiniteWordChain.vue';
+import Pictionary from '../components/games/Pictionary.vue';
+import EscapeRoom from '../components/games/EscapeRoom.vue';
+import Offline from '../components/games/Offline.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {

@@ -378,9 +378,9 @@
 import { defineComponent, PropType } from 'vue';
 import { Socket } from 'socket.io-client';
 import QRCode from 'qrcode';
-import WaitingIndicator from './WaitingIndicator.vue';
-import BaseModal from './BaseModal.vue';
-import EscapeRoomSelector from './EscapeRoomSelector.vue';
+import WaitingIndicator from './ui/WaitingIndicator.vue';
+import BaseModal from './ui/BaseModal.vue';
+import EscapeRoomSelector from './games/EscapeRoomSelector.vue';
 import gamesData from '../assets/games.json';
 
 export default defineComponent({

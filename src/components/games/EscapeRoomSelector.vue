@@ -128,8 +128,8 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue';
-import BaseModal from './BaseModal.vue';
-import { getRoomImage } from '../utils/escapeRoomImages.js';
+import BaseModal from '../ui/BaseModal.vue';
+import { getRoomImage } from '../../utils/escapeRoomImages.js';
 
 export default defineComponent({
   components: { BaseModal },

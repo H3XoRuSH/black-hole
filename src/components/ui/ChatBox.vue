@@ -78,7 +78,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref, computed, watch, nextTick, onBeforeUnmount } from 'vue';
-import type { ChatMessage, Player } from '../types/shared.js';
+import type { ChatMessage, Player } from '../../types/shared.js';
 
 const PLAYER_COLORS = ['bg-indigo-500', 'bg-emerald-500', 'bg-amber-500', 'bg-rose-500', 'bg-cyan-500', 'bg-violet-500', 'bg-pink-500', 'bg-blue-500'];
 const PLAYER_TEXT_COLORS = ['text-indigo-400', 'text-emerald-400', 'text-amber-400', 'text-rose-400', 'text-cyan-400', 'text-violet-400', 'text-pink-400', 'text-blue-400'];

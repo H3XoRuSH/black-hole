@@ -3,7 +3,7 @@ import type { Room, TriviaGameState as TGS, ChatMessage } from '../src/types/sha
 import { readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { generateRecap, recapConversation } from './recapService.js';
+import { generateRecap, recapConversation } from './services/recapService.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

@@ -80,8 +80,8 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { useToast } from '../composables/useToast.js';
-import BaseModal from './BaseModal.vue';
+import { useToast } from '../../composables/useToast.js';
+import BaseModal from '../ui/BaseModal.vue';
 
 export default defineComponent({
   name: 'BugReportModal',

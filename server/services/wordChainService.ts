@@ -1,4 +1,4 @@
-import { callDeepSeek } from '../deepseek.js';
+import { callDeepSeek } from './deepseek.js';
 
 const FALLBACK_PAIRS: [string, string][] = [
   // Chain A: coffee → ... → mail → bag → lady → bug
