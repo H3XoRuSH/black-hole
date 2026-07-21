@@ -21,7 +21,7 @@
 
   <!-- Grid variant -->
   <div v-else-if="variant === 'grid'"
-    class="bg-white dark:bg-slate-800 rounded-2xl card-3d border border-gray-200 dark:border-slate-700 p-4 sm:p-5 flex flex-col justify-between h-[230px] border-t-4"
+    class="bg-white dark:bg-slate-800 rounded-2xl card-3d card-3d--grid border border-gray-200 dark:border-slate-700 p-4 sm:p-5 flex flex-col justify-between h-[230px] border-t-4"
     :style="{ borderTopColor: game.color }">
     <div>
       <div class="flex items-center justify-between mb-2 min-w-0">
@@ -101,6 +101,21 @@ export default defineComponent({
     22px 21px 0 rgba(0,0,0,0.04);
 }
 
+.card-3d--grid {
+  box-shadow:
+    6px 6px 0 rgba(0,0,0,0.08),
+    9px 9px 0 rgba(0,0,0,0.05),
+    13px 13px 0 rgba(0,0,0,0.03);
+}
+
+.card-3d--grid:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    6px 6px 0 rgba(0,0,0,0.1),
+    9px 9px 0 rgba(0,0,0,0.07),
+    13px 13px 0 rgba(0,0,0,0.04);
+}
+
 .card-3d--carousel:hover {
   transform: none;
   animation: wiggle 0.7s ease;
@@ -119,6 +134,26 @@ export default defineComponent({
     8px 7px 0 rgba(0,0,0,0.22),
     14px 15px 0 rgba(0,0,0,0.16),
     22px 21px 0 rgba(0,0,0,0.1);
+}
+
+.dark .card-3d--grid {
+  box-shadow:
+    6px 6px 0 rgba(0,0,0,0.16),
+    9px 9px 0 rgba(0,0,0,0.12),
+    13px 13px 0 rgba(0,0,0,0.08);
+}
+
+.dark .card-3d--carousel:hover {
+  transform: none;
+  animation: wiggle 0.7s ease;
+}
+
+.dark .card-3d--grid:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    6px 6px 0 rgba(0,0,0,0.22),
+    9px 9px 0 rgba(0,0,0,0.16),
+    13px 13px 0 rgba(0,0,0,0.1);
 }
 
 @keyframes wiggle {

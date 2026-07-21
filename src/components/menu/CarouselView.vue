@@ -4,7 +4,7 @@
     <div class="overflow-hidden rounded-2xl relative" @touchstart.passive="handleTouchStart" @touchend="handleTouchEnd">
       <div class="flex transition-transform duration-500 ease-in-out"
         :style="{ transform: `translateX(-${currentIndex * 100}%)` }">
-        <div v-for="game in games" :key="game.id" class="w-full flex-shrink-0 p-1 pr-6 pb-5 overflow-hidden">
+        <div v-for="game in games" :key="game.id" class="w-full flex-shrink-0 p-5">
           <GameCard :game="game" variant="carousel" @select-game="(id: string) => $emit('select-game', id)" />
         </div>
       </div>
