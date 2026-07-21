@@ -38,8 +38,8 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import BaseModal from './BaseModal.vue';
-import gamesData from '../assets/games.json';
+import BaseModal from '../ui/BaseModal.vue';
+import gamesData from '../../assets/games.json';
 
 export default defineComponent({
   name: 'HowToPlayModal',

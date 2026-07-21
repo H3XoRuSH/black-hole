@@ -149,10 +149,10 @@
 <script lang="ts">
 import { defineComponent, PropType, ref } from 'vue';
 import { Socket } from 'socket.io-client';
-import GameHeader from './GameHeader.vue';
-import WaitingIndicator from './WaitingIndicator.vue';
-import { useGame } from '../composables/useGame.js';
-import type { DotsAndBoxesGameState as GameState } from '../types/shared.js';
+import GameHeader from '../layout/GameHeader.vue';
+import WaitingIndicator from '../ui/WaitingIndicator.vue';
+import { useGame } from '../../composables/useGame.js';
+import type { DotsAndBoxesGameState as GameState } from '../../types/shared.js';
 
 export default defineComponent({
   name: 'DotsAndBoxes',

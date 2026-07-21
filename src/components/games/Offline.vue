@@ -65,7 +65,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useToast } from '../composables/useToast.js';
+import { useToast } from '../../composables/useToast.js';
 
 export default defineComponent({
   name: 'Offline',

@@ -15,7 +15,7 @@ import * as infiniteWordChain from './server/games/infinite-word-chain.js';
 import * as pictionary from './server/games/pictionary.js';
 import * as escapeRoom from './server/games/escapeRoom.js';
 import { createRoomManager } from './server/roomManager.js';
-import { evaluateBugReport, createGitHubIssue } from './server/bugReportService.js';
+import { evaluateBugReport, createGitHubIssue } from './server/services/bugReportService.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

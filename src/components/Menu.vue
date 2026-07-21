@@ -220,7 +220,7 @@ import gamesData from '../assets/games.json';
 import CarouselView from './menu/CarouselView.vue';
 import ListView from './menu/ListView.vue';
 import GridView from './menu/GridView.vue';
-import DarkModeToggle from './DarkModeToggle.vue';
+import DarkModeToggle from './ui/DarkModeToggle.vue';
 
 export default defineComponent({
   name: 'Menu',

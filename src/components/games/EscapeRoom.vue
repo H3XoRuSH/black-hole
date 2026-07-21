@@ -252,10 +252,10 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, computed, watch, onMounted, onUnmounted } from 'vue';
 import { Socket } from 'socket.io-client';
-import { useGame } from '../composables/useGame.js';
-import { useToast } from '../composables/useToast.js';
-import type { EscapeRoomGameState as GameState, EscapeRoomPuzzle, EscapeRoomLocation } from '../types/shared.js';
-import HowToPlayModal from './HowToPlayModal.vue';
+import { useGame } from '../../composables/useGame.js';
+import { useToast } from '../../composables/useToast.js';
+import type { EscapeRoomGameState as GameState, EscapeRoomPuzzle, EscapeRoomLocation } from '../../types/shared.js';
+import HowToPlayModal from '../modals/HowToPlayModal.vue';
 
 export default defineComponent({
   name: 'EscapeRoom',

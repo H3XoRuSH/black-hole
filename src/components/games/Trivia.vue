@@ -202,10 +202,10 @@
 <script lang="ts">
 import { defineComponent, PropType, ref, watch, nextTick, onBeforeUnmount } from 'vue';
 import { Socket } from 'socket.io-client';
-import { useGame } from '../composables/useGame.js';
-import type { TriviaGameState as GameState } from '../types/shared.js';
-import WaitingIndicator from './WaitingIndicator.vue';
-import HowToPlayModal from './HowToPlayModal.vue';
+import { useGame } from '../../composables/useGame.js';
+import type { TriviaGameState as GameState } from '../../types/shared.js';
+import WaitingIndicator from '../ui/WaitingIndicator.vue';
+import HowToPlayModal from '../modals/HowToPlayModal.vue';
 
 export default defineComponent({
   name: 'Trivia',
