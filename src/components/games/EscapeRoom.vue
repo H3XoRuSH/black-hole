@@ -8,7 +8,7 @@
           {{ solvedCount }}/{{ totalPuzzles }} solved
         </span>
         <span class="text-sm text-slate-600 font-mono">
-          Hints: {{ gameState.hintsUsed }}/{{ gameState.maxHints }}
+          Hints: {{ gameState.hintsUsed }}
         </span>
       </div>
       <div class="flex items-center space-x-1">
@@ -152,7 +152,7 @@
             <div class="flex justify-between items-center mt-3">
               <button
                 @click="requestHint"
-                :disabled="gameState.hintsUsed >= gameState.maxHints || currentPuzzleHintsRemaining === 0"
+                :disabled="currentPuzzleHintsRemaining === 0"
                 class="text-sm text-amber-600/80 dark:text-amber-400/80 hover:text-amber-500 dark:hover:text-amber-300 disabled:text-slate-400 dark:disabled:text-slate-600 disabled:cursor-not-allowed transition-colors flex items-center space-x-1"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -226,7 +226,7 @@
 
           <p class="text-sm text-slate-600 dark:text-slate-500 mb-4">
             Total attempts: <span class="text-slate-700 dark:text-slate-300 font-bold">{{ gameState.totalMoves }}</span> |
-            Hints used: <span class="text-slate-700 dark:text-slate-300 font-bold">{{ gameState.hintsUsed }}/{{ gameState.maxHints }}</span>
+            Hints used: <span class="text-slate-700 dark:text-slate-300 font-bold">{{ gameState.hintsUsed }}</span>
           </p>
 
           <router-link to="/menu"
@@ -281,7 +281,6 @@ export default defineComponent({
         totalMoves: 0,
         attemptsThisPuzzle: 0,
         hintsUsed: 0,
-        maxHints: 5,
         solvedPuzzles: [],
         lastAction: null,
       }
@@ -509,7 +508,6 @@ export default defineComponent({
 
     function requestHint() {
       if (!props.socket || gameState.value?.phase === 'escaped') return;
-      if (gameState.value.hintsUsed >= gameState.value.maxHints) return;
       const current = gameState.value.puzzles?.find((p: EscapeRoomPuzzle) => !p.solved);
       if (!current) return;
       if ((current.hintsRevealed || 0) >= current.hints.length) return;
@@ -590,10 +588,8 @@ export default defineComponent({
       return Math.max(0, current.hints.length - (current.hintsRevealed || 0));
     },
     hintButtonText(): string {
-      const globalRemaining = (this.gameState.maxHints || 0) - (this.gameState.hintsUsed || 0);
-      if (globalRemaining <= 0) return 'No hints left';
       if (this.currentPuzzleHintsRemaining <= 0) return 'No more hints for this puzzle';
-      return `Hint (${globalRemaining} global, ${this.currentPuzzleHintsRemaining} here)`;
+      return `Hint (${this.currentPuzzleHintsRemaining} remaining)`;
     },
     locationStatusClass() {
       return (locId: string) => {

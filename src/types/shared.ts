@@ -248,7 +248,6 @@ export interface EscapeRoomGameState {
   totalMoves: number;
   attemptsThisPuzzle: number;
   hintsUsed: number;
-  maxHints: number;
   solvedPuzzles: number[];
   lastAction: { playerNumber: number; action: string; correct: boolean } | null;
   moveHistory?: any[];

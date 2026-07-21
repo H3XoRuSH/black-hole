@@ -3,8 +3,6 @@ import escapeRooms from '../data/escape-rooms/rooms.js';
 
 export type { Player, EscapeRoomGameState, EscapeRoomPuzzle, EscapeRoomData, EscapeRoomLocation, Room };
 
-const MAX_GLOBAL_HINTS = 5;
-
 export const getAvailableRooms = (): { id: string; name: string; description: string; difficulty: string }[] => {
   return Object.values(escapeRooms).map((r) => ({
     id: r.id,
@@ -29,7 +27,6 @@ export const createInitialState = (playerId: string): EscapeRoomGameState => {
     totalMoves: 0,
     attemptsThisPuzzle: 0,
     hintsUsed: 0,
-    maxHints: MAX_GLOBAL_HINTS,
     solvedPuzzles: [],
     lastAction: null,
     introAcknowledged: false,
@@ -49,7 +46,6 @@ export const resetState = (players: Player[]): EscapeRoomGameState => {
     totalMoves: 0,
     attemptsThisPuzzle: 0,
     hintsUsed: 0,
-    maxHints: MAX_GLOBAL_HINTS,
     solvedPuzzles: [],
     lastAction: null,
     introAcknowledged: false,
@@ -118,11 +114,6 @@ export const makeMove = (
   }
 
   if (data.action === 'request-hint') {
-    if (gameState.hintsUsed >= gameState.maxHints) {
-      socket.emit('invalid-move', { message: 'No more hints remaining! You have used all your hints.' });
-      return false;
-    }
-
     const currentPuzzle = gameState.puzzles.find((p) => !p.solved);
     if (!currentPuzzle) {
       socket.emit('invalid-move', { message: 'No puzzle to give hints for.' });
