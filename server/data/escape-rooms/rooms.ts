@@ -8,6 +8,7 @@ import pharaohsTomb from './pharaohs-tomb.js';
 import room69420 from './room-69420.js';
 import theBloodline from './the-bloodline.js';
 import theMeridianEngine from './the-meridian-engine.js';
+import theBlackwoodMasquerade from './the-blackwood-masquerade.js';
 
 const rooms: Record<string, EscapeRoomData> = {
   'abandoned-lab': abandonedLab,
@@ -19,6 +20,7 @@ const rooms: Record<string, EscapeRoomData> = {
   'room-69420': room69420,
   'the-bloodline': theBloodline,
   'the-meridian-engine': theMeridianEngine,
+  'the-blackwood-masquerade': theBlackwoodMasquerade,
 };
 
 export default rooms;

@@ -1,6 +1,6 @@
 # Escape Room Puzzle Catalog
 
-Tally of every puzzle across all 9 rooms. Use for generation: prioritize low-frequency or novel types; avoid saturated categories.
+Tally of every puzzle across all 10 rooms. Use for generation: prioritize low-frequency or novel types; avoid saturated categories.
 
 ---
 
@@ -8,11 +8,11 @@ Tally of every puzzle across all 9 rooms. Use for generation: prioritize low-fre
 
 | Freq | Categories |
 |------|-----------|
-| **4** | system-of-equations, acrostic |
-| **3** | number-sequence, classic-riddle, logic-grid |
-| **2** | sound-pitch-sequence, word-ladder, vigenere, atbash, anagram, grid-coordinate, roman-numerals, simple-addition, domain-trivia |
-| **1** | sound-rhythm, sound-melody, word-chain, binary-decimal, t9-keypad, graduated-sequence, morse, magic-square, text-error-detection, zigzag-reading, symbol-first-letter, spelling-concatenation, letter-overlap, nesting-diagram, rotating-shutter, floor-plan, boundary-capitals, mirror-reading, letter-frequency, shape-number, date-reversal, atomic-number, type-grid, area-calculation, modular-arithmetic, prime-factorization, shortest-path, median+gaps, combinatorics, gear-recurrence, inclusion-exclusion, modular-exponentiation, periodic-alignment |
-| **9** | meta (1 per room, mandatory) |
+| **4** | system-of-equations, acrostic, logic-grid |
+| **3** | number-sequence, classic-riddle, atbash, grid-coordinate |
+| **2** | sound-pitch-sequence, word-ladder, vigenere, anagram, roman-numerals, simple-addition, domain-trivia, sound-rhythm |
+| **1** | sound-melody, word-chain, binary-decimal, t9-keypad, graduated-sequence, morse, magic-square, text-error-detection, zigzag-reading, symbol-first-letter, spelling-concatenation, letter-overlap, nesting-diagram, rotating-shutter, floor-plan, boundary-capitals, mirror-reading, letter-frequency, shape-number, date-reversal, atomic-number, type-grid, area-calculation, modular-arithmetic, prime-factorization, shortest-path, median+gaps, combinatorics, gear-recurrence, inclusion-exclusion, modular-exponentiation, periodic-alignment, pigpen-cipher, letter-arithmetic, scytale, nonogram, latin-square, grille-cipher, dilution-math |
+| **10** | meta (1 per room, mandatory) |
 
 ---
 
@@ -129,6 +129,20 @@ Tally of every puzzle across all 9 rooms. Use for generation: prioritize low-fre
 12. modular-exponentiation (base 7 mod 1000) → 649
 13. META last-digit-of-band-sums → 862
 
+### The Blackwood Masquerade (extreme · 12 puzzles)
+1. grid-coordinate (Charred Diary - MURDER cipher) → cellar
+2. pigpen-cipher (Clock Face) → gallows
+3. letter-arithmetic (Desk Ledger - cryptarithm) → 1451
+4. atbash (Will and Testament - mirror script) → yevrah
+5. scytale (Scytale Parchment) → diginthesoil
+6. sound-rhythm (Dripping Basin - drops) → 324
+7. nonogram (Pedestal Grid) → h
+8. latin-square (Plant Layout) → oltr
+9. grille-cipher (Winery Ledger - paper grille) → suspectisbutler
+10. logic-grid (Suspect Lockers) → lbdcm
+11. dilution-math (Poison Dilution) → 60
+12. META dossiers-concatenation → butlerpoisoncellar1835
+
 ---
 
 ## Summary Stats
@@ -144,16 +158,18 @@ Tally of every puzzle across all 9 rooms. Use for generation: prioritize low-fre
 | Room 69420 | medium | 12 | 0 | 3 |
 | The Bloodline | very-easy | 8 | 1 | 3 |
 | Meridian Engine | extreme | 13 | 0 | 3 |
-| **Total** | | **95** | **3** | **30** |
+| The Blackwood Masquerade | extreme | 12 | 1 | 3 |
+| **Total** | | **107** | **4** | **33** |
 
 ---
 
-## Sound Puzzles (3 total)
+## Sound Puzzles (4 total)
 - **House That Draws Itself**: pitch-sequence (high→medium→low→bellkeylamp), rhythm (2-1-3 knocks → 213)
 - **The Bloodline**: melody (D4-E4-A4-D4 → dead)
+- **The Blackwood Masquerade**: rhythm (3-2-4 quick drops → 324)
 
 ---
 
 ## Unused Categories (0 occurrences)
 
-semaphore, flag codes, polybius square, barcode, clock-hand angles, calendar weekday math, pigpen cipher, scytale, book cipher, crossword, nonogram, word search, sudoku, steganography, hex/base conversion, hashing, railroad ciphers, route ciphers, grille ciphers, playfair, periodic-table-word-building, etymology, portmanteau, haiku construction, poetry meter, anagram chains, word squares, tautonyms, letter arithmetic (cryptarithm), mathematical sequences (look-and-say, collatz, catalan), fractals, graph coloring, set theory puzzles, probability, bayes theorem.
+semaphore, flag codes, polybius square, barcode, clock-hand angles, calendar weekday math, book cipher, crossword, word search, sudoku, steganography, hex/base conversion, hashing, railroad ciphers, route ciphers, playfair, periodic-table-word-building, etymology, portmanteau, haiku construction, poetry meter, anagram chains, word squares, tautonyms, mathematical sequences (look-and-say, collatz, catalan), fractals, graph coloring, set theory puzzles, probability, bayes theorem.

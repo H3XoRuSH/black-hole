@@ -265,6 +265,7 @@ export default defineComponent({
         'cinnabar-lab': 'bg-gradient-to-br from-red-800 via-orange-900 to-amber-900',
         'house-that-draws-itself': 'bg-gradient-to-br from-pink-700 via-rose-900 to-slate-900',
         'the-meridian-engine': 'bg-gradient-to-br from-cyan-800 via-blue-900 to-slate-900',
+        'the-blackwood-masquerade': 'bg-gradient-to-br from-red-950 via-rose-900 to-stone-950',
       };
       return gradients[id] || 'bg-gradient-to-br from-slate-700 to-slate-900';
     };
