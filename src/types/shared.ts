@@ -205,16 +205,26 @@ export interface SoundPuzzle {
   notes: SoundNote[];
 }
 
-export interface EscapeRoomPuzzle {
+export type EscapeRoomNodeType = 'dialogue' | 'puzzle' | 'item' | 'locked';
+
+export interface EscapeRoomNode {
   id: string;
   locationId: string;
+  parentId: string | null;
+  type: EscapeRoomNodeType;
+  label: string;
   narrative: string;
-  question: string;
-  answer: string;
-  hints: string[];
+  question?: string;
+  answer?: string;
+  hints?: string[];
   hintsRevealed?: number;
   solved?: boolean;
   sound?: SoundPuzzle;
+  isMeta?: boolean;
+  rewardItem?: string;
+  lockedByItem?: string;
+  lockedNarrative?: string;
+  children?: string[];
 }
 
 export interface EscapeRoomLocation {
@@ -230,7 +240,7 @@ export interface EscapeRoomData {
   difficulty: 'very-easy' | 'easy' | 'medium' | 'hard' | 'extreme';
   intro: string;
   locations: EscapeRoomLocation[];
-  puzzles: EscapeRoomPuzzle[];
+  nodes: EscapeRoomNode[];
 }
 
 export interface EscapeRoomGameState {
@@ -240,16 +250,20 @@ export interface EscapeRoomGameState {
   roomDescription?: string;
   roomIntro?: string;
   availableRooms?: { id: string; name: string; description: string; difficulty: string }[];
-  currentPuzzleIndex: number;
-  puzzles: EscapeRoomPuzzle[];
+  nodes: EscapeRoomNode[];
   locations: EscapeRoomLocation[];
   players: Player[];
   winner: string;
   totalMoves: number;
-  attemptsThisPuzzle: number;
   hintsUsed: number;
-  solvedPuzzles: number[];
-  lastAction: { playerNumber: number; action: string; correct: boolean } | null;
+  playerNodePaths: Record<string, string[]>;
+  playerInventories: Record<string, string[]>;
+  unlockedNodes: string[];
+  visitedLocations: string[];
+  discoveredItems: string[];
+  attemptsPerNode: Record<string, number>;
+  solvedNodes: string[];
+  lastAction: { playerNumber: number; action: string } | null;
   moveHistory?: any[];
   introAcknowledged?: boolean;
 }
