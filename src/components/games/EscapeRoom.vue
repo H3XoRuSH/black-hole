@@ -53,8 +53,45 @@
           </div>
         </div>
 
-        <div v-if="!showIntro && currentLocation" class="space-y-3">
-          <div class="bg-white/80 dark:bg-slate-900/80 border border-slate-300 dark:border-slate-800 rounded-2xl px-4 py-3 shadow-lg">
+        <div v-if="!showIntro" class="space-y-3">
+          <div class="flex items-center space-x-1.5 flex-wrap">
+            <button
+              v-for="(loc, idx) in gameState.locations"
+              :key="loc.id"
+              v-show="isLocationAccessible(idx)"
+              @click="selectLocation(loc.id)"
+              class="px-3 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-150 cursor-pointer border"
+              :class="selectedLocationId === loc.id
+                ? 'bg-amber-600/20 border-amber-500/50 text-amber-400'
+                : 'bg-transparent border-slate-700 text-slate-500 hover:border-slate-500 hover:text-slate-400'"
+            >
+              {{ loc.name }}
+            </button>
+          </div>
+
+          <div v-if="currentLocation" class="flex items-center space-x-1 text-xs text-slate-500 flex-wrap">
+            <button
+              @click="navigateBreadcrumb(null)"
+              class="hover:text-amber-400 transition-colors cursor-pointer"
+            >
+              {{ currentLocation.name }}
+            </button>
+            <template v-for="(nodeId, idx) in currentPath" :key="nodeId">
+              <span class="text-slate-700">→</span>
+              <button
+                @click="navigateBreadcrumb(nodeId)"
+                class="hover:text-amber-400 transition-colors cursor-pointer"
+                :class="{ 'text-amber-400 font-semibold': idx === currentPath.length - 1 }"
+              >
+                {{ getNodeLabel(nodeId) }}
+              </button>
+            </template>
+          </div>
+
+          <div
+            v-if="currentPath.length === 0 && currentLocation"
+            class="bg-white/80 dark:bg-slate-900/80 border border-slate-300 dark:border-slate-800 rounded-2xl px-4 py-3 shadow-lg"
+          >
             <div class="flex items-center space-x-2 mb-1">
               <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -65,48 +102,43 @@
             <p class="text-sm text-slate-600 dark:text-slate-500 italic whitespace-pre-line">{{ currentLocation.description }}</p>
           </div>
 
-          <div class="flex items-center justify-center space-x-2">
-            <div
-              v-for="loc in sortedLocations"
-              :key="loc.id"
-              class="flex items-center space-x-1"
-            >
-              <div
-                class="w-2.5 h-2.5 rounded-full transition-colors duration-500"
-                :class="locationStatusClass(loc.id)"
-              ></div>
-              <span v-if="loc.id !== sortedLocations[sortedLocations.length - 1]?.id"
-                class="block w-6 sm:w-10 h-px"
-                :class="locationLineClass(loc.id)"
-              ></span>
-            </div>
-          </div>
-
-          <div v-if="currentPuzzle" class="bg-white/90 dark:bg-slate-900/90 border border-slate-300 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl">
-            <div class="flex items-center justify-between mb-3">
-              <h3 class="text-sm font-bold text-amber-500/70 uppercase tracking-widest">
-                Puzzle {{ solvedCount + 1 }} of {{ totalPuzzles }}
-              </h3>
-              <span class="text-sm text-slate-500 dark:text-slate-600 font-mono">
-                Attempts: {{ gameState.attemptsThisPuzzle }}
+          <div
+            v-if="currentNode"
+            class="bg-white/90 dark:bg-slate-900/90 border border-slate-300 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl"
+          >
+            <h3 class="text-sm font-bold text-amber-500/70 uppercase tracking-widest mb-3 flex items-center justify-between">
+              <span>
+                {{ currentNode.label }}
+                <span v-if="currentNode.isMeta" class="ml-1 text-amber-400">&#9733;</span>
               </span>
-            </div>
+              <button
+                @click="goBack"
+                class="text-xs text-slate-500 hover:text-amber-400 transition-colors cursor-pointer px-2 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center space-x-1"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                <span>Back</span>
+              </button>
+            </h3>
 
             <div class="bg-slate-100/60 dark:bg-slate-800/60 border border-slate-300/50 dark:border-slate-700/50 rounded-xl p-3 sm:p-4 mb-4">
-              <template v-for="(seg, i) in splitArtSegments(currentPuzzle.narrative)" :key="'nar-'+i">
+              <template v-for="(seg, i) in splitArtSegments(isNodeStillLocked(currentNode) ? (currentNode.lockedNarrative || currentNode.narrative) : currentNode.narrative)" :key="'nar-'+i">
                 <pre v-if="seg.type === 'art'" class="text-sm text-slate-600 dark:text-slate-400 mb-2 font-mono leading-snug overflow-x-auto">{{ seg.content }}</pre>
                 <p v-else class="text-sm text-slate-600 dark:text-slate-400 italic mb-2 leading-relaxed whitespace-pre-line">{{ seg.content }}</p>
               </template>
-              <div class="border-t border-slate-300/50 dark:border-slate-700/30 my-3"></div>
-              <template v-for="(seg, i) in splitArtSegments(currentPuzzle.question)" :key="'q-'+i">
-                <pre v-if="seg.type === 'art'" class="text-base text-slate-800 dark:text-slate-200 font-mono leading-snug overflow-x-auto">{{ seg.content }}</pre>
-                <p v-else class="text-base text-slate-800 dark:text-slate-200 whitespace-pre-line leading-relaxed">{{ seg.content }}</p>
+              <template v-if="currentNode.type === 'puzzle'">
+                <div class="border-t border-slate-300/50 dark:border-slate-700/30 my-3"></div>
+                <template v-for="(seg, i) in splitArtSegments(currentNode.question || '')" :key="'q-'+i">
+                  <pre v-if="seg.type === 'art'" class="text-base text-slate-800 dark:text-slate-200 font-mono leading-snug overflow-x-auto">{{ seg.content }}</pre>
+                  <p v-else class="text-base text-slate-800 dark:text-slate-200 whitespace-pre-line leading-relaxed">{{ seg.content }}</p>
+                </template>
               </template>
             </div>
 
-            <div v-if="currentPuzzle.sound" class="flex justify-center mb-4">
+            <div v-if="currentNode.sound && !currentNode.solved" class="flex justify-center mb-4">
               <button
-                @click="playPuzzleSound"
+                @click="playPuzzleSound(currentNode)"
                 :disabled="isSoundPlaying"
                 class="bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-300 dark:disabled:bg-slate-700 disabled:text-slate-500 text-white font-medium px-4 py-2 rounded-xl transition-all duration-150 cursor-pointer active:scale-95 text-sm flex items-center space-x-1.5"
               >
@@ -131,28 +163,52 @@
               </div>
             </div>
 
-            <div v-if="!escaped" class="flex items-center space-x-2">
+            <div v-if="currentNode.type === 'puzzle' && !currentNode.solved" class="flex items-center space-x-2 mb-3">
               <input
                 v-model="answer"
                 type="text"
                 placeholder="Type your answer..."
                 class="flex-grow bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2.5 text-base text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition-all"
                 @keyup.enter="submitAnswer"
-                :disabled="escaped"
               />
               <button
                 @click="submitAnswer"
-                :disabled="escaped || !answer.trim()"
+                :disabled="!answer.trim()"
                 class="bg-amber-600 hover:bg-amber-500 disabled:bg-slate-200 dark:disabled:bg-slate-700 disabled:text-slate-400 dark:disabled:text-slate-500 text-white font-semibold px-4 py-2.5 rounded-xl transition-all duration-150 cursor-pointer active:scale-95 text-base flex-shrink-0"
               >
                 Submit
               </button>
             </div>
 
-            <div class="flex justify-between items-center mt-3">
+            <div v-if="currentNode.type === 'puzzle' && currentNode.solved" class="flex items-center space-x-2 mb-3 text-xs text-emerald-600 dark:text-emerald-400">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span>Answer: {{ currentNode.answer }}</span>
+            </div>
+
+            <div v-if="currentNode.type === 'item' && currentNode.rewardItem && !hasItem(currentNode.rewardItem) && !isItemDiscovered(currentNode.id)" class="flex justify-center mb-3">
               <button
-                @click="requestHint"
-                :disabled="currentPuzzleHintsRemaining === 0"
+                @click="interactItem(currentNode.id)"
+                class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-4 py-2.5 rounded-xl transition-all duration-150 cursor-pointer active:scale-95 text-sm"
+              >
+                Pick Up
+              </button>
+            </div>
+
+            <div v-if="isNodeStillLocked(currentNode) && hasItem(currentNode.lockedByItem || '')" class="flex justify-center mb-3">
+              <button
+                @click="useItem(currentNode.id)"
+                class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-4 py-2.5 rounded-xl transition-all duration-150 cursor-pointer active:scale-95 text-sm"
+              >
+                Use {{ getItemLabel(currentNode.lockedByItem || '') }}
+              </button>
+            </div>
+
+            <div v-if="currentNode.type === 'puzzle' && !currentNode.solved" class="flex justify-between items-center">
+              <button
+                @click="requestHint(currentNode.id)"
+                :disabled="currentNodeHintsRemaining <= 0"
                 class="text-sm text-amber-600/80 dark:text-amber-400/80 hover:text-amber-500 dark:hover:text-amber-300 disabled:text-slate-400 dark:disabled:text-slate-600 disabled:cursor-not-allowed transition-colors flex items-center space-x-1"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -161,45 +217,98 @@
                 <span>{{ hintButtonText }}</span>
               </button>
               <span class="text-sm text-slate-500 dark:text-slate-600 font-mono">
-                Total attempts: {{ gameState.totalMoves }}
+                Attempts: {{ attemptsForNode(currentNode.id) }}
               </span>
             </div>
           </div>
 
-          <div v-if="solvedPuzzlesList.length > 0" class="mt-3">
-            <button
-              @click="showSolvedPuzzles = !showSolvedPuzzles"
-              class="w-full flex items-center justify-between bg-gray-100/80 dark:bg-slate-900/60 border border-gray-300 dark:border-slate-800 rounded-xl px-4 py-2.5 text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-gray-400 dark:hover:border-slate-700 transition-colors cursor-pointer"
+          <div v-if="currentChildren.length > 0" class="space-y-2">
+            <div
+              v-for="child in visibleChildren"
+              :key="child.id"
+              @click="navigateToNode(child.id)"
+              class="bg-white/80 dark:bg-slate-900/80 border rounded-xl px-4 py-3 shadow-sm cursor-pointer hover:shadow-md hover:border-amber-500/40 transition-all duration-150"
+              :class="child.isMeta
+                ? 'border-amber-400/40 hover:border-amber-400/60'
+                : 'border-slate-300 dark:border-slate-800'"
             >
-              <span>Previously Solved ({{ solvedPuzzlesList.length }})</span>
+              <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-2 min-w-0">
+                  <span
+                    v-if="child.isMeta"
+                    class="text-amber-400 text-lg flex-shrink-0"
+                  >&#9733;</span>
+                  <svg v-else-if="child.type === 'locked' && isNodeStillLocked(child)" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  </svg>
+                  <svg v-else-if="child.type === 'puzzle' && child.solved" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-emerald-500 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span v-else-if="child.type === 'item' && child.rewardItem && hasItem(child.rewardItem)" class="text-xs text-emerald-500 flex-shrink-0 font-bold">&#10003;</span>
+                  <span v-else-if="child.type === 'item' && isItemDiscovered(child.id)" class="text-xs text-slate-500 flex-shrink-0 italic">Taken</span>
+                  <h4 class="text-sm font-semibold text-slate-800 dark:text-slate-200 truncate">
+                    {{ child.label }}
+                  </h4>
+                </div>
+                <div class="flex items-center space-x-2 flex-shrink-0 ml-2">
+                  <button
+                    v-if="child.type === 'item' && child.rewardItem && !hasItem(child.rewardItem) && !isItemDiscovered(child.id)"
+                    @click.stop="interactItem(child.id)"
+                    class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-2.5 py-1 rounded-lg transition-all cursor-pointer active:scale-95"
+                  >
+                    Pick Up
+                  </button>
+                  <button
+                    v-if="isNodeStillLocked(child) && hasItem(child.lockedByItem || '')"
+                    @click.stop="useItem(child.id)"
+                    class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-2.5 py-1 rounded-lg transition-all cursor-pointer active:scale-95"
+                  >
+                    Unlock
+                  </button>
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                  </svg>
+                </div>
+              </div>
+              <p v-if="isNodeStillLocked(child) && child.lockedNarrative" class="text-xs text-slate-500 dark:text-slate-500 mt-1 line-clamp-1 italic">
+                {{ child.lockedNarrative }}
+              </p>
+              <p v-else class="text-xs text-slate-500 dark:text-slate-500 mt-1 line-clamp-1">
+                {{ getNarrativeExcerpt(child) }}
+              </p>
+            </div>
+          </div>
+
+          <div v-if="currentChildren.length === 0 && !currentNode" class="text-center text-slate-600 dark:text-slate-500 py-8">
+            <p class="text-sm">Nothing here to explore.</p>
+          </div>
+
+          <div v-if="playerInventory.length > 0" class="mt-3">
+            <button
+              @click="showInventory = !showInventory"
+              class="w-full flex items-center justify-between bg-indigo-100/80 dark:bg-indigo-900/20 border border-indigo-300/40 dark:border-indigo-700/20 rounded-xl px-4 py-2.5 text-sm text-indigo-600 dark:text-indigo-400 hover:border-indigo-400/60 dark:hover:border-indigo-500/60 transition-colors cursor-pointer"
+            >
+              <span>Inventory ({{ playerInventory.length }})</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-3.5 w-3.5 transition-transform duration-200"
-                :class="{ 'rotate-180': showSolvedPuzzles }"
+                :class="{ 'rotate-180': showInventory }"
                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
               >
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
-            <div v-if="showSolvedPuzzles" class="bg-gray-50/80 dark:bg-slate-900/50 border border-gray-300 dark:border-slate-800 rounded-xl mt-1 divide-y divide-gray-300/50 dark:divide-slate-800/50">
+            <div v-if="showInventory" class="bg-indigo-50/80 dark:bg-indigo-900/10 border border-indigo-300/40 dark:border-indigo-700/20 rounded-xl mt-1 divide-y divide-indigo-200/50 dark:divide-indigo-800/30">
               <div
-                v-for="p in solvedPuzzlesList"
-                :key="p.id"
-                class="px-4 py-2.5"
+                v-for="item in playerInventory"
+                :key="item"
+                class="px-4 py-2 flex items-center space-x-2"
               >
-                <div class="flex items-center justify-between mb-1">
-                  <span class="text-sm font-medium text-emerald-600 dark:text-emerald-400">{{ getPuzzleLocationName(p) }} — Lock {{ gameState.puzzles.indexOf(p) + 1 }}</span>
-                  <span class="text-xs text-slate-500 dark:text-slate-600 font-mono">Answer: {{ p.answer }}</span>
-                </div>
-                <p class="text-xs text-slate-600 dark:text-slate-500 line-clamp-2">{{ p.narrative }}</p>
+                <span class="text-xs text-indigo-600 dark:text-indigo-400">&#9679;</span>
+                <span class="text-sm text-indigo-700 dark:text-indigo-300">{{ getItemLabel(item) }}</span>
               </div>
             </div>
           </div>
-        </div>
-
-        <div v-if="!showIntro && !currentPuzzle && !escaped" class="text-center text-slate-600 dark:text-slate-500 py-12">
-          <div class="w-8 h-8 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-          <p class="text-base">Loading puzzles...</p>
         </div>
       </div>
 
@@ -212,14 +321,14 @@
           <div class="bg-slate-100/60 dark:bg-slate-800/60 border border-slate-300/50 dark:border-slate-700/50 rounded-xl p-4 mb-4 text-left space-y-1.5">
             <p class="text-sm text-slate-600 dark:text-slate-500 uppercase tracking-wider mb-2">Puzzle Summary</p>
             <p
-              v-for="(p, idx) in gameState.puzzles"
-              :key="p.id"
+              v-for="n in gameState.nodes.filter((n: EscapeRoomNode) => n.type === 'puzzle')"
+              :key="n.id"
               class="text-sm flex items-center space-x-2"
             >
-              <span :class="p.solved ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'">&#9679;</span>
-              <span class="text-slate-700 dark:text-slate-300">{{ getPuzzleLocationName(p) }} — Lock {{ idx + 1 }}</span>
+              <span :class="n.solved ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'">&#9679;</span>
+              <span class="text-slate-700 dark:text-slate-300">{{ getNodeLocationName(n) }} — {{ n.label }}</span>
               <span class="text-slate-500 dark:text-slate-600">
-                {{ p.solved ? 'Solved' : 'Unsolved' }}
+                {{ n.solved ? 'Solved' : 'Unsolved' }}
               </span>
             </p>
           </div>
@@ -254,7 +363,7 @@ import { defineComponent, PropType, ref, computed, watch, onMounted, onUnmounted
 import { Socket } from 'socket.io-client';
 import { useGame } from '../../composables/useGame.js';
 import { useToast } from '../../composables/useToast.js';
-import type { EscapeRoomGameState as GameState, EscapeRoomPuzzle, EscapeRoomLocation } from '../../types/shared.js';
+import type { EscapeRoomGameState as GameState, EscapeRoomNode, EscapeRoomLocation } from '../../types/shared.js';
 import HowToPlayModal from '../modals/HowToPlayModal.vue';
 
 export default defineComponent({
@@ -273,24 +382,39 @@ export default defineComponent({
       props.initialGameState || {
         phase: 'playing',
         selectedRoomId: null,
-        currentPuzzleIndex: 0,
-        puzzles: [],
+        nodes: [],
         locations: [],
         players: [],
         winner: '',
         totalMoves: 0,
-        attemptsThisPuzzle: 0,
         hintsUsed: 0,
-        solvedPuzzles: [],
+        playerNodePaths: {},
+        playerInventories: {},
+        unlockedNodes: [],
+        visitedLocations: [],
+        discoveredItems: [],
+        attemptsPerNode: {},
+        solvedNodes: [],
         lastAction: null,
       }
     );
 
-    const { showToast } = useToast();
     const answer = ref('');
+    const { showToast } = useToast();
     const showIntro = computed(() => !gameState.value.introAcknowledged);
-    const showSolvedPuzzles = ref(false);
+    const showInventory = ref(false);
+    const selectedLocationId = ref('foyer');
     const prevSolvedCount = ref(0);
+    const navigating = ref(false);
+    let navigateTimeout: ReturnType<typeof setTimeout> | null = null;
+
+    function startNavigating() {
+      navigating.value = true;
+      if (navigateTimeout) clearTimeout(navigateTimeout);
+      navigateTimeout = setTimeout(() => {
+        navigating.value = false;
+      }, 3000);
+    }
 
     const audioCtx = ref<AudioContext | null>(null);
     const isSoundPlaying = ref(false);
@@ -322,10 +446,8 @@ export default defineComponent({
       isSoundPlaying.value = false;
     }
 
-    async function playPuzzleSound() {
-      const puzzle = gameState.value.puzzles?.find((p: EscapeRoomPuzzle) => !p.solved);
-      if (!puzzle?.sound) return;
-
+    async function playPuzzleSound(node: EscapeRoomNode) {
+      if (!node?.sound) return;
       stopSound();
 
       if (!audioCtx.value) {
@@ -336,7 +458,7 @@ export default defineComponent({
       }
 
       const ctx = audioCtx.value;
-      const { notes } = puzzle.sound;
+      const { notes } = node.sound;
       let timeOffset = 0;
 
       for (const note of notes) {
@@ -439,32 +561,225 @@ export default defineComponent({
       return segments;
     }
 
-    const getPuzzleLocationName = (puzzle: EscapeRoomPuzzle): string => {
-      const loc = gameState.value.locations?.find((l: EscapeRoomLocation) => l.id === puzzle.locationId);
-      return loc?.name || puzzle.locationId;
-    };
+    const playerId = computed(() => (props.socket as any)?.id || '');
+    const currentPath = computed(() => gameState.value.playerNodePaths?.[playerId.value] || []);
+    const playerInventory = computed(() => gameState.value.playerInventories?.[playerId.value] || []);
+    const playerUnlockedNodes = computed(() => gameState.value.unlockedNodes || []);
 
-    watch(
-      () => gameState.value.solvedPuzzles?.length || 0,
-      (newCount) => {
-        if (newCount > prevSolvedCount.value && newCount > 0) {
-          stopSound();
-          const justSolved = gameState.value.puzzles[gameState.value.solvedPuzzles[newCount - 1]];
-          if (justSolved) {
-            const currentLocId = justSolved.locationId;
-            if (newCount > 1) {
-              const prevSolved = gameState.value.puzzles[gameState.value.solvedPuzzles[newCount - 2]];
-              if (prevSolved && prevSolved.locationId !== currentLocId) {
-                const loc = gameState.value.locations?.find((l: EscapeRoomLocation) => l.id === currentLocId);
-                const locName = loc?.name || currentLocId;
-                showToast(`You entered: ${locName}`, 'success', 3500);
-              }
-            }
+    function findNode(nodeId: string): EscapeRoomNode | undefined {
+      return gameState.value.nodes?.find((n: EscapeRoomNode) => n.id === nodeId);
+    }
+
+    function hasItem(itemId: string): boolean {
+      return playerInventory.value.includes(itemId);
+    }
+
+    function isNodeStillLocked(node: EscapeRoomNode): boolean {
+      if (!node.lockedByItem) return false;
+      return !playerUnlockedNodes.value.includes(node.id);
+    }
+
+    function isItemDiscovered(nodeId: string): boolean {
+      return (gameState.value.discoveredItems || []).includes(nodeId);
+    }
+
+    function getNarrativeExcerpt(node: EscapeRoomNode): string {
+      const text = node.narrative || '';
+      return text.length > 80 ? text.slice(0, 80) + '...' : text;
+    }
+
+    function getNodeLabel(nodeId: string): string {
+      const node = findNode(nodeId);
+      return node?.label || nodeId;
+    }
+
+    function getNodeLocationName(node: EscapeRoomNode): string {
+      const loc = gameState.value.locations?.find((l: EscapeRoomLocation) => l.id === node.locationId);
+      return loc?.name || node.locationId;
+    }
+
+    const currentLocation = computed(() => {
+      return gameState.value.locations?.find((l: EscapeRoomLocation) => l.id === selectedLocationId.value) || null;
+    });
+
+    const currentNode = computed(() => {
+      const path = currentPath.value;
+      if (path.length === 0) return null;
+      return findNode(path[path.length - 1]) || null;
+    });
+
+    const currentChildren = computed(() => {
+      const node = currentNode.value;
+      if (node) {
+        if (!node.children) return [];
+        return node.children.map((cid) => findNode(cid)).filter(Boolean) as EscapeRoomNode[];
+      }
+      return gameState.value.nodes?.filter(
+        (n: EscapeRoomNode) => n.locationId === selectedLocationId.value && n.parentId === null
+      ) || [];
+    });
+
+    const visibleChildren = computed(() => {
+      const parent = currentNode.value;
+      return currentChildren.value.filter((_child) => {
+        if (parent) {
+          if (parent.type === 'puzzle' && !parent.solved) return false;
+          if (parent.type === 'locked' && isNodeStillLocked(parent)) return false;
+        }
+        return true;
+      });
+    });
+
+    const isMetaNode = (node: EscapeRoomNode) => node.isMeta || false;
+
+    const playerVisitedLocs = computed(() =>
+      gameState.value.visitedLocations || []
+    );
+
+    const solvedCount = computed(() => gameState.value.solvedNodes?.length || 0);
+
+    function isLocationAccessible(locIdx: number): boolean {
+      if (locIdx === 0) return true;
+      const locId = gameState.value.locations?.[locIdx]?.id;
+      return locId ? playerVisitedLocs.value.includes(locId) : false;
+    }
+
+    watch(playerVisitedLocs, (newLocs, oldLocs) => {
+      if (!oldLocs) return;
+      for (const locId of newLocs) {
+        if (!oldLocs.includes(locId)) {
+          const loc = gameState.value.locations?.find((l: EscapeRoomLocation) => l.id === locId);
+          if (loc) {
+            showToast(`Discovered: ${loc.name}`, 'success', 3000);
           }
         }
-        prevSolvedCount.value = newCount;
       }
-    );
+    });
+
+    watch(solvedCount, (newCount, oldCount) => {
+      if (newCount > (oldCount || 0)) {
+        const solvedNodeIds = gameState.value.solvedNodes || [];
+        const lastSolvedId = solvedNodeIds[solvedNodeIds.length - 1];
+        const lastSolved = lastSolvedId ? findNode(lastSolvedId) : null;
+        if (lastSolved?.children) {
+          const hasMetaChild = lastSolved.children.some((cid) => {
+            const child = findNode(cid);
+            return child?.isMeta;
+          });
+          if (hasMetaChild) {
+            showToast('The final mechanism awakens...', 'success', 4000);
+          }
+        }
+      }
+    });
+
+    function getItemLabel(rewardId: string): string {
+      const node = gameState.value.nodes?.find(
+        (n: EscapeRoomNode) => n.rewardItem === rewardId
+      );
+      return node?.label || rewardId;
+    }
+
+    function selectLocation(locId: string) {
+      if (navigating.value) return;
+      selectedLocationId.value = locId;
+      if (props.socket) {
+        startNavigating();
+        props.socket.emit('make-move', {
+          roomKey: props.roomKey,
+          action: 'navigate-node',
+          nodeId: null,
+        });
+      }
+    }
+
+    function navigateToNode(nodeId: string) {
+      if (!props.socket || navigating.value) return;
+      const node = findNode(nodeId);
+      console.log('[EscapeRoom] navigateToNode:', nodeId, 'found:', !!node);
+      console.log('[EscapeRoom] navigateToNode: emitting make-move');
+      startNavigating();
+      props.socket.emit('make-move', {
+        roomKey: props.roomKey,
+        action: 'navigate-node',
+        nodeId,
+      });
+    }
+
+    function navigateBreadcrumb(nodeId: string | null) {
+      if (!props.socket || navigating.value) return;
+      startNavigating();
+      props.socket.emit('make-move', {
+        roomKey: props.roomKey,
+        action: 'navigate-breadcrumb',
+        nodeId,
+      });
+    }
+
+    function goBack() {
+      const path = currentPath.value;
+      if (path.length <= 1) {
+        navigateBreadcrumb(null);
+      } else {
+        navigateBreadcrumb(path[path.length - 2]);
+      }
+    }
+
+    function submitAnswer() {
+      const node = currentNode.value;
+      if (!props.socket || !node || !answer.value.trim() || node.type !== 'puzzle' || node.solved || navigating.value) return;
+      startNavigating();
+      props.socket.emit('make-move', {
+        roomKey: props.roomKey,
+        action: 'submit-answer',
+        nodeId: node.id,
+        answer: answer.value.trim(),
+      });
+      answer.value = '';
+    }
+
+    function requestHint(nodeId: string) {
+      if (!props.socket || navigating.value) return;
+      startNavigating();
+      props.socket.emit('make-move', {
+        roomKey: props.roomKey,
+        action: 'request-hint',
+        nodeId,
+      });
+    }
+
+    function interactItem(nodeId: string) {
+      if (!props.socket || navigating.value) return;
+      startNavigating();
+      props.socket.emit('make-move', {
+        roomKey: props.roomKey,
+        action: 'interact-item',
+        nodeId,
+      });
+    }
+
+    function useItem(nodeId: string) {
+      if (!props.socket || navigating.value) return;
+      startNavigating();
+      props.socket.emit('make-move', {
+        roomKey: props.roomKey,
+        action: 'use-item',
+        nodeId,
+      });
+    }
+
+    function beginGame() {
+      if (!props.socket || gameState.value.introAcknowledged || navigating.value) return;
+      startNavigating();
+      props.socket.emit('make-move', {
+        roomKey: props.roomKey,
+        action: 'begin-game',
+      });
+    }
+
+    function attemptsForNode(nodeId: string): number {
+      return gameState.value.attemptsPerNode?.[nodeId] || 0;
+    }
 
     onMounted(() => {
       // no init needed
@@ -486,47 +801,27 @@ export default defineComponent({
       gameOver: () => gameState.value?.phase === 'escaped',
       lobbyRoute: '/escape-room/lobby',
       onGameState: (newState: any) => {
+        console.log('[EscapeRoom] onGameState received, nodes:', newState.nodes?.length, 'path:', newState.playerNodePaths);
+        navigating.value = false;
         gameState.value = newState;
-        if (newState.totalMoves === 0 && !newState.puzzles?.length) {
+        if (newState.totalMoves === 0 && !newState.nodes?.length) {
           stopSound();
           answer.value = '';
-          showSolvedPuzzles.value = false;
+          showInventory.value = false;
           prevSolvedCount.value = 0;
         }
+        if (newState.locations?.length > 0) {
+          const locExists = newState.locations.some((l: any) => l.id === selectedLocationId.value);
+          if (!locExists) {
+            selectedLocationId.value = newState.locations[0].id;
+          }
+        }
+        const newSolved = newState.solvedNodes?.length || 0;
+        if (newSolved > prevSolvedCount.value) {
+          stopSound();
+        }
+        prevSolvedCount.value = newSolved;
       },
-    });
-
-    function submitAnswer() {
-      if (!props.socket || !answer.value.trim() || gameState.value?.phase === 'escaped') return;
-      props.socket.emit('make-move', {
-        roomKey: props.roomKey,
-        action: 'submit-answer',
-        answer: answer.value.trim(),
-      });
-      answer.value = '';
-    }
-
-    function requestHint() {
-      if (!props.socket || gameState.value?.phase === 'escaped') return;
-      const current = gameState.value.puzzles?.find((p: EscapeRoomPuzzle) => !p.solved);
-      if (!current) return;
-      if ((current.hintsRevealed || 0) >= current.hints.length) return;
-      props.socket.emit('make-move', {
-        roomKey: props.roomKey,
-        action: 'request-hint',
-      });
-    }
-
-    function beginGame() {
-      if (!props.socket || gameState.value.introAcknowledged) return;
-      props.socket.emit('make-move', {
-        roomKey: props.roomKey,
-        action: 'begin-game',
-      });
-    }
-
-    const locationOrder = computed(() => {
-      return (gameState.value.locations || []).map((l: EscapeRoomLocation) => l.id);
     });
 
     return {
@@ -534,18 +829,42 @@ export default defineComponent({
       gameState,
       answer,
       showIntro,
-      showSolvedPuzzles,
+      showInventory,
+      selectedLocationId,
       isHowToPlayOpen,
       openHowToPlay,
       closeHowToPlay,
+      selectLocation,
+      currentPath,
+      currentNode,
+      currentChildren,
+      visibleChildren,
+      currentLocation,
+      playerInventory,
+      navigateToNode,
+      navigateBreadcrumb,
+      goBack,
       submitAnswer,
       requestHint,
+      interactItem,
+      useItem,
       beginGame,
-      getPuzzleLocationName,
-      locationOrder,
+      findNode,
+      getNodeLabel,
+      getNodeLocationName,
+      getNarrativeExcerpt,
+      hasItem,
+      isNodeStillLocked,
+      isItemDiscovered,
+      isMetaNode,
       isSoundPlaying,
       playPuzzleSound,
       splitArtSegments,
+      solvedCount,
+      attemptsForNode,
+      getItemLabel,
+      isLocationAccessible,
+      playerVisitedLocs,
     };
   },
   computed: {
@@ -555,66 +874,22 @@ export default defineComponent({
     escaped(): boolean {
       return this.gameState.phase === 'escaped';
     },
-    currentPuzzle() {
-      return this.gameState.puzzles?.find((p: EscapeRoomPuzzle) => !p.solved) || null;
-    },
     totalPuzzles(): number {
-      return this.gameState.puzzles?.length || 0;
-    },
-    solvedCount(): number {
-      return this.gameState.solvedPuzzles?.length || 0;
-    },
-    solvedPuzzlesList(): EscapeRoomPuzzle[] {
-      return this.gameState.puzzles?.filter((p: EscapeRoomPuzzle) => p.solved) || [];
-    },
-    currentLocation() {
-      if (!this.currentPuzzle) return null;
-      return this.gameState.locations?.find((l: EscapeRoomLocation) => l.id === (this.currentPuzzle as EscapeRoomPuzzle).locationId) || null;
-    },
-    sortedLocations(): EscapeRoomLocation[] {
-      const locs = this.gameState.locations || [];
-      return this.locationOrder
-        .map((id) => locs.find((l: EscapeRoomLocation) => l.id === id))
-        .filter(Boolean) as EscapeRoomLocation[];
+      return (this.gameState.nodes || []).filter((n: EscapeRoomNode) => n.type === 'puzzle').length;
     },
     revealedHints(): string[] {
-      const current = this.currentPuzzle;
-      if (!current) return [];
-      return current.hints.slice(0, current.hintsRevealed || 0);
+      const node = this.currentNode;
+      if (!node || node.type !== 'puzzle') return [];
+      return (node.hints || []).slice(0, node.hintsRevealed || 0);
     },
-    currentPuzzleHintsRemaining(): number {
-      const current = this.currentPuzzle;
-      if (!current) return 0;
-      return Math.max(0, current.hints.length - (current.hintsRevealed || 0));
+    currentNodeHintsRemaining(): number {
+      const node = this.currentNode;
+      if (!node || node.type !== 'puzzle') return 0;
+      return Math.max(0, (node.hints?.length || 0) - (node.hintsRevealed || 0));
     },
     hintButtonText(): string {
-      if (this.currentPuzzleHintsRemaining <= 0) return 'No more hints for this puzzle';
-      return `Hint (${this.currentPuzzleHintsRemaining} remaining)`;
-    },
-    locationStatusClass() {
-      return (locId: string) => {
-        const locPuzzles = this.gameState.puzzles.filter((p: EscapeRoomPuzzle) => p.locationId === locId);
-        if (locPuzzles.length === 0) return 'bg-slate-700';
-        const allSolved = locPuzzles.every((p: EscapeRoomPuzzle) => p.solved);
-        if (allSolved) return 'bg-emerald-500 shadow-md shadow-emerald-500/30';
-        const anySolved = locPuzzles.some((p: EscapeRoomPuzzle) => p.solved);
-        if (anySolved || (this.currentLocation && this.currentLocation.id === locId)) return 'bg-amber-500 animate-pulse';
-        return 'bg-slate-700';
-      };
-    },
-    locationLineClass() {
-      return (locId: string) => {
-        const idx = this.locationOrder.indexOf(locId);
-        const nextId = this.locationOrder[idx + 1];
-        if (!nextId) return 'bg-transparent';
-        const nextPuzzles = this.gameState.puzzles.filter((p: EscapeRoomPuzzle) => p.locationId === nextId);
-        const anyNextSolved = nextPuzzles.length > 0 && nextPuzzles.some((p: EscapeRoomPuzzle) => p.solved);
-        if (anyNextSolved) return 'bg-emerald-500';
-        const currPuzzles = this.gameState.puzzles.filter((p: EscapeRoomPuzzle) => p.locationId === locId);
-        const anyCurrSolved = currPuzzles.length > 0 && currPuzzles.some((p: EscapeRoomPuzzle) => p.solved);
-        if (anyCurrSolved) return 'bg-amber-500/50';
-        return 'bg-slate-700';
-      };
+      if (this.currentNodeHintsRemaining <= 0) return 'No more hints';
+      return `Hint (${this.currentNodeHintsRemaining} remaining)`;
     },
   },
 });
