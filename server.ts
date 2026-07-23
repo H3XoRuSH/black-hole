@@ -60,7 +60,7 @@ app.get('*', (req, res) => {
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     res.send(cachedIndex);
   } else {
-    res.sendFile(indexPath);
+    res.status(200).type('text/plain').send('Backend server is running.');
   }
 });
 
