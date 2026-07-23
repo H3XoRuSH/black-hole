@@ -396,7 +396,6 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import { Socket } from 'socket.io-client';
-import QRCode from 'qrcode';
 import WaitingIndicator from './ui/WaitingIndicator.vue';
 import BaseModal from './ui/BaseModal.vue';
 import EscapeRoomSelector from './games/EscapeRoomSelector.vue';
@@ -513,28 +512,33 @@ export default defineComponent({
   methods: {
     generateQRCode() {
       if (!this.roomKey) return;
-      this.$nextTick(() => {
+      this.$nextTick(async () => {
         const canvas = this.$refs.qrCanvas as HTMLCanvasElement;
         if (canvas) {
           const relativePath = this.$router.resolve({ name: 'Menu', query: { join: this.roomKey } }).href;
           const joinUrl = relativePath.startsWith('#')
             ? window.location.origin + window.location.pathname + relativePath
             : window.location.origin + relativePath;
-          QRCode.toCanvas(
-            canvas,
-            joinUrl,
-            {
-              width: 256,
-              margin: 1.5,
-              color: {
-                dark: '#4f46e5', // indigo-600 color to match theme
-                light: '#ffffff',
+          try {
+            const QRCode = (await import('qrcode')).default;
+            QRCode.toCanvas(
+              canvas,
+              joinUrl,
+              {
+                width: 256,
+                margin: 1.5,
+                color: {
+                  dark: '#4f46e5', // indigo-600 color to match theme
+                  light: '#ffffff',
+                },
               },
-            },
-            (error) => {
-              if (error) console.error('Failed to generate QR Code:', error);
-            }
-          );
+              (error) => {
+                if (error) console.error('Failed to generate QR Code:', error);
+              }
+            );
+          } catch (err) {
+            console.error('Failed to load qrcode library:', err);
+          }
         }
       });
     },
