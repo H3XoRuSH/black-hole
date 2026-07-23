@@ -2,7 +2,7 @@ export function getSystemPrompt(): string {
   return 'You output match recaps. No preamble, no meta-commentary.';
 }
 
-export function getRecapConversationPrompt(gameName: string, formattedHistory: string, originalRecap: string, question: string, gameId?: string, playerNames?: string[]): string {
+export function getRecapConversationPrompt(gameName: string, formattedHistory: string, originalRecap: string, question: string, gameId?: string, playerNames?: string[], statsSummary?: string): string {
   let playerRef = '';
   if (gameId === 'pictionary') {
     const namesList = playerNames && playerNames.length > 0
@@ -19,10 +19,19 @@ export function getRecapConversationPrompt(gameName: string, formattedHistory: s
     const p2Name = playerNames?.[1] || 'Player 2';
     playerRef = `Refer to "${p1Name} (Blue)" and "${p2Name} (Red)"`;
   }
+
+  let statsSection = '';
+  if (statsSummary) {
+    statsSection = `Key Match Statistics and Analytical Facts:
+${statsSummary}
+
+`;
+  }
+
   return `Game log for ${gameName}:
 ${formattedHistory}
 
-Original recap:
+${statsSection}Original recap:
 ${originalRecap}
 
 The user wants to ask a follow-up question about this match. ${playerRef}. Answer concisely based on the game log above.
@@ -32,7 +41,7 @@ Question: ${question}
 Answer:`;
 }
 
-export function getRecapPrompt(gameName: string, formattedHistory: string, gameId?: string, playerNames?: string[]): string {
+export function getRecapPrompt(gameName: string, formattedHistory: string, gameId?: string, playerNames?: string[], statsSummary?: string): string {
   let playerRef = '';
   let wordCountLimit = '40-60 words';
 
@@ -59,10 +68,19 @@ export function getRecapPrompt(gameName: string, formattedHistory: string, gameI
     const p2Name = playerNames?.[1] || 'Player 2';
     playerRef = `Refer to "${p1Name} (Blue)" and "${p2Name} (Red)"`;
   }
+
+  let statsSection = '';
+  if (statsSummary) {
+    statsSection = `Key Match Statistics and Analytical Facts:
+${statsSummary}
+
+`;
+  }
+
   return `Game log for ${gameName}:
 ${formattedHistory}
 
-Write ONE engaging paragraph recapping this match (${wordCountLimit}). ${playerRef}. Cover key moments and the outcome.
+${statsSection}Write ONE engaging paragraph recapping this match (${wordCountLimit}). ${playerRef}. Cover key moments, the outcome, and reference the statistics/facts to write a highly specific and analytical recap.
 
 Recap:`;
 }
