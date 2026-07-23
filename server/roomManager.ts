@@ -1022,6 +1022,12 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       io.to(roomKey).emit('chat-message', message);
     },
 
+    getChatMessages(roomKey: string, socket: Socket) {
+      if (!rooms.has(roomKey)) return;
+      const room = rooms.get(roomKey)!;
+      socket.emit('chat-history', room.chatMessages || []);
+    },
+
     getSocketRoom(socketId: string) {
       return socketRooms.get(socketId);
     },

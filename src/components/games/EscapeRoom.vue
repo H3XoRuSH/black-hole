@@ -355,6 +355,304 @@
         </div>
       </div>
     </div>
+
+    <!-- Floating Map Button -->
+    <button
+      v-if="!showIntro && !escaped"
+      @click="showMap = true"
+      class="fixed bottom-6 right-6 z-40 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold rounded-full p-4 shadow-2xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all cursor-pointer border border-amber-400/30 group"
+      title="View Area Map & Chat"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:rotate-12 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+      </svg>
+      <span v-if="isMultiplayer && unreadChatCount > 0" class="absolute -top-1 -right-1 w-5 h-5 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-md animate-bounce">
+        {{ unreadChatCount }}
+      </span>
+    </button>
+
+    <!-- Map Modal Overlay -->
+    <div
+      v-if="showMap"
+      class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md transition-all duration-300"
+      @click.self="showMap = false"
+    >
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-2xl flex flex-col shadow-2xl overflow-hidden max-h-[90vh]">
+        <!-- Modal Header -->
+        <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800/80 flex items-center justify-between bg-slate-50 dark:bg-slate-950/40">
+          <div class="flex items-center space-x-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+            </svg>
+            <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider">
+              {{ currentLocation?.name }} {{ isMultiplayer ? 'Operations Desk' : 'Area Map' }}
+            </h3>
+          </div>
+          <button
+            @click="showMap = false"
+            class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Tabs Header (Only in multiplayer) -->
+        <div v-if="isMultiplayer" class="flex border-b border-slate-200 dark:border-slate-850 bg-slate-50 dark:bg-slate-950/40 px-4 flex-shrink-0">
+          <button
+            @click="activeTab = 'map'"
+            :class="[
+              activeTab === 'map'
+                ? 'border-amber-500 text-amber-500 dark:text-amber-400 font-bold'
+                : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:border-slate-200 dark:hover:border-slate-750'
+            ]"
+            class="flex items-center space-x-2 px-4 py-3 border-b-2 text-xs uppercase tracking-wider transition-all cursor-pointer"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+            </svg>
+            <span>Area Map</span>
+          </button>
+          <button
+            @click="activeTab = 'chat'"
+            :class="[
+              activeTab === 'chat'
+                ? 'border-amber-500 text-amber-500 dark:text-amber-400 font-bold'
+                : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:border-slate-200 dark:hover:border-slate-750'
+            ]"
+            class="flex items-center space-x-2 px-4 py-3 border-b-2 text-xs uppercase tracking-wider transition-all cursor-pointer relative"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+            </svg>
+            <span>Team Chat</span>
+            <span v-if="unreadChatCount > 0" class="w-2 h-2 bg-rose-500 rounded-full animate-ping absolute top-3 right-2"></span>
+          </button>
+        </div>
+
+        <!-- Tabs Body -->
+        <div class="flex-grow flex flex-col overflow-hidden bg-slate-50/50 dark:bg-slate-950/20">
+          <!-- Tab: Map -->
+          <div v-if="!isMultiplayer || activeTab === 'map'" class="flex-grow p-4 sm:p-6 flex flex-col items-center justify-center min-h-[300px] overflow-y-auto custom-scroll">
+            <div class="w-full max-w-2xl flex flex-col space-y-3">
+              <div class="w-full aspect-[3/2] bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl relative overflow-hidden p-2">
+                <!-- SVG Tree Map -->
+                <svg viewBox="0 0 600 400" class="w-full h-full">
+                  <!-- Grid background pattern -->
+                  <defs>
+                    <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+                      <path d="M 30 0 L 0 0 0 30" fill="none" stroke="currentColor" class="text-slate-200 dark:text-slate-900" stroke-width="1.5"/>
+                    </pattern>
+                  </defs>
+                  <rect width="100%" height="100%" fill="url(#grid)" />
+
+                  <!-- Connecting Paths -->
+                  <path
+                    v-for="link in mapLinks"
+                    :key="link.id"
+                    :d="`M ${link.x1} ${link.y1} C ${link.x1} ${(link.y1 + link.y2) / 2}, ${link.x2} ${(link.y1 + link.y2) / 2}, ${link.x2} ${link.y2}`"
+                    fill="none"
+                    class="stroke-slate-300 dark:stroke-slate-800"
+                    stroke-width="3"
+                    stroke-linecap="round"
+                  />
+
+                  <!-- Node Circles -->
+                  <g
+                    v-for="node in mapNodes"
+                    :key="node.id"
+                    class="cursor-pointer group"
+                    @click="jumpToNode(node.id)"
+                    @mouseenter="hoveredNode = node"
+                    @mouseleave="hoveredNode = null"
+                  >
+                    <!-- Active pulsing ring outline -->
+                    <circle
+                      v-if="node.isCurrent"
+                      :cx="node.x"
+                      :cy="node.y"
+                      r="30"
+                      fill="none"
+                      class="stroke-amber-500 stroke-[3px] animate-pulse"
+                    />
+
+                    <!-- Node Base Circle -->
+                    <circle
+                      :cx="node.x"
+                      :cy="node.y"
+                      r="22"
+                      class="fill-slate-50 dark:fill-[#0b1329] stroke-2 transition-all duration-150 origin-center"
+                      :class="[
+                        node.isCurrent ? 'stroke-amber-500 dark:stroke-amber-400 stroke-2' : getNodeBorderClass(node)
+                      ]"
+                    />
+                    <!-- SVG Icon Overlays -->
+                    <g class="pointer-events-none select-none">
+                      <!-- Dialogue Icon (Speech bubbles) -->
+                      <path
+                        v-if="node.type === 'dialogue'"
+                        d="M -6 -5 h 12 a 3 3 0 0 1 3 3 v 5 a 3 3 0 0 1 -3 3 h -5 l -4 4 v -4 h -3 a 3 3 0 0 1 -3 -3 v -5 a 3 3 0 0 1 3 -3 z"
+                        :transform="`translate(${node.x}, ${node.y})`"
+                        class="fill-blue-400"
+                      />
+                      <!-- Puzzle Icon (Question mark) -->
+                      <text
+                        v-else-if="node.type === 'puzzle' && !node.solved"
+                        :x="node.x"
+                        :y="node.y"
+                        text-anchor="middle"
+                        dominant-baseline="central"
+                        class="font-bold text-lg fill-amber-500 dark:fill-amber-400 select-none pointer-events-none"
+                      >?</text>
+                      <!-- Solved Checkmark Icon -->
+                      <path
+                        v-else-if="node.type === 'puzzle' && node.solved"
+                        d="M -6 -1 L -2 3 L 6 -5"
+                        fill="none"
+                        class="stroke-emerald-500 dark:stroke-emerald-400"
+                        stroke-width="3.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        :transform="`translate(${node.x}, ${node.y})`"
+                      />
+                      <!-- Item Key Icon -->
+                      <path
+                        v-else-if="node.type === 'item'"
+                        d="M -6 0 a 4 4 0 1 1 8 0 a 4 4 0 0 1 -8 0 M 0 0 h 8 v 3 h -2 v -3 h -2 v 3 h -2"
+                        fill="none"
+                        :class="isItemDiscovered(node.id) ? 'stroke-slate-500' : 'stroke-indigo-400'"
+                        stroke-width="2.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        :transform="`translate(${node.x}, ${node.y})`"
+                      />
+                      <!-- Root Home Icon -->
+                      <path
+                        v-else-if="node.type === 'root'"
+                        d="M 0 -9 L -9 1 h 3 v 9 h 12 v -9 h 3 z"
+                        :transform="`translate(${node.x}, ${node.y}) scale(0.75)`"
+                        class="fill-amber-500 dark:fill-amber-400"
+                      />
+                      <!-- Locked/Unlocked Lock Icon -->
+                      <path
+                        v-else-if="node.type === 'locked'"
+                        d="M -6 -2 v -6 c 0 -3.3 2.7 -6 6 -6 s 6 2.7 6 6 v 6 h 2 v 14 h -16 v -14 z M -3 -2 h 6 v -6 c 0 -1.7 -1.3 -3 -3 -3 s -3 1.3 -3 3 z"
+                        :transform="`translate(${node.x}, ${node.y}) scale(0.8)`"
+                        :class="isNodeStillLocked(node) ? 'fill-rose-500' : 'fill-emerald-400'"
+                      />
+                    </g>
+                  </g>
+                </svg>
+              </div>
+
+              <!-- Hover Info Card -->
+              <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 flex flex-col justify-center h-[104px] lg:h-[90px] w-full flex-shrink-0">
+                <template v-if="hoveredNode">
+                  <div class="flex items-center justify-between">
+                    <span class="text-[10px] uppercase tracking-wider font-bold" :class="getNodeTypeColor(hoveredNode)">
+                      {{ hoveredNode.type }}
+                    </span>
+                    <span class="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
+                      {{ getNodeStatusText(hoveredNode) }}
+                    </span>
+                  </div>
+                  <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5">
+                    {{ hoveredNode.label }}
+                  </h4>
+                  <p class="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5 whitespace-pre-line line-clamp-3">
+                    {{ hoveredNode.narrative }}
+                  </p>
+                </template>
+                <template v-else>
+                  <template v-if="currentNode">
+                    <div class="flex items-center justify-between">
+                      <span class="text-[10px] uppercase tracking-wider font-bold text-blue-400">
+                        current location
+                      </span>
+                      <span class="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
+                        {{ getNodeStatusText(currentNode) }}
+                      </span>
+                    </div>
+                    <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5">
+                      {{ currentNode.label }}
+                    </h4>
+                    <p class="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5 whitespace-pre-line line-clamp-3">
+                      {{ isNodeStillLocked(currentNode) ? (currentNode.lockedNarrative || currentNode.narrative) : currentNode.narrative }}
+                    </p>
+                  </template>
+                  <template v-else-if="currentLocation">
+                    <div class="flex items-center justify-between">
+                      <span class="text-[10px] uppercase tracking-wider font-bold text-emerald-400">
+                        current location
+                      </span>
+                      <span class="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
+                        Start
+                      </span>
+                    </div>
+                    <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5">
+                      {{ currentLocation.name }}
+                    </h4>
+                    <p class="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5 whitespace-pre-line line-clamp-3">
+                      {{ currentLocation.description }}
+                    </p>
+                  </template>
+                </template>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab: Chat (Only shown in multiplayer) -->
+          <div v-if="isMultiplayer && activeTab === 'chat'" class="flex-grow p-4 flex flex-col h-[380px] md:h-[450px] bg-slate-50/50 dark:bg-slate-900/40 overflow-hidden">
+            <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center justify-between flex-shrink-0">
+              <span>Team Communications</span>
+              <span class="font-mono text-[9px]">{{ chatMessages.length }} messages</span>
+            </div>
+            <div ref="chatMessagesRef" class="flex-grow overflow-y-auto p-2.5 space-y-3 rounded-xl bg-white dark:bg-slate-950/30 border border-slate-200 dark:border-slate-850 mb-3 custom-scroll">
+              <div v-if="chatMessages.length === 0" class="flex items-center justify-center h-full text-xs text-slate-600 italic select-none">
+                No messages yet. Coordinate here!
+              </div>
+              <div v-for="(msg, i) in chatMessages" :key="i" class="flex items-start space-x-2">
+                <span class="w-2 h-2 rounded-full mt-1.5 flex-shrink-0" :class="getChatDotClass(msg.player)"></span>
+                <div class="min-w-0">
+                  <span class="text-xs font-semibold" :class="getChatNameColor(msg.player)">{{ getChatDisplayName(msg) }}</span>
+                  <p class="text-xs text-slate-700 dark:text-slate-300 break-words mt-0.5">{{ msg.text }}</p>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2 flex-shrink-0">
+              <input
+                v-model="chatInput"
+                @keyup.enter="sendChatMessage"
+                type="text"
+                placeholder="Type a message to the team..."
+                maxlength="200"
+                class="flex-grow bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-850 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition-all"
+              />
+              <button
+                @click="sendChatMessage"
+                :disabled="!chatInput.trim()"
+                class="bg-amber-600 hover:bg-amber-500 disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:text-slate-400 dark:disabled:text-slate-600 text-white rounded-xl p-2 transition-all duration-150 cursor-pointer active:scale-95 disabled:cursor-not-allowed flex-shrink-0"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="px-6 py-3 border-t border-slate-200 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-950/40 flex justify-end">
+          <button
+            @click="showMap = false"
+            class="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 font-semibold px-4 py-2 rounded-xl transition-all cursor-pointer text-sm"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
   <div v-else class="h-full flex flex-col items-center justify-center p-6">
     <p class="text-lg text-gray-500 font-medium">Invalid game state. Redirecting to lobby...</p>
@@ -368,7 +666,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, computed, watch, onMounted, onUnmounted } from 'vue';
+import { defineComponent, PropType, ref, computed, watch, onMounted, onUnmounted, nextTick } from 'vue';
 import { Socket } from 'socket.io-client';
 import { useGame } from '../../composables/useGame.js';
 import { useToast } from '../../composables/useToast.js';
@@ -412,6 +710,8 @@ export default defineComponent({
     const { showToast } = useToast();
     const showIntro = computed(() => !gameState.value.introAcknowledged);
     const showInventory = ref(false);
+    const showMap = ref(false);
+    const hoveredNode = ref<any>(null);
     const selectedLocationId = ref('foyer');
     const prevSolvedCount = ref(0);
     const navigating = ref(false);
@@ -792,6 +1092,326 @@ export default defineComponent({
       return gameState.value.attemptsPerNode?.[nodeId] || 0;
     }
 
+    const activeTab = ref<'map' | 'chat'>('map');
+    const unreadChatCount = ref(0);
+    const chatMessages = ref<any[]>([]);
+    const chatInput = ref('');
+    const chatMessagesRef = ref<HTMLElement | null>(null);
+
+    const PLAYER_COLORS = ['bg-indigo-500', 'bg-emerald-500', 'bg-amber-500', 'bg-rose-500', 'bg-cyan-500', 'bg-violet-500', 'bg-pink-500', 'bg-blue-500'];
+    const PLAYER_TEXT_COLORS = ['text-indigo-400', 'text-emerald-400', 'text-amber-400', 'text-rose-400', 'text-cyan-400', 'text-violet-400', 'text-pink-400', 'text-blue-400'];
+
+    const isMultiplayer = computed(() => {
+      const humanPlayers = gameState.value.players?.filter((p: any) => !p.isAI) || [];
+      return humanPlayers.length >= 2;
+    });
+
+    function scrollChatToBottom() {
+      nextTick(() => {
+        if (chatMessagesRef.value) {
+          chatMessagesRef.value.scrollTop = chatMessagesRef.value.scrollHeight;
+        }
+      });
+    }
+
+    function sendChatMessage() {
+      const text = chatInput.value.trim();
+      if (!text || !props.socket || !props.roomKey) return;
+      props.socket.emit('send-chat', { roomKey: props.roomKey, text });
+      chatInput.value = '';
+    }
+
+    function getChatDotClass(playerNum: number): string {
+      return PLAYER_COLORS[(playerNum - 1) % PLAYER_COLORS.length];
+    }
+    function getChatNameColor(playerNum: number): string {
+      return PLAYER_TEXT_COLORS[(playerNum - 1) % PLAYER_TEXT_COLORS.length];
+    }
+    function getChatDisplayName(msg: any): string {
+      const p = gameState.value.players?.find((pl: any) => pl.player === msg.player);
+      return p?.name || msg.playerName || `Player ${msg.player}`;
+    }
+
+    const mapNodes = computed(() => {
+      if (!selectedLocationId.value) return [];
+      const locNodes = gameState.value.nodes.filter(
+        (n: EscapeRoomNode) => n.locationId === selectedLocationId.value
+      );
+      const visibleNodes = locNodes.filter((n: EscapeRoomNode) => {
+        if (!n.parentId) return true;
+        const parent = findNode(n.parentId);
+        if (!parent || parent.locationId !== selectedLocationId.value) return true;
+        let curr: EscapeRoomNode | undefined = parent;
+        while (curr && curr.locationId === selectedLocationId.value) {
+          if (curr.type === 'puzzle' && !curr.solved) return false;
+          if (curr.type === 'locked' && isNodeStillLocked(curr)) return false;
+          curr = curr.parentId ? findNode(curr.parentId) : undefined;
+        }
+        return true;
+      });
+      const depthMap: Record<string, number> = {};
+      const localRoots = visibleNodes.filter(
+        (n: EscapeRoomNode) => !n.parentId || !visibleNodes.some((pn) => pn.id === n.parentId)
+      );
+      const hasVirtualRoot = localRoots.length > 1;
+      const VIRTUAL_ROOT = '__root__';
+      function computeDepth(nodeId: string, currentDepth: number) {
+        depthMap[nodeId] = currentDepth;
+        const children = visibleNodes.filter((n: EscapeRoomNode) => n.parentId === nodeId);
+        for (const child of children) {
+          computeDepth(child.id, currentDepth + 1);
+        }
+      }
+      if (hasVirtualRoot) {
+        depthMap[VIRTUAL_ROOT] = 0;
+        for (const root of localRoots) {
+          computeDepth(root.id, 1);
+        }
+      } else {
+        for (const root of localRoots) {
+          computeDepth(root.id, 0);
+        }
+      }
+      const nodeIds = visibleNodes.map((n) => n.id);
+      const allNodeIds = hasVirtualRoot ? [VIRTUAL_ROOT, ...nodeIds] : nodeIds;
+      const maxDepth = allNodeIds.length > 0 ? Math.max(0, ...allNodeIds.map((id) => depthMap[id] ?? 0)) : 0;
+      const levels: string[][] = Array.from({ length: maxDepth + 1 }, () => []);
+      if (hasVirtualRoot) levels[0].push(VIRTUAL_ROOT);
+      for (const node of visibleNodes) {
+        const d = depthMap[node.id] ?? 0;
+        levels[d].push(node.id);
+      }
+      const width = 600;
+      const height = 400;
+      const paddingX = 80;
+      const paddingTop = 60;
+      const paddingBottom = 60;
+      const positions: Record<string, { x: number; y: number }> = {};
+      const levelHeight = maxDepth > 0 ? (height - paddingTop - paddingBottom) / maxDepth : 0;
+      for (let d = 0; d <= maxDepth; d++) {
+        const ids = levels[d];
+        const y = maxDepth > 0 ? paddingTop + d * levelHeight : height / 2;
+        const count = ids.length;
+        const stepX = count > 1 ? (width - 2 * paddingX) / (count - 1) : 0;
+        const startX = count > 1 ? paddingX : width / 2;
+        for (let i = 0; i < count; i++) {
+          const id = ids[i];
+          positions[id] = {
+            x: startX + i * stepX,
+            y,
+          };
+        }
+      }
+      const currentActiveId = currentPath.value[currentPath.value.length - 1];
+      const result = visibleNodes.map((n: EscapeRoomNode) => {
+        const isLocked = n.type === 'locked' && isNodeStillLocked(n);
+        return {
+          ...n,
+          narrative: isLocked ? (n.lockedNarrative || n.narrative) : n.narrative,
+          x: positions[n.id]?.x ?? 0,
+          y: positions[n.id]?.y ?? 0,
+          isCurrent: currentActiveId === n.id,
+        };
+      });
+      if (hasVirtualRoot) {
+        result.unshift({
+          id: VIRTUAL_ROOT,
+          type: 'root',
+          label: currentLocation.value?.name || 'start here',
+          isMeta: false,
+          narrative: currentLocation.value?.description || '',
+          lockedNarrative: '',
+          parentId: null,
+          locationId: selectedLocationId.value,
+          children: localRoots.map((r) => r.id),
+          x: positions[VIRTUAL_ROOT]?.x ?? width / 2,
+          y: positions[VIRTUAL_ROOT]?.y ?? paddingTop,
+          isCurrent: !currentActiveId,
+          solved: false,
+          question: '',
+          answer: '',
+          hints: [],
+          attempts: 0,
+          rewardItem: null,
+          lockedByItem: null,
+        } as any);
+      }
+      return result;
+    });
+
+    const mapLinks = computed(() => {
+      const nodesList = mapNodes.value;
+      const links: { id: string; x1: number; y1: number; x2: number; y2: number }[] = [];
+      const virtualRoot = nodesList.find((n) => n.id === '__root__');
+      for (const node of nodesList) {
+        if (node.id === '__root__') continue;
+        if (node.parentId && node.parentId !== '__root__') {
+          const parent = nodesList.find((n) => n.id === node.parentId);
+          if (parent) {
+            links.push({
+              id: `${parent.id}-${node.id}`,
+              x1: parent.x,
+              y1: parent.y,
+              x2: node.x,
+              y2: node.y,
+            });
+          }
+        } else if (virtualRoot) {
+          links.push({
+            id: `__root__-${node.id}`,
+            x1: virtualRoot.x,
+            y1: virtualRoot.y,
+            x2: node.x,
+            y2: node.y,
+          });
+        }
+      }
+      return links;
+    });
+
+    function getNodeBorderClass(node: EscapeRoomNode) {
+      switch (node.type) {
+        case 'puzzle':
+          return node.solved ? 'stroke-emerald-500' : 'stroke-amber-500/80';
+        case 'locked':
+          return isNodeStillLocked(node) ? 'stroke-rose-500' : 'stroke-emerald-500';
+        case 'item':
+          return isItemDiscovered(node.id) ? 'stroke-slate-500' : 'stroke-indigo-500';
+        default:
+          return 'stroke-blue-500/80';
+      }
+    }
+
+    function getNodeTypeColor(node: EscapeRoomNode) {
+      switch (node.type) {
+        case 'puzzle':
+          return 'text-amber-600 dark:text-amber-400';
+        case 'locked':
+          return 'text-rose-600 dark:text-rose-400';
+        case 'item':
+          return 'text-indigo-600 dark:text-indigo-400';
+        case 'root':
+          return 'text-emerald-600 dark:text-emerald-400';
+        default:
+          return 'text-blue-600 dark:text-blue-400';
+      }
+    }
+
+    function getNodeStatusText(node: EscapeRoomNode) {
+      if ((node as any).isCurrent) {
+        return 'Current Position';
+      }
+      if (node.id === '__root__') {
+        return 'Start';
+      }
+      switch (node.type) {
+        case 'puzzle':
+          return node.solved ? 'Solved' : 'Unsolved';
+        case 'locked':
+          return isNodeStillLocked(node) ? 'Locked' : 'Unlocked';
+        case 'item':
+          return isItemDiscovered(node.id) ? 'Picked Up' : 'Available';
+        default:
+          return 'Visited';
+      }
+    }
+
+    function jumpToNode(nodeId: string) {
+      if (!props.socket || navigating.value) return;
+      if (nodeId === '__root__') {
+        startNavigating();
+        props.socket.emit('make-move', {
+          roomKey: props.roomKey,
+          action: 'navigate-breadcrumb',
+          nodeId: null,
+        });
+        showMap.value = false;
+        return;
+      }
+      const targetNode = findNode(nodeId);
+      if (!targetNode) return;
+      const path: string[] = [];
+      let current: EscapeRoomNode | undefined = targetNode;
+      while (current) {
+        path.unshift(current.id);
+        current = current.parentId ? findNode(current.parentId) : undefined;
+      }
+      for (let i = 0; i < path.length - 1; i++) {
+        const ancestor = findNode(path[i]);
+        if (!ancestor) return;
+        if (ancestor.type === 'puzzle' && !ancestor.solved) {
+          showToast('Path is blocked by an unsolved puzzle.', 'error');
+          return;
+        }
+        if (ancestor.type === 'locked' && isNodeStillLocked(ancestor)) {
+          showToast('Path is blocked by a lock.', 'error');
+          return;
+        }
+      }
+      startNavigating();
+      props.socket.emit('make-move', {
+        roomKey: props.roomKey,
+        action: 'jump-to-node',
+        nodeId,
+      });
+      showMap.value = false;
+    }
+
+    watch(showMap, (isOpen) => {
+      if (isOpen) {
+        activeTab.value = 'map';
+        unreadChatCount.value = 0;
+      }
+    });
+
+    watch(activeTab, (newTab) => {
+      if (newTab === 'chat') {
+        unreadChatCount.value = 0;
+        scrollChatToBottom();
+      }
+    });
+
+    const onChatMessage = (msg: any) => {
+      chatMessages.value = [...chatMessages.value, msg];
+      if (isMultiplayer.value) {
+        if (!showMap.value || activeTab.value === 'map') {
+          unreadChatCount.value++;
+        }
+      }
+      scrollChatToBottom();
+    };
+
+    const onWaitingForPlayer = (data: any) => {
+      chatMessages.value = data.chatMessages || [];
+      scrollChatToBottom();
+    };
+
+    const onReconnectSuccess = (data: any) => {
+      chatMessages.value = data.chatMessages || [];
+      scrollChatToBottom();
+    };
+
+    const onChatHistory = (history: any[]) => {
+      chatMessages.value = history;
+      scrollChatToBottom();
+    };
+
+    watch(() => props.socket, (newSocket, oldSocket) => {
+      if (oldSocket) {
+        oldSocket.off('chat-message', onChatMessage);
+        oldSocket.off('waiting-for-player', onWaitingForPlayer);
+        oldSocket.off('reconnect-success', onReconnectSuccess);
+        oldSocket.off('chat-history', onChatHistory);
+      }
+      if (newSocket) {
+        newSocket.on('chat-message', onChatMessage);
+        newSocket.on('waiting-for-player', onWaitingForPlayer);
+        newSocket.on('reconnect-success', onReconnectSuccess);
+        newSocket.on('chat-history', onChatHistory);
+        newSocket.emit('get-chat', { roomKey: props.roomKey });
+      }
+    }, { immediate: true });
+
     onMounted(() => {
       // no init needed
     });
@@ -801,6 +1421,12 @@ export default defineComponent({
       if (audioCtx.value) {
         audioCtx.value.close();
         audioCtx.value = null;
+      }
+      if (props.socket) {
+        props.socket.off('chat-message', onChatMessage);
+        props.socket.off('waiting-for-player', onWaitingForPlayer);
+        props.socket.off('reconnect-success', onReconnectSuccess);
+        props.socket.off('chat-history', onChatHistory);
       }
     });
 
@@ -877,6 +1503,24 @@ export default defineComponent({
       getItemLabel,
       isLocationAccessible,
       playerVisitedLocs,
+      showMap,
+      hoveredNode,
+      mapNodes,
+      mapLinks,
+      getNodeBorderClass,
+      getNodeTypeColor,
+      getNodeStatusText,
+      jumpToNode,
+      activeTab,
+      isMultiplayer,
+      unreadChatCount,
+      chatMessages,
+      chatInput,
+      chatMessagesRef,
+      sendChatMessage,
+      getChatDotClass,
+      getChatNameColor,
+      getChatDisplayName,
     };
   },
   computed: {

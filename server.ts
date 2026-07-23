@@ -153,6 +153,10 @@ io.on('connection', (socket: Socket) => {
     rooms.sendChat(roomKey, socket, { text }, io);
   });
 
+  socket.on('get-chat', ({ roomKey }: { roomKey: string }) => {
+    rooms.getChatMessages(roomKey, socket);
+  });
+
   socket.on('draw-stroke', ({ roomKey, stroke }: { roomKey: string; stroke: any }) => {
     socket.to(roomKey).emit('draw-stroke', { stroke });
   });

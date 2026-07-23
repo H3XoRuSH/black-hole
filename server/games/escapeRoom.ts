@@ -306,6 +306,44 @@ export const makeMove = (
     return true;
   }
 
+  if (data.action === 'jump-to-node') {
+    const nodeId = data.nodeId;
+    if (!nodeId) {
+      socket.emit('invalid-move', { message: 'No node specified.' });
+      return false;
+    }
+    const node = findNode(gameState.nodes, nodeId);
+    if (!node) {
+      socket.emit('invalid-move', { message: 'Node not found.' });
+      return false;
+    }
+    const path: string[] = [];
+    let current: EscapeRoomNode | undefined = node;
+    while (current) {
+      path.unshift(current.id);
+      current = current.parentId ? findNode(gameState.nodes, current.parentId) : undefined;
+    }
+    for (let i = 0; i < path.length - 1; i++) {
+      const ancestorId = path[i];
+      const ancestor = findNode(gameState.nodes, ancestorId);
+      if (!ancestor) return false;
+      if (ancestor.type === 'puzzle' && !ancestor.solved) {
+        socket.emit('invalid-move', { message: 'Path is blocked by an unsolved puzzle.' });
+        return false;
+      }
+      if (ancestor.type === 'locked' && !gameState.unlockedNodes.includes(ancestorId)) {
+        socket.emit('invalid-move', { message: 'Path is blocked by a lock.' });
+        return false;
+      }
+    }
+    gameState.playerNodePaths[playerId] = path;
+    if (!gameState.visitedLocations.includes(node.locationId)) {
+      gameState.visitedLocations.push(node.locationId);
+    }
+    gameState.lastAction = { playerNumber, action: 'navigate-node' };
+    return true;
+  }
+
   if (data.action === 'request-hint') {
     const nodeId = data.nodeId;
     if (!nodeId) {
