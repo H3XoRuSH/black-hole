@@ -78,6 +78,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType, ref, computed, watch, nextTick, onBeforeUnmount } from 'vue';
+import { useRoute } from 'vue-router';
 import type { ChatMessage, Player } from '../../types/shared.js';
 
 const PLAYER_COLORS = ['bg-indigo-500', 'bg-emerald-500', 'bg-amber-500', 'bg-rose-500', 'bg-cyan-500', 'bg-violet-500', 'bg-pink-500', 'bg-blue-500'];
@@ -91,6 +92,7 @@ export default defineComponent({
     players: { type: Array as PropType<Player[]>, default: () => [] },
   },
   setup(props) {
+    const route = useRoute();
     const open = ref(false);
     const inputText = ref('');
     const messages = ref<ChatMessage[]>([]);
@@ -101,6 +103,7 @@ export default defineComponent({
 
     const visible = computed(() => {
       if (!props.roomKey || !props.socket) return false;
+      if (route && route.path.includes('/escape-room/game/')) return false;
       const humanPlayers = props.players.filter((p) => !p.isAI);
       return humanPlayers.length >= 2;
     });
@@ -152,34 +155,40 @@ export default defineComponent({
       }
     });
 
+    const onWaitingForPlayer = (data: any) => {
+      messages.value = data.chatMessages || [];
+      unreadCount.value = 0;
+    };
+
+    const onReconnectSuccess = (data: any) => {
+      messages.value = data.chatMessages || [];
+      unreadCount.value = 0;
+    };
+
+    const onChatMessage = (msg: ChatMessage) => {
+      messages.value = [...messages.value, msg];
+      if (!open.value) unreadCount.value++;
+    };
+
     watch(() => props.socket, (newSocket) => {
       if (previousSocket && previousSocket !== newSocket) {
-        previousSocket.off('waiting-for-player');
-        previousSocket.off('reconnect-success');
-        previousSocket.off('chat-message');
+        previousSocket.off('waiting-for-player', onWaitingForPlayer);
+        previousSocket.off('reconnect-success', onReconnectSuccess);
+        previousSocket.off('chat-message', onChatMessage);
       }
       if (newSocket) {
-        newSocket.on('waiting-for-player', (data: any) => {
-          messages.value = data.chatMessages || [];
-          unreadCount.value = 0;
-        });
-        newSocket.on('reconnect-success', (data: any) => {
-          messages.value = data.chatMessages || [];
-          unreadCount.value = 0;
-        });
-        newSocket.on('chat-message', (msg: ChatMessage) => {
-          messages.value = [...messages.value, msg];
-          if (!open.value) unreadCount.value++;
-        });
+        newSocket.on('waiting-for-player', onWaitingForPlayer);
+        newSocket.on('reconnect-success', onReconnectSuccess);
+        newSocket.on('chat-message', onChatMessage);
       }
       previousSocket = newSocket;
     }, { immediate: true });
 
     onBeforeUnmount(() => {
       if (props.socket) {
-        props.socket.off('waiting-for-player');
-        props.socket.off('reconnect-success');
-        props.socket.off('chat-message');
+        props.socket.off('waiting-for-player', onWaitingForPlayer);
+        props.socket.off('reconnect-success', onReconnectSuccess);
+        props.socket.off('chat-message', onChatMessage);
       }
     });
 
