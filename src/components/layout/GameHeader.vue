@@ -255,7 +255,7 @@ export default defineComponent({
       default: null,
     },
     socket: {
-      type: Object,
+      type: null as any,
       default: null,
     },
     roomKey: {

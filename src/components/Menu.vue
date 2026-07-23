@@ -235,6 +235,11 @@ export default defineComponent({
       required: true,
     },
   },
+  provide() {
+    return {
+      getHostingGameId: () => this.hostingGameId,
+    };
+  },
   data() {
     return {
       games: gamesData,
@@ -250,6 +255,7 @@ export default defineComponent({
       searchQuery: '',
       showFilterDropdown: false,
       showViewDropdown: false,
+      hostingGameId: '',
       filters: [
         { label: 'All', value: 'all' },
         { label: 'Play Vs AI', value: 'ai' },
@@ -305,10 +311,14 @@ export default defineComponent({
         if (oldSocket) {
           oldSocket.off('room-validated', this.handleRoomValidated);
           oldSocket.off('room-validation-error', this.handleRoomValidationError);
+          oldSocket.off('room-error', this.handleRoomError);
+          oldSocket.off('disconnect', this.handleDisconnect);
         }
         if (newSocket) {
           newSocket.on('room-validated', this.handleRoomValidated);
           newSocket.on('room-validation-error', this.handleRoomValidationError);
+          newSocket.on('room-error', this.handleRoomError);
+          newSocket.on('disconnect', this.handleDisconnect);
           this.checkAutoJoin();
         }
       },
@@ -324,6 +334,8 @@ export default defineComponent({
     if (this.socket) {
       this.socket.off('room-validated', this.handleRoomValidated);
       this.socket.off('room-validation-error', this.handleRoomValidationError);
+      this.socket.off('room-error', this.handleRoomError);
+      this.socket.off('disconnect', this.handleDisconnect);
     }
   },
   methods: {
@@ -409,9 +421,16 @@ export default defineComponent({
       this.socket.emit('validate-room', { roomKey: this.roomCode });
     },
     handleSelectGame(gameId: string) {
-      if (this.socket) {
+      if (this.socket && !this.hostingGameId) {
+        this.hostingGameId = gameId;
         this.socket.emit('create-room', { gameId });
       }
+    },
+    handleRoomError() {
+      this.hostingGameId = '';
+    },
+    handleDisconnect() {
+      this.hostingGameId = '';
     },
     handleRoomValidated({ roomKey, gameId }: { roomKey: string; gameId: string }) {
       this.isValidating = false;

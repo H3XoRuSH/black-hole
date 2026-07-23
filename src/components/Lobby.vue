@@ -189,15 +189,21 @@
                </div>
                <div>
                  <button
-                   v-if="isHost && players.length === 1 && supportsAI"
-                   @click="addAIOpponent('hard')"
-                   class="text-xs font-bold py-1.5 px-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-all duration-200 cursor-pointer shadow-sm active:scale-95 flex items-center gap-1.5"
-                 >
-                   <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
-                     <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-                   </svg>
-                   Play vs AI
-                 </button>
+                    v-if="isHost && players.length === 1 && supportsAI"
+                    @click="addAIOpponent('hard')"
+                    :disabled="aiPending"
+                    class="text-xs font-bold py-1.5 px-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-all duration-200 cursor-pointer shadow-sm active:scale-95 flex items-center gap-1.5 disabled:opacity-60 disabled:cursor-not-allowed"
+                  >
+                    <template v-if="aiPending">
+                      <WaitingIndicator /> Adding...
+                    </template>
+                    <template v-else>
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                      </svg>
+                      Play vs AI
+                    </template>
+                  </button>
                </div>
              </div>
           </div>
@@ -401,6 +407,19 @@ import BaseModal from './ui/BaseModal.vue';
 import EscapeRoomSelector from './games/EscapeRoomSelector.vue';
 import gamesData from '../assets/games.json';
 
+const gamePreloaders: Record<string, () => Promise<any>> = {
+  'black-hole': () => import('./games/BlackHole.vue'),
+  'connect-four': () => import('./games/ConnectFour.vue'),
+  'dots-and-boxes': () => import('./games/DotsAndBoxes.vue'),
+  'battleship': () => import('./games/Battleship.vue'),
+  'checkers': () => import('./games/Checkers.vue'),
+  'bingo': () => import('./games/Bingo.vue'),
+  'trivia': () => import('./games/Trivia.vue'),
+  'infinite-word-chain': () => import('./games/InfiniteWordChain.vue'),
+  'pictionary': () => import('./games/Pictionary.vue'),
+  'escape-room': () => import('./games/EscapeRoom.vue'),
+};
+
 export default defineComponent({
   components: { WaitingIndicator, BaseModal, EscapeRoomSelector },
   emits: ['update-connection-status', 'update-player', 'update-room-key'],
@@ -442,6 +461,8 @@ export default defineComponent({
       cyclingDifficulty: '',
       pageDarkMode: document.documentElement.classList.contains('dark'),
       darkModeObserver: null as MutationObserver | null,
+      isReadyLocal: null as boolean | null,
+      aiPending: false,
     };
   },
   computed: {
@@ -462,6 +483,9 @@ export default defineComponent({
       return this.initialGameState?.maxPlayers ?? 2;
     },
     isReady(): boolean {
+      if (this.isReadyLocal !== null) {
+        return this.isReadyLocal;
+      }
       const me = this.players.find((p: any) => p.id === this.socket?.id);
       return !!me?.ready;
     },
@@ -507,6 +531,16 @@ export default defineComponent({
       if (newVal) {
         this.selectedEscapeRoom = newVal;
       }
+    },
+    players: {
+      handler(newPlayers) {
+        const me = newPlayers.find((p: any) => p.id === this.socket?.id);
+        if (me && this.isReadyLocal !== null && me.ready === this.isReadyLocal) {
+          this.isReadyLocal = null;
+        }
+        this.aiPending = false;
+      },
+      deep: true,
     },
   },
   methods: {
@@ -622,11 +656,14 @@ export default defineComponent({
     },
     toggleReady() {
       if (this.socket && this.roomKey) {
+        const currentReady = this.isReady;
+        this.isReadyLocal = !currentReady;
         this.socket.emit('toggle-ready', { roomKey: this.roomKey });
       }
     },
     addAIOpponent(difficulty: 'easy' | 'medium' | 'hard' = 'hard') {
       if (this.socket && this.roomKey) {
+        this.aiPending = true;
         this.socket.emit('add-ai', { roomKey: this.roomKey, difficulty });
       }
     },
@@ -639,6 +676,7 @@ export default defineComponent({
     },
     removeAIOpponent() {
       if (this.socket && this.roomKey) {
+        this.aiPending = true;
         this.socket.emit('remove-ai', { roomKey: this.roomKey });
       }
     },
@@ -724,6 +762,14 @@ export default defineComponent({
       this.pageDarkMode = document.documentElement.classList.contains('dark');
     });
     this.darkModeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+
+    // Preload active game chunk while players are in the lobby
+    const preloader = gamePreloaders[this.gameId];
+    if (preloader) {
+      preloader().catch((err) => {
+        console.warn('Failed to preload game component:', err);
+      });
+    }
   },
   beforeUnmount() {
     this.darkModeObserver?.disconnect();
