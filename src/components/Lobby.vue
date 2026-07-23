@@ -68,7 +68,7 @@
         <!-- Players List -->
         <div class="mt-5 border-t border-gray-100 dark:border-slate-700 pt-5 text-left">
           <h4 class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">Players ({{ players.length }}/{{ maxPlayers }})</h4>
-          <div class="space-y-2.5 mb-6 max-h-72 overflow-y-auto">
+          <div class="space-y-2.5 mb-6 max-h-72 overflow-y-auto players-scroll">
             <!-- Dynamic Players List -->
             <div
               v-for="p in players"
@@ -784,6 +784,35 @@ export default defineComponent({
 }
 .dice-spin {
   animation: dice-spin 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+.players-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+.players-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.players-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+.players-scroll::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+:root.dark .players-scroll::-webkit-scrollbar-thumb {
+  background: #475569;
+}
+:root.dark .players-scroll::-webkit-scrollbar-thumb:hover {
+  background: #64748b;
+}
+@supports (scrollbar-width: thin) {
+  .players-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+  }
+  :root.dark .players-scroll {
+    scrollbar-color: #475569 transparent;
+  }
 }
 .roulette-cell {
   display: inline-block;
