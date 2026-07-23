@@ -136,6 +136,15 @@
               </template>
             </div>
 
+            <div v-if="currentNode.locationId !== selectedLocationId" class="flex justify-center mb-3">
+              <button
+                @click="selectLocation(currentNode.locationId)"
+                class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold px-6 py-2.5 rounded-xl shadow-md transition-all duration-150 cursor-pointer active:scale-95 text-sm"
+              >
+                Go to {{ getLocationName(currentNode.locationId) }}
+              </button>
+            </div>
+
             <div v-if="currentNode.sound && !currentNode.solved" class="flex justify-center mb-4">
               <button
                 @click="playPuzzleSound(currentNode)"
@@ -334,7 +343,7 @@
           </div>
 
           <p class="text-sm text-slate-600 dark:text-slate-500 mb-4">
-            Total attempts: <span class="text-slate-700 dark:text-slate-300 font-bold">{{ gameState.totalMoves }}</span> |
+            Wrong answers: <span class="text-slate-700 dark:text-slate-300 font-bold">{{ gameState.wrongAttempts }}</span> |
             Hints used: <span class="text-slate-700 dark:text-slate-300 font-bold">{{ gameState.hintsUsed }}</span>
           </p>
 
@@ -598,6 +607,11 @@ export default defineComponent({
       return loc?.name || node.locationId;
     }
 
+    function getLocationName(locationId: string): string {
+      const loc = gameState.value.locations?.find((l: EscapeRoomLocation) => l.id === locationId);
+      return loc?.name || locationId;
+    }
+
     const currentLocation = computed(() => {
       return gameState.value.locations?.find((l: EscapeRoomLocation) => l.id === selectedLocationId.value) || null;
     });
@@ -849,6 +863,7 @@ export default defineComponent({
       findNode,
       getNodeLabel,
       getNodeLocationName,
+      getLocationName,
       getNarrativeExcerpt,
       hasItem,
       isNodeStillLocked,

@@ -26,6 +26,7 @@ export const createInitialState = (playerId: string): EscapeRoomGameState => {
     players: [{ id: playerId, player: 1, ready: false }],
     winner: '',
     totalMoves: 0,
+    wrongAttempts: 0,
     hintsUsed: 0,
     playerNodePaths: {},
     playerInventories: {},
@@ -49,6 +50,7 @@ export const resetState = (players: Player[]): EscapeRoomGameState => {
     players: players.map((p) => ({ ...p, ready: false })),
     winner: '',
     totalMoves: 0,
+    wrongAttempts: 0,
     hintsUsed: 0,
     playerNodePaths: {},
     playerInventories: {},
@@ -298,6 +300,7 @@ export const makeMove = (
         gameState.winner = 'Everyone escapes!';
       }
     } else {
+      gameState.wrongAttempts++;
       socket.emit('invalid-move', { message: 'Incorrect answer. Try again!' });
     }
     return true;

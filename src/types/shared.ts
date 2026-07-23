@@ -255,6 +255,7 @@ export interface EscapeRoomGameState {
   players: Player[];
   winner: string;
   totalMoves: number;
+  wrongAttempts: number;
   hintsUsed: number;
   playerNodePaths: Record<string, string[]>;
   playerInventories: Record<string, string[]>;
