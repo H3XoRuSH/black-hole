@@ -49,17 +49,13 @@
           v-for="room in sortedRooms"
           :key="room.id"
           @click="selectRoom(room.id)"
-          :disabled="!!roomImage(room.id) && !imagesLoaded[room.id]"
-          class="group text-left rounded-xl border-2 transition-all duration-200 overflow-hidden focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          class="group text-left rounded-xl border-2 transition-all duration-200 overflow-hidden focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
           :class="[
             room.id === selectedRoomId
               ? 'border-indigo-500 shadow-lg shadow-indigo-500/20'
               : theme === 'light'
                 ? 'border-gray-200 hover:border-gray-300 hover:shadow-md'
                 : 'border-slate-700 hover:border-slate-500 hover:shadow-md',
-            !!roomImage(room.id) && !imagesLoaded[room.id]
-              ? 'cursor-not-allowed opacity-60'
-              : 'cursor-pointer',
           ]"
         >
           <!-- Theme Image -->

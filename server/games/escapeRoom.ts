@@ -72,9 +72,7 @@ function shuffleArray<T>(arr: T[]): void {
 export const onGameStart = (room: Room): void => {
   const gameState = room.gameState as EscapeRoomGameState;
   const roomData = escapeRooms[gameState.selectedRoomId || 'abandoned-lab'];
-  console.log('[escapeRoom] onGameStart: selectedRoomId=', gameState.selectedRoomId, 'roomData found:', !!roomData);
   if (roomData) {
-    console.log('[escapeRoom] onGameStart: loading', roomData.nodes.length, 'nodes');
     gameState.roomName = roomData.name;
     gameState.roomDescription = roomData.description;
     gameState.roomIntro = roomData.intro;
@@ -117,10 +115,6 @@ export const makeMove = (
 ): boolean => {
   const gameState = room.gameState as EscapeRoomGameState;
 
-  console.log('[escapeRoom] makeMove:', data.action, 'nodeId:', data.nodeId || '(none)', 'from:', socket.id);
-  console.log('[escapeRoom] gameState.nodes count:', gameState.nodes?.length || 0);
-  console.log('[escapeRoom] playerNodePaths:', JSON.stringify(gameState.playerNodePaths));
-
   if (gameState.phase === 'escaped') {
     socket.emit('invalid-move', { message: 'You have already escaped!' });
     return false;
@@ -141,8 +135,6 @@ export const makeMove = (
     const nodeId = data.nodeId || null;
     const path = gameState.playerNodePaths[playerId] || [];
 
-    console.log('[escapeRoom] navigate-node: nodeId=', nodeId, 'path=', path);
-
     if (nodeId === null) {
       gameState.playerNodePaths[playerId] = [];
       gameState.lastAction = { playerNumber, action: 'navigate-node' };
@@ -151,8 +143,6 @@ export const makeMove = (
 
     const node = findNode(gameState.nodes, nodeId);
     if (!node) {
-      console.log('[escapeRoom] navigate-node: node NOT FOUND for id:', nodeId);
-      console.log('[escapeRoom] available node IDs:', gameState.nodes.map((n) => n.id));
       socket.emit('invalid-move', { message: 'Node not found.' });
       return false;
     }
@@ -161,8 +151,6 @@ export const makeMove = (
     const isChild = parentId
       ? node.parentId === parentId
       : node.parentId === null;
-
-    console.log('[escapeRoom] navigate-node: parentId=', parentId, 'node.parentId=', node.parentId, 'isChild=', isChild);
 
     if (!isChild) {
       socket.emit('invalid-move', { message: 'Cannot navigate to that node from here.' });

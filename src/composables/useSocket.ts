@@ -57,7 +57,9 @@ export function useSocket(router: any) {
 
   onMounted(() => {
     const backendUrl = import.meta.env.VITE_BACKEND_URL || '';
-    socket.value = io(backendUrl);
+    socket.value = io(backendUrl, {
+      transports: ['websocket'],
+    });
 
     if (!socket.value) return;
 

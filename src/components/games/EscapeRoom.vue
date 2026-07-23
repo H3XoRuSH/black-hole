@@ -695,9 +695,6 @@ export default defineComponent({
 
     function navigateToNode(nodeId: string) {
       if (!props.socket || navigating.value) return;
-      const node = findNode(nodeId);
-      console.log('[EscapeRoom] navigateToNode:', nodeId, 'found:', !!node);
-      console.log('[EscapeRoom] navigateToNode: emitting make-move');
       startNavigating();
       props.socket.emit('make-move', {
         roomKey: props.roomKey,
@@ -801,7 +798,6 @@ export default defineComponent({
       gameOver: () => gameState.value?.phase === 'escaped',
       lobbyRoute: '/escape-room/lobby',
       onGameState: (newState: any) => {
-        console.log('[EscapeRoom] onGameState received, nodes:', newState.nodes?.length, 'path:', newState.playerNodePaths);
         navigating.value = false;
         gameState.value = newState;
         if (newState.totalMoves === 0 && !newState.nodes?.length) {

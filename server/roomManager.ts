@@ -262,12 +262,14 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
   }
 
   function getFilteredState(room: Room, playerNum: number) {
+    const gs = { ...room.gameState };
+    delete gs.moveHistory;
+
     if (room.gameId === 'battleship') {
       const bs = gamesRegistry['battleship'] as any;
-      return bs.getFilteredState(room.gameState, playerNum);
+      return bs.getFilteredState(gs, playerNum);
     }
     if (room.gameId === 'pictionary') {
-      const gs = { ...room.gameState };
       const isDrawer = gs.currentDrawer === playerNum;
       const isOver = gs.phase === 'reveal' || gs.phase === 'game-over';
       if (!isDrawer && !isOver) {
@@ -283,7 +285,21 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       }
       return gs;
     }
-    return room.gameState;
+    if (room.gameId === 'escape-room' && gs.nodes) {
+      gs.nodes = gs.nodes.map((node: any) => {
+        if (node.type === 'puzzle') {
+          return {
+            ...node,
+            answer: node.solved ? node.answer : undefined,
+            hints: (node.hints || []).map((h: string, idx: number) =>
+              idx < (node.hintsRevealed || 0) ? h : 'Locked hint'
+            ),
+          };
+        }
+        return node;
+      });
+    }
+    return gs;
   }
 
   function broadcastGameState(roomKey: string, room: Room, io: SocketIOServer) {
@@ -292,7 +308,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
         io.to(p.id).emit('game-state', getFilteredState(room, p.player));
       });
     } else {
-      io.to(roomKey).emit('game-state', room.gameState);
+      io.to(roomKey).emit('game-state', getFilteredState(room, 0));
     }
   }
 
@@ -390,7 +406,8 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       rooms.set(roomKey, { gameId, gameState: initialGameState, gameStarted: false, recaps: new Map(), recapConversations: new Map(), chatMessages: [] });
       socket.join(roomKey);
       socketRooms.set(socket.id, { roomKey, playerNumber: 1 });
-      socket.emit('waiting-for-player', { roomKey, player: 1, gameId, gameState: initialGameState });
+      const room = rooms.get(roomKey)!;
+      socket.emit('waiting-for-player', { roomKey, player: 1, gameId, gameState: getFilteredState(room, 1) });
       return roomKey;
     },
 

@@ -215,7 +215,6 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import { Socket } from 'socket.io-client';
-import { Html5Qrcode } from 'html5-qrcode';
 import gamesData from '../assets/games.json';
 import CarouselView from './menu/CarouselView.vue';
 import ListView from './menu/ListView.vue';
@@ -245,7 +244,7 @@ export default defineComponent({
       isValidating: false,
       hasAutoJoined: false,
       showScanner: false,
-      html5Qrcode: null as Html5Qrcode | null,
+      html5Qrcode: null as any | null,
       scannerError: '',
       activeFilter: 'all',
       searchQuery: '',
@@ -333,6 +332,7 @@ export default defineComponent({
       this.scannerError = '';
       this.$nextTick(async () => {
         try {
+          const { Html5Qrcode } = await import('html5-qrcode');
           this.html5Qrcode = new Html5Qrcode('reader');
           const config = { fps: 10, qrbox: { width: 220, height: 220 } };
           await this.html5Qrcode.start(
