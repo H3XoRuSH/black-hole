@@ -13,9 +13,15 @@
       <p class="text-gray-500 dark:text-gray-400 text-xs sm:text-sm line-clamp-2 leading-relaxed">{{ game.description }}</p>
     </div>
     <button @click="$emit('select-game', game.id)"
-      class="flex-shrink-0 text-white font-bold py-2 px-4 rounded-lg text-xs sm:text-sm transition-all duration-200 text-center block shadow-sm hover:brightness-90 active:scale-95 cursor-pointer border-none"
-      :style="{ backgroundColor: game.color, boxShadow: `0 2px 6px ${game.color}30` }">
-      Host
+      :disabled="isAnyGameHosting"
+      class="flex-shrink-0 text-white font-bold py-2 px-4 rounded-lg text-xs sm:text-sm transition-all duration-200 text-center block shadow-sm hover:brightness-90 active:scale-95 cursor-pointer border-none disabled:opacity-50 disabled:cursor-not-allowed"
+      :style="{ backgroundColor: game.color, boxShadow: isAnyGameHosting ? 'none' : `0 2px 6px ${game.color}30` }">
+      <template v-if="isHosting">
+        <span class="flex items-center justify-center gap-1.5">Hosting<WaitingIndicator /></span>
+      </template>
+      <template v-else>
+        Host
+      </template>
     </button>
   </div>
 
@@ -35,9 +41,15 @@
       <p class="text-gray-500 dark:text-gray-400 text-[11px] sm:text-xs leading-relaxed line-clamp-4">{{ game.description }}</p>
     </div>
     <button @click="$emit('select-game', game.id)"
-      class="w-full text-white font-bold py-2 px-3 rounded-lg text-xs sm:text-sm transition-all duration-200 text-center block shadow-sm hover:brightness-90 active:scale-95 mt-3 cursor-pointer border-none"
-      :style="{ backgroundColor: game.color, boxShadow: `0 2px 6px ${game.color}30` }">
-      Host
+      :disabled="isAnyGameHosting"
+      class="w-full text-white font-bold py-2 px-3 rounded-lg text-xs sm:text-sm transition-all duration-200 text-center block shadow-sm hover:brightness-90 active:scale-95 mt-3 cursor-pointer border-none disabled:opacity-50 disabled:cursor-not-allowed"
+      :style="{ backgroundColor: game.color, boxShadow: isAnyGameHosting ? 'none' : `0 2px 6px ${game.color}30` }">
+      <template v-if="isHosting">
+        <span class="flex items-center justify-center gap-1.5">Hosting<WaitingIndicator /></span>
+      </template>
+      <template v-else>
+        Host
+      </template>
     </button>
   </div>
 
@@ -57,9 +69,15 @@
       <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">{{ game.description }}</p>
     </div>
     <button @click="$emit('select-game', game.id)"
-      class="w-full text-white font-bold py-3.5 px-4 rounded-xl transition-all duration-200 text-center block shadow-md hover:shadow-lg hover:brightness-90 active:scale-[0.98] cursor-pointer"
-      :style="{ backgroundColor: game.color, boxShadow: `0 4px 12px ${game.color}40` }">
-      Host Game
+      :disabled="isAnyGameHosting"
+      class="w-full text-white font-bold py-3.5 px-4 rounded-xl transition-all duration-200 text-center block shadow-md hover:shadow-lg hover:brightness-90 active:scale-[0.98] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+      :style="{ backgroundColor: game.color, boxShadow: isAnyGameHosting ? 'none' : `0 4px 12px ${game.color}40` }">
+      <template v-if="isHosting">
+        <span class="flex items-center justify-center gap-1.5">Hosting<WaitingIndicator /></span>
+      </template>
+      <template v-else>
+        Host Game
+      </template>
     </button>
   </div>
 </template>
@@ -67,9 +85,17 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import type { MenuGame } from '../../types/shared.js';
+import WaitingIndicator from '../ui/WaitingIndicator.vue';
 
 export default defineComponent({
   name: 'GameCard',
+  components: { WaitingIndicator },
+  inject: {
+    getHostingGameId: {
+      from: 'getHostingGameId',
+      default: () => () => '',
+    },
+  },
   props: {
     game: {
       type: Object as PropType<MenuGame>,
@@ -81,6 +107,14 @@ export default defineComponent({
     },
   },
   emits: ['select-game'],
+  computed: {
+    isHosting(): boolean {
+      return this.getHostingGameId() === this.game.id;
+    },
+    isAnyGameHosting(): boolean {
+      return this.getHostingGameId() !== '';
+    },
+  },
 });
 </script>
 

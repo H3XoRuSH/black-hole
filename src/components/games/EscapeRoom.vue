@@ -53,7 +53,7 @@
           </div>
         </div>
 
-        <div v-if="!showIntro" class="space-y-3">
+        <div v-if="!showIntro" class="space-y-3" :class="{ 'opacity-65 pointer-events-none transition-opacity duration-200': navigating }">
           <div class="flex items-center space-x-1.5 flex-wrap">
             <button
               v-for="(loc, idx) in gameState.locations"
@@ -822,6 +822,7 @@ export default defineComponent({
 
     return {
       ...game,
+      navigating,
       gameState,
       answer,
       showIntro,
