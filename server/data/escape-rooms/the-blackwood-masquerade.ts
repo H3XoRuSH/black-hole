@@ -192,12 +192,12 @@ const data: EscapeRoomData = {
       type: 'puzzle',
       label: 'Desk Ledger',
       narrative: 'A mathematical puzzle is scribbled on the desk ledger.',
-      question: 'The ledger cover shows:\n\n|    A R T\n|  + E N D\n|  -------\n|  D I E D\n\nA small note reads: "Each letter is a unique digit (0-9). The safe code is the 4-digit sum of ART and END."',
+      question: 'The ledger cover shows:\n\n|    A R T\n|  + E N D\n|  -------\n|  D I E D\n\nA small note reads: "Each letter is a unique digit (0-9). R times N equals 6. The safe code is the 4-digit sum of ART and END."',
       answer: '1451',
       hints: [
         'Since we add two 3-digit numbers to get a 4-digit number, the carry digit D must be 1.',
         'Since T + D ends in D (T + 1 = 1, since D = 1), T must be 0 (no carry from units).',
-        'Assign digits systematically to solve: A=9, R=2, T=0, E=5, N=3, D=1, I=4. The sum is 920 + 531 = 1451.'
+        'R times N = 6, so R=2 and N=3. R+N=E, so E=5. Then A+5=I+10 with remaining digits A=9, I=4. The sum is 920 + 531 = 1451.'
       ],
       children: ['study-desk-compartment']
     },
@@ -207,7 +207,7 @@ const data: EscapeRoomData = {
       parentId: 'study-desk-puzzle',
       type: 'dialogue',
       label: 'Flora Journal',
-      narrative: 'A hidden compartment clicks open. Inside is a brass garden trowel and a notebook labeled "Flora Journal". The journal reads:\n\n"Rose (R) must always stand in the first position of the plant grid. Orchid (O) is highly toxic and must never be adjacent to Rose. Lily (L) is delicate and lies next to Tulip (T)."\n\nAt the bottom of the page is a note: "The sundial shadow dictates the starting quadrant."',
+      narrative: 'A hidden compartment clicks open. Inside is a brass garden trowel and a notebook labeled "Flora Journal". The journal reads:\n\n"Each plant appears exactly once in every row and column of Blackwood\'s 4x4 display grid. Rose anchors the top-left corner. I know the rest of the pattern holds — fill the gaps."',
       children: ['study-trowel-node']
     },
     {
@@ -361,7 +361,7 @@ const data: EscapeRoomData = {
       parentId: 'cons-fountain',
       type: 'item',
       label: 'Stone Plaque',
-      narrative: 'A stone plaque rises from the basin floor.',
+      narrative: 'A stone plaque rises from the basin floor, engraved with the number 324. Below it reads: "Fountain Volume."',
       rewardItem: 'cons-fountain-plaque',
       children: []
     },
@@ -416,13 +416,13 @@ const data: EscapeRoomData = {
       parentId: 'cons-planter',
       type: 'puzzle',
       label: 'Plant Layout',
-      narrative: 'The brass box has a plant grid containing Rose (R), Orchid (O), Lily (L), and Tulip (T).',
-      question: 'The plant layout grid shows:\n\n+---+---+---+---\n| R | A | L | T |\n+---+---+---+---\n| B | T |   | O |\n+---+---+---+---\n| O | R | C |   |\n+---+---+---+---\n|   | L | O | D |\n+---+---+---+---',
+      narrative: 'The brass box has a plant grid containing Rose (R), Orchid (O), Lily (L), and Tulip (T). Fill the gaps, then read the four unknown values in order (A, B, C, D) for the code.',
+      question: 'The plant layout grid shows:\n\n+---+---+---+---\n| R | A |   | T |\n+---+---+---+---\n| B | T |   | O |\n+---+---+---+---\n| O | R | C |   |\n+---+---+---+---\n|   | L | O | D |\n+---+---+---+---',
       answer: 'oltr',
       hints: [
-        'Use the Flora Journal rules from the Study desk: R is in column 1. O cannot be adjacent to R. L is next to T.',
-        'This is a Latin Square (each plant appears once per row and column).',
-        'Solve the grid: A = Orchid (O), B = Lily (L), C = Tulip (T), D = Rose (R). The letters concatenated are oltr.'
+        'Each plant appears exactly once per row and column. Row 1 has R and T — A must be O.',
+        'Row 2 has T and O, and column 1 already has R. So B must be L, and (2,3) becomes R.',
+        'Continue row by row: fill the only missing plant in each row and column. A,B,C,D spells O,L,T,R — enter oltr.'
       ],
       children: ['cons-cellar-tap-node']
     },
@@ -576,7 +576,7 @@ const data: EscapeRoomData = {
       label: 'Terminal Console',
       isMeta: true,
       narrative: 'The mastermind\'s terminal displays a glowing green prompt.',
-      question: 'The prompt reads:\n\nCONFIRM DOSSIER DETAILS:\n1. SUSPECT NAME (Ledger)\n2. WEAPON/METHOD (Will)\n3. CRIME LOCATION (Diary)\n4. DOSSIER KEY (Safe Code + Fountain Code + Barrel Code)\n\nEnter the full sequence concatenated (lowercase, no spaces).',
+      question: 'The prompt reads:\n\nCONFIRM DOSSIER DETAILS:\n1. SUSPECT ROLE (Ledger)\n2. WEAPON/METHOD (Will)\n3. CRIME LOCATION (Diary)\n4. DOSSIER KEY (Safe Code + Fountain Code + Barrel Code)\n\nEnter the full sequence concatenated (lowercase, no spaces).',
       answer: 'butlerpoisoncellar1835',
       hints: [
         'Mild poison is cyanide. Weapon/method is poison. Crime location is cellar.',
