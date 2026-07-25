@@ -64,7 +64,7 @@
     <div class="flex-grow flex flex-col items-center w-full max-w-2xl overflow-hidden">
       <!-- Game Over -->
 
-      <div v-if="gameOver" class="w-full max-w-md bg-white dark:bg-neo-card-bg neo-border neo-shadow p-6 text-center space-y-6 flex flex-col items-center justify-center rounded-none text-neo-text my-6">
+      <div v-if="gameOver" class="w-full max-w-md bg-white dark:bg-neo-card-bg neo-border neo-shadow p-6 text-center space-y-6 flex flex-col items-center justify-center rounded-none text-neo-text my-6 animate-slide-up">
         <div class="w-20 h-20 bg-neo-secondary border-4 border-black text-black flex items-center justify-center rounded-none">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-10 w-10 text-black">
             <path d="M17 3H21C21.5523 3 22 3.44772 22 4V9C22 10.375 21.0503 11.5283 19.7824 11.8541C19.1417 14.1266 17.2995 15.8924 15 16.6343V19H18V21H6V19H9V16.6343C6.70054 15.8924 4.85834 14.1266 4.21762 11.8541C2.94974 11.5283 2 10.375 2 9V4C2 3.44772 2.44772 3 3 3H7V1H17V3ZM15 3H9V15C9 16.6569 10.3431 18 12 18C13.6569 18 15 16.6569 15 15V3ZM4 5V9C4 9.38793 4.2125 9.7262 4.54291 9.89141L5 10.12V5H4ZM20 5H19V10.12L19.4571 9.89141C19.7875 9.7262 20 9.38793 20 9V5Z"/>
@@ -316,6 +316,7 @@
 import { defineComponent, PropType, ref, watch, computed, onMounted, onBeforeUnmount } from 'vue';
 import { Socket } from 'socket.io-client';
 import { useGame } from '../../composables/useGame.js';
+import { useConfetti } from '../../composables/useConfetti.js';
 import type { PictionaryGameState as GameState } from '../../types/shared.js';
 import WaitingIndicator from '../ui/WaitingIndicator.vue';
 import HowToPlayModal from '../modals/HowToPlayModal.vue';
@@ -628,6 +629,8 @@ export default defineComponent({
 
     const amDrawer = ref(false);
 
+    const confetti = useConfetti();
+
     watch(() => gameState.value.currentDrawer, (drawer) => {
       amDrawer.value = drawer === props.player;
       if (!amDrawer.value) {
@@ -655,6 +658,15 @@ export default defineComponent({
         }
       }
     });
+
+    watch(
+      () => gameState.value?.winner,
+      (winner) => {
+        if (winner) {
+          confetti.fire();
+        }
+      }
+    );
 
     const game = useGame({
       socket: props.socket as any,
@@ -737,6 +749,7 @@ export default defineComponent({
       recentColors,
       colors,
       amDrawer,
+      confetti,
       onCanvasMouseDown, onCanvasMouseMove, onCanvasMouseUp,
       onCanvasTouchStart, onCanvasTouchMove, onCanvasTouchEnd,
       clearCanvas, chooseWord, submitGuess, nextRound, handlePlayAgain, selectColor, selectPaletteColor, onNativeColorInput,

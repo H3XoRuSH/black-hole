@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center justify-start min-h-full bg-transparent p-4 sm:py-12 select-none">
     <!-- Header Section -->
-    <header class="text-center mb-6 sm:mb-8 max-w-md w-full">
+    <header class="text-center mb-6 sm:mb-8 max-w-md w-full animate-slide-up">
       <h1 class="text-4xl sm:text-5xl font-black text-neo-text uppercase tracking-tighter mb-2">
         {{ gameName }}
       </h1>
@@ -9,7 +9,7 @@
     </header>
 
     <!-- Main Card -->
-    <div class="w-full max-w-md bg-white dark:bg-neo-card-bg neo-border neo-shadow p-5 sm:p-8 text-center rounded-none text-neo-text">
+    <div class="w-full max-w-md bg-white dark:bg-neo-card-bg neo-border neo-shadow p-5 sm:p-8 text-center rounded-none text-neo-text animate-scale-in" style="animation-delay: 0.1s">
       <div v-if="roomKey">
         <!-- Connection Status Banner -->
         <div

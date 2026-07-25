@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center justify-start min-h-full bg-transparent p-4 pt-8 sm:pt-10 pb-8 select-none">
     <!-- Header Section -->
-    <header class="text-center mb-6 sm:mb-8 max-w-md w-full">
+    <header class="text-center mb-6 sm:mb-8 max-w-md w-full animate-slide-up">
       <h1 class="text-4xl sm:text-5xl font-black text-neo-text uppercase tracking-tighter mb-2">
         Gab's Arcade
       </h1>
@@ -11,7 +11,7 @@
     </header>
 
     <!-- Join via Room Code Card -->
-    <div class="w-full max-w-md bg-white dark:bg-neo-card-bg neo-border neo-shadow p-6 mb-6 rounded-none relative">
+    <div class="w-full max-w-md bg-white dark:bg-neo-card-bg neo-border neo-shadow p-6 mb-6 rounded-none relative animate-scale-in" style="animation-delay: 0.1s">
       <div class="flex items-center space-x-2.5 mb-4">
         <div class="p-2 bg-white dark:bg-neo-card-bg neo-border-2 text-neo-text rounded-none">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -35,12 +35,14 @@
             maxlength="6"
             class="w-full pl-4 pr-12 h-[52px] neo-input text-center font-mono tracking-widest text-lg placeholder:font-sans placeholder:tracking-normal placeholder:text-sm uppercase"
             :disabled="isValidating"
+            aria-label="Room code input"
           />
           <!-- Camera Scan QR Button inside input -->
           <button
             @click="startScanner"
-            class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-neo-text/50 hover:text-neo-accent transition-colors duration-100 cursor-pointer"
+            class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-neo-text/50 hover:text-neo-accent transition-colors duration-100 cursor-pointer touch-target"
             title="Scan QR Code"
+            aria-label="Scan QR code"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
@@ -105,7 +107,7 @@
     </div>
 
     <!-- Filter Bar -->
-    <div class="w-full max-w-md px-4 sm:px-0 mb-4">
+    <div class="w-full max-w-md px-4 sm:px-0 mb-4 animate-slide-up relative z-10" style="animation-delay: 0.2s">
       <div class="flex flex-wrap items-center gap-2">
         <!-- View Mode Dropdown -->
         <div class="relative">
@@ -119,7 +121,7 @@
           <transition name="fade">
             <div
               v-if="showViewDropdown"
-              class="absolute left-0 top-full mt-1.5 w-40 bg-white dark:bg-neo-card-bg neo-border neo-shadow-sm z-50 overflow-hidden rounded-none"
+              class="absolute left-0 top-full mt-1.5 w-40 bg-white dark:bg-neo-card-bg neo-border neo-shadow-sm z-[60] overflow-hidden rounded-none"
             >
               <button
                 v-for="v in viewModes"
@@ -166,7 +168,7 @@
           <transition name="fade">
             <div
               v-if="showFilterDropdown"
-              class="absolute right-0 top-full mt-1.5 w-44 bg-white dark:bg-neo-card-bg neo-border neo-shadow-sm z-50 overflow-hidden rounded-none"
+              class="absolute right-0 top-full mt-1.5 w-44 bg-white dark:bg-neo-card-bg neo-border neo-shadow-sm z-[60] overflow-hidden rounded-none"
             >
               <button
                 v-for="f in filters"
@@ -194,7 +196,7 @@
     </div>
 
     <!-- Games Display Section -->
-    <main class="w-full max-w-md relative px-4 sm:px-0">
+    <main class="w-full max-w-md relative px-4 sm:px-0 animate-slide-up" style="animation-delay: 0.3s" role="region" aria-label="Games list">
       <component :is="activeComponent" :games="filteredGames" @select-game="handleSelectGame" />
     </main>
 

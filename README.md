@@ -1,8 +1,6 @@
 # Gab's Arcade
 
-Note: This is previously just black hole game.
-
-A real-time, multiplayer online arcade featuring classic strategic board and pen-and-paper games.
+A real-time, multiplayer online arcade featuring classic strategic board and pen-and-paper games. Neo-brutalist design with page transitions, board animations, and confetti celebrations.
 
 ## Playable Games
 

@@ -322,7 +322,7 @@
       </div>
 
       <div v-if="escaped" class="w-full max-w-xl">
-        <div class="bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow p-6 sm:p-8 rounded-none text-center">
+        <div class="bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow p-6 sm:p-8 rounded-none text-center animate-pop-in">
           <div class="text-6xl mb-4">&#x1F513;</div>
           <h2 class="text-2xl font-black text-neo-accent mb-2 uppercase tracking-wide">You Escaped!</h2>
           <p class="text-base text-neo-text/75 font-bold mb-6">The team solved all {{ totalPuzzles }} puzzles and escaped "{{ gameState.roomName }}"!</p>
@@ -670,6 +670,7 @@ import { defineComponent, PropType, ref, computed, watch, onMounted, onUnmounted
 import { Socket } from 'socket.io-client';
 import { useGame } from '../../composables/useGame.js';
 import { useToast } from '../../composables/useToast.js';
+import { useConfetti } from '../../composables/useConfetti.js';
 import type { EscapeRoomGameState as GameState, EscapeRoomNode, EscapeRoomLocation } from '../../types/shared.js';
 import HowToPlayModal from '../modals/HowToPlayModal.vue';
 
@@ -708,6 +709,7 @@ export default defineComponent({
 
     const answer = ref('');
     const { showToast } = useToast();
+    const confetti = useConfetti();
     const showIntro = computed(() => !gameState.value.introAcknowledged);
     const showInventory = ref(false);
     const showMap = ref(false);
@@ -1460,8 +1462,18 @@ export default defineComponent({
       },
     });
 
+    watch(
+      () => gameState.value?.phase,
+      (phase) => {
+        if (phase === 'escaped') {
+          confetti.fire();
+        }
+      }
+    );
+
     return {
       ...game,
+      confetti,
       navigating,
       gameState,
       answer,

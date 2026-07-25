@@ -115,7 +115,7 @@
       :close-on-backdrop="false"
       @close="() => {}"
     >
-      <div class="flex flex-col items-center">
+      <div class="flex flex-col items-center animate-slide-up">
         <p class="text-lg font-black uppercase tracking-wider text-neo-accent mb-4">{{ gameState.winner }}</p>
 
         <div class="w-full bg-white dark:bg-neo-card-bg text-neo-text neo-border-2 rounded-none p-4 mb-4">
@@ -170,9 +170,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, watch, computed, onBeforeUnmount, nextTick } from 'vue';
+import { defineComponent, PropType, ref, toRef, computed, watch, onBeforeUnmount, nextTick } from 'vue';
 import { Socket } from 'socket.io-client';
 import { useGame } from '../../composables/useGame.js';
+import { useConfetti } from '../../composables/useConfetti.js';
+import { useRecap } from '../../composables/useRecap.js';
 import type { InfiniteWordChainGameState as GameState } from '../../types/shared.js';
 import WaitingIndicator from '../ui/WaitingIndicator.vue';
 import BaseModal from '../ui/BaseModal.vue';
@@ -220,6 +222,9 @@ export default defineComponent({
     const playerGuess = ref('');
     const submitting = ref(false);
 
+    const confetti = useConfetti();
+    const recap = useRecap(toRef(props, 'socket'), toRef(props, 'roomKey'));
+
     const displayChars = computed(() => (gameState.value.answerDisplay || '').split(''));
     const gameOver = computed(() => !!gameState.value.winner);
     const solvedPairs = computed(() => {
@@ -243,6 +248,15 @@ export default defineComponent({
     watch(() => gameState.value.answerDisplay, () => {
       submitting.value = false;
     });
+
+    watch(
+      () => gameState.value?.winner,
+      (winner) => {
+        if (winner) {
+          confetti.fire();
+        }
+      }
+    );
 
     watch(submitting, (val) => {
       if (!val) {
@@ -311,6 +325,8 @@ export default defineComponent({
       displayChars,
       gameOver,
       solvedPairs,
+      confetti,
+      recap,
       submitGuess,
       finishGame,
       handlePlayAgain,

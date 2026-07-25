@@ -2,19 +2,19 @@
   <TransitionGroup
     name="toast"
     tag="div"
-    class="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 z-[100] flex flex-col gap-2 pointer-events-none sm:max-w-sm"
+    class="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 z-[100] flex flex-col gap-2 pointer-events-none sm:max-w-sm pb-safe"
   >
     <div
       v-for="toast in toasts"
       :key="toast.id"
-      class="pointer-events-auto flex flex-col rounded-none neo-border neo-shadow-sm text-sm font-black overflow-hidden uppercase tracking-wider"
+      class="pointer-events-auto flex flex-col rounded-none neo-border neo-shadow-sm text-sm font-black overflow-hidden uppercase tracking-wider animate-slide-up"
       :class="bgClass(toast.type)"
     >
       <div class="flex items-start gap-2 px-4 py-3">
         <span class="flex-1">{{ toast.message }}</span>
         <button
           @click="removeToast(toast.id)"
-          class="text-neo-text/70 hover:text-neo-text transition-colors cursor-pointer flex-shrink-0"
+          class="text-neo-text/70 hover:text-neo-text transition-colors cursor-pointer flex-shrink-0 touch-target"
         >
           <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />

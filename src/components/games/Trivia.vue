@@ -48,7 +48,7 @@
     <!-- Main Content -->
     <div class="flex-grow flex flex-col items-center justify-center w-full max-w-lg overflow-y-auto py-2">
       <!-- Game Over Summary Card -->
-      <div v-if="gameOver" class="w-full bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow p-6 text-center space-y-6 flex flex-col items-center justify-center rounded-none my-4">
+      <div v-if="gameOver" class="w-full bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow p-6 text-center space-y-6 flex flex-col items-center justify-center rounded-none my-4 animate-slide-up">
         <!-- Animated Trophy Icon -->
         <div class="w-20 h-20 bg-neo-secondary border-4 border-black text-black flex items-center justify-center rounded-none">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-10 w-10 text-black">
@@ -182,7 +182,7 @@
       </div>
     </div>
 
-    <div v-if="gameOver" class="flex-shrink-0 w-full max-w-lg flex flex-col items-center py-3 space-y-3">
+    <div v-if="gameOver" class="flex-shrink-0 w-full max-w-lg flex flex-col items-center py-3 space-y-3 animate-slide-up">
       <div class="text-lg font-bold" :class="winnerTextClass">
         {{ gameState.winner }}
       </div>
@@ -211,6 +211,7 @@
 import { defineComponent, PropType, ref, watch, nextTick, onBeforeUnmount } from 'vue';
 import { Socket } from 'socket.io-client';
 import { useGame } from '../../composables/useGame.js';
+import { useConfetti } from '../../composables/useConfetti.js';
 import type { TriviaGameState as GameState } from '../../types/shared.js';
 import WaitingIndicator from '../ui/WaitingIndicator.vue';
 import HowToPlayModal from '../modals/HowToPlayModal.vue';
@@ -271,6 +272,18 @@ export default defineComponent({
       userAnswer.value = '';
     };
     props.socket?.on('invalid-move', handleInvalidMove);
+
+    const confetti = useConfetti();
+
+    watch(
+      () => gameState.value?.winner,
+      (winner) => {
+        if (winner) {
+          confetti.fire();
+        }
+      }
+    );
+
     onBeforeUnmount(() => {
       props.socket?.off('invalid-move', handleInvalidMove);
     });
@@ -299,6 +312,7 @@ export default defineComponent({
       closeHowToPlay,
       userAnswer,
       answerInput,
+      confetti,
     };
   },
   computed: {
