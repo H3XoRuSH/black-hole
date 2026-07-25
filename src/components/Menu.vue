@@ -348,7 +348,7 @@ export default defineComponent({
           await this.html5Qrcode.start(
             { facingMode: 'environment' },
             config,
-            (decodedText) => {
+            (decodedText: string) => {
               const code = this.extractRoomCode(decodedText);
               if (code) {
                 this.roomCode = code;
