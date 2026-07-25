@@ -30,7 +30,7 @@
             <div
               v-if="getPiece(idx)"
               class="w-[80%] h-[80%] rounded-full flex items-center justify-center transition-all duration-150 relative"
-              :class="getPieceClass(idx)"
+              :class="[getPieceClass(idx), { 'animate-piece-slide': gameState.lastMoveTo === `${actualRowCol(idx).r},${actualRowCol(idx).c}` }]"
             >
               <span v-if="isKingPiece(idx)" class="text-[10px] sm:text-xs font-black leading-none select-none">
                 &#9818;
@@ -47,7 +47,7 @@
       </div>
     </div>
 
-    <div class="w-full max-w-lg flex flex-col items-center justify-center py-1 sm:py-1.5">
+    <div class="w-full max-w-lg flex flex-col items-center justify-center py-1 sm:py-1.5 animate-slide-up">
       <button
         v-if="gameOver"
         @click="newGame"
@@ -59,7 +59,7 @@
       </button>
     </div>
   </div>
-  <div v-else class="h-full flex flex-col items-center justify-center p-6">
+  <div v-else class="h-full flex flex-col items-center justify-center p-6 animate-fade-in">
     <p class="text-lg text-gray-500 dark:text-gray-400 font-medium">
       Invalid game state. Redirecting to lobby...
     </p>
@@ -67,11 +67,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue';
+import { defineComponent, PropType, ref, watch } from 'vue';
 import { Socket } from 'socket.io-client';
 import GameHeader from '../layout/GameHeader.vue';
 import WaitingIndicator from '../ui/WaitingIndicator.vue';
 import { useGame } from '../../composables/useGame.js';
+import { useConfetti } from '../../composables/useConfetti.js';
 import type { CheckersGameState as GameState } from '../../types/shared.js';
 
 export default defineComponent({
@@ -106,7 +107,15 @@ export default defineComponent({
       lobbyRoute: '/checkers/lobby',
     });
 
-    return { ...game, gameState };
+    const confetti = useConfetti();
+
+    watch(() => gameState.value?.winner, (newVal, oldVal) => {
+      if (newVal && !oldVal) {
+        setTimeout(() => confetti.fire(), 300);
+      }
+    });
+
+    return { ...game, gameState, confetti };
   },
   data() {
     return {

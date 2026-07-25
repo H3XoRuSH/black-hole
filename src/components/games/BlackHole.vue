@@ -36,7 +36,7 @@
             v-for="col in row"
             :key="`${row}-${col}`"
             class="w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 lg:w-12 lg:h-12 xl:w-13 xl:h-13 rounded-full flex items-center justify-center font-black text-xs sm:text-sm md:text-base cursor-pointer mx-1 sm:mx-1.5 relative group"
-            :class="[getCircleStyle(row, col), lastMoveClass(row, col)]"
+            :class="[getCircleStyle(row, col), lastMoveClass(row, col), { 'animate-token-place': getCircleData(row, col) && gameState.lastMove?.row === row && gameState.lastMove?.col === col }]"
             @click="clickCircle(row, col)"
           >
             <!-- Slow spinning Vortex for Black Hole -->
@@ -70,7 +70,7 @@
   <!-- Scores & Actions -->
   <div
         v-if="gameOver"
-        class="flex flex-col items-center mt-2.5 sm:mt-3.5 transition-all duration-300"
+        class="flex flex-col items-center mt-2.5 sm:mt-3.5 transition-all duration-300 animate-slide-up"
       >
         <div
           class="bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow-sm px-4 py-1.5 mb-2.5 text-center rounded-none flex items-center justify-center gap-x-6 text-xs sm:text-sm font-black uppercase"
@@ -96,7 +96,7 @@
   </div>
   <div
     v-else
-    class="h-full flex flex-col items-center justify-center px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-6"
+    class="h-full flex flex-col items-center justify-center px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-6 animate-fade-in"
   >
     <p class="text-lg sm:text-xl text-gray-600 dark:text-gray-400">
       Invalid game state. Redirecting to lobby...
@@ -105,11 +105,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue';
+import { defineComponent, PropType, ref, watch } from 'vue';
 import { Socket } from 'socket.io-client';
 import GameHeader from '../layout/GameHeader.vue';
 import WaitingIndicator from '../ui/WaitingIndicator.vue';
 import { useGame } from '../../composables/useGame.js';
+import { useConfetti } from '../../composables/useConfetti.js';
 import type { BlackHoleGameState as GameState } from '../../types/shared.js';
 
 export default defineComponent({
@@ -160,7 +161,15 @@ export default defineComponent({
       lobbyRoute: '/black-hole/lobby',
     });
 
-    return { ...game, gameState };
+    const confetti = useConfetti();
+
+    watch(() => gameState.value?.totalMoves >= (gameState.value?.maxTurnsPerPlayer || 10) * 2, (newVal, oldVal) => {
+      if (newVal && !oldVal) {
+        setTimeout(() => confetti.fire(), 300);
+      }
+    });
+
+    return { ...game, gameState, confetti };
   },
   data() {
     return {};

@@ -80,7 +80,7 @@
               <span class="text-xs font-black text-neo-text">Orientation</span>
               <button
                 @click="placementOrientation = placementOrientation === 'H' ? 'V' : 'H'"
-                class="bg-neo-accent text-white font-black py-1 px-3 rounded-none text-xs tracking-wider cursor-pointer border-2 border-black active:translate-x-[1px] active:translate-y-[1px]"
+                class="bg-neo-accent text-white font-black py-1 px-3 rounded-none text-xs tracking-wider cursor-pointer border-2 border-black active:translate-x-[1px] active:translate-y-[1px] touch-target"
               >
                 {{ placementOrientation === 'H' ? 'HORIZONTAL' : 'VERTICAL' }}
               </button>
@@ -94,7 +94,7 @@
                 @click="selectShip(idx)"
                 :class="[
                   ship.placed ? 'border-emerald-500 bg-emerald-500/10 text-emerald-600 font-bold' : (selectedShipIndex === idx ? 'border-black bg-neo-secondary/30 text-neo-text font-black' : 'border-black bg-white dark:bg-neo-card-bg text-neo-text/70'),
-                  'flex flex-col sm:flex-row items-center justify-between p-1.5 sm:p-2 rounded-none border-2 cursor-pointer hover:border-neo-accent transition-colors duration-100 flex-1 min-w-[75px] sm:min-w-[90px] text-center sm:text-left'
+                  'flex flex-col sm:flex-row items-center justify-between p-1.5 sm:p-2 rounded-none border-2 cursor-pointer hover:border-neo-accent transition-colors duration-100 flex-1 min-w-[75px] sm:min-w-[90px] text-center sm:text-left touch-target'
                 ]"
               >
                 <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-2.5">
@@ -105,7 +105,7 @@
                   <span v-if="ship.placed" class="text-emerald-500 text-[9px] sm:text-[10px] flex items-center font-bold">
                     Ready
                   </span>
-                  <button v-if="ship.placed" @click.stop="removeShip(idx)" class="text-rose-600 hover:text-rose-700 text-[8px] sm:text-[9px] uppercase font-black tracking-wider px-1">
+                  <button v-if="ship.placed" @click.stop="removeShip(idx)" class="text-rose-600 hover:text-rose-700 text-[8px] sm:text-[9px] uppercase font-black tracking-wider px-1 touch-target">
                     Clear
                   </button>
                 </div>
@@ -114,13 +114,13 @@
 
             <!-- Placement Action Buttons -->
             <div class="flex gap-2">
-              <button @click="resetFleet" class="flex-1 border-2 border-black bg-white dark:bg-neo-card-bg hover:bg-neo-secondary/30 text-neo-text text-xs font-black py-1.5 sm:py-2 rounded-none transition-colors duration-100 cursor-pointer shadow-[2px_2px_0px_0px_var(--color-neo-shadow)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none">
+              <button @click="resetFleet" class="flex-1 border-2 border-black bg-white dark:bg-neo-card-bg hover:bg-neo-secondary/30 text-neo-text text-xs font-black py-1.5 sm:py-2 rounded-none transition-colors duration-100 cursor-pointer shadow-[2px_2px_0px_0px_var(--color-neo-shadow)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none touch-target">
                 Reset All
               </button>
               <button
                 @click="confirmFleet"
                 :disabled="!isFleetReady"
-                class="flex-1 bg-neo-accent text-white text-xs font-black py-1.5 sm:py-2 rounded-none shadow-[2px_2px_0px_0px_var(--color-neo-shadow)] transition-colors duration-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 cursor-pointer border-2 border-black"
+                class="flex-1 bg-neo-accent text-white text-xs font-black py-1.5 sm:py-2 rounded-none shadow-[2px_2px_0px_0px_var(--color-neo-shadow)] transition-colors duration-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 cursor-pointer border-2 border-black touch-target"
               >
                 Deploy Fleet
               </button>
@@ -132,18 +132,18 @@
       <!-- 2. PLAYING / BATTLE PHASE -->
       <div v-else-if="gameState.phase === 'playing' || gameState.phase === 'game-over'" class="flex flex-col items-center w-full h-full min-h-0">
         <!-- Mobile Tab Switcher -->
-        <div class="flex md:hidden bg-white p-1 rounded-xl mb-3 space-x-1 w-full max-w-[280px] shadow-sm border border-gray-200 flex-shrink-0">
+        <div class="flex md:hidden bg-white p-1 rounded-none mb-3 space-x-1 w-full max-w-[280px] shadow-sm border border-gray-200 flex-shrink-0">
           <button
             @click="activeMobileTab = 'target'"
             :class="activeMobileTab === 'target' ? 'bg-blue-600 text-white font-bold shadow-sm' : 'text-gray-500 hover:text-gray-800'"
-            class="flex-1 py-1.5 rounded-lg text-xs transition-all duration-150 cursor-pointer text-center"
+            class="flex-1 py-1.5 rounded-none text-xs transition-all duration-150 cursor-pointer text-center touch-target"
           >
             Fire Control
           </button>
           <button
             @click="activeMobileTab = 'fleet'"
             :class="activeMobileTab === 'fleet' ? 'bg-blue-600 text-white font-bold shadow-sm' : 'text-gray-500 hover:text-gray-800'"
-            class="flex-1 py-1.5 rounded-lg text-xs transition-all duration-150 cursor-pointer text-center"
+            class="flex-1 py-1.5 rounded-none text-xs transition-all duration-150 cursor-pointer text-center touch-target"
           >
             Defensive Radar
           </button>
@@ -219,12 +219,12 @@
     </div>
 
     <!-- GameOver Action Bar -->
-    <div class="w-full max-w-lg flex flex-col items-center justify-center py-2 flex-shrink-0">
+    <div class="w-full max-w-lg flex flex-col items-center justify-center py-2 flex-shrink-0 animate-slide-up">
       <button
         v-if="gameOver"
         @click="newGame"
         :disabled="ready"
-        class="bg-neo-accent text-white font-black py-2.5 px-6 rounded-none transition-all duration-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 cursor-pointer neo-btn uppercase tracking-wider"
+        class="bg-neo-accent text-white font-black py-2.5 px-6 rounded-none transition-all duration-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 cursor-pointer neo-btn uppercase tracking-wider touch-target"
       >
         <span v-if="ready" class="flex items-center gap-1.5 justify-center">Waiting for opponent<WaitingIndicator /></span>
         <span v-else>Play Again</span>
@@ -237,11 +237,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue';
+import { defineComponent, PropType, ref, watch } from 'vue';
 import { Socket } from 'socket.io-client';
 import GameHeader from '../layout/GameHeader.vue';
 import WaitingIndicator from '../ui/WaitingIndicator.vue';
 import { useGame } from '../../composables/useGame.js';
+import { useConfetti } from '../../composables/useConfetti.js';
 import type { BattleshipGameState as GameState } from '../../types/shared.js';
 
 export default defineComponent({
@@ -286,6 +287,17 @@ export default defineComponent({
       registerLifecycle: false,
     });
 
+    const confetti = useConfetti();
+
+    watch(
+      () => gameState.value?.winner,
+      (winner) => {
+        if (winner) {
+          confetti.fire();
+        }
+      }
+    );
+
     const handleGameState = (state: GameState) => {
       gameState.value = state;
       if (state.phase === 'placement') {
@@ -302,6 +314,7 @@ export default defineComponent({
     return {
       ...game,
       gameState,
+      confetti,
       handleGameState,
       handlePlayerReady,
     };

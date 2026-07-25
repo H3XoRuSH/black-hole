@@ -39,6 +39,8 @@
   --neo-border: #000000;
   --neo-shadow: #000000;
   --neo-text: #000000;
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-top: env(safe-area-inset-top, 0px);
 }
 
 .dark {
@@ -89,7 +91,7 @@
 
 /* Hover lift effect for cards */
 @utility neo-card-lift {
-  transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 
   &:hover {
     transform: translateY(-4px);
@@ -104,13 +106,21 @@
   color: var(--color-neo-text);
   font-weight: 700;
   border-radius: 0px;
-  transition: all 0.1s ease-out;
+  transition: all 0.15s ease-out;
 
   &:focus-visible {
     background-color: var(--color-neo-secondary);
     color: #000000;
     box-shadow: 4px 4px 0px 0px var(--color-neo-shadow);
     outline: none;
+  }
+}
+
+/* Focus ring for non-input interactive elements */
+@utility neo-focus {
+  &:focus-visible {
+    outline: 2px solid var(--color-neo-accent);
+    outline-offset: 2px;
   }
 }
 
@@ -133,7 +143,14 @@
   html {
     transition: color 0.2s ease;
   }
+
+  /* Global focus ring for accessibility */
+  :focus-visible {
+    outline: 2px solid var(--color-neo-accent);
+    outline-offset: 2px;
+  }
 }
+
 /* Hide default html5-qrcode shaded overlay */
 #qr-shaded-region {
   display: none !important;
@@ -164,4 +181,244 @@
 * {
   scrollbar-width: auto;
   scrollbar-color: var(--color-neo-accent) var(--neo-card-bg);
+}
+
+/* =============================================
+   PAGE TRANSITIONS (Route-level animations)
+   ============================================= */
+.page-enter-active {
+  transition: opacity 0.2s ease-out, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.page-leave-active {
+  transition: opacity 0.15s ease-in, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(12px);
+}
+.page-leave-to {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+/* =============================================
+   ENTRANCE ANIMATIONS (For elements appearing)
+   ============================================= */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  70% {
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-slide-up {
+  animation: slide-up 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.animate-fade-in {
+  animation: fade-in 0.3s ease both;
+}
+.animate-scale-in {
+  animation: scale-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.animate-pop-in {
+  animation: pop-in 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* =============================================
+   STAGGERED LIST ANIMATIONS
+   ============================================= */
+@keyframes list-item-enter {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.animate-list-item {
+  animation: list-item-enter 0.25s ease both;
+}
+
+/* =============================================
+   SKELETON LOADING ANIMATION
+   ============================================= */
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
+}
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-neo-card-bg) 0%,
+    var(--color-neo-muted) 20%,
+    var(--color-neo-card-bg) 40%
+  );
+  background-size: 800px 100%;
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+}
+
+/* =============================================
+   CONFETTI CELEBRATION
+   ============================================= */
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-10vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(110vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+@keyframes confetti-sway {
+  0%, 100% { margin-left: 0; }
+  50% { margin-left: 30px; }
+}
+
+/* =============================================
+   DISC DROP ANIMATION (Connect Four)
+   ============================================= */
+@keyframes disc-drop {
+  0% {
+    transform: translateY(-120%);
+    opacity: 0.6;
+  }
+  40% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  60% {
+    transform: translateY(-8%);
+  }
+  80% {
+    transform: translateY(0);
+  }
+  90% {
+    transform: translateY(-3%);
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.animate-disc-drop {
+  animation: disc-drop 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* =============================================
+   PIECE SLIDE ANIMATION (Checkers)
+   ============================================= */
+@keyframes piece-slide {
+  from {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.15);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+.animate-piece-slide {
+  animation: piece-slide 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* =============================================
+   BOX FILL ANIMATION (Dots and Boxes)
+   ============================================= */
+@keyframes box-fill {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.animate-box-fill {
+  animation: box-fill 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* =============================================
+   TOKEN PLACEMENT (Black Hole)
+   ============================================= */
+@keyframes token-place {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  70% {
+    transform: scale(1.15);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.animate-token-place {
+  animation: token-place 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* =============================================
+   SAFE AREA UTILITIES (Mobile notch support)
+   ============================================= */
+.pb-safe {
+  padding-bottom: var(--safe-area-bottom);
+}
+.pt-safe {
+  padding-top: var(--safe-area-top);
+}
+.mb-safe {
+  margin-bottom: var(--safe-area-bottom);
+}
+
+/* =============================================
+   MINIMUM TOUCH TARGET (44px Apple HIG)
+   ============================================= */
+@media (max-width: 767px) {
+  .touch-target {
+    min-width: 44px;
+    min-height: 44px;
+  }
 }

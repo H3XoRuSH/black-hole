@@ -22,6 +22,26 @@
       <div
         class="bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow p-2 sm:p-4 rounded-none w-full max-w-[260px] xs:max-w-[320px] sm:max-w-[430px] md:max-w-[480px]"
       >
+        <!-- Mobile column selector (touch-friendly) -->
+        <div class="flex justify-center gap-1 mb-2 md:hidden">
+          <button
+            v-for="colIndex in 7"
+            :key="`mobile-col-${colIndex - 1}`"
+            @click="makeMove(colIndex - 1)"
+            :disabled="!canPlayColumn(colIndex - 1)"
+            class="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-100 touch-target disabled:opacity-30 disabled:cursor-not-allowed"
+            :class="canPlayColumn(colIndex - 1) ? 'hover:scale-110 active:scale-95' : ''"
+            :aria-label="`Drop disc in column ${colIndex}`"
+          >
+            <div
+              v-if="canPlayColumn(colIndex - 1)"
+              class="w-5 h-5 rounded-full border-2 border-black dark:border-white animate-bounce opacity-70"
+              :class="player === 1 ? 'bg-blue-500' : 'bg-rose-500'"
+            ></div>
+            <div v-else class="w-5 h-5 rounded-full border-2 border-neo-border/30 bg-neo-bg"></div>
+          </button>
+        </div>
+
         <!-- Columns Grid -->
         <div class="grid grid-cols-7 gap-1 sm:gap-3">
           <!-- Hover & Interactive Columns -->
@@ -52,7 +72,7 @@
               <div
                 v-if="gameState.board[rowIndex - 1][colIndex - 1]"
                 class="w-[92%] h-[92%] rounded-full z-10"
-                :class="[getDiscClass(rowIndex - 1, colIndex - 1), lastMoveClass(rowIndex - 1, colIndex - 1)]"
+                :class="[getDiscClass(rowIndex - 1, colIndex - 1), lastMoveClass(rowIndex - 1, colIndex - 1), { 'animate-disc-drop': gameState.lastMove?.row === rowIndex - 1 && gameState.lastMove?.col === colIndex - 1 }]"
               >
               </div>
             </div>
@@ -62,7 +82,7 @@
     </div>
 
     <!-- Footer Controls -->
-    <div class="w-full max-w-lg flex flex-col items-center justify-center py-2 sm:py-4">
+    <div class="w-full max-w-lg flex flex-col items-center justify-center py-2 sm:py-4 animate-slide-up">
       <button
         v-if="gameOver"
         @click="newGame"
@@ -74,7 +94,7 @@
       </button>
     </div>
   </div>
-  <div v-else class="h-full flex flex-col items-center justify-center p-6">
+  <div v-else class="h-full flex flex-col items-center justify-center p-6 animate-fade-in">
     <p class="text-lg text-gray-500 dark:text-gray-400 font-medium">
       Invalid game state. Redirecting to lobby...
     </p>
@@ -82,11 +102,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue';
+import { defineComponent, PropType, ref, watch } from 'vue';
 import { Socket } from 'socket.io-client';
 import GameHeader from '../layout/GameHeader.vue';
 import WaitingIndicator from '../ui/WaitingIndicator.vue';
 import { useGame } from '../../composables/useGame.js';
+import { useConfetti } from '../../composables/useConfetti.js';
 import type { ConnectFourGameState as GameState } from '../../types/shared.js';
 
 export default defineComponent({
@@ -137,7 +158,15 @@ export default defineComponent({
       lobbyRoute: '/connect-four/lobby',
     });
 
-    return { ...game, gameState };
+    const confetti = useConfetti();
+
+    watch(() => gameState.value?.winner, (newVal, oldVal) => {
+      if (newVal && !oldVal) {
+        setTimeout(() => confetti.fire(), 300);
+      }
+    });
+
+    return { ...game, gameState, confetti };
   },
   data() {
     return {};
