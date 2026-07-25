@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="isValidGame"
-    class="flex-grow flex flex-col items-center justify-between h-full p-3 sm:p-4 md:p-6 select-none"
+    class="flex-grow flex flex-col items-center justify-between h-full p-2 sm:p-3 select-none"
   >
     <GameHeader
       title="Black Hole"
@@ -18,24 +18,24 @@
 
     <!-- Content Area -->
     <div
-      class="flex-grow flex flex-col items-center justify-center overflow-auto py-2 sm:py-3 w-full"
+      class="flex-grow flex flex-col items-center justify-center overflow-auto py-1 sm:py-2 w-full"
     >
       <!-- Cosmic Board Card -->
       <div
-        class="bg-slate-900/95 backdrop-blur-md border border-slate-800 rounded-3xl shadow-2xl p-3 sm:p-4 transition-all duration-500 flex flex-col items-center"
+        class="bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow p-2 sm:p-3 transition-all duration-100 flex flex-col items-center rounded-none"
         :class="boardTurnClass"
       >
         <!-- Triangular Grid -->
         <div
           v-for="row in 6"
           :key="row"
-          class="flex justify-center mb-1.5 sm:mb-2"
+          class="flex justify-center mb-1 sm:mb-1.5"
           :class="{ 'mb-0': row === 6 }"
         >
           <div
             v-for="col in row"
             :key="`${row}-${col}`"
-            class="w-9 h-9 xs:w-10 xs:h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 lg:w-13 lg:h-13 xl:w-14 xl:h-14 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-200 mx-1 sm:mx-2 relative group"
+            class="w-8 h-8 xs:w-9 xs:h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 lg:w-12 lg:h-12 xl:w-13 xl:h-13 rounded-full flex items-center justify-center font-black text-xs sm:text-sm md:text-base cursor-pointer mx-1 sm:mx-1.5 relative group"
             :class="[getCircleStyle(row, col), lastMoveClass(row, col)]"
             @click="clickCircle(row, col)"
           >
@@ -53,52 +53,46 @@
             <!-- Hover Turn Preview -->
             <div
               v-if="showHoverPreview(row, col)"
-              class="absolute inset-0 rounded-full border border-dashed flex items-center justify-center opacity-0 group-hover:opacity-40 transition-opacity duration-200 pointer-events-none"
+              class="absolute inset-0 rounded-full border-2 border-dashed flex items-center justify-center opacity-0 group-hover:opacity-60 pointer-events-none"
               :class="
                 player === 1
-                  ? 'border-blue-400 text-blue-400'
-                  : 'border-red-400 text-red-400'
+                  ? 'border-blue-500 text-blue-500'
+                  : 'border-rose-500 text-rose-500'
               "
             >
               {{ nextTurnNumber }}
             </div>
-          </div>
         </div>
       </div>
+    </div>
+  </div>
 
-      <!-- Scores & Actions -->
-      <div
+  <!-- Scores & Actions -->
+  <div
         v-if="gameOver"
-        class="flex flex-col items-center mt-3.5 sm:mt-4.5 transition-all duration-300"
+        class="flex flex-col items-center mt-2.5 sm:mt-3.5 transition-all duration-300"
       >
         <div
-          class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-gray-200 dark:border-slate-700 rounded-2xl px-5 py-2 shadow-sm mb-3 text-center"
+          class="bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow-sm px-4 py-1.5 mb-2.5 text-center rounded-none flex items-center justify-center gap-x-6 text-xs sm:text-sm font-black uppercase"
         >
-          <div class="text-sm font-semibold text-gray-700 dark:text-gray-200 space-y-1">
-            <p class="flex items-center justify-between space-x-8">
-              <span class="text-blue-600">{{ p1Name }} Score:</span>
-              <span class="font-mono font-bold">{{
-                gameState.scores?.player1 || 0
-              }}</span>
-            </p>
-            <p class="flex items-center justify-between space-x-8">
-              <span class="text-red-600">{{ p2Name }} Score:</span>
-              <span class="font-mono font-bold">{{
-                gameState.scores?.player2 || 0
-              }}</span>
-            </p>
+          <div class="flex items-center space-x-1.5">
+            <span class="text-neo-accent">{{ p1Name }}:</span>
+            <span class="font-mono">{{ gameState.scores?.player1 || 0 }}</span>
+          </div>
+          <div class="flex items-center space-x-1.5">
+            <span class="text-neo-secondary">{{ p2Name }}:</span>
+            <span class="font-mono">{{ gameState.scores?.player2 || 0 }}</span>
           </div>
         </div>
         <button
           @click="newGame"
           :disabled="ready"
-          class="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold py-2.5 px-6 rounded-xl shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="bg-neo-accent text-white font-black py-2.5 px-6 rounded-none transition-all duration-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 cursor-pointer neo-btn uppercase tracking-wider"
         >
-          <span v-if="ready">Waiting for opponent<WaitingIndicator /></span>
+          <span v-if="ready" class="flex items-center gap-1.5 justify-center">Waiting for opponent<WaitingIndicator /></span>
           <span v-else>Play Again</span>
         </button>
       </div>
-    </div>
   </div>
   <div
     v-else
@@ -218,11 +212,11 @@ export default defineComponent({
       return Math.floor(this.gameState.totalMoves / 2) + 1;
     },
     boardTurnClass() {
-      if (this.gameOver) return 'border-slate-850 shadow-slate-900/50';
+      if (this.gameOver) return '';
       if (this.gameState.currentPlayer === 1) {
-        return 'border-blue-600/30 shadow-[0_0_35px_rgba(59,130,246,0.18)]';
+        return 'ring-4 ring-blue-500 dark:ring-blue-400 ring-offset-2 dark:ring-offset-slate-900';
       } else {
-        return 'border-red-600/30 shadow-[0_0_35px_rgba(239,68,68,0.18)]';
+        return 'ring-4 ring-rose-500 dark:ring-rose-400 ring-offset-2 dark:ring-offset-slate-900';
       }
     },
     winnerTextClass() {
@@ -270,7 +264,7 @@ export default defineComponent({
       const data = this.getCircleData(row, col);
 
       if (this.gameOver && this.remainingPositions.includes(key)) {
-        return 'bg-slate-950 border-purple-500 border-2 shadow-[0_0_25px_rgba(147,51,234,0.75)]';
+        return 'bg-purple-600 dark:bg-purple-800 neo-border-2 shadow-[2px_2px_0px_0px_#000000] dark:shadow-[2px_2px_0px_0px_#FFFFFF] scale-105';
       }
 
       if (this.gameOver && this.remainingPositions.length === 1) {
@@ -280,19 +274,19 @@ export default defineComponent({
         if (neighbors.includes(key)) {
           return data
             ? data.player === 1
-              ? 'bg-gradient-to-tr from-blue-600 via-blue-500 to-cyan-400 border-amber-400 border-[3px] shadow-[0_0_15px_rgba(251,191,36,0.85)] text-white scale-105'
-              : 'bg-gradient-to-tr from-red-600 via-red-500 to-rose-400 border-amber-400 border-[3px] shadow-[0_0_15px_rgba(251,191,36,0.85)] text-white scale-105'
-            : 'bg-slate-950/40 border-amber-400/60 border-2';
+              ? 'bg-blue-500 dark:bg-blue-600 border-4 border-amber-400 dark:border-amber-300 text-white scale-105'
+              : 'bg-rose-500 dark:bg-rose-600 border-4 border-amber-400 dark:border-amber-300 text-white scale-105'
+            : 'bg-white dark:bg-neo-card-bg border-4 border-amber-400 dark:border-amber-300';
         }
       }
 
       if (data) {
         return data.player === 1
-          ? 'bg-gradient-to-tr from-blue-600 via-blue-500 to-cyan-400 border-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.55)] text-white'
-          : 'bg-gradient-to-tr from-red-600 via-red-500 to-rose-400 border-red-400 shadow-[0_0_10px_rgba(239,68,68,0.55)] text-white';
+          ? 'bg-blue-500 dark:bg-blue-600 neo-border-2 text-white'
+          : 'bg-rose-500 dark:bg-rose-600 neo-border-2 text-white';
       }
 
-      return 'bg-slate-950/40 border-2 border-slate-700/60 text-slate-500 hover:border-slate-500/80 hover:bg-slate-800/40';
+      return 'bg-white dark:bg-neo-card-bg neo-border-2 text-neo-text/40 hover:border-neo-accent hover:bg-neo-secondary/20';
     },
     getCircleText(row: number, col: number) {
       const data = this.getCircleData(row, col);
@@ -301,7 +295,7 @@ export default defineComponent({
     lastMoveClass(row: number, col: number) {
       if (!this.gameState.lastMove) return '';
       return this.gameState.lastMove.row === row && this.gameState.lastMove.col === col
-        ? 'ring-2 ring-yellow-300/80 ring-inset'
+        ? 'ring-4 ring-yellow-400 dark:ring-yellow-300 ring-offset-2 dark:ring-offset-neo-card-bg z-10'
         : '';
     },
     showBlackHoleIcon(row: number, col: number) {

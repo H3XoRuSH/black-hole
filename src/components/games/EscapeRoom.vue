@@ -36,17 +36,17 @@
       <div v-if="!escaped" class="w-full max-w-xl space-y-3">
         <div
           v-if="showIntro"
-          class="bg-white/90 dark:bg-slate-900/90 border border-amber-300/40 dark:border-amber-700/30 rounded-2xl p-4 sm:p-6 shadow-xl"
+          class="bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow p-4 sm:p-6 rounded-none"
         >
-          <h2 class="text-lg font-bold text-amber-400 mb-2">{{ gameState.roomName || 'Escape Room' }}</h2>
-          <p class="text-sm text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">{{ gameState.roomDescription }}</p>
-          <div class="bg-slate-100/80 dark:bg-slate-800/80 border border-slate-300 dark:border-slate-700 rounded-xl p-4">
-            <p class="text-base text-slate-700 dark:text-slate-300 whitespace-pre-line leading-relaxed">{{ gameState.roomIntro }}</p>
+          <h2 class="text-lg font-black uppercase text-neo-accent mb-2">{{ gameState.roomName || 'Escape Room' }}</h2>
+          <p class="text-sm text-neo-text/70 mb-4 leading-relaxed font-bold">{{ gameState.roomDescription }}</p>
+          <div class="bg-neo-bg border-2 border-black rounded-none p-4">
+            <p class="text-base text-neo-text whitespace-pre-line leading-relaxed font-bold">{{ gameState.roomIntro }}</p>
           </div>
           <div class="flex justify-center mt-4">
             <button
               @click="beginGame"
-              class="bg-amber-600 hover:bg-amber-500 text-white font-semibold px-6 py-2.5 rounded-xl transition-all duration-150 cursor-pointer active:scale-95 text-base"
+              class="bg-neo-accent text-white font-black px-6 py-2.5 rounded-none transition-colors border-2 border-black neo-btn uppercase tracking-wider text-base"
             >
               Begin
             </button>
@@ -60,10 +60,10 @@
               :key="loc.id"
               v-show="isLocationAccessible(idx)"
               @click="selectLocation(loc.id)"
-              class="px-3 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all duration-150 cursor-pointer border"
+              class="px-3 py-1.5 rounded-none text-xs font-black uppercase tracking-wider transition-colors cursor-pointer border-2 border-black"
               :class="selectedLocationId === loc.id
-                ? 'bg-amber-600/20 border-amber-500/50 text-amber-400'
-                : 'bg-transparent border-slate-700 text-slate-500 hover:border-slate-500 hover:text-slate-400'"
+                ? 'bg-neo-secondary text-black'
+                : 'bg-white dark:bg-neo-card-bg text-neo-text hover:bg-neo-secondary/30'"
             >
               {{ loc.name }}
             </button>
@@ -90,30 +90,30 @@
 
           <div
             v-if="currentPath.length === 0 && currentLocation"
-            class="bg-white/80 dark:bg-slate-900/80 border border-slate-300 dark:border-slate-800 rounded-2xl px-4 py-3 shadow-lg"
+            class="bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow px-4 py-3 rounded-none"
           >
             <div class="flex items-center space-x-2 mb-1">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-neo-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
-              <span class="text-base font-bold text-amber-400 uppercase tracking-wider">{{ currentLocation.name }}</span>
+              <span class="text-base font-black text-neo-accent uppercase tracking-wider">{{ currentLocation.name }}</span>
             </div>
-            <p class="text-sm text-slate-600 dark:text-slate-500 italic whitespace-pre-line">{{ currentLocation.description }}</p>
+            <p class="text-sm text-neo-text/70 font-bold whitespace-pre-line">{{ currentLocation.description }}</p>
           </div>
 
           <div
             v-if="currentNode"
-            class="bg-white/90 dark:bg-slate-900/90 border border-slate-300 dark:border-slate-800 rounded-2xl p-4 sm:p-6 shadow-xl"
+            class="bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow p-4 sm:p-6 rounded-none"
           >
-            <h3 class="text-sm font-bold text-amber-500/70 uppercase tracking-widest mb-3 flex items-center justify-between">
+            <h3 class="text-sm font-black text-neo-text/70 uppercase tracking-widest mb-3 flex items-center justify-between">
               <span>
                 {{ currentNode.label }}
-                <span v-if="currentNode.isMeta" class="ml-1 text-amber-400">&#9733;</span>
+                <span v-if="currentNode.isMeta" class="ml-1 text-neo-accent">&#9733;</span>
               </span>
               <button
                 @click="goBack"
-                class="text-xs text-slate-500 hover:text-amber-400 transition-colors cursor-pointer px-2 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 flex items-center space-x-1"
+                class="text-xs text-neo-text hover:text-neo-accent transition-colors cursor-pointer px-2 py-1 rounded-none border-2 border-black bg-white dark:bg-neo-card-bg hover:bg-neo-secondary flex items-center space-x-1 font-black uppercase"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -122,16 +122,16 @@
               </button>
             </h3>
 
-            <div class="bg-slate-100/60 dark:bg-slate-800/60 border border-slate-300/50 dark:border-slate-700/50 rounded-xl p-3 sm:p-4 mb-4">
+            <div class="bg-neo-bg border-2 border-black rounded-none p-3 sm:p-4 mb-4">
               <template v-for="(seg, i) in splitArtSegments(isNodeStillLocked(currentNode) ? (currentNode.lockedNarrative || currentNode.narrative) : currentNode.narrative)" :key="'nar-'+i">
-                <pre v-if="seg.type === 'art'" class="text-sm text-slate-600 dark:text-slate-400 mb-2 font-mono leading-snug overflow-x-auto">{{ seg.content }}</pre>
-                <p v-else class="text-sm text-slate-600 dark:text-slate-400 italic mb-2 leading-relaxed whitespace-pre-line">{{ seg.content }}</p>
+                <pre v-if="seg.type === 'art'" class="text-sm text-neo-text mb-2 font-mono leading-snug overflow-x-auto">{{ seg.content }}</pre>
+                <p v-else class="text-sm text-neo-text mb-2 leading-relaxed whitespace-pre-line font-bold">{{ seg.content }}</p>
               </template>
               <template v-if="currentNode.type === 'puzzle'">
-                <div class="border-t border-slate-300/50 dark:border-slate-700/30 my-3"></div>
+                <div class="border-t-2 border-black my-3"></div>
                 <template v-for="(seg, i) in splitArtSegments(currentNode.question || '')" :key="'q-'+i">
-                  <pre v-if="seg.type === 'art'" class="text-base text-slate-800 dark:text-slate-200 font-mono leading-snug overflow-x-auto">{{ seg.content }}</pre>
-                  <p v-else class="text-base text-slate-800 dark:text-slate-200 whitespace-pre-line leading-relaxed">{{ seg.content }}</p>
+                  <pre v-if="seg.type === 'art'" class="text-base text-neo-text font-mono leading-snug overflow-x-auto">{{ seg.content }}</pre>
+                  <p v-else class="text-base text-neo-text font-black whitespace-pre-line leading-relaxed">{{ seg.content }}</p>
                 </template>
               </template>
             </div>
@@ -139,7 +139,7 @@
             <div v-if="currentNode.locationId !== selectedLocationId" class="flex justify-center mb-3">
               <button
                 @click="selectLocation(currentNode.locationId)"
-                class="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold px-6 py-2.5 rounded-xl shadow-md transition-all duration-150 cursor-pointer active:scale-95 text-sm"
+                class="bg-neo-accent text-white font-black px-6 py-2.5 rounded-none border-2 border-black shadow-[2px_2px_0px_0px_var(--color-neo-shadow)] hover:shadow-none transition-all duration-100 cursor-pointer active:translate-x-[1px] active:translate-y-[1px] text-sm uppercase tracking-wide"
               >
                 Go to {{ getLocationName(currentNode.locationId) }}
               </button>
@@ -149,7 +149,7 @@
               <button
                 @click="playPuzzleSound(currentNode)"
                 :disabled="isSoundPlaying"
-                class="bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-300 dark:disabled:bg-slate-700 disabled:text-slate-500 text-white font-medium px-4 py-2 rounded-xl transition-all duration-150 cursor-pointer active:scale-95 text-sm flex items-center space-x-1.5"
+                class="bg-neo-accent text-white font-black px-4 py-2 rounded-none border-2 border-black transition-colors duration-100 cursor-pointer text-sm flex items-center space-x-1.5 uppercase tracking-wide disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <svg v-if="!isSoundPlaying" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M15.536 8.464a5 5 0 010 7.072M17.95 6.05a8 8 0 010 11.9M6.5 8.8l4.7-3.5a.5.5 0 01.8.4v12.6a.5.5 0 01-.8.4l-4.7-3.5H4a1 1 0 01-1-1v-4a1 1 0 011-1h2.5z" />
@@ -165,10 +165,10 @@
               <div
                 v-for="(hint, idx) in revealedHints"
                 :key="idx"
-                class="bg-amber-100/80 dark:bg-amber-900/15 border border-amber-300/40 dark:border-amber-700/20 rounded-lg px-3 py-2 flex items-start space-x-2"
+                class="bg-white dark:bg-neo-card-bg border-2 border-black text-neo-text px-3 py-2 flex items-start space-x-2 rounded-none"
               >
-                <span class="text-amber-600 dark:text-amber-500 font-bold text-sm flex-shrink-0 mt-px">Hint {{ idx + 1 }}:</span>
-                <span class="text-sm text-amber-700 dark:text-amber-300/90 leading-relaxed">{{ hint }}</span>
+                <span class="text-neo-accent font-black text-sm flex-shrink-0 mt-px">Hint {{ idx + 1 }}:</span>
+                <span class="text-sm font-bold leading-relaxed">{{ hint }}</span>
               </div>
             </div>
 
@@ -177,13 +177,13 @@
                 v-model="answer"
                 type="text"
                 placeholder="Type your answer..."
-                class="flex-grow bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2.5 text-base text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-amber-500 focus:border-amber-500 transition-all"
+                class="flex-grow px-3 py-2.5 text-base placeholder:text-neo-text/45 neo-input"
                 @keyup.enter="submitAnswer"
               />
               <button
                 @click="submitAnswer"
                 :disabled="!answer.trim()"
-                class="bg-amber-600 hover:bg-amber-500 disabled:bg-slate-200 dark:disabled:bg-slate-700 disabled:text-slate-400 dark:disabled:text-slate-500 text-white font-semibold px-4 py-2.5 rounded-xl transition-all duration-150 cursor-pointer active:scale-95 text-base flex-shrink-0"
+                class="bg-neo-accent text-white font-black px-4 py-2.5 rounded-none transition-colors border-2 border-black neo-btn uppercase tracking-wider text-base flex-shrink-0 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Submit
               </button>
@@ -199,7 +199,7 @@
             <div v-if="currentNode.type === 'item' && currentNode.rewardItem && !hasItem(currentNode.rewardItem) && !isItemDiscovered(currentNode.id)" class="flex justify-center mb-3">
               <button
                 @click="interactItem(currentNode.id)"
-                class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-4 py-2.5 rounded-xl transition-all duration-150 cursor-pointer active:scale-95 text-sm"
+                class="bg-neo-accent text-white font-black px-4 py-2.5 border-2 border-black rounded-none cursor-pointer neo-btn text-sm uppercase tracking-wider"
               >
                 Pick Up
               </button>
@@ -208,7 +208,7 @@
             <div v-if="isNodeStillLocked(currentNode) && hasItem(currentNode.lockedByItem || '')" class="flex justify-center mb-3">
               <button
                 @click="useItem(currentNode.id)"
-                class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-4 py-2.5 rounded-xl transition-all duration-150 cursor-pointer active:scale-95 text-sm"
+                class="bg-emerald-600 text-white font-black px-4 py-2.5 border-2 border-black rounded-none cursor-pointer neo-btn text-sm uppercase tracking-wider"
               >
                 Use {{ getItemLabel(currentNode.lockedByItem || '') }}
               </button>
@@ -218,7 +218,7 @@
               <button
                 @click="requestHint(currentNode.id)"
                 :disabled="currentNodeHintsRemaining <= 0"
-                class="text-sm text-amber-600/80 dark:text-amber-400/80 hover:text-amber-500 dark:hover:text-amber-300 disabled:text-slate-400 dark:disabled:text-slate-600 disabled:cursor-not-allowed transition-colors flex items-center space-x-1"
+                class="text-sm text-neo-accent hover:text-neo-accent/80 disabled:text-neo-text/30 disabled:cursor-not-allowed transition-colors flex items-center space-x-1 font-black uppercase tracking-wide"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
@@ -236,10 +236,10 @@
               v-for="child in visibleChildren"
               :key="child.id"
               @click="navigateToNode(child.id)"
-              class="bg-white/80 dark:bg-slate-900/80 border rounded-xl px-4 py-3 shadow-sm cursor-pointer hover:shadow-md hover:border-amber-500/40 transition-all duration-150"
+              class="bg-white dark:bg-neo-card-bg text-neo-text border-2 px-4 py-3 rounded-none shadow-[2px_2px_0px_0px_var(--color-neo-shadow)] cursor-pointer hover:shadow-none hover:translate-x-[2px] hover:translate-y-[2px] transition-all duration-100 flex flex-col justify-between"
               :class="child.isMeta
-                ? 'border-amber-400/40 hover:border-amber-400/60'
-                : 'border-slate-300 dark:border-slate-800'"
+                ? 'border-neo-accent'
+                : 'border-black'"
             >
               <div class="flex items-center justify-between">
                 <div class="flex items-center space-x-2 min-w-0">
@@ -263,18 +263,18 @@
                   <button
                     v-if="child.type === 'item' && child.rewardItem && !hasItem(child.rewardItem) && !isItemDiscovered(child.id)"
                     @click.stop="interactItem(child.id)"
-                    class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-2.5 py-1 rounded-lg transition-all cursor-pointer active:scale-95"
+                    class="text-xs bg-neo-accent text-white font-black px-2.5 py-1 border-2 border-black rounded-none cursor-pointer uppercase tracking-wider"
                   >
                     Pick Up
                   </button>
                   <button
                     v-if="isNodeStillLocked(child) && hasItem(child.lockedByItem || '')"
                     @click.stop="useItem(child.id)"
-                    class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-2.5 py-1 rounded-lg transition-all cursor-pointer active:scale-95"
+                    class="text-xs bg-emerald-600 text-white font-black px-2.5 py-1 border-2 border-black rounded-none cursor-pointer uppercase tracking-wider"
                   >
                     Unlock
                   </button>
-                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-neo-text flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                   </svg>
                 </div>
@@ -295,26 +295,26 @@
           <div v-if="playerInventory.length > 0" class="mt-3">
             <button
               @click="showInventory = !showInventory"
-              class="w-full flex items-center justify-between bg-indigo-100/80 dark:bg-indigo-900/20 border border-indigo-300/40 dark:border-indigo-700/20 rounded-xl px-4 py-2.5 text-sm text-indigo-600 dark:text-indigo-400 hover:border-indigo-400/60 dark:hover:border-indigo-500/60 transition-colors cursor-pointer"
+              class="w-full flex items-center justify-between bg-white dark:bg-neo-card-bg text-neo-text border-2 border-black rounded-none px-4 py-2.5 text-sm font-black uppercase tracking-wider cursor-pointer"
             >
               <span>Inventory ({{ playerInventory.length }})</span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="h-3.5 w-3.5 transition-transform duration-200"
+                class="h-3.5 w-3.5 transition-transform duration-200 text-neo-text"
                 :class="{ 'rotate-180': showInventory }"
                 fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
               >
                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
-            <div v-if="showInventory" class="bg-indigo-50/80 dark:bg-indigo-900/10 border border-indigo-300/40 dark:border-indigo-700/20 rounded-xl mt-1 divide-y divide-indigo-200/50 dark:divide-indigo-800/30">
+            <div v-if="showInventory" class="bg-neo-bg border-2 border-black border-t-0 rounded-none mt-0 divide-y-2 divide-black">
               <div
                 v-for="item in playerInventory"
                 :key="item"
                 class="px-4 py-2 flex items-center space-x-2"
               >
-                <span class="text-xs text-indigo-600 dark:text-indigo-400">&#9679;</span>
-                <span class="text-sm text-indigo-700 dark:text-indigo-300">{{ getItemLabel(item) }}</span>
+                <span class="text-xs text-neo-accent font-black">&#9679;</span>
+                <span class="text-sm font-bold text-neo-text">{{ getItemLabel(item) }}</span>
               </div>
             </div>
           </div>
@@ -322,29 +322,29 @@
       </div>
 
       <div v-if="escaped" class="w-full max-w-xl">
-        <div class="bg-white/90 dark:bg-slate-900/90 border border-amber-300/40 dark:border-amber-700/30 rounded-2xl p-6 sm:p-8 shadow-xl text-center">
+        <div class="bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow p-6 sm:p-8 rounded-none text-center">
           <div class="text-6xl mb-4">&#x1F513;</div>
-          <h2 class="text-2xl font-bold text-amber-400 mb-2">You Escaped!</h2>
-          <p class="text-base text-slate-500 dark:text-slate-400 mb-6">The team solved all {{ totalPuzzles }} puzzles and escaped "{{ gameState.roomName }}"!</p>
+          <h2 class="text-2xl font-black text-neo-accent mb-2 uppercase tracking-wide">You Escaped!</h2>
+          <p class="text-base text-neo-text/75 font-bold mb-6">The team solved all {{ totalPuzzles }} puzzles and escaped "{{ gameState.roomName }}"!</p>
 
-          <div class="bg-slate-100/60 dark:bg-slate-800/60 border border-slate-300/50 dark:border-slate-700/50 rounded-xl p-4 mb-4 text-left space-y-1.5">
-            <p class="text-sm text-slate-600 dark:text-slate-500 uppercase tracking-wider mb-2">Puzzle Summary</p>
+          <div class="bg-neo-bg border-2 border-black rounded-none p-4 mb-4 text-left space-y-1.5">
+            <p class="text-sm text-neo-text/50 font-black uppercase tracking-wider mb-2">Puzzle Summary</p>
             <p
               v-for="n in gameState.nodes.filter((n: EscapeRoomNode) => n.type === 'puzzle')"
               :key="n.id"
-              class="text-sm flex items-center space-x-2"
+              class="text-sm flex items-center space-x-2 font-bold"
             >
               <span :class="n.solved ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'">&#9679;</span>
-              <span class="text-slate-700 dark:text-slate-300">{{ getNodeLocationName(n) }} — {{ n.label }}</span>
-              <span class="text-slate-500 dark:text-slate-600">
+              <span class="text-neo-text">{{ getNodeLocationName(n) }} — {{ n.label }}</span>
+              <span class="text-neo-text/60">
                 {{ n.solved ? 'Solved' : 'Unsolved' }}
               </span>
             </p>
           </div>
 
-          <p class="text-sm text-slate-600 dark:text-slate-500 mb-4">
-            Wrong answers: <span class="text-slate-700 dark:text-slate-300 font-bold">{{ gameState.wrongAttempts }}</span> |
-            Hints used: <span class="text-slate-700 dark:text-slate-300 font-bold">{{ gameState.hintsUsed }}</span>
+          <p class="text-sm font-bold text-neo-text/70 mb-4">
+            Wrong answers: <span class="text-neo-text font-black">{{ gameState.wrongAttempts }}</span> |
+            Hints used: <span class="text-neo-text font-black">{{ gameState.hintsUsed }}</span>
           </p>
 
           <router-link to="/menu"
@@ -377,37 +377,37 @@
       class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md transition-all duration-300"
       @click.self="showMap = false"
     >
-      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-2xl flex flex-col shadow-2xl overflow-hidden max-h-[90vh]">
+      <div class="bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow w-full max-w-2xl flex flex-col overflow-hidden max-h-[90vh] rounded-none">
         <!-- Modal Header -->
-        <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800/80 flex items-center justify-between bg-slate-50 dark:bg-slate-950/40">
+        <div class="px-6 py-4 border-b-2 border-black flex items-center justify-between bg-neo-bg text-neo-text">
           <div class="flex items-center space-x-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-neo-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
             </svg>
-            <h3 class="text-base font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider">
+            <h3 class="text-base font-black text-neo-text uppercase tracking-wider">
               {{ currentLocation?.name }} {{ isMultiplayer ? 'Operations Desk' : 'Area Map' }}
             </h3>
           </div>
           <button
             @click="showMap = false"
-            class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
+            class="text-neo-text hover:text-neo-accent transition-colors p-1 rounded-none hover:bg-neo-secondary border-2 border-black bg-white dark:bg-neo-card-bg cursor-pointer"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
         <!-- Tabs Header (Only in multiplayer) -->
-        <div v-if="isMultiplayer" class="flex border-b border-slate-200 dark:border-slate-850 bg-slate-50 dark:bg-slate-950/40 px-4 flex-shrink-0">
+        <div v-if="isMultiplayer" class="flex border-b-2 border-black bg-neo-bg px-4 py-2 gap-2 flex-shrink-0">
           <button
             @click="activeTab = 'map'"
             :class="[
               activeTab === 'map'
-                ? 'border-amber-500 text-amber-500 dark:text-amber-400 font-bold'
-                : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:border-slate-200 dark:hover:border-slate-750'
+                ? 'bg-neo-secondary text-black'
+                : 'bg-white dark:bg-neo-card-bg text-neo-text hover:bg-neo-secondary/30'
             ]"
-            class="flex items-center space-x-2 px-4 py-3 border-b-2 text-xs uppercase tracking-wider transition-all cursor-pointer"
+            class="flex items-center space-x-2 px-4 py-2 border-2 border-black font-black text-xs uppercase tracking-wider transition-all cursor-pointer rounded-none"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
@@ -418,31 +418,31 @@
             @click="activeTab = 'chat'"
             :class="[
               activeTab === 'chat'
-                ? 'border-amber-500 text-amber-500 dark:text-amber-400 font-bold'
-                : 'border-transparent text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 hover:border-slate-200 dark:hover:border-slate-750'
+                ? 'bg-neo-secondary text-black'
+                : 'bg-white dark:bg-neo-card-bg text-neo-text hover:bg-neo-secondary/30'
             ]"
-            class="flex items-center space-x-2 px-4 py-3 border-b-2 text-xs uppercase tracking-wider transition-all cursor-pointer relative"
+            class="flex items-center space-x-2 px-4 py-2 border-2 border-black font-black text-xs uppercase tracking-wider transition-all cursor-pointer relative rounded-none"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
             </svg>
             <span>Team Chat</span>
-            <span v-if="unreadChatCount > 0" class="w-2 h-2 bg-rose-500 rounded-full animate-ping absolute top-3 right-2"></span>
+            <span v-if="unreadChatCount > 0" class="w-2 h-2 bg-rose-500 rounded-full animate-ping absolute top-2 right-2"></span>
           </button>
         </div>
 
         <!-- Tabs Body -->
-        <div class="flex-grow flex flex-col overflow-hidden bg-slate-50/50 dark:bg-slate-950/20">
+        <div class="flex-grow flex flex-col overflow-hidden bg-neo-bg text-neo-text">
           <!-- Tab: Map -->
           <div v-if="!isMultiplayer || activeTab === 'map'" class="flex-grow p-4 sm:p-6 flex flex-col items-center justify-center min-h-[300px] overflow-y-auto custom-scroll">
             <div class="w-full max-w-2xl flex flex-col space-y-3">
-              <div class="w-full aspect-[3/2] bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-2xl relative overflow-hidden p-2">
+              <div class="w-full aspect-[3/2] bg-white dark:bg-neo-card-bg border-4 border-black relative overflow-hidden p-2 rounded-none">
                 <!-- SVG Tree Map -->
                 <svg viewBox="0 0 600 400" class="w-full h-full">
                   <!-- Grid background pattern -->
                   <defs>
                     <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
-                      <path d="M 30 0 L 0 0 0 30" fill="none" stroke="currentColor" class="text-slate-200 dark:text-slate-900" stroke-width="1.5"/>
+                      <path d="M 30 0 L 0 0 0 30" fill="none" stroke="currentColor" class="text-black/10 dark:text-white/10" stroke-width="1.5"/>
                     </pattern>
                   </defs>
                   <rect width="100%" height="100%" fill="url(#grid)" />
@@ -453,8 +453,8 @@
                     :key="link.id"
                     :d="`M ${link.x1} ${link.y1} C ${link.x1} ${(link.y1 + link.y2) / 2}, ${link.x2} ${(link.y1 + link.y2) / 2}, ${link.x2} ${link.y2}`"
                     fill="none"
-                    class="stroke-slate-300 dark:stroke-slate-800"
-                    stroke-width="3"
+                    class="stroke-black dark:stroke-white"
+                    stroke-width="4"
                     stroke-linecap="round"
                   />
 
@@ -482,9 +482,9 @@
                       :cx="node.x"
                       :cy="node.y"
                       r="22"
-                      class="fill-slate-50 dark:fill-[#0b1329] stroke-2 transition-all duration-150 origin-center"
+                      class="fill-white dark:fill-neo-card-bg stroke-[3px] transition-all duration-150 origin-center"
                       :class="[
-                        node.isCurrent ? 'stroke-amber-500 dark:stroke-amber-400 stroke-2' : getNodeBorderClass(node)
+                        node.isCurrent ? 'stroke-neo-accent fill-neo-secondary/20' : getNodeBorderClass(node)
                       ]"
                     />
                     <!-- SVG Icon Overlays -->
@@ -547,53 +547,53 @@
               </div>
 
               <!-- Hover Info Card -->
-              <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2 flex flex-col justify-center h-[104px] lg:h-[90px] w-full flex-shrink-0">
+              <div class="bg-white dark:bg-neo-card-bg text-neo-text border-2 border-black shadow-[2px_2px_0px_0px_var(--color-neo-shadow)] px-4 py-2 flex flex-col justify-center h-[104px] lg:h-[90px] w-full flex-shrink-0 rounded-none">
                 <template v-if="hoveredNode">
                   <div class="flex items-center justify-between">
-                    <span class="text-[10px] uppercase tracking-wider font-bold" :class="getNodeTypeColor(hoveredNode)">
+                    <span class="text-[10px] uppercase tracking-wider font-black" :class="getNodeTypeColor(hoveredNode)">
                       {{ hoveredNode.type }}
                     </span>
-                    <span class="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
+                    <span class="text-[10px] text-neo-text/50 font-mono font-bold">
                       {{ getNodeStatusText(hoveredNode) }}
                     </span>
                   </div>
-                  <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5">
+                  <h4 class="text-xs font-black text-neo-text mt-0.5 uppercase tracking-wide">
                     {{ hoveredNode.label }}
                   </h4>
-                  <p class="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5 whitespace-pre-line line-clamp-3">
+                  <p class="text-[11px] text-neo-text/70 mt-0.5 whitespace-pre-line line-clamp-3 font-bold">
                     {{ hoveredNode.narrative }}
                   </p>
                 </template>
                 <template v-else>
                   <template v-if="currentNode">
                     <div class="flex items-center justify-between">
-                      <span class="text-[10px] uppercase tracking-wider font-bold text-blue-400">
+                      <span class="text-[10px] uppercase tracking-wider font-black text-neo-accent">
                         current location
                       </span>
-                      <span class="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
+                      <span class="text-[10px] text-neo-text/50 font-mono font-bold">
                         {{ getNodeStatusText(currentNode) }}
                       </span>
                     </div>
-                    <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5">
+                    <h4 class="text-xs font-black text-neo-text mt-0.5 uppercase tracking-wide">
                       {{ currentNode.label }}
                     </h4>
-                    <p class="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5 whitespace-pre-line line-clamp-3">
+                    <p class="text-[11px] text-neo-text/70 mt-0.5 whitespace-pre-line line-clamp-3 font-bold">
                       {{ isNodeStillLocked(currentNode) ? (currentNode.lockedNarrative || currentNode.narrative) : currentNode.narrative }}
                     </p>
                   </template>
                   <template v-else-if="currentLocation">
                     <div class="flex items-center justify-between">
-                      <span class="text-[10px] uppercase tracking-wider font-bold text-emerald-400">
+                      <span class="text-[10px] uppercase tracking-wider font-black text-emerald-600 dark:text-emerald-400">
                         current location
                       </span>
-                      <span class="text-[10px] text-slate-400 dark:text-slate-500 font-mono">
+                      <span class="text-[10px] text-neo-text/50 font-mono font-bold">
                         Start
                       </span>
                     </div>
-                    <h4 class="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5">
+                    <h4 class="text-xs font-black text-neo-text mt-0.5 uppercase tracking-wide">
                       {{ currentLocation.name }}
                     </h4>
-                    <p class="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5 whitespace-pre-line line-clamp-3">
+                    <p class="text-[11px] text-neo-text/70 mt-0.5 whitespace-pre-line line-clamp-3 font-bold">
                       {{ currentLocation.description }}
                     </p>
                   </template>
@@ -1550,28 +1550,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style>
-.custom-scroll::-webkit-scrollbar {
-  width: 6px;
-}
-
-.custom-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.custom-scroll::-webkit-scrollbar-thumb {
-  background: rgb(100 116 139 / 0.3);
-  border-radius: 999px;
-}
-
-.custom-scroll::-webkit-scrollbar-thumb:hover {
-  background: rgb(100 116 139 / 0.5);
-}
-
-@media (hover: none) and (pointer: coarse) {
-  .custom-scroll {
-    scrollbar-width: none;
-  }
-}
-</style>

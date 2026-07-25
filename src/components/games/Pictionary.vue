@@ -34,27 +34,27 @@
       <div
         v-for="p in players"
         :key="p.player"
-        class="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-300 border"
-        :class="p.player === gameState.currentDrawer ? 'bg-indigo-500/10 border-indigo-500/30 text-indigo-300' : 'bg-slate-800 border-slate-700 text-slate-300'"
+        class="flex items-center space-x-1.5 px-3 py-1.5 rounded-none text-xs font-black transition-all duration-300 border-2 border-black text-neo-text"
+        :class="p.player === gameState.currentDrawer ? 'bg-neo-secondary/30' : 'bg-white dark:bg-neo-card-bg opacity-75'"
       >
-        <span class="w-2.5 h-2.5 rounded-full" :class="getDotClass(p.player)"></span>
+        <span class="w-2.5 h-2.5 rounded-full border border-black" :class="getDotClass(p.player)"></span>
         <span>{{ p.name || playerLabel(p.player) }}</span>
-        <span v-if="p.player === gameState.currentDrawer && !gameOver" class="text-[10px] ml-1 uppercase tracking-wider text-indigo-400">Drawing</span>
+        <span v-if="p.player === gameState.currentDrawer && !gameOver" class="text-[10px] ml-1 uppercase tracking-wider text-neo-accent font-black">Drawing</span>
         <span class="font-mono ml-1">{{ gameState.scores?.[p.player] || 0 }}</span>
       </div>
     </div>
 
     <!-- Timer -->
-    <div v-if="!gameOver && gameState.phase === 'drawing' && gameState.drawerReady" class="w-full max-w-2xl flex-shrink-0 mb-1">
+    <div v-if="!gameOver && gameState.phase === 'drawing' && gameState.drawerReady" class="w-full max-w-2xl flex-shrink-0 mb-1.5">
       <div class="flex items-center justify-center space-x-2">
-        <div class="flex-1 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+        <div class="flex-1 h-3 bg-white dark:bg-neo-card-bg border-2 border-black rounded-none overflow-hidden">
           <div
-            class="h-full rounded-full transition-all duration-1000 ease-linear"
-            :class="timerPercent > 50 ? 'bg-emerald-500' : timerPercent > 25 ? 'bg-amber-500' : 'bg-rose-500'"
+            class="h-full rounded-none transition-all duration-1000 ease-linear"
+            :class="timerPercent > 50 ? 'bg-emerald-500' : timerPercent > 25 ? 'bg-neo-secondary' : 'bg-neo-accent'"
             :style="{ width: timerPercent + '%' }"
           />
         </div>
-        <span class="text-xs font-mono font-bold" :class="timerPercent > 50 ? 'text-emerald-400' : timerPercent > 25 ? 'text-amber-400' : 'text-rose-400'">
+        <span class="text-xs font-mono font-black text-neo-text">
           {{ gameState.timeRemaining }}s
         </span>
       </div>
@@ -63,52 +63,51 @@
     <!-- Main Content -->
     <div class="flex-grow flex flex-col items-center w-full max-w-2xl overflow-hidden">
       <!-- Game Over -->
-      <div v-if="gameOver" class="w-full h-full flex flex-col items-center justify-center space-y-6">
-        <div class="w-20 h-20 bg-amber-500/10 border border-amber-500/20 rounded-full flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-10 w-10 text-amber-500 dark:text-amber-400">
+
+      <div v-if="gameOver" class="w-full max-w-md bg-white dark:bg-neo-card-bg neo-border neo-shadow p-6 text-center space-y-6 flex flex-col items-center justify-center rounded-none text-neo-text my-6">
+        <div class="w-20 h-20 bg-neo-secondary border-4 border-black text-black flex items-center justify-center rounded-none">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-10 w-10 text-black">
             <path d="M17 3H21C21.5523 3 22 3.44772 22 4V9C22 10.375 21.0503 11.5283 19.7824 11.8541C19.1417 14.1266 17.2995 15.8924 15 16.6343V19H18V21H6V19H9V16.6343C6.70054 15.8924 4.85834 14.1266 4.21762 11.8541C2.94974 11.5283 2 10.375 2 9V4C2 3.44772 2.44772 3 3 3H7V1H17V3ZM15 3H9V15C9 16.6569 10.3431 18 12 18C13.6569 18 15 16.6569 15 15V3ZM4 5V9C4 9.38793 4.2125 9.7262 4.54291 9.89141L5 10.12V5H4ZM20 5H19V10.12L19.4571 9.89141C19.7875 9.7262 20 9.38793 20 9V5Z"/>
           </svg>
         </div>
         <div class="text-center">
-          <h2 class="text-2xl font-black text-gray-900 dark:text-white tracking-wide uppercase">Game Over</h2>
-          <p class="text-sm text-gray-500 dark:text-slate-400 mt-1">Final Scores</p>
+          <h2 class="text-2xl font-black text-neo-text tracking-wide uppercase">Game Over</h2>
+          <p class="text-sm text-neo-text/75 font-bold mt-1">Final Scores</p>
         </div>
         <div class="w-full max-w-xs space-y-2">
           <div
             v-for="(p, idx) in sortedPlayers"
             :key="p.player"
-            class="flex items-center justify-between px-4 py-3 rounded-xl border transition-all duration-300"
-            :class="idx === 0 ? 'bg-amber-50 dark:bg-amber-500/10 border-amber-300 dark:border-amber-500/30 text-amber-700 dark:text-amber-200' : 'bg-white dark:bg-slate-800/50 border-gray-200 dark:border-slate-700/50 text-gray-600 dark:text-slate-300'"
+            class="flex items-center justify-between px-4 py-3 rounded-none border-2 border-black font-bold uppercase tracking-wide transition-all duration-100"
+            :class="idx === 0 ? 'bg-neo-secondary text-black neo-shadow-sm' : 'bg-white dark:bg-neo-card-bg text-neo-text opacity-85'"
           >
             <div class="flex items-center space-x-2.5">
-              <span class="font-mono text-sm font-bold text-gray-400 dark:text-slate-500 w-4">#{{ idx + 1 }}</span>
-              <span class="w-2.5 h-2.5 rounded-full" :class="getDotClass(p.player)"></span>
-              <span class="font-bold text-sm">{{ p.name || playerLabel(p.player) }}</span>
+              <span class="font-mono text-sm font-black w-4 text-neo-text/50">#{{ idx + 1 }}</span>
+              <span class="w-2.5 h-2.5 rounded-full border border-black" :class="getDotClass(p.player)"></span>
+              <span class="font-bold text-sm text-neo-text">{{ p.name || playerLabel(p.player) }}</span>
             </div>
-            <span class="font-mono font-black text-sm">{{ gameState.scores?.[p.player] || 0 }} pts</span>
+            <span class="font-mono font-black text-sm text-neo-text">{{ gameState.scores?.[p.player] || 0 }} pts</span>
           </div>
         </div>
         <button
           @click="handlePlayAgain"
           :disabled="waiting"
-          class="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-600 text-white font-bold py-2.5 px-8 rounded-xl shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+          class="bg-neo-accent text-white font-black py-2.5 px-8 rounded-none transition-all duration-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 cursor-pointer neo-btn uppercase tracking-wider w-full"
         >
-          <span v-if="waiting">Waiting<WaitingIndicator /></span>
+          <span v-if="waiting" class="flex items-center gap-1.5 justify-center">Waiting<WaitingIndicator /></span>
           <span v-else>Play Again</span>
         </button>
       </div>
-
-      <!-- Active Round -->
       <template v-else>
         <!-- Word Choice (Drawer Only) -->
         <div v-if="amDrawer && gameState.phase === 'choosing'" class="w-full flex flex-col items-center space-y-4 py-4 flex-shrink-0">
-          <p class="text-sm text-gray-400">Choose a word to draw:</p>
+          <p class="text-sm text-neo-text/70 font-bold uppercase tracking-wide">Choose a word to draw:</p>
           <div class="flex flex-wrap gap-3 justify-center">
             <button
               v-for="(word, i) in gameState.wordChoices"
               :key="i"
               @click="chooseWord(i)"
-              class="px-6 py-3 bg-slate-800 hover:bg-slate-700 border border-slate-600 hover:border-indigo-500 rounded-xl text-white font-bold text-lg transition-all cursor-pointer active:scale-95"
+              class="px-6 py-3 bg-white dark:bg-neo-card-bg hover:bg-neo-secondary dark:hover:bg-neo-secondary border-2 border-black dark:border-white text-neo-text font-black text-lg rounded-none shadow-[4px_4px_0px_0px_#000000] dark:shadow-[4px_4px_0px_0px_#ffffff] transition-all cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
             >
               {{ word }}
             </button>
@@ -117,16 +116,16 @@
 
         <!-- Word Display -->
         <div v-if="gameState.drawerReady && gameState.phase === 'drawing'" class="w-full mb-2 flex-shrink-0">
-          <div class="bg-indigo-500/10 border border-indigo-500/30 rounded-xl px-4 py-2 text-center">
-            <span class="text-xs text-indigo-400 font-semibold uppercase tracking-wider">{{ amDrawer ? 'Your Word' : 'Word' }}</span>
-            <p class="text-xl font-mono font-black text-gray-900 dark:text-white mt-0.5 flex flex-wrap justify-center gap-x-0.5">
+          <div class="bg-white dark:bg-neo-card-bg text-neo-text neo-border-2 rounded-none px-4 py-2 text-center">
+            <span class="text-xs text-neo-accent font-black uppercase tracking-wider">{{ amDrawer ? 'Your Word' : 'Word' }}</span>
+            <p class="text-xl font-mono font-black mt-0.5 flex flex-wrap justify-center gap-x-0.5">
               <span v-for="(ch, i) in (amDrawer ? secretWord : gameState.currentWord)" :key="i" :class="ch === ' ' ? 'w-3' : ''">{{ ch }}</span>
             </p>
           </div>
         </div>
 
         <!-- Canvas -->
-        <div class="w-full flex-shrink-0 rounded-xl overflow-hidden border border-slate-700 bg-white mb-2 relative" :class="{ 'cursor-crosshair': amDrawer && gameState.drawerReady }">
+        <div class="w-full flex-shrink-0 rounded-none overflow-hidden border-4 border-black bg-white mb-2 relative" :class="{ 'cursor-crosshair': amDrawer && gameState.drawerReady }">
           <canvas
             ref="canvasRef"
             width="600"
@@ -154,36 +153,35 @@
           <div class="relative flex-shrink-0">
             <button
               @click="colorPickerOpen = !colorPickerOpen"
-              class="w-8 h-8 rounded-lg border-2 border-slate-600 hover:border-white transition-all cursor-pointer shadow-sm"
+              class="w-8 h-8 rounded-none border-2 border-black hover:border-neo-accent transition-colors cursor-pointer shadow-[2px_2px_0px_0px_var(--color-neo-shadow)]"
               :style="{ backgroundColor: eraserMode ? '#ffffff' : selectedColor }"
-              :class="{ 'ring-2 ring-blue-400': eraserMode }"
               title="Pick a color"
             />
-            <div v-if="colorPickerOpen" @click.stop class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-slate-800 border border-slate-600 rounded-xl p-3 shadow-xl z-10 min-w-[200px]">
+            <div v-if="colorPickerOpen" @click.stop class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white dark:bg-neo-card-bg border-2 border-black p-3 shadow-[4px_4px_0px_0px_var(--color-neo-shadow)] z-10 min-w-[200px]">
               <div class="flex flex-wrap gap-1.5 max-w-[200px]">
                 <button
                   v-for="c in colors"
                   :key="c"
                   @click="selectPaletteColor(c)"
-                  class="w-7 h-7 rounded-full border-2 transition-all cursor-pointer hover:scale-110"
-                  :class="selectedColor === c && !eraserMode ? 'border-white scale-110' : 'border-transparent'"
+                  class="w-7 h-7 rounded-none border-2 transition-all cursor-pointer hover:scale-110"
+                  :class="selectedColor === c && !eraserMode ? 'border-black dark:border-white scale-110 z-10' : 'border-black/20 dark:border-white/20'"
                   :style="{ backgroundColor: c }"
                 />
               </div>
-              <div v-if="recentColors.length" class="mt-2 pt-2 border-t border-slate-700">
-                <span class="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">Recent</span>
+              <div v-if="recentColors.length" class="mt-2 pt-2 border-t border-black">
+                <span class="text-[10px] text-neo-text/50 font-black uppercase tracking-wider">Recent</span>
                 <div class="flex flex-wrap gap-1.5 mt-1">
                   <button
                     v-for="c in recentColors"
                     :key="c"
                     @click="selectPaletteColor(c)"
-                    class="w-6 h-6 rounded-full border border-slate-600 transition-all cursor-pointer hover:scale-110"
+                    class="w-6 h-6 rounded-none border transition-all cursor-pointer hover:scale-110 border-black/20 dark:border-white/20"
                     :style="{ backgroundColor: c }"
                   />
                 </div>
               </div>
-              <div class="mt-2 pt-2 border-t border-slate-700 flex items-center gap-2">
-                <label class="relative w-8 h-8 rounded-lg border-2 border-slate-600 hover:border-white transition-all cursor-pointer overflow-hidden flex-shrink-0">
+              <div class="mt-2 pt-2 border-t border-black flex items-center gap-2">
+                <label class="relative w-8 h-8 rounded-none border-2 border-black hover:border-neo-accent transition-colors cursor-pointer overflow-hidden flex-shrink-0">
                   <input
                     type="color"
                     :value="selectedColor"
@@ -192,19 +190,19 @@
                   />
                   <div class="w-full h-full" :style="{ backgroundColor: selectedColor }" />
                 </label>
-                <span class="text-xs text-slate-400">Custom</span>
+                <span class="text-xs font-bold text-neo-text">Custom</span>
               </div>
             </div>
           </div>
 
-          <div class="w-px h-6 bg-slate-700 mx-1" />
+          <div class="w-px h-6 bg-black dark:bg-white mx-1 animate-pulse" />
 
           <!-- Mode Indicator -->
           <div class="flex items-center gap-1">
             <button
               @click="fillMode = false; eraserMode = false"
-              class="text-xs px-2.5 py-1.5 rounded-lg border transition-all cursor-pointer"
-              :class="!fillMode && !eraserMode ? 'bg-indigo-500 text-white border-indigo-400' : 'bg-slate-700 text-slate-300 border-slate-600 hover:bg-slate-600'"
+              class="text-xs px-2.5 py-1.5 rounded-none border-2 border-black font-black transition-all cursor-pointer"
+              :class="!fillMode && !eraserMode ? 'bg-neo-accent text-white' : 'bg-white dark:bg-neo-card-bg text-neo-text hover:bg-neo-secondary'"
               title="Brush"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -213,8 +211,8 @@
             </button>
             <button
               @click="fillMode = !fillMode; eraserMode = false"
-              class="text-xs px-2.5 py-1.5 rounded-lg border transition-all cursor-pointer"
-              :class="fillMode ? 'bg-indigo-500 text-white border-indigo-400' : 'bg-slate-700 text-slate-300 border-slate-600 hover:bg-slate-600'"
+              class="text-xs px-2.5 py-1.5 rounded-none border-2 border-black font-black transition-all cursor-pointer"
+              :class="fillMode ? 'bg-neo-accent text-white' : 'bg-white dark:bg-neo-card-bg text-neo-text hover:bg-neo-secondary'"
               title="Fill"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -223,8 +221,8 @@
             </button>
             <button
               @click="eraserMode = !eraserMode; fillMode = false"
-              class="text-xs px-2.5 py-1.5 rounded-lg border transition-all cursor-pointer"
-              :class="eraserMode ? 'bg-indigo-500 text-white border-indigo-400' : 'bg-slate-700 text-slate-300 border-slate-600 hover:bg-slate-600'"
+              class="text-xs px-2.5 py-1.5 rounded-none border-2 border-black font-black transition-all cursor-pointer"
+              :class="eraserMode ? 'bg-neo-accent text-white' : 'bg-white dark:bg-neo-card-bg text-neo-text hover:bg-neo-secondary'"
               title="Eraser"
             >
               <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -233,11 +231,11 @@
             </button>
           </div>
 
-          <div class="w-px h-6 bg-slate-700 mx-1" />
+          <div class="w-px h-6 bg-black dark:bg-white mx-1" />
 
           <!-- Brush Size Slider -->
           <div class="flex items-center gap-2">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-slate-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-neo-text/50 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="3" />
             </svg>
             <input
@@ -246,19 +244,19 @@
               max="40"
               :value="selectedSize"
               @input="selectedSize = parseInt(($event.target as HTMLInputElement).value)"
-              class="w-20 h-1.5 bg-slate-600 rounded-full appearance-none cursor-pointer accent-indigo-500"
+              class="w-20 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-none appearance-none cursor-pointer accent-neo-accent"
             />
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-slate-400 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-neo-text/50 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="10" />
             </svg>
-            <span class="text-xs font-mono text-slate-400 w-4 text-right">{{ selectedSize }}</span>
+            <span class="text-xs font-mono font-black text-neo-text w-4 text-right">{{ selectedSize }}</span>
           </div>
 
-          <div class="w-px h-6 bg-slate-700 mx-1" />
+          <div class="w-px h-6 bg-black dark:bg-white mx-1" />
 
           <button
             @click="clearCanvas"
-            class="text-xs text-slate-400 hover:text-white hover:bg-slate-700 px-3 py-1.5 rounded-lg transition-all cursor-pointer border border-slate-700"
+            class="text-xs text-neo-text hover:bg-neo-secondary px-3 py-1.5 rounded-none transition-all cursor-pointer border-2 border-black font-black bg-white dark:bg-neo-card-bg"
           >
             Clear All
           </button>
@@ -266,12 +264,12 @@
 
         <!-- Timer Expired / Reveal Phase -->
         <div v-if="gameState.phase === 'reveal'" class="flex-shrink-0 text-center py-2">
-          <p class="text-emerald-400 font-bold text-lg">The word was:</p>
-          <p class="text-2xl font-black text-gray-900 dark:text-white mt-1">{{ gameState.currentWord }}</p>
+          <p class="text-emerald-600 dark:text-emerald-400 font-black text-lg uppercase tracking-wide">The word was:</p>
+          <p class="text-2xl font-black mt-1 uppercase text-neo-text">{{ gameState.currentWord }}</p>
           <button
             v-if="amDrawer"
             @click="nextRound"
-            class="mt-2 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-bold py-2.5 px-8 rounded-xl shadow-md transition-all duration-200 cursor-pointer active:scale-95"
+            class="mt-2 bg-neo-accent text-white font-black py-2.5 px-8 rounded-none transition-all duration-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 cursor-pointer neo-btn uppercase tracking-wider border-2 border-black"
           >
             <span v-if="gameState.roundNumber >= gameState.totalRounds">See Results</span>
             <span v-else>Next Round</span>
@@ -284,13 +282,13 @@
             v-model="userGuess"
             type="text"
             placeholder="Type your guess..."
-            class="flex-grow bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+            class="flex-grow px-4 py-2.5 text-sm placeholder:text-neo-text/50 neo-input"
             @keyup.enter="submitGuess"
           />
           <button
             @click="submitGuess"
             :disabled="!userGuess.trim()"
-            class="bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 disabled:from-slate-700 disabled:to-slate-700 disabled:text-slate-500 text-white font-bold px-5 py-2.5 rounded-xl transition-all duration-150 cursor-pointer active:scale-95 disabled:cursor-not-allowed text-sm"
+            class="bg-neo-accent text-white font-black px-5 py-2.5 rounded-none transition-all duration-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 cursor-pointer neo-btn uppercase tracking-wider text-sm flex items-center justify-center border-2 border-black"
           >
             Guess
           </button>

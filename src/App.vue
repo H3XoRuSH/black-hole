@@ -1,5 +1,5 @@
 <template>
-  <div class="h-dvh md:h-screen bg-gray-100 dark:bg-slate-900 overflow-hidden flex flex-col min-h-0">
+  <div class="h-dvh md:h-screen bg-neo-bg bg-neo-grid text-neo-text overflow-hidden flex flex-col min-h-0 font-sans">
     <div v-if="isInitialLoading" class="flex-grow flex flex-col items-center justify-center select-none animate-[fade_0.3s_ease]">
       <div class="flex flex-col items-center space-y-4">
         <div class="relative w-36 h-36 flex items-center justify-center">

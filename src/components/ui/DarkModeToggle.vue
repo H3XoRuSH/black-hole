@@ -1,10 +1,7 @@
 <template>
   <button
     @click="toggle"
-    class="w-10 h-10 rounded-xl flex items-center justify-center border transition-transform duration-200 cursor-pointer active:scale-90 flex-shrink-0"
-    :class="isDark
-      ? 'bg-slate-800 border-slate-600 text-amber-400 hover:bg-slate-700'
-      : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'"
+    class="w-10 h-10 rounded-none flex items-center justify-center neo-btn bg-white dark:bg-neo-card-bg text-neo-text flex-shrink-0"
     :title="isDark ? 'Currently in dark mode' : 'Currently in light mode'"
     aria-label="Toggle dark mode"
   >

@@ -9,27 +9,21 @@
   >
     <div class="space-y-4">
       <!-- Search & Filter -->
-      <div class="sticky top-0 z-10 flex gap-2 mt-1" :class="theme === 'light' ? 'bg-white' : 'bg-slate-900'">
+      <div class="sticky top-0 z-10 flex gap-2 mt-1 bg-white dark:bg-neo-card-bg pb-2">
         <div class="relative flex-1">
-          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" :class="theme === 'light' ? 'text-gray-400' : 'text-slate-400'" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neo-text/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
           <input
             v-model="searchQuery"
             type="text"
             placeholder="Search rooms..."
-            class="w-full pl-10 pr-4 py-2.5 text-sm rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
-            :class="theme === 'light'
-              ? 'bg-white border border-gray-300 text-gray-900 placeholder-gray-400'
-              : 'bg-slate-800 border border-slate-700 text-white placeholder-slate-500'"
+            class="w-full pl-10 pr-4 py-2.5 text-sm neo-input rounded-none placeholder:text-neo-text/40"
           />
         </div>
         <select
           v-model="difficultyFilter"
-          class="shrink-0 text-sm rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
-          :class="theme === 'light'
-            ? 'bg-white border border-gray-300 text-gray-900'
-            : 'bg-slate-800 border border-slate-700 text-white'"
+          class="shrink-0 text-sm neo-input rounded-none px-3 py-2.5 cursor-pointer"
         >
           <option value="">All Difficulties</option>
           <option value="very-easy">Very Easy</option>
@@ -41,22 +35,17 @@
       </div>
 
       <!-- Room Grid -->
-      <div v-if="sortedRooms.length === 0" class="text-center py-12 text-sm" :class="theme === 'light' ? 'text-gray-500' : 'text-slate-400'">
+      <div v-if="sortedRooms.length === 0" class="text-center py-12 text-sm text-neo-text/60">
         No rooms match your search
       </div>
       <div v-else class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[460px] overflow-y-auto pr-1 custom-scroll">
+
         <button
           v-for="room in sortedRooms"
           :key="room.id"
           @click="selectRoom(room.id)"
-          class="group text-left rounded-xl border-2 transition-all duration-200 overflow-hidden focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
-          :class="[
-            room.id === selectedRoomId
-              ? 'border-indigo-500 shadow-lg shadow-indigo-500/20'
-              : theme === 'light'
-                ? 'border-gray-200 hover:border-gray-300 hover:shadow-md'
-                : 'border-slate-700 hover:border-slate-500 hover:shadow-md',
-          ]"
+          class="group text-left rounded-none neo-border bg-white dark:bg-neo-card-bg transition-all duration-100 focus:outline-none cursor-pointer p-0 text-neo-text"
+          :class="room.id === selectedRoomId ? 'bg-neo-secondary/30 neo-shadow' : 'hover:neo-shadow-sm'"
         >
           <!-- Theme Image -->
           <div
@@ -88,15 +77,15 @@
           <!-- Room Info -->
           <div class="p-3 space-y-2">
             <div class="flex items-center justify-between gap-2">
-              <h3 class="font-bold text-sm truncate" :class="theme === 'light' ? 'text-gray-900' : 'text-white'">{{ room.name }}</h3>
+              <h3 class="font-black text-sm uppercase tracking-wide truncate text-neo-text">{{ room.name }}</h3>
               <span
-                class="shrink-0 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md"
+                class="shrink-0 text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full"
                 :class="difficultyBadgeClass(room.difficulty)"
               >
                 {{ difficultyLabel(room.difficulty) }}
               </span>
             </div>
-            <p class="text-xs leading-relaxed line-clamp-2" :class="theme === 'light' ? 'text-gray-500' : 'text-slate-400'">{{ room.description }}</p>
+            <p class="text-xs leading-relaxed line-clamp-2 text-neo-text/80 font-bold">{{ room.description }}</p>
             <div :class="starColor(room.difficulty)" class="text-sm leading-none">
               {{ roomStars(room.difficulty) }}
             </div>
@@ -107,13 +96,10 @@
 
     <template #footer>
       <div class="flex items-center justify-between">
-        <span class="text-xs" :class="theme === 'light' ? 'text-gray-400' : 'text-slate-500'">{{ sortedRooms.length }} room{{ sortedRooms.length !== 1 ? 's' : '' }}</span>
+        <span class="text-xs font-bold text-neo-text/70">{{ sortedRooms.length }} room{{ sortedRooms.length !== 1 ? 's' : '' }}</span>
         <button
           @click="$emit('close')"
-          class="text-sm font-semibold px-5 py-2 rounded-xl transition-colors cursor-pointer"
-          :class="theme === 'light'
-            ? 'bg-gray-100 hover:bg-gray-200 text-gray-700'
-            : 'bg-slate-700 hover:bg-slate-600 text-white'"
+          class="text-sm font-black px-5 py-2 rounded-none transition-all duration-100 cursor-pointer bg-white dark:bg-neo-card-bg text-neo-text neo-btn uppercase tracking-wider"
         >
           Cancel
         </button>
@@ -201,43 +187,26 @@ export default defineComponent({
     };
 
     const starColor = (difficulty: string): string => {
-      const dark: Record<string, string> = {
-        'very-easy': 'text-emerald-400',
-        'easy': 'text-cyan-400',
-        'medium': 'text-amber-400',
-        'hard': 'text-rose-400',
-        'extreme': 'text-purple-400',
+      const colors: Record<string, string> = {
+        'very-easy': 'text-emerald-500 dark:text-emerald-400',
+        'easy': 'text-cyan-500 dark:text-cyan-400',
+        'medium': 'text-yellow-500 dark:text-yellow-400',
+        'hard': 'text-red-500 dark:text-red-400',
+        'extreme': 'text-purple-500 dark:text-purple-400',
       };
-      const light: Record<string, string> = {
-        'very-easy': 'text-emerald-600',
-        'easy': 'text-cyan-600',
-        'medium': 'text-amber-600',
-        'hard': 'text-rose-600',
-        'extreme': 'text-purple-600',
-      };
-      const map = props.theme === 'light' ? light : dark;
-      return map[difficulty] || (props.theme === 'light' ? 'text-gray-500' : 'text-gray-400');
+      return colors[difficulty] || 'text-neo-text';
     };
 
     const difficultyBadgeClass = (difficulty: string): string => {
-      const dark: Record<string, string> = {
-        'very-easy': 'bg-emerald-900/50 text-emerald-300',
-        'easy': 'bg-cyan-900/50 text-cyan-300',
-        'medium': 'bg-amber-900/50 text-amber-300',
-        'hard': 'bg-rose-900/50 text-rose-300',
-        'extreme': 'bg-purple-900/50 text-purple-300',
+      const badges: Record<string, string> = {
+        'very-easy': 'bg-emerald-500 text-black border-2 border-black font-black',
+        'easy': 'bg-cyan-400 text-black border-2 border-black font-black',
+        'medium': 'bg-yellow-400 text-black border-2 border-black font-black',
+        'hard': 'bg-red-400 text-white border-2 border-black font-black',
+        'extreme': 'bg-purple-500 text-white border-2 border-black font-black',
       };
-      const light: Record<string, string> = {
-        'very-easy': 'bg-emerald-100 text-emerald-700',
-        'easy': 'bg-cyan-100 text-cyan-700',
-        'medium': 'bg-amber-100 text-amber-700',
-        'hard': 'bg-rose-100 text-rose-700',
-        'extreme': 'bg-purple-100 text-purple-700',
-      };
-      const map = props.theme === 'light' ? light : dark;
-      return map[difficulty] || (props.theme === 'light' ? 'bg-gray-100 text-gray-700' : 'bg-slate-700 text-slate-300');
+      return badges[difficulty] || 'bg-gray-500 text-white border-2 border-black font-black';
     };
-
     const roomStars = (difficulty: string): string => {
       const count: Record<string, number> = {
         'very-easy': 1,
@@ -283,24 +252,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped>
-.custom-scroll::-webkit-scrollbar {
-  width: 6px;
-}
-.custom-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-.custom-scroll::-webkit-scrollbar-thumb {
-  background: rgb(100 116 139 / 0.3);
-  border-radius: 999px;
-}
-.custom-scroll::-webkit-scrollbar-thumb:hover {
-  background: rgb(100 116 139 / 0.5);
-}
-@media (hover: none) and (pointer: coarse) {
-  .custom-scroll {
-    scrollbar-width: none;
-  }
-}
-</style>

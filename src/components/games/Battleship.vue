@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isValidGame" class="flex-grow flex flex-col items-center justify-between h-full p-3 sm:p-4 select-none bg-gray-100 dark:bg-slate-900 text-gray-800 dark:text-gray-200">
+  <div v-if="isValidGame" class="flex-grow flex flex-col items-center justify-between h-full p-2 sm:p-3 select-none text-neo-text bg-transparent">
     <!-- Tactical Command Header -->
     <GameHeader
       title="Battleship"
@@ -15,7 +15,7 @@
 
     <!-- Game Log Alert Area -->
     <div class="w-full max-w-lg mt-1 flex-shrink-0 text-center">
-      <div v-if="gameState.lastShotResult" class="inline-block bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-full px-4 py-1.5 text-xs font-mono shadow-sm">
+      <div v-if="gameState.lastShotResult" class="inline-block bg-white dark:bg-neo-card-bg text-neo-text neo-border-2 px-4 py-1.5 text-xs font-mono shadow-[2px_2px_0px_0px_var(--color-neo-shadow)] rounded-none">
         <span class="text-gray-400">SALVO RADAR:</span>
         <span :class="gameState.lastShotResult.player === 1 ? 'text-blue-600' : 'text-rose-600'" class="font-bold ml-1">
           P{{ gameState.lastShotResult.player }}
@@ -37,18 +37,18 @@
     <div class="flex-grow flex flex-col items-center justify-center py-2 w-full min-h-0 overflow-hidden">
       <!-- 1. FLEET PLACEMENT PHASE -->
       <div v-if="gameState.phase === 'placement'" class="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-6 w-full h-full max-w-5xl min-h-0 overflow-hidden p-2">
-        <div v-if="hasPlaced" class="flex flex-col items-center justify-center p-8 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-2xl max-w-md text-center shadow-md">
+        <div v-if="hasPlaced" class="flex flex-col items-center justify-center p-8 bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow-sm max-w-md text-center rounded-none">
           <svg class="w-16 h-16 text-emerald-500 mb-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
           </svg>
-          <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">Fleet Deployed</h2>
-          <p class="text-sm text-gray-500 dark:text-gray-400 flex items-center justify-center">Waiting for the enemy commander to finish positioning their ships<WaitingIndicator /></p>
+          <h2 class="text-xl font-black uppercase text-neo-text mb-2">Fleet Deployed</h2>
+          <p class="text-sm font-bold text-neo-text/70 flex items-center justify-center">Waiting for the enemy commander to finish positioning their ships<WaitingIndicator /></p>
         </div>
 
         <template v-else>
           <!-- Grid Area -->
-          <div class="bg-slate-950 border border-slate-900 p-3 rounded-2xl shadow-lg flex flex-col items-center flex-shrink-0">
-            <h3 class="text-xs font-mono font-bold tracking-widest text-slate-400 mb-2">POSITIONING GRID</h3>
+          <div class="bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow p-3 rounded-none flex flex-col items-center flex-shrink-0">
+            <h3 class="text-xs font-mono font-black tracking-widest text-neo-text/70 mb-2">POSITIONING GRID</h3>
             <div class="grid grid-cols-7 gap-0.5 text-center font-mono text-[9px] sm:text-xs">
               <div class="w-7 h-7 xs:w-8 xs:h-8 sm:w-9 sm:h-9 flex items-center justify-center text-slate-600"></div>
               <div v-for="col in 6" :key="`h-col-${col}`" class="w-7 h-7 xs:w-8 xs:h-8 sm:w-9 sm:h-9 flex items-center justify-center text-slate-500 font-bold">
@@ -72,15 +72,15 @@
           </div>
 
           <!-- Placement Controls Panel -->
-          <div class="bg-slate-950 border border-slate-900 p-3 sm:p-5 rounded-2xl shadow-lg w-full max-w-xs sm:max-w-sm flex flex-col">
-            <h3 class="text-sm sm:text-md font-bold tracking-wide mb-1.5 sm:mb-3 text-cyan-400 hidden sm:block">TAC-COM FLEET SETUP</h3>
-            <p class="hidden sm:block text-xs text-slate-400 mb-3 sm:mb-4">Select a ship and click the grid to place it. Press spacebar or toggle orientation to rotate.</p>
+          <div class="bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow p-3 sm:p-5 rounded-none w-full max-w-xs sm:max-w-sm flex flex-col">
+            <h3 class="text-sm sm:text-md font-black tracking-wide mb-1.5 sm:mb-3 text-neo-accent hidden sm:block">TAC-COM FLEET SETUP</h3>
+            <p class="hidden sm:block text-xs font-bold text-neo-text/60 mb-3 sm:mb-4">Select a ship and click the grid to place it. Press spacebar or toggle orientation to rotate.</p>
 
-            <div class="flex items-center justify-between mb-2 sm:mb-3 bg-slate-900 p-1.5 sm:p-2 rounded-xl border border-slate-800">
-              <span class="text-xs font-semibold text-slate-300">Orientation</span>
+            <div class="flex items-center justify-between mb-2 sm:mb-3 bg-neo-bg p-1.5 sm:p-2 rounded-none border-2 border-black">
+              <span class="text-xs font-black text-neo-text">Orientation</span>
               <button
                 @click="placementOrientation = placementOrientation === 'H' ? 'V' : 'H'"
-                class="bg-cyan-600 hover:bg-cyan-500 text-white font-bold py-1 px-3 rounded-lg text-xs tracking-wider transition-all duration-150 cursor-pointer"
+                class="bg-neo-accent text-white font-black py-1 px-3 rounded-none text-xs tracking-wider cursor-pointer border-2 border-black active:translate-x-[1px] active:translate-y-[1px]"
               >
                 {{ placementOrientation === 'H' ? 'HORIZONTAL' : 'VERTICAL' }}
               </button>
@@ -93,19 +93,19 @@
                 :key="ship.name"
                 @click="selectShip(idx)"
                 :class="[
-                  ship.placed ? 'border-emerald-500/40 bg-emerald-950/10 text-emerald-400' : (selectedShipIndex === idx ? 'border-cyan-500 bg-cyan-950/20 text-cyan-400 font-bold' : 'border-slate-800 bg-slate-900/40 text-slate-300'),
-                  'flex flex-col sm:flex-row items-center justify-between p-1.5 sm:p-2 rounded-xl border cursor-pointer hover:border-cyan-500/50 transition-all duration-150 flex-1 min-w-[75px] sm:min-w-[90px] text-center sm:text-left'
+                  ship.placed ? 'border-emerald-500 bg-emerald-500/10 text-emerald-600 font-bold' : (selectedShipIndex === idx ? 'border-black bg-neo-secondary/30 text-neo-text font-black' : 'border-black bg-white dark:bg-neo-card-bg text-neo-text/70'),
+                  'flex flex-col sm:flex-row items-center justify-between p-1.5 sm:p-2 rounded-none border-2 cursor-pointer hover:border-neo-accent transition-colors duration-100 flex-1 min-w-[75px] sm:min-w-[90px] text-center sm:text-left'
                 ]"
               >
                 <div class="flex flex-col sm:flex-row sm:items-center sm:space-x-2.5">
-                  <span class="text-[10px] sm:text-xs font-semibold">{{ ship.name }}</span>
-                  <span class="text-[8px] sm:text-[9px] font-mono bg-slate-800 px-1 sm:px-1.5 py-0.5 rounded text-slate-400">Size: {{ ship.size }}</span>
+                  <span class="text-[10px] sm:text-xs font-bold">{{ ship.name }}</span>
+                  <span class="text-[8px] sm:text-[9px] font-mono bg-neo-bg px-1 sm:px-1.5 py-0.5 border border-black text-neo-text">Size: {{ ship.size }}</span>
                 </div>
                 <div class="flex items-center space-x-1.5 mt-1 sm:mt-0">
-                  <span v-if="ship.placed" class="text-emerald-400 text-[9px] sm:text-[10px] flex items-center">
+                  <span v-if="ship.placed" class="text-emerald-500 text-[9px] sm:text-[10px] flex items-center font-bold">
                     Ready
                   </span>
-                  <button v-if="ship.placed" @click.stop="removeShip(idx)" class="text-rose-400 hover:text-rose-500 text-[8px] sm:text-[9px] uppercase font-bold tracking-wider px-1">
+                  <button v-if="ship.placed" @click.stop="removeShip(idx)" class="text-rose-600 hover:text-rose-700 text-[8px] sm:text-[9px] uppercase font-black tracking-wider px-1">
                     Clear
                   </button>
                 </div>
@@ -114,13 +114,13 @@
 
             <!-- Placement Action Buttons -->
             <div class="flex gap-2">
-              <button @click="resetFleet" class="flex-1 border border-slate-700 hover:bg-slate-900 text-slate-300 text-xs font-bold py-1.5 sm:py-2 rounded-xl transition-all duration-150 cursor-pointer">
+              <button @click="resetFleet" class="flex-1 border-2 border-black bg-white dark:bg-neo-card-bg hover:bg-neo-secondary/30 text-neo-text text-xs font-black py-1.5 sm:py-2 rounded-none transition-colors duration-100 cursor-pointer shadow-[2px_2px_0px_0px_var(--color-neo-shadow)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none">
                 Reset All
               </button>
               <button
                 @click="confirmFleet"
                 :disabled="!isFleetReady"
-                class="flex-1 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 disabled:from-slate-800 disabled:to-slate-800 text-white text-xs font-bold py-1.5 sm:py-2 rounded-xl shadow-lg transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                class="flex-1 bg-neo-accent text-white text-xs font-black py-1.5 sm:py-2 rounded-none shadow-[2px_2px_0px_0px_var(--color-neo-shadow)] transition-colors duration-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 cursor-pointer border-2 border-black"
               >
                 Deploy Fleet
               </button>
@@ -153,12 +153,11 @@
           <!-- TARGET BOARD (SHOTS GRID) -->
           <div
             v-show="activeMobileTab === 'target' || !isMobile"
-            class="bg-slate-950 border p-3 rounded-2xl shadow-lg flex flex-col items-center flex-shrink-0 transition-colors duration-300"
-            :class="isMyTurn() && !gameOver ? 'border-cyan-500/50 shadow-[0_0_12px_rgba(6,182,212,0.2)]' : 'border-slate-900'"
+            class="bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow p-3 rounded-none flex flex-col items-center flex-shrink-0"
           >
             <div class="flex items-center space-x-1.5 mb-2">
-              <div class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse"></div>
-              <h3 class="text-xs font-mono font-bold tracking-widest text-rose-400">FIRE CONTROL RADAR</h3>
+              <div class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse border border-black"></div>
+              <h3 class="text-xs font-mono font-black tracking-widest text-rose-500 dark:text-rose-400">FIRE CONTROL RADAR</h3>
             </div>
 
             <div class="grid grid-cols-7 gap-0.5 text-center font-mono text-[9px] sm:text-xs">
@@ -187,11 +186,11 @@
           <!-- MY FLEET BOARD -->
           <div
             v-show="activeMobileTab === 'fleet' || !isMobile"
-            class="bg-slate-950 border border-slate-900 p-3 rounded-2xl shadow-lg flex flex-col items-center flex-shrink-0"
+            class="bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow p-3 rounded-none flex flex-col items-center flex-shrink-0"
           >
             <div class="flex items-center space-x-1.5 mb-2">
-              <div class="w-2.5 h-2.5 rounded-full bg-cyan-500"></div>
-              <h3 class="text-xs font-mono font-bold tracking-widest text-cyan-400">DEFENSIVE RADAR</h3>
+              <div class="w-2.5 h-2.5 rounded-full bg-blue-500 border border-black"></div>
+              <h3 class="text-xs font-mono font-black tracking-widest text-blue-500 dark:text-blue-400">DEFENSIVE RADAR</h3>
             </div>
 
             <div class="grid grid-cols-7 gap-0.5 text-center font-mono text-[9px] sm:text-xs">
@@ -225,9 +224,9 @@
         v-if="gameOver"
         @click="newGame"
         :disabled="ready"
-        class="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+        class="bg-neo-accent text-white font-black py-2.5 px-6 rounded-none transition-all duration-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 cursor-pointer neo-btn uppercase tracking-wider"
       >
-        <span v-if="ready">Waiting for opponent<WaitingIndicator /></span>
+        <span v-if="ready" class="flex items-center gap-1.5 justify-center">Waiting for opponent<WaitingIndicator /></span>
         <span v-else>Play Again</span>
       </button>
     </div>
@@ -496,17 +495,17 @@ export default defineComponent({
       );
 
       if (isOccupied) {
-        return 'bg-cyan-700/80 border-cyan-500 shadow-[0_0_8px_rgba(6,182,212,0.3)]';
+        return 'bg-blue-500 dark:bg-blue-600 neo-border-2';
       }
 
       if (isHovered) {
         const isValid = this.isValidPlacement(this.hoverCoords);
         return isValid
-          ? 'bg-emerald-500/40 border-emerald-400'
-          : 'bg-rose-500/40 border-rose-400';
+          ? 'bg-emerald-500/30 border-2 border-emerald-500'
+          : 'bg-rose-500/30 border-2 border-rose-500';
       }
 
-      return 'bg-slate-950/40 border-slate-800 hover:border-slate-700 hover:bg-slate-900/30';
+      return 'bg-white dark:bg-neo-card-bg border border-neo-border/20 hover:border-neo-border/50 hover:bg-neo-secondary/20';
     },
     // PLAY PHASE METHODS
     hasShot(row: number, col: number): boolean {
@@ -533,10 +532,10 @@ export default defineComponent({
       const shot = this.hasShot(row, col);
       if (shot) {
         const base = this.isHit(row, col)
-          ? 'bg-rose-950/40 border-rose-700 shadow-[inset_0_0_12px_rgba(244,63,94,0.4)]'
-          : 'bg-slate-900/30 border-slate-800';
+          ? 'bg-rose-500 dark:bg-rose-600 neo-border-2'
+          : 'bg-slate-200 dark:bg-slate-800 neo-border-2';
         const lastHit = this.gameState.lastShotResult?.row === row && this.gameState.lastShotResult?.col === col;
-        return base + (lastHit ? ' ring-2 ring-yellow-300/80' : '');
+        return base + (lastHit ? ' ring-4 ring-yellow-400 dark:ring-yellow-300 ring-offset-2 dark:ring-offset-neo-card-bg z-10' : '');
       }
 
       // If game is over, reveal opponent's unhit ships
@@ -546,14 +545,14 @@ export default defineComponent({
           s.coordinates.some(([sr, sc]) => sr === row && sc === col)
         );
         if (isShip) {
-          return 'bg-cyan-950/40 border border-dashed border-cyan-500/60 shadow-[inset_0_0_6px_rgba(6,182,212,0.2)]';
+          return 'bg-rose-500/20 border-2 border-rose-500 border-dashed';
         }
       }
 
       if (this.isMyTurn() && !this.gameOver) {
-        return 'bg-slate-950/40 border-slate-800/80 hover:bg-slate-900/60 hover:border-cyan-500/80';
+        return 'bg-white dark:bg-neo-card-bg border-2 border-neo-border/20 hover:bg-neo-secondary/30 hover:border-neo-border';
       }
-      return 'bg-slate-950/40 border-slate-800/60 cursor-not-allowed';
+      return 'bg-white dark:bg-neo-card-bg border-2 border-neo-border/10 cursor-not-allowed';
     },
     getMyFleetCellClass(row: number, col: number): string {
       const ownShips = this.player === 1 ? this.gameState.p1Ships : this.gameState.p2Ships;
@@ -562,20 +561,20 @@ export default defineComponent({
       );
       const enemyShot = this.hasEnemyShot(row, col);
       const lastHit = this.gameState.lastShotResult?.row === row && this.gameState.lastShotResult?.col === col;
-      const ring = lastHit ? ' ring-2 ring-yellow-300/80' : '';
+      const ring = lastHit ? ' ring-4 ring-yellow-400 dark:ring-yellow-300 ring-offset-2 dark:ring-offset-neo-card-bg z-10' : '';
 
       if (isShip) {
         const base = enemyShot
-          ? 'bg-rose-950 border-rose-600 shadow-[0_0_10px_rgba(239,68,68,0.5)] animate-pulse'
-          : 'bg-cyan-700/60 border-cyan-500 shadow-[0_0_6px_rgba(6,182,212,0.2)]';
+          ? 'bg-rose-500 dark:bg-rose-600 neo-border-2 animate-pulse'
+          : 'bg-blue-500 dark:bg-blue-600 neo-border-2';
         return base + ring;
       }
 
       if (enemyShot) {
-        return 'bg-slate-900 border-slate-800' + ring;
+        return 'bg-slate-200 dark:bg-slate-800 border-2 border-neo-border' + ring;
       }
 
-      return 'bg-slate-950/30 border-slate-800/60';
+      return 'bg-white dark:bg-neo-card-bg border-2 border-neo-border/20';
     },
   },
 });

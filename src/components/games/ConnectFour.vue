@@ -18,9 +18,9 @@
 
     <!-- Connect Four Board -->
     <div class="flex-grow flex items-center justify-center py-2 sm:py-4 w-full">
-      <!-- Grid wrapper with clean dark plastic container look -->
+      <!-- Grid wrapper with neo-brutalist container -->
       <div
-        class="bg-slate-900 border border-slate-800 p-2 sm:p-4 rounded-2xl shadow-xl w-full max-w-[260px] xs:max-w-[320px] sm:max-w-[430px] md:max-w-[480px]"
+        class="bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow p-2 sm:p-4 rounded-none w-full max-w-[260px] xs:max-w-[320px] sm:max-w-[430px] md:max-w-[480px]"
       >
         <!-- Columns Grid -->
         <div class="grid grid-cols-7 gap-1 sm:gap-3">
@@ -28,7 +28,7 @@
           <div
             v-for="colIndex in 7"
             :key="`col-${colIndex - 1}`"
-            class="flex flex-col space-y-1.5 sm:space-y-3 cursor-pointer group rounded-lg p-1 hover:bg-slate-800/50 transition-colors duration-150 relative"
+            class="flex flex-col space-y-1.5 sm:space-y-3 cursor-pointer group rounded-none p-1 hover:bg-neo-secondary/20 dark:hover:bg-neo-secondary/10 transition-colors duration-100 relative"
             @click="makeMove(colIndex - 1)"
           >
             <!-- Preview slot at the top (desktop hover, mobile always shows) -->
@@ -37,8 +37,8 @@
             >
               <div
                 v-if="canPlayColumn(colIndex - 1)"
-                class="w-8 h-8 rounded-full shadow-inner animate-bounce opacity-50"
-                :class="player === 1 ? 'bg-blue-400' : 'bg-red-400'"
+                class="w-8 h-8 rounded-full animate-bounce opacity-60 neo-border-2"
+                :class="player === 1 ? 'bg-blue-500' : 'bg-rose-500'"
               ></div>
             </div>
 
@@ -46,18 +46,14 @@
             <div
               v-for="rowIndex in 6"
               :key="`cell-${rowIndex - 1}-${colIndex - 1}`"
-              class="aspect-square rounded-full flex items-center justify-center relative overflow-hidden bg-slate-950 shadow-[inset_0_4px_6px_rgba(0,0,0,0.6)]"
+              class="aspect-square rounded-full flex items-center justify-center relative overflow-hidden bg-neo-bg neo-border-2"
             >
               <!-- Placed Disc -->
               <div
                 v-if="gameState.board[rowIndex - 1][colIndex - 1]"
-                class="w-[90%] h-[90%] rounded-full shadow-md transform transition-all duration-300 scale-100"
+                class="w-[92%] h-[92%] rounded-full z-10"
                 :class="[getDiscClass(rowIndex - 1, colIndex - 1), lastMoveClass(rowIndex - 1, colIndex - 1)]"
               >
-                <!-- Inner detailing for realistic shiny disc look -->
-                <div
-                  class="w-full h-full rounded-full border-2 border-white/20 bg-gradient-to-tr from-black/20 via-transparent to-white/40"
-                ></div>
               </div>
             </div>
           </div>
@@ -71,9 +67,9 @@
         v-if="gameOver"
         @click="newGame"
         :disabled="ready"
-        class="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="bg-neo-accent text-white font-black py-2.5 px-6 rounded-none transition-all duration-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 cursor-pointer neo-btn uppercase tracking-wider"
       >
-        <span v-if="ready">Waiting for opponent<WaitingIndicator /></span>
+        <span v-if="ready" class="flex items-center gap-1.5 justify-center">Waiting for opponent<WaitingIndicator /></span>
         <span v-else>Play Again</span>
       </button>
     </div>
@@ -189,15 +185,15 @@ export default defineComponent({
       if (!this.gameState.board) return '';
       const disc = this.gameState.board[row][col];
       if (disc === 1)
-        return 'bg-gradient-to-tr from-blue-600 via-blue-500 to-cyan-400 border-blue-400 shadow-[0_0_10px_rgba(59,130,246,0.55)]';
+        return 'bg-blue-500 dark:bg-blue-600 neo-border-2';
       if (disc === 2)
-        return 'bg-gradient-to-tr from-red-600 via-red-500 to-rose-400 border-red-400 shadow-[0_0_10px_rgba(239,68,68,0.55)]';
+        return 'bg-rose-500 dark:bg-rose-600 neo-border-2';
       return '';
     },
     lastMoveClass(row: number, col: number) {
       if (!this.gameState.lastMove) return '';
       return this.gameState.lastMove.row === row && this.gameState.lastMove.col === col
-        ? 'ring-2 ring-yellow-300/80 ring-inset'
+        ? 'ring-4 ring-yellow-400 dark:ring-yellow-300 ring-offset-2 dark:ring-offset-neo-card-bg'
         : '';
     },
   },

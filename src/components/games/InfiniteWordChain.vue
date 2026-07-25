@@ -41,42 +41,42 @@
 
       <div v-else class="w-full">
         <!-- First Word -->
-        <div class="w-full bg-slate-900 border border-slate-800 rounded-2xl shadow-xl p-4 sm:p-6 mb-4">
-          <p class="text-xs text-gray-500 font-bold uppercase tracking-wider text-center mb-2">Phrase</p>
-          <p class="text-2xl sm:text-3xl font-bold text-white text-center">
+        <div class="w-full bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow p-4 sm:p-6 mb-4 rounded-none">
+          <p class="text-xs text-neo-text/60 font-black uppercase tracking-wider text-center mb-2">Phrase</p>
+          <p class="text-2xl sm:text-3xl font-black text-center">
             {{ gameState.currentWord }}
           </p>
         </div>
 
         <!-- Second Word (with blanks) -->
-        <div class="w-full bg-slate-900 border border-slate-800 rounded-2xl shadow-xl p-4 sm:p-6 mb-4">
-          <p class="text-xs text-gray-500 font-bold uppercase tracking-wider text-center mb-2">Guess the missing word</p>
+        <div class="w-full bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow p-4 sm:p-6 mb-4 rounded-none">
+          <p class="text-xs text-neo-text/60 font-black uppercase tracking-wider text-center mb-2">Guess the missing word</p>
           <div class="text-center">
             <div class="inline-flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1">
               <span
                 v-for="(ch, idx) in displayChars"
                 :key="idx"
                 class="font-mono text-lg sm:text-xl font-black tracking-widest"
-                :class="ch === '_' ? 'text-slate-600' : 'text-emerald-400'"
+                :class="ch === '_' ? 'text-neo-text/40' : 'text-emerald-600 dark:text-emerald-400'"
               >{{ ch }}</span>
             </div>
           </div>
-          <div v-if="gameState.revealIndex > 0" class="text-center text-xs text-gray-500 mt-2 font-mono">
+          <div v-if="gameState.revealIndex > 0" class="text-center text-xs text-neo-text/50 mt-2 font-mono font-bold">
             {{ gameState.revealIndex }} wrong guess{{ gameState.revealIndex !== 1 ? 'es' : '' }}
           </div>
         </div>
 
         <!-- Input Area -->
         <div v-if="!gameOver" class="w-full space-y-3">
-          <p class="text-xs text-gray-500 text-center">
-            What word completes "<strong class="text-indigo-400">{{ gameState.currentWord }} _____</strong>"?
+          <p class="text-xs text-neo-text/70 text-center font-bold uppercase tracking-wide">
+            What word completes "<strong class="text-neo-accent">{{ gameState.currentWord }} _____</strong>"?
           </p>
           <div class="flex items-center space-x-2">
             <input
               v-model="playerGuess"
               type="text"
               placeholder="Type your guess..."
-              class="flex-grow bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+              class="flex-grow px-4 py-3 text-sm placeholder:text-neo-text/50 neo-input"
               @keyup.enter="submitGuess"
               :disabled="submitting"
               data-guess-input
@@ -85,7 +85,7 @@
             <button
               @click="submitGuess"
               :disabled="submitting || !playerGuess.trim()"
-              class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 disabled:from-slate-700 disabled:to-slate-700 disabled:text-slate-500 text-white font-bold px-6 py-3 rounded-xl transition-all duration-150 cursor-pointer active:scale-95 disabled:cursor-not-allowed text-sm"
+              class="bg-neo-accent text-white font-black px-6 py-3 rounded-none transition-all duration-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 cursor-pointer neo-btn uppercase tracking-wider text-sm flex items-center justify-center min-w-[90px] border-2 border-black"
             >
               <span v-if="submitting" class="inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
               <span v-else>Guess</span>
@@ -93,7 +93,7 @@
           </div>
           <button
             @click="finishGame"
-            class="w-full text-xs font-semibold text-white bg-rose-600 hover:bg-rose-700 py-2 rounded-lg transition-all cursor-pointer"
+            class="w-full text-xs font-black text-white bg-rose-600 hover:bg-rose-700 py-2 rounded-none transition-all cursor-pointer neo-btn uppercase tracking-wider border-2 border-black"
           >
             Finish Game
           </button>
@@ -116,30 +116,30 @@
       @close="() => {}"
     >
       <div class="flex flex-col items-center">
-        <p class="text-lg font-bold text-violet-400 mb-4">{{ gameState.winner }}</p>
+        <p class="text-lg font-black uppercase tracking-wider text-neo-accent mb-4">{{ gameState.winner }}</p>
 
-        <div class="w-full bg-slate-800/50 border border-slate-700 rounded-xl p-4 mb-4">
-          <p class="text-xs text-gray-500 font-bold uppercase tracking-wider text-center mb-3">Recap</p>
-          <div class="space-y-2 text-sm">
+        <div class="w-full bg-white dark:bg-neo-card-bg text-neo-text neo-border-2 rounded-none p-4 mb-4">
+          <p class="text-xs text-neo-text/70 font-black uppercase tracking-wider text-center mb-3">Recap</p>
+          <div class="space-y-2 text-sm font-bold uppercase tracking-wide">
             <div class="flex justify-between">
-              <span class="text-gray-400">Pairs completed</span>
-              <span class="text-white font-bold">{{ gameState.score || 0 }}</span>
+              <span class="text-neo-text/60">Pairs completed</span>
+              <span class="font-black">{{ gameState.score || 0 }}</span>
             </div>
             <div class="flex justify-between">
-              <span class="text-gray-400">Mistakes</span>
-              <span class="text-rose-400 font-bold">{{ gameState.mistakes || 0 }}</span>
+              <span class="text-neo-text/60">Mistakes</span>
+              <span class="text-neo-accent font-black">{{ gameState.mistakes || 0 }}</span>
             </div>
           </div>
         </div>
 
-        <div v-if="solvedPairs.length > 0" class="w-full bg-slate-800/50 border border-slate-700 rounded-xl p-4 mb-4 max-h-32 overflow-y-auto">
-          <p class="text-xs text-gray-500 font-bold uppercase tracking-wider text-center mb-3">Your Chain</p>
+        <div v-if="solvedPairs.length > 0" class="w-full bg-white dark:bg-neo-card-bg text-neo-text neo-border-2 rounded-none p-4 mb-4 max-h-32 overflow-y-auto">
+          <p class="text-xs text-neo-text/70 font-black uppercase tracking-wider text-center mb-3">Your Chain</p>
           <div class="flex flex-wrap gap-1.5 justify-center">
             <span
               v-for="(word, idx) in solvedPairs"
               :key="idx"
-              class="text-xs font-mono px-2 py-0.5 rounded"
-              :class="idx % 2 === 0 ? 'bg-indigo-500/20 text-indigo-300' : 'bg-emerald-500/20 text-emerald-300'"
+              class="text-xs font-mono px-2 py-0.5 border-2 border-black dark:border-white font-bold"
+              :class="idx % 2 === 0 ? 'bg-neo-secondary text-black' : 'bg-neo-accent text-white'"
             >
               {{ word }}
             </span>
@@ -150,13 +150,13 @@
           <button
             @click="handlePlayAgain"
             :disabled="waiting"
-            class="w-full bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-600 text-white font-bold py-2.5 px-8 rounded-xl shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="w-full bg-neo-accent text-white font-black py-2.5 px-8 rounded-none transition-all duration-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 cursor-pointer neo-btn uppercase tracking-wider"
           >
-            <span v-if="waiting">Waiting<WaitingIndicator /></span>
+            <span v-if="waiting" class="flex items-center gap-1.5 justify-center">Waiting<WaitingIndicator /></span>
             <span v-else>Play Again</span>
           </button>
           <router-link to="/menu"
-            class="w-full block text-center bg-slate-800 hover:bg-slate-700 text-gray-300 font-bold py-2.5 px-8 rounded-xl transition-all duration-200"
+            class="w-full block text-center bg-white dark:bg-neo-card-bg text-neo-text font-black py-2.5 px-8 rounded-none transition-all duration-100 cursor-pointer neo-btn uppercase tracking-wider"
           >
             Main Menu
           </router-link>

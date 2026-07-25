@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700;900&display=block');
 @import 'tailwindcss';
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -15,11 +16,117 @@
   --color-game-infinite-word-chain: #ec4899;
   --color-game-bingo: #0891b2;
 
-  /* Surface tokens */
-  --color-surface: #ffffff;
-  --color-surface-secondary: #f9fafb;
-  --color-surface-dark: #0f172a;
-  --color-surface-dark-secondary: #1e293b;
+  /* Neo-brutalist dynamic tokens linked to CSS variables */
+  --color-neo-bg: var(--neo-bg);
+  --color-neo-card-bg: var(--neo-card-bg);
+  --color-neo-border: var(--neo-border);
+  --color-neo-shadow: var(--neo-shadow);
+  --color-neo-text: var(--neo-text);
+
+  /* Shared high-saturation Pop Accents */
+  --color-neo-accent: #FF6B6B;
+  --color-neo-secondary: #FFD93D;
+  --color-neo-muted: #C4B5FD;
+
+  /* Override standard sans font with Space Grotesk */
+  --font-sans: 'Space Grotesk', sans-serif;
+}
+
+/* Theme variable declarations */
+:root {
+  --neo-bg: #FFFDF5;
+  --neo-card-bg: #FFFFFF;
+  --neo-border: #000000;
+  --neo-shadow: #000000;
+  --neo-text: #000000;
+}
+
+.dark {
+  --neo-bg: #121212;
+  --neo-card-bg: #1E1E1E;
+  --neo-border: #FFFFFF;
+  --neo-shadow: #FFFFFF;
+  --neo-text: #FFFFFF;
+}
+
+/* Borders */
+@utility neo-border {
+  border: 4px solid var(--color-neo-border);
+}
+@utility neo-border-2 {
+  border: 2px solid var(--color-neo-border);
+}
+@utility neo-border-8 {
+  border: 8px solid var(--color-neo-border);
+}
+
+/* Offset Hard Shadows (Zero blur, zero spread) */
+@utility neo-shadow-sm {
+  box-shadow: 4px 4px 0px 0px var(--color-neo-shadow);
+}
+@utility neo-shadow {
+  box-shadow: 8px 8px 0px 0px var(--color-neo-shadow);
+}
+@utility neo-shadow-lg {
+  box-shadow: 12px 12px 0px 0px var(--color-neo-shadow);
+}
+@utility neo-shadow-xl {
+  box-shadow: 16px 16px 0px 0px var(--color-neo-shadow);
+}
+
+/* Buttons with tactile press effect */
+@utility neo-btn {
+  border: 4px solid var(--color-neo-border);
+  box-shadow: 4px 4px 0px 0px var(--color-neo-shadow);
+  transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
+  cursor: pointer;
+
+  &:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0px 0px 0px 0px var(--color-neo-shadow);
+  }
+}
+
+/* Hover lift effect for cards */
+@utility neo-card-lift {
+  transition: transform 0.15s ease-out, box-shadow 0.15s ease-out;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 12px 12px 0px 0px var(--color-neo-shadow);
+  }
+}
+
+/* Input boxes that change background color and pop on focus */
+@utility neo-input {
+  background-color: var(--color-neo-card-bg);
+  border: 4px solid var(--color-neo-border);
+  color: var(--color-neo-text);
+  font-weight: 700;
+  border-radius: 0px;
+  transition: all 0.1s ease-out;
+
+  &:focus-visible {
+    background-color: var(--color-neo-secondary);
+    color: #000000;
+    box-shadow: 4px 4px 0px 0px var(--color-neo-shadow);
+    outline: none;
+  }
+}
+
+/* Texture backgrounds */
+@utility bg-neo-dots {
+  background-image: radial-gradient(var(--color-neo-border) 1.5px, transparent 1.5px);
+  background-size: 20px 20px;
+}
+@utility bg-neo-grid {
+  background-size: 40px 40px;
+  background-image: linear-gradient(to right, rgba(0, 0, 0, 0.08) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(0, 0, 0, 0.08) 1px, transparent 1px);
+}
+.dark .bg-neo-grid {
+  background-image: linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+                    linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
 }
 
 @layer base {
@@ -27,8 +134,34 @@
     transition: color 0.2s ease;
   }
 }
-
-/* Hide default html5-qrcode shaded overlay and borders to prevent duplicate scanning box outlines */
+/* Hide default html5-qrcode shaded overlay */
 #qr-shaded-region {
   display: none !important;
+}
+
+/* Custom Neo-brutalist scrollbars styling */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+::-webkit-scrollbar-track {
+  background: var(--neo-card-bg);
+  border-left: 3px solid var(--neo-border);
+  border-top: 3px solid var(--neo-border);
+}
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-neo-accent);
+  border: 3px solid var(--neo-border);
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-neo-secondary);
+}
+::-webkit-scrollbar-corner {
+  background: var(--neo-card-bg);
+}
+
+/* Fallback for Firefox */
+* {
+  scrollbar-width: auto;
+  scrollbar-color: var(--color-neo-accent) var(--neo-card-bg);
 }

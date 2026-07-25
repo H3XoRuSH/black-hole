@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="isValidGame"
-    class="flex-grow flex flex-col items-center justify-between h-full p-2 sm:p-4 md:p-6 select-none"
+    class="flex-grow flex flex-col items-center justify-between h-full p-2 sm:p-3 select-none"
   >
     <GameHeader
       title="Checkers"
@@ -15,9 +15,9 @@
       :room-key="roomKey"
     />
 
-    <div class="flex-grow flex items-center justify-center py-1 sm:py-2 w-full">
+    <div class="flex-grow flex items-center justify-center py-1 sm:py-1.5 w-full">
       <div
-        class="bg-slate-900 border border-slate-800 p-1 sm:p-2 rounded-2xl shadow-xl w-full max-w-[300px] xs:max-w-[360px] sm:max-w-[460px] md:max-w-[520px]"
+        class="bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow p-1 sm:p-2 rounded-none w-full max-w-[260px] xs:max-w-[320px] sm:max-w-[380px] md:max-w-[420px]"
       >
         <div class="grid grid-cols-8 gap-0 aspect-square">
           <div
@@ -29,7 +29,7 @@
           >
             <div
               v-if="getPiece(idx)"
-              class="w-[80%] h-[80%] rounded-full flex items-center justify-center shadow-md transition-all duration-150"
+              class="w-[80%] h-[80%] rounded-full flex items-center justify-center transition-all duration-150 relative"
               :class="getPieceClass(idx)"
             >
               <span v-if="isKingPiece(idx)" class="text-[10px] sm:text-xs font-black leading-none select-none">
@@ -40,21 +40,21 @@
               v-if="isValidTarget(idx)"
               class="absolute inset-0 flex items-center justify-center pointer-events-none z-10"
             >
-              <div class="w-3 h-3 sm:w-4 sm:h-4 rounded-full bg-green-400/60 animate-ping"></div>
+              <div class="w-4 h-4 rounded-full bg-emerald-400 dark:bg-emerald-500 border-2 border-black dark:border-white animate-pulse"></div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="w-full max-w-lg flex flex-col items-center justify-center py-1 sm:py-2">
+    <div class="w-full max-w-lg flex flex-col items-center justify-center py-1 sm:py-1.5">
       <button
         v-if="gameOver"
         @click="newGame"
         :disabled="ready"
-        class="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="bg-neo-accent text-white font-black py-2.5 px-6 rounded-none transition-all duration-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 cursor-pointer neo-btn uppercase tracking-wider"
       >
-        <span v-if="ready">Waiting for opponent<WaitingIndicator /></span>
+        <span v-if="ready" class="flex items-center gap-1.5 justify-center">Waiting for opponent<WaitingIndicator /></span>
         <span v-else>Play Again</span>
       </button>
     </div>
@@ -141,9 +141,15 @@ export default defineComponent({
       const lastMoveTarget = this.gameState.lastMoveTo === `${ar},${ac}`;
       const lastMoveFrom = this.gameState.lastMoveFrom === `${ar},${ac}`;
 
-      let cls = isDark ? 'bg-slate-800' : 'bg-slate-700/60';
-      if (selected) cls += ' ring-2 ring-yellow-400 ring-inset z-20';
-      if (lastMoveTarget || lastMoveFrom) cls += ' ring-1 ring-yellow-300/60 ring-inset';
+      let cls = isDark
+        ? 'bg-slate-200 dark:bg-slate-800 text-neo-text'
+        : 'bg-white dark:bg-neo-card-bg text-neo-text';
+
+      if (selected) {
+        cls += ' ring-4 ring-yellow-400 dark:ring-yellow-300 ring-inset z-20';
+      } else if (lastMoveTarget || lastMoveFrom) {
+        cls += ' ring-4 ring-yellow-400/50 dark:ring-yellow-300/50 ring-inset z-10';
+      }
       return cls;
     },
     getPiece(idx: number) {
@@ -229,10 +235,10 @@ export default defineComponent({
     },
     getPieceClass(idx: number) {
       const v = this.getPiece(idx);
-      if (v === 1) return 'bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-400 border-2 border-blue-300 text-white';
-      if (v === 2) return 'bg-gradient-to-br from-red-600 via-red-500 to-rose-400 border-2 border-red-300 text-white';
-      if (v === 3) return 'bg-gradient-to-br from-blue-600 via-blue-500 to-cyan-400 border-2 border-yellow-400 text-yellow-300';
-      if (v === 4) return 'bg-gradient-to-br from-red-600 via-red-500 to-rose-400 border-2 border-yellow-400 text-yellow-300';
+      if (v === 1) return 'bg-blue-500 dark:bg-blue-600 neo-border-2 text-white';
+      if (v === 2) return 'bg-rose-500 dark:bg-rose-600 neo-border-2 text-white';
+      if (v === 3) return 'bg-blue-500 dark:bg-blue-600 border-4 border-yellow-400 dark:border-yellow-300 text-yellow-400 dark:text-yellow-300 font-black shadow-[2px_2px_0px_0px_#000000]';
+      if (v === 4) return 'bg-rose-500 dark:bg-rose-600 border-4 border-yellow-400 dark:border-yellow-300 text-yellow-400 dark:text-yellow-300 font-black shadow-[2px_2px_0px_0px_#000000]';
       return '';
     },
     isMyTurn() {

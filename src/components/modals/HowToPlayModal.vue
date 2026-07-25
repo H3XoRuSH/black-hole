@@ -11,14 +11,14 @@
       </svg>
     </template>
 
-    <div class="text-slate-300 text-sm space-y-4">
-      <div v-for="(rule, index) in rulesList" :key="index" class="flex items-start space-x-3.5 bg-slate-950/40 border border-slate-800/40 rounded-xl p-3.5 hover:border-slate-800 transition-colors">
-        <div class="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-blue-500/15 text-blue-400 font-bold text-xs border border-blue-500/25">
+    <div class="text-neo-text text-sm space-y-4">
+      <div v-for="(rule, index) in rulesList" :key="index" class="flex items-start space-x-3.5 bg-white dark:bg-neo-card-bg neo-border-2 rounded-none p-3.5">
+        <div class="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-full bg-neo-muted border-2 border-black text-black font-black text-xs">
           {{ index + 1 }}
         </div>
-        <div class="flex-grow space-y-0.5">
-          <h4 class="font-bold text-slate-100 text-sm" v-if="rule.title">{{ rule.title }}</h4>
-          <p class="leading-relaxed text-slate-300 text-xs sm:text-sm">{{ rule.desc }}</p>
+        <div class="flex-grow space-y-1">
+          <h4 class="font-black text-neo-text text-sm uppercase tracking-wide" v-if="rule.title">{{ rule.title }}</h4>
+          <p class="leading-relaxed text-neo-text/80 text-xs sm:text-sm font-bold">{{ rule.desc }}</p>
         </div>
       </div>
     </div>
@@ -27,7 +27,7 @@
       <div class="flex justify-end">
         <button
           @click="$emit('close')"
-          class="bg-blue-600 hover:bg-blue-500 text-white font-semibold px-5 py-2 rounded-xl text-sm transition-all duration-150 cursor-pointer shadow-lg shadow-blue-500/10 active:scale-95 animate-pulse"
+          class="bg-neo-accent text-white font-black px-5 py-2 rounded-none text-sm transition-all duration-100 cursor-pointer neo-btn uppercase tracking-wider"
         >
           Got it, let's play!
         </button>

@@ -51,7 +51,7 @@
     >
       <button
         @click="openRecapModal"
-        class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all duration-150 cursor-pointer shadow-md active:scale-95 flex items-center space-x-2"
+        class="bg-neo-muted text-black dark:text-white font-black px-4 py-2 rounded-none transition-all duration-100 cursor-pointer neo-btn flex items-center space-x-2 text-xs"
       >
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
           <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7z" clip-rule="evenodd" />
@@ -61,49 +61,49 @@
     </div>
 
     <div class="flex-grow flex flex-col items-center justify-start w-full overflow-y-auto py-1">
-      <div class="bg-slate-900 border border-slate-800 p-2 sm:p-3 rounded-2xl shadow-xl w-full max-w-[320px] xs:max-w-[360px] sm:max-w-[400px]">
+      <div class="bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow p-2 sm:p-3 rounded-none w-full max-w-[320px] xs:max-w-[360px] sm:max-w-[400px]">
         <div class="grid grid-cols-5 gap-1 mb-1">
           <div
             v-for="letter in ['B', 'I', 'N', 'G', 'O']"
             :key="letter"
-            class="text-center text-xs sm:text-sm font-black text-slate-400 uppercase"
+            class="text-center text-xs sm:text-sm font-black text-neo-text/70 uppercase"
           >{{ letter }}</div>
         </div>
         <div class="grid grid-cols-5 gap-1">
           <div
             v-for="(_, idx) in 25"
             :key="idx"
-            class="aspect-square flex items-center justify-center rounded-lg text-sm sm:text-base font-bold transition-all duration-150 cursor-pointer"
+            class="aspect-square flex items-center justify-center rounded-none text-sm sm:text-base font-black transition-all duration-100 cursor-pointer"
             :class="getCellClass(idx)"
             @click="daubCell(idx)"
           >
             <span v-if="getCellNumber(idx) !== 0">{{ getCellNumber(idx) }}</span>
-            <span v-else class="text-yellow-400 text-[10px] sm:text-xs font-black">FREE</span>
+            <span v-else class="text-yellow-500 dark:text-yellow-400 text-[10px] sm:text-xs font-black">FREE</span>
           </div>
         </div>
 
         <div class="mt-3 text-center">
           <div v-if="lastDrawnNumber !== null"
-            class="inline-flex items-center justify-center bg-indigo-600 text-white rounded-xl px-4 py-1.5 shadow-md"
+            class="inline-flex items-center justify-center bg-neo-accent text-white rounded-none px-4 py-1.5 neo-border-2 neo-shadow-sm"
           >
             <span class="text-lg sm:text-xl font-black tracking-wider">{{ lastDrawnLetter }} {{ lastDrawnNumber }}</span>
           </div>
-          <div v-else class="text-xs text-gray-500 italic">
+          <div v-else class="text-xs text-neo-text/50 italic">
             No number drawn yet
           </div>
         </div>
 
-        <details class="text-xs text-gray-400 mt-2" open>
-          <summary class="cursor-pointer font-semibold select-none text-center">
+        <details class="text-xs text-neo-text/70 mt-2" open>
+          <summary class="cursor-pointer font-bold select-none text-center hover:text-neo-accent">
             Drawn Numbers ({{ gameState.drawnNumbers.length }}/75)
           </summary>
           <div class="flex flex-wrap gap-1 mt-1 max-h-16 overflow-y-auto justify-center">
             <span
               v-for="n in gameState.drawnNumbers"
               :key="n"
-              class="inline-block px-1.5 py-0.5 bg-slate-800 rounded text-[10px] font-mono text-slate-300"
+              class="inline-block px-1.5 py-0.5 bg-neo-bg neo-border-2 rounded-none text-[10px] font-mono text-neo-text"
             >{{ n }}</span>
-            <span v-if="gameState.drawnNumbers.length === 0" class="text-slate-600 italic">No numbers drawn yet</span>
+            <span v-if="gameState.drawnNumbers.length === 0" class="text-neo-text/40 italic">No numbers drawn yet</span>
           </div>
         </details>
       </div>
@@ -113,7 +113,7 @@
       <button
         v-if="!gameOver"
         @click="callBingo"
-        class="bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-bold px-8 py-2.5 rounded-xl shadow-md transition-all duration-150 cursor-pointer active:scale-95 text-sm tracking-wider"
+        class="bg-neo-accent text-white font-black px-8 py-2.5 rounded-none neo-btn uppercase tracking-wider text-sm"
       >
         BINGO!
       </button>
@@ -121,9 +121,9 @@
         v-else
         @click="handlePlayAgain"
         :disabled="waiting"
-        class="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold py-2.5 px-8 rounded-xl shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="bg-neo-accent text-white font-black py-2.5 px-6 rounded-none transition-all duration-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 cursor-pointer neo-btn uppercase tracking-wider"
       >
-        <span v-if="waiting">Waiting<WaitingIndicator /></span>
+        <span v-if="waiting" class="flex items-center gap-1.5 justify-center">Waiting<WaitingIndicator /></span>
         <span v-else>Play Again</span>
       </button>
     </div>
@@ -495,10 +495,10 @@ export default defineComponent({
       const isDaubed = this.myDaubed.has(key);
       const isFree = r === 2 && c === 2;
 
-      if (isFree && isDaubed) return 'bg-emerald-700/60 text-yellow-300 ring-1 ring-emerald-500/50';
-      if (isFree) return 'bg-slate-800 text-yellow-400 border border-slate-700';
-      if (isDaubed) return 'bg-emerald-700/60 text-white line-through ring-1 ring-emerald-500/50';
-      return 'bg-slate-800 text-white border border-slate-700 hover:bg-slate-700/80';
+      if (isFree && isDaubed) return 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 neo-border-2 border-emerald-500';
+      if (isFree) return 'bg-white dark:bg-neo-card-bg text-yellow-500 dark:text-yellow-400 neo-border-2';
+      if (isDaubed) return 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 line-through neo-border-2 border-emerald-500';
+      return 'bg-white dark:bg-neo-card-bg text-neo-text neo-border-2 hover:bg-neo-secondary dark:hover:bg-neo-secondary';
     },
     daubCell(idx: number) {
       if (this.gameOver || !this.socket) return;
