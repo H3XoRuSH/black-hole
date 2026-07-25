@@ -55,6 +55,10 @@ app.get(/^\/(sw|service-worker)\.js$/, (req, res) => {
   res.send(cleanupSw);
 });
 
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
 app.get('*', (req, res) => {
   if (cachedIndex) {
     res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
