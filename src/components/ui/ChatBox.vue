@@ -4,54 +4,54 @@
     <button
       v-if="!open"
       @click="open = true"
-      class="relative w-12 h-12 bg-indigo-600 hover:bg-indigo-500 text-white rounded-full shadow-lg flex items-center justify-center cursor-pointer active:scale-95 transition-all hover:shadow-indigo-500/30"
+      class="relative w-12 h-12 bg-neo-accent text-white rounded-none neo-btn flex items-center justify-center cursor-pointer flex-shrink-0"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
         <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
       </svg>
-      <span v-if="unreadCount > 0" class="absolute -top-1 -right-1 w-5 h-5 bg-rose-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center shadow-md">{{ unreadCount >= 10 ? '9+' : unreadCount }}</span>
+      <span v-if="unreadCount > 0" class="absolute -top-1 -right-1 w-5 h-5 bg-neo-secondary border-2 border-black text-black text-[10px] font-black rounded-full flex items-center justify-center">{{ unreadCount >= 10 ? '9+' : unreadCount }}</span>
     </button>
 
     <!-- Chat Panel -->
     <div
       v-else
-      class="w-72 sm:w-80 h-96 bg-slate-800 rounded-2xl shadow-2xl border border-slate-700 flex flex-col overflow-hidden animate-[fade_0.15s_ease]"
+      class="w-72 sm:w-80 h-96 bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow-lg flex flex-col overflow-hidden rounded-none animate-[fade_0.15s_ease]"
     >
       <!-- Header -->
-      <div class="flex items-center justify-between px-4 py-3 border-b border-slate-700 flex-shrink-0">
-        <span class="text-sm font-bold text-white flex items-center space-x-2">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <div class="flex items-center justify-between px-4 py-3 border-b-4 border-black flex-shrink-0 text-neo-text bg-neo-secondary/15">
+        <span class="text-sm font-black uppercase tracking-wide flex items-center space-x-2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-neo-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
           </svg>
           <span>Chat</span>
         </span>
         <button
           @click="open = false"
-          class="text-slate-400 hover:text-white hover:bg-slate-700 rounded-lg p-1 transition-all cursor-pointer"
+          class="text-neo-text/70 hover:text-neo-text rounded-none transition-all cursor-pointer"
           title="Close"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
 
       <!-- Messages -->
-      <div ref="messagesRef" class="flex-grow overflow-y-auto p-3 space-y-2 scroll-smooth [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-slate-600 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:hover:bg-slate-500">
-        <div v-if="messages.length === 0" class="flex items-center justify-center h-full text-xs text-slate-500 select-none">
+      <div ref="messagesRef" class="flex-grow overflow-y-auto p-3 space-y-2 scroll-smooth">
+        <div v-if="messages.length === 0" class="flex items-center justify-center h-full text-xs text-neo-text/50 font-bold select-none uppercase tracking-wider">
           No messages yet
         </div>
         <div v-for="(msg, i) in messages" :key="i" class="flex items-start space-x-2">
           <span class="w-2 h-2 rounded-full mt-1.5 flex-shrink-0" :class="dotClass(msg.player)"></span>
           <div class="min-w-0">
-            <span class="text-xs font-semibold" :class="nameColor(msg.player)">{{ displayName(msg) }}</span>
-            <p class="text-sm text-slate-200 break-words">{{ msg.text }}</p>
+            <span class="text-xs font-black" :class="nameColor(msg.player)">{{ displayName(msg) }}</span>
+            <p class="text-sm text-neo-text/90 font-bold break-words">{{ msg.text }}</p>
           </div>
         </div>
       </div>
 
       <!-- Input -->
-      <div class="p-3 border-t border-slate-700 flex-shrink-0">
+      <div class="p-3 border-t-2 border-black flex-shrink-0">
         <div class="flex items-center space-x-2">
           <input
             v-model="inputText"
@@ -59,14 +59,14 @@
             type="text"
             placeholder="Type a message..."
             maxlength="200"
-            class="flex-grow bg-slate-700 border border-slate-600 rounded-xl px-3 py-2 text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
+            class="flex-grow text-sm neo-input rounded-none py-2 placeholder:text-neo-text/40"
           />
           <button
             @click="send"
             :disabled="!inputText.trim()"
-            class="bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-700 disabled:text-slate-500 text-white rounded-xl px-3 py-2 transition-all duration-150 cursor-pointer active:scale-95 disabled:cursor-not-allowed flex-shrink-0"
+            class="bg-neo-accent text-white rounded-none px-3 py-2 transition-all duration-100 cursor-pointer neo-btn flex-shrink-0 disabled:bg-gray-300 dark:disabled:bg-slate-700 disabled:text-gray-500 dark:disabled:text-slate-500 disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 disabled:cursor-not-allowed"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
             </svg>
           </button>
@@ -82,8 +82,7 @@ import { useRoute } from 'vue-router';
 import type { ChatMessage, Player } from '../../types/shared.js';
 
 const PLAYER_COLORS = ['bg-indigo-500', 'bg-emerald-500', 'bg-amber-500', 'bg-rose-500', 'bg-cyan-500', 'bg-violet-500', 'bg-pink-500', 'bg-blue-500'];
-const PLAYER_TEXT_COLORS = ['text-indigo-400', 'text-emerald-400', 'text-amber-400', 'text-rose-400', 'text-cyan-400', 'text-violet-400', 'text-pink-400', 'text-blue-400'];
-
+const PLAYER_TEXT_COLORS = ['text-indigo-600 dark:text-indigo-400', 'text-emerald-600 dark:text-emerald-400', 'text-amber-600 dark:text-amber-400', 'text-rose-600 dark:text-rose-400', 'text-cyan-600 dark:text-cyan-400', 'text-violet-600 dark:text-violet-400', 'text-pink-600 dark:text-pink-400', 'text-blue-600 dark:text-blue-400'];
 export default defineComponent({
   name: 'ChatBox',
   props: {

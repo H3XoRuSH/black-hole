@@ -7,22 +7,22 @@
     <div
       v-for="toast in toasts"
       :key="toast.id"
-      class="pointer-events-auto flex flex-col rounded-xl shadow-lg text-sm font-medium overflow-hidden"
+      class="pointer-events-auto flex flex-col rounded-none neo-border neo-shadow-sm text-sm font-black overflow-hidden uppercase tracking-wider"
       :class="bgClass(toast.type)"
     >
       <div class="flex items-start gap-2 px-4 py-3">
         <span class="flex-1">{{ toast.message }}</span>
         <button
           @click="removeToast(toast.id)"
-          class="text-white/70 hover:text-white transition-colors cursor-pointer flex-shrink-0"
+          class="text-neo-text/70 hover:text-neo-text transition-colors cursor-pointer flex-shrink-0"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
       </div>
       <div
-        class="toast-progress h-1 bg-white/30"
+        class="toast-progress h-1.5 bg-current/30"
         :style="{ animationDuration: toast.duration + 'ms' }"
       />
     </div>
@@ -42,11 +42,11 @@ export default defineComponent({
   methods: {
     bgClass(type: string) {
       switch (type) {
-        case 'error': return 'bg-red-600 text-white';
-        case 'warning': return 'bg-amber-500 text-white';
-        case 'info': return 'bg-blue-600 text-white';
-        case 'success': return 'bg-emerald-600 text-white';
-        default: return 'bg-gray-800 text-white';
+        case 'error': return 'bg-neo-accent text-white';
+        case 'warning': return 'bg-neo-secondary text-black border-2 border-black';
+        case 'info': return 'bg-neo-muted text-black border-2 border-black';
+        case 'success': return 'bg-emerald-500 text-black border-2 border-black';
+        default: return 'bg-white dark:bg-neo-card-bg text-neo-text border-2 border-black';
       }
     },
   },

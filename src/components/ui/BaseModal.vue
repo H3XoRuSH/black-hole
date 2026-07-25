@@ -25,7 +25,7 @@
           <div
             v-if="isOpen"
             ref="contentRef"
-            :class="['w-full rounded-2xl shadow-2xl p-6 flex flex-col relative max-h-[85vh] overflow-hidden', contentClass, maxWidthClass, theme === 'light' ? 'dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200' : '']"
+            :class="['w-full p-6 flex flex-col relative max-h-[85vh] overflow-hidden', contentClass, maxWidthClass]"
             :role="role"
             :aria-modal="role === 'dialog' ? 'true' : undefined"
             :aria-label="role === 'dialog' && title ? title : undefined"
@@ -33,26 +33,21 @@
             <button
               v-if="showCloseButton"
               @click="close"
-              :class="[
-                'absolute top-4 right-4 p-1.5 rounded-lg transition-colors cursor-pointer active:scale-95',
-                theme === 'dark'
-                  ? 'text-slate-400 hover:text-white hover:bg-slate-800/80'
-                  : 'text-slate-400 hover:text-slate-600 hover:bg-slate-100'
-              ]"
+              class="absolute top-4 right-4 p-1.5 rounded-none transition-colors cursor-pointer text-neo-text/75 hover:text-neo-text hover:bg-neo-muted/20 neo-border-2"
               aria-label="Close"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
 
-            <div v-if="$slots['header-icon'] || title || subtitle" class="mb-5 flex items-center space-x-3 pr-8">
-              <div v-if="$slots['header-icon']" class="p-2 rounded-xl" :class="iconContainerClass">
+            <div v-if="$slots['header-icon'] || title || subtitle" class="mb-5 flex items-center space-x-3 pr-8 text-neo-text">
+              <div v-if="$slots['header-icon']" class="p-2 rounded-none" :class="iconContainerClass">
                 <slot name="header-icon" />
               </div>
               <div>
-                <h2 v-if="title" class="text-xl font-bold tracking-tight">{{ title }}</h2>
-                <p v-if="subtitle" class="text-xs font-medium uppercase tracking-wider" :class="theme === 'dark' ? 'text-slate-400' : 'text-slate-500'">{{ subtitle }}</p>
+                <h2 v-if="title" class="text-xl font-black uppercase tracking-wide">{{ title }}</h2>
+                <p v-if="subtitle" class="text-xs font-bold uppercase tracking-wider text-neo-text/70">{{ subtitle }}</p>
               </div>
             </div>
 
@@ -60,7 +55,7 @@
               <slot />
             </div>
 
-            <div v-if="$slots.footer" class="flex-shrink-0 mt-4 pt-4" :class="theme === 'dark' ? 'border-t border-slate-800' : 'border-t border-slate-200'">
+            <div v-if="$slots.footer" class="flex-shrink-0 mt-4 pt-4 border-t border-neo-border">
               <slot name="footer" />
             </div>
           </div>
@@ -180,49 +175,17 @@ export default defineComponent({
   },
   computed: {
     backdropClass(): string {
-      return this.theme === 'dark'
-        ? 'bg-slate-950/65 backdrop-blur-sm'
-        : 'bg-slate-900/60 backdrop-blur-sm';
+      return 'bg-black/80 backdrop-blur-xs';
     },
     contentClass(): string {
-      return this.theme === 'dark'
-        ? 'bg-slate-900 border border-slate-800 text-white'
-        : 'bg-white border border-slate-200 text-slate-900';
+      return 'bg-white dark:bg-neo-card-bg neo-border neo-shadow-lg text-neo-text rounded-none';
     },
     maxWidthClass(): string {
       return this.maxWidth || 'max-w-lg';
     },
     iconContainerClass(): string {
-      if (this.theme === 'dark') {
-        return 'bg-blue-500/10 border border-blue-500/20 text-blue-400';
-      }
-      return 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400';
+      return 'bg-neo-muted neo-border-2 text-black rounded-none';
     },
   },
 });
 </script>
-
-<style scoped>
-.custom-scroll::-webkit-scrollbar {
-  width: 6px;
-}
-
-.custom-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.custom-scroll::-webkit-scrollbar-thumb {
-  background: rgb(100 116 139 / 0.3);
-  border-radius: 999px;
-}
-
-.custom-scroll::-webkit-scrollbar-thumb:hover {
-  background: rgb(100 116 139 / 0.5);
-}
-
-@media (hover: none) and (pointer: coarse) {
-  .custom-scroll {
-    scrollbar-width: none;
-  }
-}
-</style>

@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="isValidGame"
-    class="flex-grow flex flex-col items-center justify-between h-full p-4 sm:p-6 md:p-8 select-none"
+    class="flex-grow flex flex-col items-center justify-between h-full p-2 sm:p-4 select-none"
   >
     <!-- Game Header -->
     <GameHeader
@@ -17,21 +17,20 @@
     />
 
     <!-- Score Info -->
-    <div class="flex flex-wrap justify-center gap-x-6 gap-y-1 mb-4 text-xs sm:text-sm font-bold text-gray-700 dark:text-gray-200">
+    <div class="flex items-center justify-center gap-x-6 px-4 py-2 bg-white dark:bg-neo-card-bg text-neo-text neo-border-2 rounded-none mb-2.5 text-xs sm:text-sm font-black uppercase tracking-wide">
       <div class="flex items-center space-x-1.5">
-        <div class="w-3 h-3 rounded-full bg-blue-500 shadow shrink-0"></div>
+        <div class="w-3 h-3 rounded-none bg-blue-500 border border-black shrink-0"></div>
         <span>{{ p1Name }}: {{ gameState.scores.player1 }}</span>
       </div>
       <div class="flex items-center space-x-1.5">
-        <div class="w-3 h-3 rounded-full bg-rose-500 shadow shrink-0"></div>
+        <div class="w-3 h-3 rounded-none bg-rose-500 border border-black shrink-0"></div>
         <span>{{ p2Name }}: {{ gameState.scores.player2 }}</span>
       </div>
     </div>
-
     <!-- Dots & Boxes Board Container -->
-    <div class="flex-grow flex items-center justify-center py-4 w-full">
+    <div class="flex-grow flex items-center justify-center py-2 w-full">
       <div
-        class="bg-slate-900 border border-slate-800 p-6 sm:p-8 rounded-2xl shadow-xl w-full max-w-[280px] xs:max-w-[340px] sm:max-w-[400px] md:max-w-[440px] aspect-square relative"
+        class="bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow p-4 sm:p-6 rounded-none w-full max-w-[240px] xs:max-w-[300px] sm:max-w-[360px] md:max-w-[380px] aspect-square relative"
       >
         <!-- Board Layout Area -->
         <div class="relative w-full h-full">
@@ -51,7 +50,7 @@
           >
             <div
               v-if="gameState.boxes[box.key]"
-              class="w-[calc(100%-4px)] h-[calc(100%-4px)] flex items-center justify-center rounded-lg transition-all duration-300 transform scale-95"
+              class="w-[calc(100%-4px)] h-[calc(100%-4px)] flex items-center justify-center rounded-none transition-all duration-300 transform scale-95"
               :class="getBoxClass(box.key)"
             >
               <span
@@ -73,14 +72,14 @@
               top: `${line.r * 25}%`,
               left: `${line.c * 25}%`,
               width: '25%',
-              height: '16px',
+              height: '12px',
               transform: 'translateY(-50%)',
               zIndex: 10,
             }"
             @click="makeMove(line.key)"
           >
             <div
-              class="w-[calc(100%-8px)] h-1 sm:h-1.5 rounded transition-all duration-200"
+              class="w-[calc(100%-8px)] h-1 rounded-none transition-all duration-200"
               :class="getLineClass(line.key, 'h')"
             ></div>
           </div>
@@ -95,7 +94,7 @@
             :style="{
               top: `${line.r * 25}%`,
               left: `${line.c * 25}%`,
-              width: '16px',
+              width: '12px',
               height: '25%',
               transform: 'translateX(-50%)',
               zIndex: 10,
@@ -103,7 +102,7 @@
             @click="makeMove(line.key)"
           >
             <div
-              class="w-1 sm:w-1.5 h-[calc(100%-8px)] rounded transition-all duration-200"
+              class="w-1 h-[calc(100%-8px)] rounded-none transition-all duration-200"
               :class="getLineClass(line.key, 'v')"
             ></div>
           </div>
@@ -113,7 +112,7 @@
             v-for="dot in dots"
             :key="`dot-${dot.key}`"
             :id="`dot-${dot.key}`"
-            class="absolute w-2.5 h-2.5 sm:w-3.5 sm:h-3.5 rounded-full bg-slate-600 border border-slate-700 shadow-sm pointer-events-none"
+            class="absolute w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-none bg-neo-text neo-border-2 pointer-events-none"
             :style="{
               top: `${dot.r * 25}%`,
               left: `${dot.c * 25}%`,
@@ -132,9 +131,9 @@
         @click="newGame"
         :disabled="ready"
         id="play-again-btn"
-        class="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold py-3 px-8 rounded-xl shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+        class="bg-neo-accent text-white font-black py-2.5 px-6 rounded-none transition-all duration-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 cursor-pointer neo-btn uppercase tracking-wider"
       >
-        <span v-if="ready">Waiting for opponent<WaitingIndicator /></span>
+        <span v-if="ready" class="flex items-center gap-1.5 justify-center">Waiting for opponent<WaitingIndicator /></span>
         <span v-else>Play Again</span>
       </button>
     </div>
@@ -284,13 +283,13 @@ export default defineComponent({
     getLineClass(lineKey: string, direction: string) {
       const lineOwner = this.gameState.lines[lineKey];
       if (lineOwner === 1) {
-        const base = 'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)]';
-        const last = this.gameState.lastMove?.lineKey === lineKey ? ' ring-2 ring-yellow-300/80' : '';
+        const base = 'bg-blue-500 neo-border-2 border-blue-500';
+        const last = this.gameState.lastMove?.lineKey === lineKey ? ' ring-4 ring-yellow-400 dark:ring-yellow-300 ring-offset-2 dark:ring-offset-neo-card-bg z-10' : '';
         return base + last;
       }
       if (lineOwner === 2) {
-        const base = 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]';
-        const last = this.gameState.lastMove?.lineKey === lineKey ? ' ring-2 ring-yellow-300/80' : '';
+        const base = 'bg-rose-500 neo-border-2 border-rose-500';
+        const last = this.gameState.lastMove?.lineKey === lineKey ? ' ring-4 ring-yellow-400 dark:ring-yellow-300 ring-offset-2 dark:ring-offset-neo-card-bg z-10' : '';
         return base + last;
       }
 
@@ -298,8 +297,8 @@ export default defineComponent({
       if (this.isMyTurn()) {
         const hoverColorClass
           = this.player === 1
-            ? 'bg-blue-500/10 group-hover:bg-blue-500/60'
-            : 'bg-rose-500/10 group-hover:bg-rose-500/60';
+            ? 'bg-blue-500/10 group-hover:bg-blue-500'
+            : 'bg-rose-500/10 group-hover:bg-rose-500';
         const scalingClass
           = direction === 'h'
             ? 'group-hover:scale-y-125'
@@ -307,15 +306,15 @@ export default defineComponent({
         return `${hoverColorClass} ${scalingClass}`;
       }
 
-      return 'bg-slate-800/30';
+      return 'bg-slate-300/40 dark:bg-slate-700/40';
     },
     getBoxClass(boxKey: string) {
       const boxOwner = this.gameState.boxes[boxKey];
       if (boxOwner === 1) {
-        return 'bg-gradient-to-br from-blue-500/20 to-cyan-500/10 text-blue-400 border border-blue-500/30 shadow-[inset_0_0_10px_rgba(59,130,246,0.15)]';
+        return 'bg-blue-500/20 text-blue-600 dark:text-blue-400 neo-border-2 border-blue-500';
       }
       if (boxOwner === 2) {
-        return 'bg-gradient-to-br from-rose-500/20 to-pink-500/10 text-rose-400 border border-rose-500/30 shadow-[inset_0_0_10px_rgba(244,63,94,0.15)]';
+        return 'bg-rose-500/20 text-rose-600 dark:text-rose-400 neo-border-2 border-rose-500';
       }
       return '';
     },

@@ -1,28 +1,28 @@
 <template>
-  <div class="flex flex-col items-center justify-start min-h-full bg-gray-100 dark:bg-slate-900 p-4 sm:py-12 select-none">
+  <div class="flex flex-col items-center justify-start min-h-full bg-transparent p-4 sm:py-12 select-none">
     <!-- Header Section -->
-    <header class="text-center mb-4 sm:mb-6 max-w-md w-full">
-      <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+    <header class="text-center mb-6 sm:mb-8 max-w-md w-full">
+      <h1 class="text-4xl sm:text-5xl font-black text-neo-text uppercase tracking-tighter mb-2">
         {{ gameName }}
       </h1>
-      <p class="text-gray-500 dark:text-gray-400 text-sm">Game Lobby</p>
+      <p class="text-neo-text/80 text-sm font-bold uppercase tracking-wider">Game Lobby</p>
     </header>
 
     <!-- Main Card -->
-    <div class="w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-gray-200/80 dark:border-slate-700 p-5 sm:p-8 text-center">
+    <div class="w-full max-w-md bg-white dark:bg-neo-card-bg neo-border neo-shadow p-5 sm:p-8 text-center rounded-none text-neo-text">
       <div v-if="roomKey">
         <!-- Connection Status Banner -->
         <div
           v-if="connectionStatus"
-           class="w-full mb-4 bg-amber-50 dark:bg-amber-900/30 border border-amber-200 dark:border-amber-700/50 text-amber-800 dark:text-amber-200 rounded-xl p-3 text-xs sm:text-sm font-medium flex items-center justify-center space-x-2"
+           class="w-full mb-4 bg-neo-secondary/20 neo-border-2 text-neo-text rounded-none p-3 text-xs sm:text-sm font-bold flex items-center justify-center space-x-2"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
           <span>{{ connectionStatus }}</span>
         </div>
 
-        <p class="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wider font-bold mb-3">
+        <p class="text-xs text-neo-text/75 uppercase tracking-wider font-black mb-3">
           Share this Room Code
         </p>
 
@@ -31,24 +31,24 @@
           <!-- Copy Room Code Button -->
           <button
             @click="copyRoomKey"
-            class="relative group cursor-pointer flex-grow flex items-center justify-center bg-indigo-50 dark:bg-indigo-900/40 hover:bg-indigo-100/70 dark:hover:bg-indigo-900/60 border border-indigo-100 dark:border-indigo-800/50 rounded-2xl px-6 transition-all duration-200 h-16"
+            class="relative group cursor-pointer flex-grow flex items-center justify-center bg-neo-muted/10 hover:bg-neo-muted/20 neo-btn rounded-none px-6 h-16 text-neo-text"
           >
-            <span class="text-3xl sm:text-4xl font-extrabold font-mono tracking-widest text-indigo-600 dark:text-indigo-400">
+            <span class="text-3xl sm:text-4xl font-extrabold font-mono tracking-widest">
               {{ roomKey }}
             </span>
-            <div class="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 bg-white dark:bg-slate-700 text-indigo-500 dark:text-indigo-400 rounded-lg shadow-sm border border-indigo-50 dark:border-slate-600 group-hover:scale-110 transition-transform duration-200 flex-shrink-0">
+            <div class="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 bg-white dark:bg-neo-card-bg text-neo-text rounded-none neo-border-2 group-hover:scale-105 transition-transform duration-100 flex-shrink-0">
               <!-- Copy Icon -->
-              <svg v-if="!copied" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <svg v-if="!copied" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
               </svg>
               <!-- Check Icon -->
-              <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
               </svg>
             </div>
 
             <!-- Copy Tooltip -->
-            <span class="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[9px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 group-hover:text-indigo-500 dark:group-hover:text-indigo-400 transition-colors duration-200 whitespace-nowrap">
+            <span class="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[9px] font-black uppercase tracking-wider text-neo-text/50 group-hover:text-neo-accent transition-colors duration-200 whitespace-nowrap">
               {{ copied ? 'Copied!' : 'Click to copy' }}
             </span>
           </button>
@@ -56,29 +56,29 @@
           <!-- Show QR Code Button -->
           <button
             @click="openQRModal"
-            class="cursor-pointer flex items-center justify-center bg-white dark:bg-slate-700 hover:bg-slate-50 dark:hover:bg-slate-600 border border-slate-200 dark:border-slate-600 rounded-2xl w-16 h-16 text-slate-600 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-100 dark:hover:border-indigo-500 shadow-sm transition-all duration-200 flex-shrink-0"
+            class="p-2 bg-white dark:bg-neo-card-bg neo-border-2 hover:bg-neo-secondary text-neo-text rounded-none transition-colors cursor-pointer flex items-center justify-center"
             title="Show QR Code"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z" />
             </svg>
           </button>
         </div>
 
         <!-- Players List -->
-        <div class="mt-5 border-t border-gray-100 dark:border-slate-700 pt-5 text-left">
-          <h4 class="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3">Players ({{ players.length }}/{{ maxPlayers }})</h4>
+        <div class="mt-5 border-t border-neo-border pt-5 text-left">
+          <h4 class="text-xs font-black uppercase tracking-wider text-neo-text mb-3">Players ({{ players.length }}/{{ maxPlayers }})</h4>
           <div class="space-y-2.5 mb-6 max-h-72 overflow-y-auto players-scroll">
             <!-- Dynamic Players List -->
             <div
               v-for="p in players"
               :key="p.player"
-              class="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-700/50 border border-gray-100 dark:border-slate-600 rounded-xl"
+              class="flex items-center justify-between p-3 bg-white dark:bg-neo-card-bg neo-border-2 rounded-none text-neo-text mb-2.5"
             >
               <div class="flex items-center space-x-3 min-w-0 flex-shrink">
                 <div
-                  class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0"
-                  :class="playerColorClasses(p.player)"
+                  class="w-8 h-8 rounded-full flex items-center justify-center font-black text-sm flex-shrink-0 border-2 border-black text-black"
+                  :class="p.player === 1 ? 'bg-neo-secondary' : 'bg-neo-accent'"
                 >
                   P{{ p.player }}
                 </div>
@@ -91,34 +91,34 @@
                         @blur="submitRename"
                         @keyup.escape="cancelRename"
                         ref="nameInput"
-                        class="text-sm font-medium text-gray-800 dark:text-gray-200 bg-white dark:bg-slate-600 border border-gray-300 dark:border-slate-500 rounded-lg px-2 py-1 w-28 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+                        class="text-sm font-bold bg-white dark:bg-neo-card-bg neo-border-2 rounded-none px-2 py-1 w-28 focus:outline-none focus:bg-neo-secondary text-black dark:text-white"
                         maxlength="10"
                         autofocus
                       />
                     </template>
                     <template v-else-if="p.isAI">
-                      <p class="text-sm font-medium text-gray-800 dark:text-gray-200 truncate max-w-[120px]">
+                      <p class="text-sm font-bold text-neo-text truncate max-w-[120px]">
                         Computer
                       </p>
                     </template>
                     <template v-else>
-                      <p class="text-sm font-medium text-gray-800 dark:text-gray-200 truncate max-w-[120px]">
+                      <p class="text-sm font-bold text-neo-text truncate max-w-[120px]">
                         {{ p.name || (p.player === 1 ? 'Host' : `Player ${p.player}`) }}
                       </p>
                       <button
                         v-if="p.id === socket?.id"
                         @click="startEditing"
-                        class="p-1 text-gray-400 dark:text-gray-500 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/40 rounded-lg transition-colors cursor-pointer flex-shrink-0"
+                        class="p-1 text-neo-text/60 hover:text-neo-accent transition-colors cursor-pointer flex-shrink-0"
                         title="Change name"
                       >
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                           <path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                         </svg>
                       </button>
                     </template>
-                    <span v-if="p.id === socket?.id" class="text-[10px] text-gray-400 dark:text-gray-500 font-medium flex-shrink-0">(You)</span>
+                    <span v-if="p.id === socket?.id" class="text-[10px] text-neo-text/50 font-bold flex-shrink-0">(You)</span>
                   </div>
-                  <p class="text-[10px] text-gray-500 dark:text-gray-400">Player {{ p.player }}</p>
+                  <p class="text-[10px] text-neo-text/60">Player {{ p.player }}</p>
                 </div>
                </div>
                <div>
@@ -127,7 +127,7 @@
                      <select
                        :value="p.difficulty || 'hard'"
                        @change="changeDifficulty($event)"
-                       class="text-xs font-semibold py-1 px-2.5 bg-white dark:bg-slate-600 border border-gray-300 dark:border-slate-500 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer dark:text-gray-200"
+                       class="text-xs font-bold py-1 px-2.5 bg-white dark:bg-neo-card-bg neo-border rounded-none cursor-pointer text-neo-text"
                      >
                        <option value="easy">Easy</option>
                        <option value="medium">Medium</option>
@@ -135,21 +135,21 @@
                      </select>
                      <button
                        @click="removeAIOpponent"
-                       class="p-1 text-gray-400 dark:text-gray-500 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/40 rounded-lg transition-colors cursor-pointer flex-shrink-0"
+                       class="p-1 text-neo-text/60 hover:text-neo-accent transition-colors cursor-pointer flex-shrink-0"
                        title="Remove computer"
                      >
-                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                       <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                          <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                        </svg>
                      </button>
                    </div>
                    <span
                      v-else
-                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold uppercase tracking-wider"
+                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider neo-border-2"
                      :class="{
-                       'bg-cyan-100 dark:bg-cyan-900/50 text-cyan-800 dark:text-cyan-200': p.difficulty === 'easy',
-                       'bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-200': p.difficulty === 'medium',
-                       'bg-rose-100 dark:bg-rose-900/50 text-rose-800 dark:text-rose-200': p.difficulty === 'hard' || !p.difficulty
+                       'bg-cyan-400 text-black': p.difficulty === 'easy',
+                       'bg-yellow-400 text-black': p.difficulty === 'medium',
+                       'bg-red-400 text-white': p.difficulty === 'hard' || !p.difficulty
                      }"
                    >
                      {{ p.difficulty || 'hard' }}
@@ -158,13 +158,13 @@
                  <template v-else>
                    <span
                      v-if="p.ready"
-                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-900/50 text-emerald-800 dark:text-emerald-200"
+                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black bg-emerald-500 text-black border-2 border-black"
                    >
                      Ready
                    </span>
                    <span
                      v-else
-                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-200"
+                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-black bg-amber-400 text-black border-2 border-black"
                    >
                      Not Ready
                    </span>
@@ -176,14 +176,14 @@
              <div
                v-for="i in Math.max(0, maxPlayers - players.length)"
                :key="'waiting-' + i"
-               class="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-700/30 border border-gray-100 dark:border-slate-600/50 border-dashed rounded-xl text-gray-400 dark:text-gray-500"
+               class="flex items-center justify-between p-3 bg-transparent border-2 border-dashed border-neo-border/50 text-neo-text/60 rounded-none mb-2.5"
              >
                <div class="flex items-center space-x-3">
-                 <div class="w-8 h-8 rounded-full bg-gray-100 dark:bg-slate-700 border border-dashed border-gray-300 dark:border-slate-500 flex items-center justify-center text-gray-400 dark:text-gray-500 text-sm">
+                 <div class="w-8 h-8 rounded-full bg-transparent border-2 border-dashed border-neo-border/50 flex items-center justify-center text-neo-text/60 text-sm font-black">
                    ?
                  </div>
                  <div>
-                    <p class="text-sm font-medium italic flex items-center space-x-1">Waiting for player<WaitingIndicator /></p>
+                    <p class="text-sm font-black italic flex items-center space-x-1 uppercase tracking-wide">Waiting for player<WaitingIndicator /></p>
                    <p class="text-[10px]">Player {{ players.length + i }}</p>
                  </div>
                </div>
@@ -192,7 +192,7 @@
                     v-if="isHost && players.length === 1 && supportsAI"
                     @click="addAIOpponent('hard')"
                     :disabled="aiPending"
-                    class="text-xs font-bold py-1.5 px-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-all duration-200 cursor-pointer shadow-sm active:scale-95 flex items-center gap-1.5 disabled:opacity-60 disabled:cursor-not-allowed"
+                    class="text-xs font-black py-1.5 px-3 bg-neo-accent text-white rounded-none neo-btn tracking-wider uppercase flex items-center gap-1.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0"
                   >
                     <template v-if="aiPending">
                       <WaitingIndicator /> Adding...
@@ -209,26 +209,26 @@
           </div>
 
           <!-- Trivia Options (host only) -->
-          <div v-if="gameId === 'trivia' && isHost" class="pt-4 border-t border-gray-100 dark:border-slate-700">
-            <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Trivia Settings</h4>
+          <div v-if="gameId === 'trivia' && isHost" class="pt-4 border-t-4 border-black">
+            <h4 class="text-sm font-black uppercase tracking-wider text-neo-text mb-3">Trivia Settings</h4>
             <div class="flex gap-2 mb-2">
               <div class="flex-1">
-                <label class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1 block">Category</label>
+                <label class="text-[10px] font-black uppercase tracking-wider text-neo-text mb-1 block">Category</label>
                 <select
                   v-model="triviaCategory"
                   @change="updateTriviaOptions"
-                  class="w-full text-xs font-semibold py-2 px-3 bg-white dark:bg-slate-600 border border-gray-300 dark:border-slate-500 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer dark:text-gray-200"
+                  class="w-full text-xs font-bold py-2 px-3 neo-input rounded-none cursor-pointer"
                 >
                   <option :value="null">Any Category</option>
                   <option v-for="cat in categories" :key="cat.slug" :value="cat.slug">{{ cat.name }}</option>
                 </select>
               </div>
               <div class="flex-1">
-                <label class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1 block">Difficulty</label>
+                <label class="text-[10px] font-black uppercase tracking-wider text-neo-text mb-1 block">Difficulty</label>
                 <select
                   v-model="triviaDifficulty"
                   @change="updateTriviaOptions"
-                  class="w-full text-xs font-semibold py-2 px-3 bg-white dark:bg-slate-600 border border-gray-300 dark:border-slate-500 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer dark:text-gray-200"
+                  class="w-full text-xs font-bold py-2 px-3 neo-input rounded-none cursor-pointer"
                 >
                   <option value="">Any Difficulty</option>
                   <option value="easy">Easy</option>
@@ -240,15 +240,15 @@
           </div>
 
           <!-- Pictionary Options (host only) -->
-          <div v-if="gameId === 'pictionary' && isHost" class="pt-4 border-t border-gray-100 dark:border-slate-700">
-            <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Game Settings</h4>
+          <div v-if="gameId === 'pictionary' && isHost" class="pt-4 border-t-4 border-black">
+            <h4 class="text-sm font-black uppercase tracking-wider text-neo-text mb-3">Game Settings</h4>
             <div class="flex gap-2 mb-2">
               <div class="flex-1">
-                <label class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1 block">Rounds Per Player</label>
+                <label class="text-[10px] font-black uppercase tracking-wider text-neo-text mb-1 block">Rounds Per Player</label>
                 <select
                   v-model="pictionaryRounds"
                   @change="updatePictionaryOptions"
-                  class="w-full text-xs font-semibold py-2 px-3 bg-white dark:bg-slate-600 border border-gray-300 dark:border-slate-500 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer dark:text-gray-200"
+                  class="w-full text-xs font-bold py-2 px-3 neo-input rounded-none cursor-pointer"
                 >
                   <option :value="1">1 round</option>
                   <option :value="2">2 rounds</option>
@@ -258,11 +258,11 @@
                 </select>
               </div>
               <div class="flex-1">
-                <label class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1 block">Round Duration</label>
+                <label class="text-[10px] font-black uppercase tracking-wider text-neo-text mb-1 block">Round Duration</label>
                 <select
                   v-model="pictionaryTimer"
                   @change="updatePictionaryOptions"
-                  class="w-full text-xs font-semibold py-2 px-3 bg-white dark:bg-slate-600 border border-gray-300 dark:border-slate-500 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 cursor-pointer dark:text-gray-200"
+                  class="w-full text-xs font-bold py-2 px-3 neo-input rounded-none cursor-pointer"
                 >
                   <option :value="30">30 seconds</option>
                   <option :value="60">60 seconds</option>
@@ -275,13 +275,13 @@
           </div>
 
           <!-- Escape Room Options (host only) -->
-          <div v-if="gameId === 'escape-room' && isHost" class="pt-4 border-t border-gray-100 dark:border-slate-700">
-            <h4 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Escape Room</h4>
-            <label class="text-[10px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-1 block">Select Room</label>
+          <div v-if="gameId === 'escape-room' && isHost" class="pt-4 border-t-4 border-black">
+            <h4 class="text-sm font-black uppercase tracking-wider text-neo-text mb-3">Escape Room</h4>
+            <label class="text-[10px] font-black uppercase tracking-wider text-neo-text mb-1 block">Select Room</label>
             <div class="flex gap-2 mb-3">
               <button
                 @click="openEscapeRoomSelector"
-                class="flex-1 flex items-center justify-between text-sm font-semibold py-2 px-3 bg-white dark:bg-slate-600 border border-gray-300 dark:border-slate-500 rounded-xl shadow-sm cursor-pointer dark:text-gray-200 hover:border-gray-400 dark:hover:border-slate-400 transition-colors overflow-hidden min-w-0"
+                class="flex-1 flex items-center justify-between text-sm font-black py-2 px-3 bg-white dark:bg-neo-card-bg neo-border text-neo-text rounded-none cursor-pointer overflow-hidden min-w-0"
               >
                   <span class="flex items-center gap-3 overflow-hidden h-[22px]">
                     <span class="text-sm leading-none roulette-cell shrink-0" :class="[starColor(cyclingDifficulty || selectedRoomDifficulty), { 'roulette-cycling': diceSpinning }]">{{ roomStars(cyclingDifficulty || selectedRoomDifficulty) }}</span>
@@ -293,7 +293,7 @@
               </button>
               <button
                 @click="randomEscapeRoom"
-                class="cursor-pointer flex items-center justify-center bg-white dark:bg-slate-600 border border-gray-300 dark:border-slate-500 rounded-xl w-[42px] h-[42px] text-gray-500 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 hover:border-indigo-300 dark:hover:border-indigo-500 shadow-sm transition-all duration-200 flex-shrink-0"
+                class="w-[42px] h-[42px] bg-white dark:bg-neo-card-bg text-neo-text flex items-center justify-center neo-btn rounded-none flex-shrink-0 cursor-pointer"
                 title="Pick a random room"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" :class="{ 'dice-spin': diceSpinning }" @animationend="diceSpinning = false" viewBox="0 0 511.771 511.771" fill="currentColor">
@@ -312,13 +312,13 @@
           </div>
 
           <!-- Toggle Ready and Start Game buttons -->
-          <div class="space-y-2.5 pt-4 border-t border-gray-100 dark:border-slate-700">
+          <div class="space-y-2.5 pt-4 border-t border-neo-border">
             <button
               @click="toggleReady"
-              class="w-full font-bold py-3 px-4 rounded-xl transition-all duration-200 shadow-sm text-sm cursor-pointer border"
+              class="w-full font-black py-3 px-4 rounded-none transition-all duration-100 text-sm cursor-pointer neo-btn uppercase tracking-wider"
               :class="isReady
-                ? 'bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-700/50 hover:bg-amber-100 dark:hover:bg-amber-900/40'
-                : 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-600'"
+                ? 'bg-neo-secondary text-black'
+                : 'bg-emerald-500 text-black'"
             >
               {{ isReady ? 'Mark as Not Ready' : 'Mark as Ready' }}
             </button>
@@ -327,8 +327,7 @@
               v-if="isHost"
               @click="startGame"
               :disabled="!canStartGame"
-              class="w-full font-bold py-3 px-4 rounded-xl transition-all duration-200 shadow-sm text-sm text-white"
-              :class="canStartGame ? 'bg-indigo-600 hover:bg-indigo-700 cursor-pointer shadow-md' : 'bg-gray-300 dark:bg-slate-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'"
+              class="w-full font-black py-3 px-4 rounded-none transition-all duration-100 text-sm text-white bg-neo-accent neo-btn uppercase tracking-wider disabled:bg-gray-300 dark:disabled:bg-slate-700 disabled:text-gray-500 dark:disabled:text-slate-500 disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 disabled:cursor-not-allowed"
             >
               Start Game
             </button>
@@ -389,10 +388,10 @@
     @close="closeQRModal"
   >
     <div class="flex flex-col items-center">
-      <div class="bg-white p-3 rounded-2xl shadow-inner border border-slate-700/50 mb-4 flex items-center justify-center">
+      <div class="bg-white p-3 rounded-none neo-border-2 mb-4 flex items-center justify-center">
         <canvas ref="qrCanvas" class="w-48 h-48 sm:w-56 sm:h-56"></canvas>
       </div>
-      <p class="text-xs text-slate-400 text-center leading-relaxed max-w-[260px]">
+      <p class="text-xs text-neo-text/70 text-center font-bold leading-relaxed max-w-[260px]">
         Scan this QR code with a friend's phone camera to join this game room instantly.
       </p>
     </div>
@@ -562,7 +561,7 @@ export default defineComponent({
                 width: 256,
                 margin: 1.5,
                 color: {
-                  dark: '#4f46e5', // indigo-600 color to match theme
+                  dark: '#000000',
                   light: '#ffffff',
                 },
               },
@@ -786,34 +785,6 @@ export default defineComponent({
   animation: dice-spin 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
-.players-scroll::-webkit-scrollbar {
-  width: 5px;
-}
-.players-scroll::-webkit-scrollbar-track {
-  background: transparent;
-}
-.players-scroll::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 999px;
-}
-.players-scroll::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
-}
-:root.dark .players-scroll::-webkit-scrollbar-thumb {
-  background: #475569;
-}
-:root.dark .players-scroll::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
-}
-@supports (scrollbar-width: thin) {
-  .players-scroll {
-    scrollbar-width: thin;
-    scrollbar-color: #cbd5e1 transparent;
-  }
-  :root.dark .players-scroll {
-    scrollbar-color: #475569 transparent;
-  }
-}
 .roulette-cell {
   display: inline-block;
 }

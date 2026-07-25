@@ -1,26 +1,26 @@
 <template>
-  <div class="flex flex-col items-center justify-start min-h-full bg-gray-100 dark:bg-slate-900 p-4 pt-8 sm:pt-10 pb-8 select-none">
+  <div class="flex flex-col items-center justify-start min-h-full bg-transparent p-4 pt-8 sm:pt-10 pb-8 select-none">
     <!-- Header Section -->
-    <header class="text-center mb-5 sm:mb-6 max-w-md w-full">
-      <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-2">
+    <header class="text-center mb-6 sm:mb-8 max-w-md w-full">
+      <h1 class="text-4xl sm:text-5xl font-black text-neo-text uppercase tracking-tighter mb-2">
         Gab's Arcade
       </h1>
-      <p class="text-gray-600 dark:text-gray-400 text-sm sm:text-base">
+      <p class="text-neo-text/80 text-sm sm:text-base font-bold">
         Select a game to start playing with your friends.
       </p>
     </header>
 
     <!-- Join via Room Code Card -->
-    <div class="w-full max-w-md bg-white dark:bg-slate-800 border border-gray-200/80 dark:border-slate-700 rounded-2xl p-6 shadow-sm mb-5 sm:mb-6 hover:shadow-md">
+    <div class="w-full max-w-md bg-white dark:bg-neo-card-bg neo-border neo-shadow p-6 mb-6 rounded-none relative">
       <div class="flex items-center space-x-2.5 mb-4">
-        <div class="p-2 bg-indigo-50 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 rounded-lg">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <div class="p-2 bg-white dark:bg-neo-card-bg neo-border-2 text-neo-text rounded-none">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
           </svg>
         </div>
         <div>
-          <h2 class="text-base font-bold text-gray-800 dark:text-gray-100">Join via Room Code</h2>
-          <p class="text-xs text-gray-500 dark:text-gray-400">Enter a 6-digit code to jump directly into the game</p>
+          <h2 class="text-base font-black text-neo-text uppercase tracking-wide">Join via Room Code</h2>
+          <p class="text-xs font-bold text-neo-text/70">Enter a 6-digit code to jump directly into the game</p>
         </div>
       </div>
 
@@ -33,16 +33,16 @@
             type="text"
             placeholder="ENTER CODE"
             maxlength="6"
-            class="w-full pl-4 pr-12 h-[52px] border border-gray-200 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-center font-mono tracking-widest text-lg placeholder:font-sans placeholder:tracking-normal placeholder:text-sm text-gray-800 dark:text-gray-200 uppercase bg-gray-50/50 dark:bg-slate-700/50"
+            class="w-full pl-4 pr-12 h-[52px] neo-input text-center font-mono tracking-widest text-lg placeholder:font-sans placeholder:tracking-normal placeholder:text-sm uppercase"
             :disabled="isValidating"
           />
           <!-- Camera Scan QR Button inside input -->
           <button
             @click="startScanner"
-            class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-gray-400 hover:text-indigo-600 transition-colors duration-200 cursor-pointer"
+            class="absolute right-3 top-1/2 -translate-y-1/2 p-2 text-neo-text/50 hover:text-neo-accent transition-colors duration-100 cursor-pointer"
             title="Scan QR Code"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
               <path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
@@ -51,7 +51,7 @@
         <button
           @click="joinRoomByCode"
           :disabled="isValidating || roomCode.length !== 6"
-           class="px-6 h-[52px] bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white font-bold rounded-xl shadow-sm active:scale-95 disabled:from-gray-300 disabled:to-gray-300 dark:disabled:from-slate-600 dark:disabled:to-slate-600 dark:disabled:text-slate-400 disabled:cursor-not-allowed disabled:scale-100 cursor-pointer flex items-center justify-center min-w-[120px]"
+           class="px-6 h-[52px] bg-neo-accent text-white font-black uppercase tracking-wider neo-btn rounded-none disabled:bg-gray-300 dark:disabled:bg-slate-700 disabled:text-gray-500 dark:disabled:text-slate-500 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 cursor-pointer flex items-center justify-center min-w-[120px]"
         >
           <span v-if="isValidating" class="flex items-center space-x-1.5">
             <svg class="animate-spin -ml-1 mr-1 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -65,8 +65,8 @@
       </div>
 
       <transition name="fade">
-        <div v-if="validationError" class="mt-3 flex items-center space-x-2 text-red-600 text-xs bg-red-50 p-2.5 rounded-lg border border-red-100">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <div v-if="validationError" class="mt-3 flex items-center space-x-2 text-red-600 dark:text-red-400 text-xs bg-red-50 dark:bg-red-950/20 p-2.5 neo-border-2 rounded-none font-bold">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
           <span>{{ validationError }}</span>
@@ -75,34 +75,30 @@
     </div>
 
     <!-- QR Code Scanner Modal -->
-    <div v-if="showScanner" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/90 p-4 backdrop-blur-sm animate-[fade_0.2s_ease]">
-      <div class="w-full max-w-md bg-gray-900 border border-gray-800 rounded-3xl p-6 relative flex flex-col items-center">
-        <button @click="stopScanner" class="absolute top-4 right-4 p-2 text-gray-400 hover:text-white transition-colors duration-200 cursor-pointer">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+    <div v-if="showScanner" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black/85 p-4 backdrop-blur-xs animate-[fade_0.2s_ease]">
+      <div class="w-full max-w-md bg-white dark:bg-neo-card-bg neo-border neo-shadow-lg p-6 relative flex flex-col items-center rounded-none text-neo-text">
+        <button @click="stopScanner" class="absolute top-4 right-4 p-2 text-neo-text/70 hover:text-neo-text transition-colors duration-100 cursor-pointer">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
 
-        <h3 class="text-lg font-bold text-white mb-1">Scan Room QR Code</h3>
-        <p class="text-xs text-gray-400 mb-6 text-center">Point your camera at the host's screen</p>
+        <h3 class="text-xl font-black uppercase tracking-wide mb-1">Scan Room QR Code</h3>
+        <p class="text-xs font-bold text-neo-text/70 mb-6 text-center">Point your camera at the host's screen</p>
 
-        <div class="relative w-full aspect-square bg-black rounded-2xl overflow-hidden border border-gray-800 flex items-center justify-center">
+        <div class="relative w-full aspect-square bg-black neo-border overflow-hidden flex items-center justify-center rounded-none">
           <div id="reader" class="w-full h-full"></div>
           <div class="absolute inset-0 pointer-events-none flex items-center justify-center">
-            <div class="w-[220px] h-[220px] border-2 border-indigo-500 rounded-2xl relative">
-              <div class="absolute -top-1 -left-1 w-6 h-6 border-t-4 border-l-4 border-indigo-400 rounded-tl-lg"></div>
-              <div class="absolute -top-1 -right-1 w-6 h-6 border-t-4 border-r-4 border-indigo-400 rounded-tr-lg"></div>
-              <div class="absolute -bottom-1 -left-1 w-6 h-6 border-b-4 border-l-4 border-indigo-400 rounded-bl-lg"></div>
-              <div class="absolute -bottom-1 -right-1 w-6 h-6 border-b-4 border-r-4 border-indigo-400 rounded-br-lg"></div>
-              <div class="w-full h-0.5 bg-gradient-to-r from-transparent via-indigo-400 to-transparent absolute top-0 animate-[scan_2s_infinite_linear]"></div>
+            <div class="w-[220px] h-[220px] border-4 border-neo-accent rounded-none relative">
+              <div class="w-full h-1 bg-neo-accent absolute top-0 animate-[scan_2s_infinite_linear]"></div>
             </div>
           </div>
         </div>
 
-        <div v-if="scannerError" class="mt-4 text-red-400 text-xs bg-red-950/50 border border-red-900/50 p-3 rounded-xl w-full text-center">
+        <div v-if="scannerError" class="mt-4 text-red-600 dark:text-red-400 text-xs bg-red-50 dark:bg-red-950/20 neo-border-2 p-3 w-full text-center font-bold rounded-none">
           {{ scannerError }}
         </div>
-        <button @click="stopScanner" class="mt-6 w-full py-3 bg-gray-800 hover:bg-gray-700 text-white font-bold rounded-xl transition-all duration-200 cursor-pointer">
+        <button @click="stopScanner" class="mt-6 w-full py-3 bg-neo-secondary text-black font-bold uppercase tracking-wider neo-btn rounded-none">
           Cancel
         </button>
       </div>
@@ -116,23 +112,23 @@
           <button
             @click="showViewDropdown = !showViewDropdown"
             @blur="closeViewDropdown"
-            class="h-10 px-3 border border-gray-200 dark:border-slate-600 rounded-xl bg-gradient-to-b from-white to-gray-50/80 dark:from-slate-700 dark:to-slate-800 cursor-pointer shadow-sm flex items-center focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 dark:text-gray-200"
+            class="h-10 px-3 bg-white dark:bg-neo-card-bg neo-btn text-neo-text cursor-pointer flex items-center focus:outline-none rounded-none"
           >
             <span v-html="currentViewIcon"></span>
           </button>
           <transition name="fade">
             <div
               v-if="showViewDropdown"
-              class="absolute left-0 top-full mt-1 w-40 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl shadow-xl z-50 overflow-hidden"
+              class="absolute left-0 top-full mt-1.5 w-40 bg-white dark:bg-neo-card-bg neo-border neo-shadow-sm z-50 overflow-hidden rounded-none"
             >
               <button
                 v-for="v in viewModes"
                 :key="v.value"
                 @mousedown.prevent="selectViewMode(v.value)"
-                class="w-full px-4 py-2.5 text-left text-sm transition-colors duration-150 cursor-pointer flex items-center space-x-3"
+                class="w-full px-4 py-2.5 text-left text-sm transition-colors duration-100 cursor-pointer flex items-center space-x-3 text-neo-text"
                 :class="viewMode === v.value
-                  ? 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-semibold'
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-600'
+                  ? 'bg-neo-secondary text-black font-black'
+                  : 'hover:bg-neo-muted/20'
                 "
               >
                 <span v-html="v.icon" class="w-5 h-5 flex-shrink-0"></span>
@@ -144,14 +140,14 @@
 
         <!-- Search Input -->
         <div class="relative flex-1">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-neo-text/60 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
           <input
             v-model="searchQuery"
             type="text"
             placeholder="Search games..."
-            class="w-full pl-10 pr-4 h-10 border border-gray-200 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm bg-white/80 dark:bg-slate-700/80 dark:text-gray-200 dark:placeholder-gray-400"
+            class="w-full pl-10 pr-4 h-10 neo-input neo-shadow-sm text-sm rounded-none"
           />
         </div>
 
@@ -160,30 +156,30 @@
           <button
             @click="showFilterDropdown = !showFilterDropdown"
             @blur="closeFilterDropdown"
-            class="h-10 pl-3 pr-9 border border-gray-200 dark:border-slate-600 rounded-xl bg-gradient-to-b from-white to-gray-50/80 dark:from-slate-700 dark:to-slate-800 text-sm text-gray-700 dark:text-gray-300 font-medium cursor-pointer shadow-sm flex items-center focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-[100px]"
+            class="h-10 pl-3 pr-9 bg-white dark:bg-neo-card-bg neo-btn text-sm text-neo-text font-bold cursor-pointer flex items-center focus:outline-none w-[100px] rounded-none"
           >
             <span class="truncate">{{ currentFilterLabel }}</span>
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 absolute right-3 top-1/2 -translate-y-1/2 text-neo-text/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
             </svg>
           </button>
           <transition name="fade">
             <div
               v-if="showFilterDropdown"
-              class="absolute right-0 top-full mt-1 w-44 bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 rounded-xl shadow-xl z-50 overflow-hidden"
+              class="absolute right-0 top-full mt-1.5 w-44 bg-white dark:bg-neo-card-bg neo-border neo-shadow-sm z-50 overflow-hidden rounded-none"
             >
               <button
                 v-for="f in filters"
                 :key="f.value"
                 @mousedown.prevent="selectFilter(f.value)"
-                class="w-full px-4 py-2.5 text-left text-sm transition-colors duration-150 cursor-pointer"
+                class="w-full px-4 py-2.5 text-left text-sm transition-colors duration-100 cursor-pointer text-neo-text"
                 :class="activeFilter === f.value
-                  ? 'bg-indigo-50 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-semibold'
-                  : 'text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-slate-600'
+                  ? 'bg-neo-secondary text-black font-black'
+                  : 'hover:bg-neo-muted/20'
                 "
               >
                 <span class="flex items-center space-x-2.5">
-                  <svg v-if="activeFilter === f.value" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <svg v-if="activeFilter === f.value" xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-black" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
                   <span v-else class="w-4" />

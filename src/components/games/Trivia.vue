@@ -36,10 +36,10 @@
       <div
         v-for="p in players"
         :key="p.player"
-        class="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all duration-300 border"
+        class="flex items-center space-x-1.5 px-3 py-1.5 rounded-none text-xs transition-all duration-300 border-2 border-black"
         :class="getScoreCardClass(p.player)"
       >
-        <span class="w-2.5 h-2.5 rounded-full" :class="getDotClass(p.player)"></span>
+        <span class="w-2.5 h-2.5 rounded-full border border-black" :class="getDotClass(p.player)"></span>
         <span>{{ p.name || playerLabel(p.player) }}</span>
         <span class="font-mono ml-1">{{ gameState.scores?.[p.player] || 0 }}</span>
       </div>
@@ -48,17 +48,17 @@
     <!-- Main Content -->
     <div class="flex-grow flex flex-col items-center justify-center w-full max-w-lg overflow-y-auto py-2">
       <!-- Game Over Summary Card -->
-      <div v-if="gameOver" class="w-full bg-slate-900 border border-slate-800 rounded-2xl shadow-xl p-6 text-center space-y-6 flex flex-col items-center justify-center">
+      <div v-if="gameOver" class="w-full bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow p-6 text-center space-y-6 flex flex-col items-center justify-center rounded-none my-4">
         <!-- Animated Trophy Icon -->
-        <div class="w-20 h-20 bg-amber-500/10 border border-amber-500/20 rounded-full flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-10 w-10 text-amber-400">
+        <div class="w-20 h-20 bg-neo-secondary border-4 border-black text-black flex items-center justify-center rounded-none">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="h-10 w-10 text-black">
             <path d="M17 3H21C21.5523 3 22 3.44772 22 4V9C22 10.375 21.0503 11.5283 19.7824 11.8541C19.1417 14.1266 17.2995 15.8924 15 16.6343V19H18V21H6V19H9V16.6343C6.70054 15.8924 4.85834 14.1266 4.21762 11.8541C2.94974 11.5283 2 10.375 2 9V4C2 3.44772 2.44772 3 3 3H7V1H17V3ZM15 3H9V15C9 16.6569 10.3431 18 12 18C13.6569 18 15 16.6569 15 15V3ZM4 5V9C4 9.38793 4.2125 9.7262 4.54291 9.89141L5 10.12V5H4ZM20 5H19V10.12L19.4571 9.89141C19.7875 9.7262 20 9.38793 20 9V5Z"/>
           </svg>
         </div>
 
         <div>
-          <h2 class="text-2xl font-black text-white tracking-wide uppercase">Game Over</h2>
-          <p class="text-sm text-slate-400 mt-1">Final Standings &amp; Scores</p>
+          <h2 class="text-2xl font-black text-neo-text tracking-wide uppercase">Game Over</h2>
+          <p class="text-sm text-neo-text/75 font-bold mt-1">Final Standings &amp; Scores</p>
         </div>
 
         <!-- Leaderboard -->
@@ -66,17 +66,26 @@
           <div
             v-for="(p, idx) in sortedPlayers"
             :key="p.player"
-            class="flex items-center justify-between px-4 py-3 rounded-xl border transition-all duration-300"
-            :class="idx === 0 ? 'bg-amber-500/10 border-amber-500/30 text-amber-200 shadow-lg shadow-amber-500/5' : 'bg-slate-800/50 border-slate-700/50 text-slate-300'"
+            class="flex items-center justify-between px-4 py-3 rounded-none border-2 border-black font-bold uppercase tracking-wide transition-all duration-100"
+            :class="idx === 0 ? 'bg-neo-secondary text-black neo-shadow-sm' : 'bg-white dark:bg-neo-card-bg text-neo-text opacity-85'"
           >
             <div class="flex items-center space-x-2.5">
-              <span class="font-mono text-sm font-bold text-slate-400 w-4">#{{ idx + 1 }}</span>
-              <span class="w-2.5 h-2.5 rounded-full" :class="getDotClass(p.player)"></span>
-              <span class="font-bold text-sm">{{ p.name || playerLabel(p.player) }}</span>
+              <span class="font-mono text-sm font-black w-4 text-neo-text/50">#{{ idx + 1 }}</span>
+              <span class="w-2.5 h-2.5 rounded-full border border-black" :class="getDotClass(p.player)"></span>
+              <span class="font-bold text-sm text-neo-text">{{ p.name || playerLabel(p.player) }}</span>
             </div>
-            <span class="font-mono font-black text-sm">{{ gameState.scores?.[p.player] || 0 }} pts</span>
+            <span class="font-mono font-black text-sm text-neo-text">{{ gameState.scores?.[p.player] || 0 }} pts</span>
           </div>
         </div>
+
+        <button
+          @click="handlePlayAgain"
+          :disabled="waiting"
+          class="bg-neo-accent text-white font-black py-2.5 px-8 rounded-none transition-all duration-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 cursor-pointer neo-btn uppercase tracking-wider w-full"
+        >
+          <span v-if="waiting" class="flex items-center gap-1.5 justify-center">Waiting<WaitingIndicator /></span>
+          <span v-else>Play Again</span>
+        </button>
       </div>
 
       <!-- Loading State -->
@@ -86,14 +95,14 @@
       </div>
 
       <!-- Question Card -->
-      <div v-else class="w-full bg-slate-900 border border-slate-800 rounded-2xl shadow-xl p-4 sm:p-6">
+      <div v-else class="w-full bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow p-4 sm:p-6 rounded-none">
         <!-- Category & Difficulty -->
         <div class="flex items-center justify-between mb-3">
-          <span class="text-[10px] font-bold uppercase tracking-wider text-violet-400 bg-violet-500/10 px-2.5 py-1 rounded-full">
+          <span class="text-[10px] font-black uppercase tracking-wider text-neo-text bg-neo-muted/30 border-2 border-black px-2.5 py-1 rounded-none">
             {{ currentQuestion.category }}
           </span>
           <span
-            class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full"
+            class="text-[10px] font-black uppercase tracking-wider px-2.5 py-1 border-2 border-black rounded-none"
             :class="difficultyClass"
           >
             {{ currentQuestion.difficulty }}
@@ -101,7 +110,7 @@
         </div>
 
         <!-- Question Text -->
-        <p class="text-base sm:text-lg font-semibold text-white leading-relaxed mb-4">
+        <p class="text-base sm:text-lg font-black text-neo-text leading-relaxed mb-4">
           {{ currentQuestion.question }}
         </p>
 
@@ -127,10 +136,10 @@
         <!-- Phase-specific UI -->
         <!-- Answer Input (visible during intro and revealing) -->
         <div v-if="phase === 'question-intro' || phase === 'revealing'" class="space-y-3 py-2">
-          <div v-if="phase === 'question-intro'" class="text-center text-xs text-violet-400 font-semibold animate-pulse">
+          <div v-if="phase === 'question-intro'" class="text-center text-xs text-neo-accent font-black animate-pulse uppercase">
             Letters Revealing Soon...
           </div>
-          <div v-if="phase === 'revealing'" class="flex items-center justify-between text-xs text-gray-500 font-medium">
+          <div v-if="phase === 'revealing'" class="flex items-center justify-between text-xs text-neo-text/50 font-bold uppercase">
             <span>Revealed: {{ gameState.revealIndex }}/{{ gameState.totalLetters }}</span>
           </div>
           <div class="flex items-center space-x-2">
@@ -138,7 +147,7 @@
               v-model="userAnswer"
               type="text"
               placeholder="Type your answer..."
-              class="flex-grow bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-violet-500 transition-all"
+              class="flex-grow px-4 py-2.5 text-sm placeholder:text-neo-text/50 neo-input"
               style="scroll-margin-top: 40vh"
               @keyup.enter="submitAnswer"
               :disabled="gameState.solvedBy !== null"
@@ -147,7 +156,7 @@
             <button
               @click="submitAnswer"
               :disabled="gameState.solvedBy !== null || !userAnswer.trim()"
-              class="bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 disabled:from-slate-700 disabled:to-slate-700 disabled:text-slate-500 text-white font-bold px-5 py-2.5 rounded-xl transition-all duration-150 cursor-pointer active:scale-95 disabled:cursor-not-allowed text-sm"
+              class="bg-neo-accent text-white font-black px-5 py-2.5 rounded-none transition-all duration-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 cursor-pointer neo-btn uppercase tracking-wider text-sm flex items-center justify-center border-2 border-black"
             >
               Submit
             </button>
@@ -173,7 +182,6 @@
       </div>
     </div>
 
-    <!-- Game Over -->
     <div v-if="gameOver" class="flex-shrink-0 w-full max-w-lg flex flex-col items-center py-3 space-y-3">
       <div class="text-lg font-bold" :class="winnerTextClass">
         {{ gameState.winner }}
@@ -181,7 +189,7 @@
       <button
         @click="handlePlayAgain"
         :disabled="waiting"
-        class="bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-600 text-white font-bold py-2.5 px-8 rounded-xl shadow-md transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="bg-neo-accent text-white font-black py-2.5 px-8 rounded-none transition-all duration-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 cursor-pointer neo-btn uppercase tracking-wider"
       >
         <span v-if="waiting">Waiting<WaitingIndicator /></span>
         <span v-else>Play Again</span>
@@ -345,10 +353,10 @@ export default defineComponent({
     },
     difficultyClass(): string {
       const d = this.currentQuestion?.difficulty;
-      if (d === 'easy') return 'text-emerald-400 bg-emerald-500/10';
-      if (d === 'medium') return 'text-amber-400 bg-amber-500/10';
-      if (d === 'hard') return 'text-rose-400 bg-rose-500/10';
-      return 'text-gray-400 bg-gray-500/10';
+      if (d === 'easy') return 'text-emerald-600 dark:text-emerald-400 bg-emerald-500/20';
+      if (d === 'medium') return 'text-amber-600 dark:text-amber-400 bg-amber-500/20';
+      if (d === 'hard') return 'text-rose-600 dark:text-rose-400 bg-rose-500/20';
+      return 'text-neo-text/75 bg-slate-100 dark:bg-slate-800';
     },
     winnerTextClass(): string {
       if (!this.gameState.winner) return '';
@@ -381,10 +389,12 @@ export default defineComponent({
     },
     getScoreCardClass(playerNum: number) {
       if (this.gameState.solvedBy === playerNum) {
-        return 'bg-slate-800 border-emerald-400/70 text-emerald-300';
+        return 'bg-emerald-500 text-black border-2 border-black font-black';
       }
-      if (this.player === playerNum) return 'bg-slate-800 border-slate-700 text-slate-200';
-      return 'bg-slate-800/50 border-slate-700/50 text-slate-400';
+      if (this.player === playerNum) {
+        return 'bg-neo-secondary text-black border-2 border-black font-black';
+      }
+      return 'bg-white dark:bg-neo-card-bg text-neo-text border-2 border-black opacity-70 font-black';
     },
     displayCharClass(ch: string, _idx: number) {
       if (ch === '_') return 'text-slate-600';

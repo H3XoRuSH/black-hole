@@ -2,23 +2,22 @@
   <BaseModal
     :is-open="isOpen"
     title="Report a Bug"
-    theme="light"
     max-width="max-w-md"
     @close="close"
   >
     <template #header-icon>
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
       </svg>
     </template>
 
     <form @submit.prevent="submitReport" class="space-y-4">
       <div>
-        <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Category</label>
+        <label class="block text-xs font-black text-neo-text uppercase tracking-wider mb-1.5">Category</label>
         <select
           v-model="category"
           :disabled="loading"
-          class="w-full text-sm py-2 px-3 border border-slate-200 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-slate-50 dark:bg-slate-700 cursor-pointer dark:text-slate-200"
+          class="w-full text-sm py-2 px-3 neo-input rounded-none cursor-pointer"
         >
           <option value="Gameplay Bug">Gameplay Bug</option>
           <option value="UI/Visual Issue">UI/Visual Issue</option>
@@ -28,7 +27,7 @@
       </div>
 
       <div>
-        <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Title</label>
+        <label class="block text-xs font-black text-neo-text uppercase tracking-wider mb-1.5">Title</label>
         <input
           v-model="title"
           :disabled="loading"
@@ -36,12 +35,12 @@
           placeholder="e.g. Turn freezes on connection drop"
           maxlength="100"
           required
-          class="w-full text-sm py-2.5 px-4 border border-slate-200 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-slate-50 dark:bg-slate-700 dark:text-slate-200 dark:placeholder-slate-400"
+          class="w-full text-sm py-2.5 px-4 neo-input rounded-none placeholder:text-neo-text/40"
         />
       </div>
 
       <div>
-        <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1.5">Description</label>
+        <label class="block text-xs font-black text-neo-text uppercase tracking-wider mb-1.5">Description</label>
         <textarea
           v-model="description"
           :disabled="loading"
@@ -49,7 +48,7 @@
           rows="4"
           maxlength="1000"
           required
-          class="w-full text-sm py-2.5 px-4 border border-slate-200 dark:border-slate-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-slate-50 dark:bg-slate-700 dark:text-slate-200 dark:placeholder-slate-400 resize-none"
+          class="w-full text-sm py-2.5 px-4 neo-input rounded-none placeholder:text-neo-text/40 resize-none"
         ></textarea>
       </div>
 
@@ -58,14 +57,14 @@
           type="button"
           @click="close"
           :disabled="loading"
-          class="flex-1 py-3 border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-sm rounded-xl transition duration-150 active:scale-95 disabled:opacity-50 cursor-pointer text-center"
+          class="flex-1 py-3 bg-white dark:bg-neo-card-bg text-neo-text font-black text-sm rounded-none transition-all duration-100 cursor-pointer text-center neo-btn uppercase tracking-wider disabled:opacity-50 disabled:translate-x-0 disabled:translate-y-0 disabled:shadow-none"
         >
           Cancel
         </button>
         <button
           type="submit"
           :disabled="loading || !title.trim() || !description.trim()"
-          class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-xl transition duration-150 active:scale-95 disabled:opacity-50 cursor-pointer flex items-center justify-center space-x-1.5 shadow-sm shadow-indigo-600/30"
+          class="flex-1 py-3 bg-neo-accent text-white font-black text-sm rounded-none transition-all duration-100 cursor-pointer flex items-center justify-center space-x-1.5 neo-btn uppercase tracking-wider disabled:opacity-50 disabled:translate-x-0 disabled:translate-y-0 disabled:shadow-none"
         >
           <svg v-if="loading" class="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
