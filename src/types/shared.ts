@@ -138,8 +138,7 @@ export interface MenuGame {
   route: string;
   status: string;
   color: string;
-  supportsAI?: boolean;
-  singlePlayer?: boolean;
+  tags?: string[];
   icon?: string;
 }
 

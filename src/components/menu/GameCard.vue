@@ -4,11 +4,14 @@
     class="card-3d card-3d--list bg-white dark:bg-neo-card-bg neo-border neo-shadow-sm p-4 sm:p-5 flex items-center justify-between border-l-8 rounded-none text-neo-text"
     :style="{ borderLeftColor: game.color }">
     <div class="flex-grow pr-3 sm:pr-4 min-w-0">
-      <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-1 min-w-0">
+      <div class="flex items-center space-x-1.5 min-w-0 mb-1">
         <div v-if="game.icon" class="w-7 h-7 flex-shrink-0" :style="{ color: game.color }" v-html="game.icon"></div>
         <h2 class="text-base sm:text-lg font-black uppercase text-neo-text truncate">{{ game.name }}</h2>
-        <span v-if="game.supportsAI" class="px-2 py-0.5 text-[10px] font-black uppercase rounded-full bg-neo-muted neo-border-2 text-black flex-shrink-0">Play vs AI</span>
-        <span v-if="game.singlePlayer" class="px-2 py-0.5 text-[10px] font-black uppercase rounded-full bg-neo-secondary neo-border-2 text-black flex-shrink-0">Single Player</span>
+      </div>
+      <div v-if="game.tags?.length" class="flex flex-wrap gap-1 sm:gap-1.5 mb-1">
+        <span v-if="game.tags?.includes('ai')" class="px-1.5 xs:px-2 py-0.5 text-[8px] xs:text-[9px] sm:text-[10px] font-black uppercase leading-none xs:leading-tight rounded-full bg-neo-muted xs:neo-border-2 text-black">Play vs AI</span>
+        <span v-if="game.tags?.includes('single')" class="px-1.5 xs:px-2 py-0.5 text-[8px] xs:text-[9px] sm:text-[10px] font-black uppercase leading-none xs:leading-tight rounded-full bg-neo-secondary xs:neo-border-2 text-black">Single Player</span>
+        <span v-if="game.tags?.includes('multiplayer')" class="px-1.5 xs:px-2 py-0.5 text-[8px] xs:text-[9px] sm:text-[10px] font-black uppercase leading-none xs:leading-tight rounded-full bg-neo-accent xs:neo-border-2 text-black">Multiplayer</span>
       </div>
       <p class="text-neo-text/70 text-xs sm:text-sm line-clamp-2 leading-relaxed font-bold">{{ game.description }}</p>
     </div>
@@ -30,13 +33,14 @@
     class="card-3d card-3d--grid bg-white dark:bg-neo-card-bg neo-border neo-shadow-sm p-3 xs:p-4 sm:p-5 flex flex-col justify-between h-[185px] xs:h-[210px] sm:h-[230px] border-t-8 rounded-none text-neo-text"
     :style="{ borderTopColor: game.color }">
     <div>
-      <div class="flex items-center justify-between mb-1.5 xs:mb-2 min-w-0">
-        <div class="flex items-center space-x-1.5 min-w-0">
-          <div v-if="game.icon" class="w-5 h-5 flex-shrink-0" :style="{ color: game.color }" v-html="game.icon"></div>
-          <h2 class="text-xs xs:text-sm sm:text-base font-black uppercase text-neo-text line-clamp-1">{{ game.name }}</h2>
-        </div>
-        <span v-if="game.supportsAI" class="px-1.5 py-0.2 text-[7px] xs:text-[8px] font-black uppercase rounded-full bg-neo-muted neo-border-2 text-black flex-shrink-0 ml-1">Play vs AI</span>
-        <span v-if="game.singlePlayer" class="px-1.5 py-0.2 text-[7px] xs:text-[8px] font-black uppercase rounded-full bg-neo-secondary neo-border-2 text-black flex-shrink-0 ml-1">Single Player</span>
+      <div class="flex items-center space-x-1.5 min-w-0 mb-1">
+        <div v-if="game.icon" class="w-5 h-5 flex-shrink-0" :style="{ color: game.color }" v-html="game.icon"></div>
+        <h2 class="text-xs xs:text-sm sm:text-base font-black uppercase text-neo-text line-clamp-1">{{ game.name }}</h2>
+      </div>
+      <div v-if="game.tags?.length" class="flex flex-wrap gap-x-0.5 gap-y-0.5 mb-1.5 xs:mb-2">
+        <span v-if="game.tags?.includes('ai')" class="px-1 py-0.2 text-[6px] xs:px-1.5 xs:text-[7px] sm:text-[8px] font-black uppercase leading-none xs:leading-tight rounded-full bg-neo-muted xs:neo-border-2 text-black">Play vs AI</span>
+        <span v-if="game.tags?.includes('single')" class="px-1 py-0.2 text-[6px] xs:px-1.5 xs:text-[7px] sm:text-[8px] font-black uppercase leading-none xs:leading-tight rounded-full bg-neo-secondary xs:neo-border-2 text-black">Single Player</span>
+        <span v-if="game.tags?.includes('multiplayer')" class="px-1 py-0.2 text-[6px] xs:px-1.5 xs:text-[7px] sm:text-[8px] font-black uppercase leading-none xs:leading-tight rounded-full bg-neo-accent xs:neo-border-2 text-black">Multiplayer</span>
       </div>
       <p class="text-neo-text/70 text-[10px] xs:text-[11px] sm:text-xs leading-relaxed line-clamp-2 xs:line-clamp-3 sm:line-clamp-4 font-bold">{{ game.description }}</p>
     </div>
@@ -58,13 +62,14 @@
     class="card-3d card-3d--carousel bg-white dark:bg-neo-card-bg neo-border neo-shadow p-5 sm:p-6 md:p-8 flex flex-col justify-between h-[280px] xs:h-[320px] sm:h-[360px] relative border-t-8 rounded-none text-neo-text"
     :style="{ borderTopColor: game.color }">
     <div>
-      <div class="flex items-center justify-between mb-3 xs:mb-4">
-        <div class="flex items-center space-x-2.5 min-w-0">
-          <div v-if="game.icon" class="w-8 h-8 flex-shrink-0" :style="{ color: game.color }" v-html="game.icon"></div>
-          <h2 class="text-base xs:text-lg sm:text-2xl font-black uppercase tracking-tight text-neo-text truncate">{{ game.name }}</h2>
-        </div>
-        <span v-if="game.supportsAI" class="px-2.5 py-0.5 text-[10px] xs:text-xs font-black uppercase rounded-full bg-neo-muted neo-border-2 text-black flex-shrink-0 ml-1">Play vs AI</span>
-        <span v-if="game.singlePlayer" class="px-2.5 py-0.5 text-[10px] xs:text-xs font-black uppercase rounded-full bg-neo-secondary neo-border-2 text-black flex-shrink-0 ml-1">Single Player</span>
+      <div class="flex items-center space-x-2.5 min-w-0 mb-2 xs:mb-3">
+        <div v-if="game.icon" class="w-8 h-8 flex-shrink-0" :style="{ color: game.color }" v-html="game.icon"></div>
+        <h2 class="text-base xs:text-lg sm:text-2xl font-black uppercase tracking-tight text-neo-text truncate">{{ game.name }}</h2>
+      </div>
+      <div v-if="game.tags?.length" class="flex flex-wrap gap-1.5 xs:gap-2 mb-3 xs:mb-4">
+        <span v-if="game.tags?.includes('ai')" class="px-2.5 py-0.5 text-[10px] xs:text-xs font-black uppercase rounded-full bg-neo-muted neo-border-2 text-black">Play vs AI</span>
+        <span v-if="game.tags?.includes('single')" class="px-2.5 py-0.5 text-[10px] xs:text-xs font-black uppercase rounded-full bg-neo-secondary neo-border-2 text-black">Single Player</span>
+        <span v-if="game.tags?.includes('multiplayer')" class="px-2.5 py-0.5 text-[10px] xs:text-xs font-black uppercase rounded-full bg-neo-accent neo-border-2 text-black">Multiplayer</span>
       </div>
       <p class="text-neo-text/80 text-xs xs:text-sm sm:text-base leading-relaxed line-clamp-3 xs:line-clamp-4 sm:line-clamp-none font-bold">{{ game.description }}</p>
     </div>

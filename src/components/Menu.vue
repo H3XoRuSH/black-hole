@@ -258,6 +258,7 @@ export default defineComponent({
         { label: 'All', value: 'all' },
         { label: 'Play Vs AI', value: 'ai' },
         { label: 'Single Player', value: 'single' },
+        { label: 'Multiplayer', value: 'multiplayer' },
       ],
       viewModes: [
         { label: 'Carousel', value: 'carousel', icon: '<svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="7" y="4" width="10" height="16" rx="2" /><rect x="2" y="6" width="3" height="12" rx="1" opacity="0.6" /><rect x="19" y="6" width="3" height="12" rx="1" opacity="0.6" /></svg>' },
@@ -277,9 +278,11 @@ export default defineComponent({
       const query = this.searchQuery.toLowerCase().trim();
 
       if (this.activeFilter === 'ai') {
-        result = result.filter((g: any) => g.supportsAI);
+        result = result.filter((g: any) => g.tags?.includes('ai'));
       } else if (this.activeFilter === 'single') {
-        result = result.filter((g: any) => g.singlePlayer);
+        result = result.filter((g: any) => g.tags?.includes('single'));
+      } else if (this.activeFilter === 'multiplayer') {
+        result = result.filter((g: any) => g.tags?.includes('multiplayer'));
       }
 
       if (query) {
