@@ -850,13 +850,26 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
               io.to(p2.id).emit('player-role', { player: 1 });
             }
           }
+          const prevGridSize = room.gameId === 'jigsaw' ? room.gameState.gridSize : undefined;
           room.gameState = game.resetState(room.gameState.players);
+          if (prevGridSize !== undefined) {
+            const jigsawMod = gamesRegistry['jigsaw'] as any;
+            if (jigsawMod?.setGridSize) jigsawMod.setGridSize(room, prevGridSize);
+          }
           room.gameState.moveHistory = [];
           if (room.recaps) room.recaps.clear();
           if (room.recapConversations) room.recapConversations.clear();
           broadcastGameState(roomKey, room, io);
           triggerAIMoveIfActive(roomKey, room, io);
           startBingoTimer(roomKey, room, io);
+
+          if (room.gameId === 'jigsaw') {
+            const jigsawMod = gamesRegistry['jigsaw'] as any;
+            if (jigsawMod?.onGameStart) {
+              jigsawMod.onGameStart(room);
+              broadcastGameState(roomKey, room, io);
+            }
+          }
 
           if (room.gameId === 'trivia') {
             stopTriviaTimers(roomKey);
@@ -1024,6 +1037,25 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       const game = gamesRegistry['snakes-ladders'] as any;
       if (game.recreateBoard) {
         game.recreateBoard(room.gameState);
+      }
+      broadcastGameState(roomKey, room, io);
+    },
+
+    setJigsawOptions(
+      roomKey: string,
+      socket: Socket,
+      data: { gridSize: 4 | 6 | 8 },
+      io: SocketIOServer
+    ) {
+      if (!rooms.has(roomKey)) return;
+      const room = rooms.get(roomKey)!;
+      if (room.gameId !== 'jigsaw') return;
+      const host = room.gameState.players.find((p: any) => p.id === socket.id);
+      if (!host || host.player !== 1) return;
+
+      const game = gamesRegistry['jigsaw'] as any;
+      if (game.setGridSize) {
+        game.setGridSize(room, data.gridSize);
       }
       broadcastGameState(roomKey, room, io);
     },

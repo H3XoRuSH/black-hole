@@ -402,6 +402,24 @@
             </button>
           </div>
         </div>
+
+          <!-- Jigsaw Options (host only) -->
+          <div v-if="gameId === 'jigsaw' && isHost" class="py-4 border-t-4 border-black">
+            <h4 class="text-sm font-black uppercase tracking-wider text-neo-text mb-3">Difficulty</h4>
+            <div class="flex gap-2">
+              <button
+                v-for="opt in ([{ v: 4, label: 'Small', sub: '4×4 · 16 pcs' }, { v: 6, label: 'Medium', sub: '6×6 · 36 pcs' }, { v: 8, label: 'Large', sub: '8×8 · 64 pcs' }] as const)"
+                :key="opt.v"
+                type="button"
+                @click="jigsawGridSize = opt.v; updateJigsawOptions()"
+                class="flex-1 flex flex-col items-center justify-center text-xs font-black py-2 px-1 neo-btn rounded-none cursor-pointer"
+                :class="jigsawGridSize === opt.v ? 'bg-neo-secondary' : 'bg-white dark:bg-neo-card-bg text-neo-text'"
+              >
+                <span>{{ opt.label }}</span>
+                <span class="text-[9px] font-bold opacity-60 mt-0.5">{{ opt.sub }}</span>
+              </button>
+            </div>
+          </div>
       </div>
 
       <!-- If no room key (e.g. direct url navigation or player disconnected) -->
@@ -489,6 +507,8 @@ const gamePreloaders: Record<string, () => Promise<any>> = {
   'infinite-word-chain': () => import('./games/InfiniteWordChain.vue'),
   'pictionary': () => import('./games/Pictionary.vue'),
   'escape-room': () => import('./games/EscapeRoom.vue'),
+  'snakes-ladders': () => import('./games/SnakesLadders.vue'),
+  'jigsaw': () => import('./games/Jigsaw.vue'),
 };
 
 export default defineComponent({
@@ -534,6 +554,7 @@ export default defineComponent({
       snakesLaddersGridSize: 10,
       snakesLaddersSnakes: 8,
       snakesLaddersLadders: 8,
+      jigsawGridSize: 4 as 4 | 6 | 8,
       pageDarkMode: document.documentElement.classList.contains('dark'),
       darkModeObserver: null as MutationObserver | null,
       isReadyLocal: null as boolean | null,
@@ -697,6 +718,13 @@ export default defineComponent({
         gridSize: this.snakesLaddersGridSize,
         snakesCount: this.snakesLaddersSnakes,
         laddersCount: this.snakesLaddersLadders,
+      });
+    },
+    updateJigsawOptions() {
+      if (!this.socket || !this.roomKey) return;
+      this.socket.emit('set-jigsaw-options', {
+        roomKey: this.roomKey,
+        gridSize: this.jigsawGridSize,
       });
     },
     openEscapeRoomSelector() {
