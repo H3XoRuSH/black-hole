@@ -1,10 +1,10 @@
 <template>
   <!-- List variant -->
   <div v-if="variant === 'list'"
-    class="card-3d card-3d--list bg-white dark:bg-neo-card-bg neo-border neo-shadow-sm p-5 flex items-center justify-between border-l-8 rounded-none text-neo-text"
+    class="card-3d card-3d--list bg-white dark:bg-neo-card-bg neo-border neo-shadow-sm p-4 sm:p-5 flex items-center justify-between border-l-8 rounded-none text-neo-text"
     :style="{ borderLeftColor: game.color }">
-    <div class="flex-grow pr-4">
-      <div class="flex items-center space-x-2 mb-1 min-w-0">
+    <div class="flex-grow pr-3 sm:pr-4 min-w-0">
+      <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 mb-1 min-w-0">
         <div v-if="game.icon" class="w-7 h-7 flex-shrink-0" :style="{ color: game.color }" v-html="game.icon"></div>
         <h2 class="text-base sm:text-lg font-black uppercase text-neo-text truncate">{{ game.name }}</h2>
         <span v-if="game.supportsAI" class="px-2 py-0.5 text-[10px] font-black uppercase rounded-full bg-neo-muted neo-border-2 text-black flex-shrink-0">Play vs AI</span>
@@ -14,7 +14,7 @@
     </div>
     <button @click="$emit('select-game', game.id)"
       :disabled="isAnyGameHosting"
-      class="flex-shrink-0 text-white font-black uppercase tracking-wider py-2 px-4 neo-btn rounded-none text-xs sm:text-sm transition-all duration-100 text-center block disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 touch-target"
+      class="flex-shrink-0 text-white font-black uppercase tracking-wider py-2 px-3 sm:px-4 neo-btn rounded-none text-xs sm:text-sm transition-all duration-100 text-center block disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 touch-target"
       :style="{ backgroundColor: game.color }">
       <template v-if="isHosting">
         <span class="flex items-center justify-center gap-1.5">Hosting<WaitingIndicator /></span>
@@ -27,22 +27,22 @@
 
   <!-- Grid variant -->
   <div v-else-if="variant === 'grid'"
-    class="card-3d card-3d--grid bg-white dark:bg-neo-card-bg neo-border neo-shadow-sm p-4 sm:p-5 flex flex-col justify-between h-[230px] border-t-8 rounded-none text-neo-text"
+    class="card-3d card-3d--grid bg-white dark:bg-neo-card-bg neo-border neo-shadow-sm p-3 xs:p-4 sm:p-5 flex flex-col justify-between h-[185px] xs:h-[210px] sm:h-[230px] border-t-8 rounded-none text-neo-text"
     :style="{ borderTopColor: game.color }">
     <div>
-      <div class="flex items-center justify-between mb-2 min-w-0">
+      <div class="flex items-center justify-between mb-1.5 xs:mb-2 min-w-0">
         <div class="flex items-center space-x-1.5 min-w-0">
           <div v-if="game.icon" class="w-5 h-5 flex-shrink-0" :style="{ color: game.color }" v-html="game.icon"></div>
-          <h2 class="text-sm sm:text-base font-black uppercase text-neo-text line-clamp-1">{{ game.name }}</h2>
+          <h2 class="text-xs xs:text-sm sm:text-base font-black uppercase text-neo-text line-clamp-1">{{ game.name }}</h2>
         </div>
-        <span v-if="game.supportsAI" class="px-1.5 py-0.2 text-[8px] font-black uppercase rounded-full bg-neo-muted neo-border-2 text-black flex-shrink-0 ml-1">Play vs AI</span>
-        <span v-if="game.singlePlayer" class="px-1.5 py-0.2 text-[8px] font-black uppercase rounded-full bg-neo-secondary neo-border-2 text-black flex-shrink-0 ml-1">Single Player</span>
+        <span v-if="game.supportsAI" class="px-1.5 py-0.2 text-[7px] xs:text-[8px] font-black uppercase rounded-full bg-neo-muted neo-border-2 text-black flex-shrink-0 ml-1">Play vs AI</span>
+        <span v-if="game.singlePlayer" class="px-1.5 py-0.2 text-[7px] xs:text-[8px] font-black uppercase rounded-full bg-neo-secondary neo-border-2 text-black flex-shrink-0 ml-1">Single Player</span>
       </div>
-      <p class="text-neo-text/70 text-[11px] sm:text-xs leading-relaxed line-clamp-4 font-bold">{{ game.description }}</p>
+      <p class="text-neo-text/70 text-[10px] xs:text-[11px] sm:text-xs leading-relaxed line-clamp-2 xs:line-clamp-3 sm:line-clamp-4 font-bold">{{ game.description }}</p>
     </div>
     <button @click="$emit('select-game', game.id)"
       :disabled="isAnyGameHosting"
-      class="w-full text-white font-black uppercase tracking-wider py-2 px-3 neo-btn rounded-none text-xs sm:text-sm transition-all duration-100 text-center block mt-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 touch-target"
+      class="w-full text-white font-black uppercase tracking-wider py-1.5 px-2.5 xs:py-2 xs:px-3 neo-btn rounded-none text-xs sm:text-sm transition-all duration-100 text-center block mt-2 xs:mt-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 touch-target"
       :style="{ backgroundColor: game.color }">
       <template v-if="isHosting">
         <span class="flex items-center justify-center gap-1.5">Hosting<WaitingIndicator /></span>
@@ -55,22 +55,22 @@
 
   <!-- Carousel variant (default) -->
   <div v-else
-    class="card-3d card-3d--carousel bg-white dark:bg-neo-card-bg neo-border neo-shadow p-6 sm:p-8 flex flex-col justify-between h-[360px] relative border-t-8 rounded-none text-neo-text"
+    class="card-3d card-3d--carousel bg-white dark:bg-neo-card-bg neo-border neo-shadow p-5 sm:p-6 md:p-8 flex flex-col justify-between h-[280px] xs:h-[320px] sm:h-[360px] relative border-t-8 rounded-none text-neo-text"
     :style="{ borderTopColor: game.color }">
     <div>
-      <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center justify-between mb-3 xs:mb-4">
         <div class="flex items-center space-x-2.5 min-w-0">
           <div v-if="game.icon" class="w-8 h-8 flex-shrink-0" :style="{ color: game.color }" v-html="game.icon"></div>
-          <h2 class="text-xl sm:text-2xl font-black uppercase tracking-tight text-neo-text truncate">{{ game.name }}</h2>
+          <h2 class="text-base xs:text-lg sm:text-2xl font-black uppercase tracking-tight text-neo-text truncate">{{ game.name }}</h2>
         </div>
-        <span v-if="game.supportsAI" class="px-2.5 py-0.5 text-xs font-black uppercase rounded-full bg-neo-muted neo-border-2 text-black flex-shrink-0 ml-1">Play vs AI</span>
-        <span v-if="game.singlePlayer" class="px-2.5 py-0.5 text-xs font-black uppercase rounded-full bg-neo-secondary neo-border-2 text-black flex-shrink-0 ml-1">Single Player</span>
+        <span v-if="game.supportsAI" class="px-2.5 py-0.5 text-[10px] xs:text-xs font-black uppercase rounded-full bg-neo-muted neo-border-2 text-black flex-shrink-0 ml-1">Play vs AI</span>
+        <span v-if="game.singlePlayer" class="px-2.5 py-0.5 text-[10px] xs:text-xs font-black uppercase rounded-full bg-neo-secondary neo-border-2 text-black flex-shrink-0 ml-1">Single Player</span>
       </div>
-      <p class="text-neo-text/80 text-sm sm:text-base leading-relaxed font-bold">{{ game.description }}</p>
+      <p class="text-neo-text/80 text-xs xs:text-sm sm:text-base leading-relaxed line-clamp-3 xs:line-clamp-4 sm:line-clamp-none font-bold">{{ game.description }}</p>
     </div>
     <button @click="$emit('select-game', game.id)"
       :disabled="isAnyGameHosting"
-      class="w-full text-white font-black uppercase tracking-wider py-3.5 px-4 neo-btn rounded-none transition-all duration-100 text-center block disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 touch-target"
+      class="w-full text-white font-black uppercase tracking-wider py-2.5 px-3 xs:py-3.5 xs:px-4 neo-btn rounded-none text-xs xs:text-sm transition-all duration-100 text-center block disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 touch-target"
       :style="{ backgroundColor: game.color }">
       <template v-if="isHosting">
         <span class="flex items-center justify-center gap-1.5">Hosting<WaitingIndicator /></span>

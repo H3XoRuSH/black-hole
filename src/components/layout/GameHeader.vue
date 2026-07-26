@@ -49,27 +49,27 @@
 
     <!-- Players VS Status Card -->
     <div
-      class="w-full bg-white dark:bg-neo-card-bg p-3 sm:p-4 neo-border neo-shadow-sm flex items-center justify-between text-sm sm:text-base mb-3 sm:mb-4.5 text-neo-text rounded-none"
+      class="w-full bg-white dark:bg-neo-card-bg p-3 sm:p-4 neo-border neo-shadow-sm flex items-stretch justify-between text-sm sm:text-base mb-3 sm:mb-4.5 text-neo-text rounded-none"
     >
       <div
-        class="flex items-center gap-2 rounded-none px-2 sm:px-3 py-1.5 transition-all duration-100 min-w-0 flex-shrink"
-        :class="currentPlayer === 1 && !gameOver ? 'bg-neo-secondary/30 border-2 border-black' : 'opacity-60 border-2 border-transparent'"
-      >
-        <span
-          class="w-3 h-3 rounded-full bg-blue-500 shrink-0 ring-2 ring-blue-200"
-          :class="currentPlayer === 1 && !gameOver ? 'animate-pulse ring-blue-300' : ''"
-        ></span>
-        <span class="text-neo-text font-bold truncate">{{ p1Label }}</span>
-        <span
-          class="text-[10px] font-black uppercase tracking-wider text-black bg-neo-secondary rounded-full px-1.5 py-0.5 leading-none shrink-0 transition-opacity"
-          :class="currentPlayer === 1 && !gameOver ? 'opacity-100' : 'opacity-0 pointer-events-none select-none'"
-        >TURN</span>
-      </div>
+        class="flex items-center gap-2 rounded-none px-2 sm:px-3 py-1.5 transition-all duration-100 min-w-0 flex-1"
+          :class="currentPlayer === 1 && !gameOver ? 'bg-neo-secondary/30 border-2 border-black' : 'opacity-60 border-2 border-transparent'"
+        >
+          <span
+            class="w-3 h-3 rounded-full bg-blue-500 shrink-0 ring-2 ring-blue-200"
+            :class="currentPlayer === 1 && !gameOver ? 'animate-pulse ring-blue-300' : ''"
+          ></span>
+          <span class="text-neo-text font-bold truncate">{{ p1Label }}</span>
+          <span
+            class="text-[10px] font-black uppercase tracking-wider text-black bg-neo-secondary rounded-full px-1.5 py-0.5 leading-none shrink-0 transition-opacity"
+            :class="currentPlayer === 1 && !gameOver ? 'opacity-100' : 'opacity-0 pointer-events-none select-none'"
+          >TURN</span>
+        </div>
 
-      <span class="text-neo-text/50 font-black text-xs mx-2 sm:mx-4 shrink-0">VS</span>
+        <span class="text-neo-text/50 font-black text-xs mx-2 sm:mx-4 shrink-0 self-center">VS</span>
 
-      <div
-        class="flex items-center gap-2 rounded-none px-2 sm:px-3 py-1.5 transition-all duration-100 min-w-0 flex-shrink"
+        <div
+          class="flex items-center gap-2 rounded-none px-2 sm:px-3 py-1.5 transition-all duration-100 min-w-0 flex-1"
         :class="currentPlayer === 2 && !gameOver ? 'bg-neo-secondary/30 border-2 border-black' : 'opacity-60 border-2 border-transparent'"
       >
         <span

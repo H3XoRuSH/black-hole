@@ -25,7 +25,7 @@
           <div
             v-if="isOpen"
             ref="contentRef"
-            :class="['w-full p-6 flex flex-col relative max-h-[85vh] overflow-hidden', contentClass, maxWidthClass]"
+            :class="['w-full p-4 sm:p-6 flex flex-col relative max-h-[85vh] overflow-hidden', contentClass, maxWidthClass]"
             :role="role"
             :aria-modal="role === 'dialog' ? 'true' : undefined"
             :aria-label="role === 'dialog' && title ? title : undefined"
