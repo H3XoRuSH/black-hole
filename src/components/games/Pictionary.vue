@@ -107,7 +107,7 @@
               v-for="(word, i) in gameState.wordChoices"
               :key="i"
               @click="chooseWord(i)"
-              class="px-6 py-3 bg-white dark:bg-neo-card-bg hover:bg-neo-secondary dark:hover:bg-neo-secondary border-2 border-black dark:border-white text-neo-text font-black text-lg rounded-none shadow-[4px_4px_0px_0px_#000000] dark:shadow-[4px_4px_0px_0px_#ffffff] transition-all cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
+              class="px-6 py-3 bg-white dark:bg-neo-card-bg hover:bg-neo-secondary dark:hover:bg-neo-secondary border-2 border-neo-border text-neo-text font-black text-lg rounded-none shadow-[4px_4px_0px_0px_var(--color-neo-shadow)] transition-all cursor-pointer active:translate-x-[2px] active:translate-y-[2px] active:shadow-none"
             >
               {{ word }}
             </button>
@@ -164,7 +164,7 @@
                   :key="c"
                   @click="selectPaletteColor(c)"
                   class="w-7 h-7 rounded-none border-2 transition-all cursor-pointer hover:scale-110"
-                  :class="selectedColor === c && !eraserMode ? 'border-black dark:border-white scale-110 z-10' : 'border-black/20 dark:border-white/20'"
+                  :class="selectedColor === c && !eraserMode ? 'border-neo-border scale-110 z-10' : 'border-neo-border/20'"
                   :style="{ backgroundColor: c }"
                 />
               </div>
@@ -175,7 +175,7 @@
                     v-for="c in recentColors"
                     :key="c"
                     @click="selectPaletteColor(c)"
-                    class="w-6 h-6 rounded-none border transition-all cursor-pointer hover:scale-110 border-black/20 dark:border-white/20"
+                    class="w-6 h-6 rounded-none border transition-all cursor-pointer hover:scale-110 border-neo-border/20"
                     :style="{ backgroundColor: c }"
                   />
                 </div>

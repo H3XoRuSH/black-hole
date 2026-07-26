@@ -33,7 +33,7 @@
     <!-- Pagination Dots -->
     <div class="flex justify-center space-x-2 mt-4">
       <button v-for="(game, index) in games" :key="`dot-${game.id}`" @click="goToSlide(index)"
-        class="w-2 h-2 rounded-full transition-[width] duration-300 cursor-pointer border border-black dark:border-white"
+        class="w-2 h-2 rounded-full transition-[width] duration-300 cursor-pointer border border-neo-border"
         :class="index === currentIndex ? 'bg-neo-accent w-5' : 'bg-neo-muted/50'"></button>
     </div>
   </div>

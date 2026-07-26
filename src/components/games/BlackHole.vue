@@ -273,7 +273,7 @@ export default defineComponent({
       const data = this.getCircleData(row, col);
 
       if (this.gameOver && this.remainingPositions.includes(key)) {
-        return 'bg-purple-600 dark:bg-purple-800 neo-border-2 shadow-[2px_2px_0px_0px_#000000] dark:shadow-[2px_2px_0px_0px_#FFFFFF] scale-105';
+        return 'bg-purple-600 dark:bg-purple-800 neo-border-2 shadow-[2px_2px_0px_0px_var(--color-neo-shadow)] scale-105';
       }
 
       if (this.gameOver && this.remainingPositions.length === 1) {
