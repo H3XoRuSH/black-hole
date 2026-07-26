@@ -7,7 +7,7 @@
     "description": "A strategic 2-player game of gravity and calculation. Place your numbered tiles on the triangular grid and try to keep your highest numbers away from the final empty circle!",
     "route": "/black-hole/lobby",
     "status": "active",
-    "color": "#9333ea",
+    "color": "#7c3aed",
     "tags": ["ai", "multiplayer"],
     "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"3\" fill=\"currentColor\" opacity=\"0.3\"/><circle cx=\"12\" cy=\"12\" r=\"7\"/><circle cx=\"12\" cy=\"12\" r=\"11\"/><path d=\"M4 12a8 8 0 0116 0\"/></svg>",
     "rules": [
@@ -77,7 +77,7 @@
     "status": "active",
     "color": "#059669",
     "tags": ["ai", "multiplayer"],
-    "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"6\" cy=\"6\" r=\"1.5\" fill=\"currentColor\"/><circle cx=\"18\" cy=\"6\" r=\"1.5\" fill=\"currentColor\"/><circle cx=\"6\" cy=\"18\" r=\"1.5\" fill=\"currentColor\"/><circle cx=\"18\" cy=\"18\" r=\"1.5\" fill=\"currentColor\"/><line x1=\"6\" y1=\"12\" x2=\"18\" y2=\"12\"/><line x1=\"12\" y1=\"6\" x2=\"12\" y2=\"18\"/></svg>",
+    "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"6\" cy=\"6\" r=\"1.5\" fill=\"currentColor\"/><circle cx=\"18\" cy=\"18\" r=\"1.5\" fill=\"currentColor\"/><circle cx=\"6\" cy=\"18\" r=\"1.5\" fill=\"currentColor\"/><circle cx=\"18\" cy=\"18\" r=\"1.5\" fill=\"currentColor\"/><line x1=\"6\" y1=\"12\" x2=\"18\" y2=\"12\"/><line x1=\"12\" y1=\"6\" x2=\"12\" y2=\"18\"/></svg>",
     "rules": [
       {
         "title": "Draw Lines",
@@ -105,7 +105,7 @@
     "description": "A strategic 2-player grid-guessing game. Place your fleet on a 10x10 grid, take turns calling shots, and sink all of your opponent's ships to win!",
     "route": "/battleship/lobby",
     "status": "active",
-    "color": "#e11d48",
+    "color": "#1e3a8a",
     "tags": ["ai", "multiplayer"],
     "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\"><path d=\"M2 18 Q12 23 22 18 L20 11 L4 11 Z\" fill=\"currentColor\" fill-opacity=\"0.2\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><line x1=\"10\" y1=\"11\" x2=\"10\" y2=\"3\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><polyline points=\"10,3 16,6 10,9\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg>",
     "rules": [
@@ -201,7 +201,7 @@
     "route": "/infinite-word-chain/lobby",
     "status": "active",
     "color": "#ec4899",
-    "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"4 7 4 4 7 4\"/><polyline points=\"17 4 20 4 20 7\"/><polyline points=\"20 17 20 20 17 20\"/><polyline points=\"7 20 4 20 4 17\"/><line x1=\"4\" y1=\"12\" x2=\"20\" y2=\"12\"/><line x1=\"12\" y1=\"4\" x2=\"12\" y2=\"20\"/><path d=\"M8 8l3 4-3 4\"/><path d=\"M16 8l-3 4 3 4\"/></svg>",
+    "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><polyline points=\"4 7 4 4 7 4\"/><polyline points=\"17 4 20 4 20 7\"/><polyline points=\"20 17 20 20 17 20\"/><polyline points=\"7 20 4 20 4 17\"/><line x1=\"4\" y1=\"12\" x2=\"20\" y2=\"12\"/><line x1=\"12\" y1=\"4\" x2=\"12\" y2=\"22\"/><path d=\"M8 8l3 4-3 4\"/><path d=\"M16 8l-3 4 3 4\"/></svg>",
     "rules": [
       {
         "title": "How to Play",
@@ -230,7 +230,7 @@
     "description": "A cooperative drawing and guessing game for 2-8 players. Take turns drawing a secret word while everyone else guesses. Work together to score as many points as possible!",
     "route": "/pictionary/lobby",
     "status": "active",
-    "color": "#6366f1",
+    "color": "#ea580c",
     "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 20h9\"/><path d=\"M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z\"/></svg>",
     "rules": [
       {
@@ -264,7 +264,7 @@
     "description": "A classic multiplayer Bingo game for 2-8 players. The host draws numbers, and players mark their cards. First to complete a row, column, or diagonal shouts BINGO!",
     "route": "/bingo/lobby",
     "status": "active",
-    "color": "#0891b2",
+    "color": "#d946ef",
     "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"2\" y=\"2\" width=\"20\" height=\"20\" rx=\"2\"/><line x1=\"2\" y1=\"9\" x2=\"22\" y2=\"9\"/><line x1=\"2\" y1=\"16\" x2=\"22\" y2=\"16\"/><line x1=\"9\" y1=\"2\" x2=\"9\" y2=\"22\"/><line x1=\"16\" y1=\"2\" x2=\"16\" y2=\"22\"/><path d=\"M4 4l4 4M8 4l-4 4\"/><path d=\"M10 10l4 4M14 10l-4 4\"/><path d=\"M17 17l3 3M20 17l-3 3\"/><line x1=\"3\" y1=\"3\" x2=\"21\" y2=\"21\" stroke-width=\"3\" opacity=\"0.2\"/></svg>",
     "rules": [
       {
@@ -354,6 +354,40 @@
       {
         "title": "Winning",
         "desc": "You must land exactly on the last cell to win. If your roll exceeds it, you bounce back from the goal."
+      }
+    ]
+  },
+  {
+    "id": "jigsaw",
+    "name": "Jigsaw Puzzle",
+    "minPlayers": 2,
+    "maxPlayers": 8,
+    "tags": ["multiplayer"],
+    "description": "A real-time cooperative jigsaw puzzle for 2-8 players! Race together to assemble the image — drag pieces from the tray onto the board and snap them into place. Finish as fast as you can!",
+    "route": "/jigsaw/lobby",
+    "status": "active",
+    "color": "#ef4444",
+    "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z\"/><line x1=\"7\" y1=\"7\" x2=\"7.01\" y2=\"7\"/></svg>",
+    "rules": [
+      {
+        "title": "Cooperative Goal",
+        "desc": "2 to 8 players work together to assemble a jigsaw puzzle as fast as possible. There are no turns — everyone grabs and places pieces simultaneously!"
+      },
+      {
+        "title": "Piece Tray",
+        "desc": "All shuffled pieces appear in the tray on the right. Drag any piece onto the puzzle board to place it."
+      },
+      {
+        "title": "Snap to Place",
+        "desc": "Drop a piece near its correct position and it will snap in automatically. Correctly placed pieces are locked and can't be moved."
+      },
+      {
+        "title": "Piece Locking",
+        "desc": "When you pick up a piece, it's temporarily locked so no one else can grab it. If you drop it in the wrong place, it returns to the tray."
+      },
+      {
+        "title": "Winning",
+        "desc": "Complete the puzzle to win! Your team's total time is shown — try to beat your record!"
       }
     ]
   }

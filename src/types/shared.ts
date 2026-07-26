@@ -286,6 +286,35 @@ export interface InfiniteWordChainGameState {
   moveHistory?: any[];
 }
 
+export interface JigsawPiece {
+  id: number;
+  row: number;
+  col: number;
+  edges: {
+    top: 'flat' | 'tab' | 'blank';
+    right: 'flat' | 'tab' | 'blank';
+    bottom: 'flat' | 'tab' | 'blank';
+    left: 'flat' | 'tab' | 'blank';
+  };
+  placed: boolean;
+  lockedBy: string | null;
+  trayIndex: number;
+  boardRow: number | null;
+  boardCol: number | null;
+}
+
+export interface JigsawGameState {
+  status: 'waiting' | 'playing' | 'finished';
+  gridSize: 4 | 6 | 8;
+  imageKey: string;
+  pieces: JigsawPiece[];
+  startTime: number | null;
+  endTime: number | null;
+  players: Player[];
+  winner: string;
+  totalMoves: number;
+}
+
 export interface SnakesLaddersGameState {
   boardType: 'classic' | 'random';
   gridSize: number;
