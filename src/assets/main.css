@@ -23,10 +23,9 @@
   --color-neo-shadow: var(--neo-shadow);
   --color-neo-text: var(--neo-text);
 
-  /* Shared high-saturation Pop Accents */
-  --color-neo-accent: #FF6B6B;
-  --color-neo-secondary: #FFD93D;
-  --color-neo-muted: #C4B5FD;
+  --color-neo-accent: var(--neo-accent);
+  --color-neo-secondary: var(--neo-secondary);
+  --color-neo-muted: var(--neo-muted);
 
   /* Override standard sans font with Space Grotesk */
   --font-sans: 'Space Grotesk', sans-serif;
@@ -34,21 +33,27 @@
 
 /* Theme variable declarations */
 :root {
-  --neo-bg: #FFFDF5;
+  --neo-bg: #F2F9F6;
   --neo-card-bg: #FFFFFF;
-  --neo-border: #000000;
-  --neo-shadow: #000000;
-  --neo-text: #000000;
+  --neo-border: #12201C;
+  --neo-shadow: #12201C;
+  --neo-text: #12201C;
+  --neo-accent: #FF7E67;
+  --neo-secondary: #FAD02C;
+  --neo-muted: #84C5A5;
   --safe-area-bottom: env(safe-area-inset-bottom, 0px);
   --safe-area-top: env(safe-area-inset-top, 0px);
 }
 
 .dark {
-  --neo-bg: #121212;
-  --neo-card-bg: #1E1E1E;
-  --neo-border: #FFFFFF;
-  --neo-shadow: #FFFFFF;
-  --neo-text: #FFFFFF;
+  --neo-bg: #1E202B;
+  --neo-card-bg: #2A2D3D;
+  --neo-border: #E2E8F0;
+  --neo-shadow: #000000;
+  --neo-text: #E2E8F0;
+  --neo-accent: #FF7E67;
+  --neo-secondary: #FAD02C;
+  --neo-muted: #84C5A5;
 }
 
 /* Borders */

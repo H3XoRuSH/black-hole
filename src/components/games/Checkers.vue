@@ -40,7 +40,7 @@
               v-if="isValidTarget(idx)"
               class="absolute inset-0 flex items-center justify-center pointer-events-none z-10"
             >
-              <div class="w-4 h-4 rounded-full bg-emerald-400 dark:bg-emerald-500 border-2 border-black dark:border-white animate-pulse"></div>
+              <div class="w-4 h-4 rounded-full bg-emerald-400 dark:bg-emerald-500 border-2 border-neo-border animate-pulse"></div>
             </div>
           </div>
         </div>

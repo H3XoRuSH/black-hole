@@ -138,7 +138,7 @@
             <span
               v-for="(word, idx) in solvedPairs"
               :key="idx"
-              class="text-xs font-mono px-2 py-0.5 border-2 border-black dark:border-white font-bold"
+              class="text-xs font-mono px-2 py-0.5 border-2 border-neo-border font-bold"
               :class="idx % 2 === 0 ? 'bg-neo-secondary text-black' : 'bg-neo-accent text-white'"
             >
               {{ word }}

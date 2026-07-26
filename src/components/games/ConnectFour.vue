@@ -35,7 +35,7 @@
           >
             <div
               v-if="canPlayColumn(colIndex - 1)"
-              class="w-5 h-5 rounded-full border-2 border-black dark:border-white animate-bounce opacity-70"
+              class="w-5 h-5 rounded-full border-2 border-neo-border animate-bounce opacity-70"
               :class="player === 1 ? 'bg-blue-500' : 'bg-rose-500'"
             ></div>
             <div v-else class="w-5 h-5 rounded-full border-2 border-neo-border/30 bg-neo-bg"></div>
