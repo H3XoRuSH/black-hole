@@ -30,7 +30,7 @@
 
   <!-- Grid variant -->
   <div v-else-if="variant === 'grid'"
-    class="card-3d card-3d--grid bg-white dark:bg-neo-card-bg neo-border neo-shadow-sm p-3 xs:p-4 sm:p-5 flex flex-col justify-between h-[185px] xs:h-[210px] sm:h-[230px] border-t-8 rounded-none text-neo-text"
+    class="card-3d card-3d--grid bg-white dark:bg-neo-card-bg neo-border neo-shadow-sm p-3 xs:p-4 sm:p-5 flex flex-col min-h-[175px] xs:min-h-[200px] sm:min-h-[230px] border-t-8 rounded-none text-neo-text"
     :style="{ borderTopColor: game.color }">
     <div>
       <div class="flex items-center space-x-1.5 min-w-0 mb-1">
@@ -42,7 +42,7 @@
         <span v-if="game.tags?.includes('single')" class="px-1 py-0.2 text-[6px] xs:px-1.5 xs:text-[7px] sm:text-[8px] font-black uppercase leading-none xs:leading-tight rounded-full bg-neo-secondary xs:neo-border-2 text-black">Single Player</span>
         <span v-if="game.tags?.includes('multiplayer')" class="px-1 py-0.2 text-[6px] xs:px-1.5 xs:text-[7px] sm:text-[8px] font-black uppercase leading-none xs:leading-tight rounded-full bg-neo-accent xs:neo-border-2 text-black">Multiplayer</span>
       </div>
-      <p class="text-neo-text/70 text-[10px] xs:text-[11px] sm:text-xs leading-relaxed line-clamp-2 xs:line-clamp-3 sm:line-clamp-4 font-bold">{{ game.description }}</p>
+      <p class="text-neo-text/70 text-[10px] xs:text-[11px] sm:text-xs leading-relaxed line-clamp-3 xs:line-clamp-4 sm:line-clamp-4 font-bold">{{ game.description }}</p>
     </div>
     <button @click="$emit('select-game', game.id)"
       :disabled="isAnyGameHosting"
