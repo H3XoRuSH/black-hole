@@ -27,28 +27,31 @@
         </p>
 
         <!-- Room Code & QR Code Button Container -->
-        <div class="flex items-center gap-3 mb-6">
+        <div class="flex items-center gap-3 mb-8 sm:mb-9">
           <!-- Copy Room Code Button -->
           <button
             @click="copyRoomKey"
-            class="relative group cursor-pointer flex-grow flex items-center justify-center bg-neo-muted/10 hover:bg-neo-muted/20 neo-btn rounded-none px-6 h-16 text-neo-text"
+            class="relative group cursor-pointer flex-grow flex items-center justify-between bg-neo-muted/10 hover:bg-neo-muted/20 neo-btn rounded-none px-4 h-16 text-neo-text"
           >
-            <span class="text-3xl sm:text-4xl font-extrabold font-mono tracking-widest">
-              {{ roomKey }}
-            </span>
-            <div class="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 bg-white dark:bg-neo-card-bg text-neo-text rounded-none neo-border-2 group-hover:scale-105 transition-transform duration-100 flex-shrink-0">
-              <!-- Copy Icon -->
-              <svg v-if="!copied" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-              </svg>
-              <!-- Check Icon -->
-              <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-              </svg>
+            <div class="flex items-center w-full">
+              <!-- Room Code text centered inside the button (pl-9 offsets the copy button to keep it centered) -->
+              <span class="flex-grow text-center font-extrabold font-mono text-lg xs:text-xl sm:text-3xl tracking-wider sm:tracking-widest pl-9">
+                {{ roomKey }}
+              </span>
+              <div class="p-1.5 bg-white dark:bg-neo-card-bg text-neo-text rounded-none neo-border-2 group-hover:scale-105 transition-transform duration-100 flex-shrink-0">
+                <!-- Copy Icon -->
+                <svg v-if="!copied" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                </svg>
+                <!-- Check Icon -->
+                <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
             </div>
 
             <!-- Copy Tooltip -->
-            <span class="absolute -bottom-5 left-1/2 -translate-x-1/2 text-[9px] font-black uppercase tracking-wider text-neo-text/50 group-hover:text-neo-accent transition-colors duration-200 whitespace-nowrap">
+            <span class="absolute -bottom-7 left-1/2 -translate-x-1/2 text-[9px] font-black uppercase tracking-wider text-neo-text/50 group-hover:text-neo-accent transition-colors duration-200 whitespace-nowrap">
               {{ copied ? 'Copied!' : 'Click to copy' }}
             </span>
           </button>
@@ -56,7 +59,7 @@
           <!-- Show QR Code Button -->
           <button
             @click="openQRModal"
-            class="p-2 bg-white dark:bg-neo-card-bg neo-border-2 hover:bg-neo-secondary text-neo-text rounded-none transition-colors cursor-pointer flex items-center justify-center"
+            class="h-16 w-16 bg-white dark:bg-neo-card-bg text-neo-text flex items-center justify-center neo-btn rounded-none flex-shrink-0 cursor-pointer"
             title="Show QR Code"
           >
             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -73,16 +76,16 @@
             <div
               v-for="p in players"
               :key="p.player"
-              class="flex items-center justify-between p-3 bg-white dark:bg-neo-card-bg neo-border-2 rounded-none text-neo-text mb-2.5"
+              class="flex items-center justify-between p-2.5 sm:p-3 bg-white dark:bg-neo-card-bg neo-border-2 rounded-none text-neo-text mb-2.5"
             >
-              <div class="flex items-center space-x-3 min-w-0 flex-shrink">
+              <div class="flex items-center space-x-3 min-w-0 flex-1">
                 <div
                   class="w-8 h-8 rounded-full flex items-center justify-center font-black text-sm flex-shrink-0 border-2 border-black text-black"
                   :class="p.player === 1 ? 'bg-neo-secondary' : 'bg-neo-accent'"
                 >
                   P{{ p.player }}
                 </div>
-                <div class="min-w-0">
+                <div class="min-w-0 flex-1">
                   <div class="flex items-center space-x-1.5">
                     <template v-if="p.id === socket?.id && editingName">
                       <input
@@ -176,34 +179,36 @@
              <div
                v-for="i in Math.max(0, maxPlayers - players.length)"
                :key="'waiting-' + i"
-               class="flex items-center justify-between p-3 bg-transparent border-2 border-dashed border-neo-border/50 text-neo-text/60 rounded-none mb-2.5"
+               class="flex items-center justify-between p-2.5 sm:p-3 bg-transparent border-2 border-dashed border-neo-border/50 text-neo-text/60 rounded-none mb-2.5 min-w-0"
              >
-               <div class="flex items-center space-x-3">
-                 <div class="w-8 h-8 rounded-full bg-transparent border-2 border-dashed border-neo-border/50 flex items-center justify-center text-neo-text/60 text-sm font-black">
+               <div class="flex items-center space-x-3 min-w-0 flex-1">
+                 <div class="w-8 h-8 rounded-full bg-transparent border-2 border-dashed border-neo-border/50 flex items-center justify-center text-neo-text/60 text-sm font-black flex-shrink-0">
                    ?
                  </div>
-                 <div>
-                    <p class="text-sm font-black italic flex items-center space-x-1 uppercase tracking-wide">Waiting for player<WaitingIndicator /></p>
+                 <div class="min-w-0 flex-1">
+                   <p class="text-xs sm:text-sm font-black italic flex items-center space-x-1 uppercase tracking-wide truncate">
+                     <span>Waiting</span><span class="hidden xs:inline"> for player</span><WaitingIndicator />
+                   </p>
                    <p class="text-[10px]">Player {{ players.length + i }}</p>
                  </div>
                </div>
-               <div>
+               <div class="flex-shrink-0">
                  <button
-                    v-if="isHost && players.length === 1 && supportsAI"
-                    @click="addAIOpponent('hard')"
-                    :disabled="aiPending"
-                    class="text-xs font-black py-1.5 px-3 bg-neo-accent text-white rounded-none neo-btn tracking-wider uppercase flex items-center gap-1.5 disabled:opacity-60 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0"
-                  >
-                    <template v-if="aiPending">
-                      <WaitingIndicator /> Adding...
-                    </template>
-                    <template v-else>
-                      <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
-                      </svg>
-                      Play vs AI
-                    </template>
-                  </button>
+                   v-if="isHost && players.length === 1 && supportsAI"
+                   @click="addAIOpponent('hard')"
+                   :disabled="aiPending"
+                   class="text-[10px] sm:text-xs font-black py-1.5 px-2 sm:px-3 bg-neo-accent text-white rounded-none neo-btn tracking-wider uppercase flex items-center gap-1 disabled:opacity-60 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0"
+                 >
+                   <template v-if="aiPending">
+                     <WaitingIndicator /> <span class="hidden xs:inline">Adding...</span><span class="inline xs:hidden">...</span>
+                   </template>
+                   <template v-else>
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                       <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                     </svg>
+                     <span><span class="hidden sm:inline">PLAY </span>VS AI</span>
+                   </template>
+                 </button>
                </div>
              </div>
           </div>
@@ -358,15 +363,18 @@
       </div>
 
       <!-- Leave / Cancel Button (only shown if room exists) -->
-      <div v-if="roomKey" class="mt-4 sm:mt-6 pt-3 border-t border-gray-100 dark:border-slate-700/50">
+      <div v-if="roomKey" class="mt-4 sm:mt-6 pt-3 border-t-2 border-neo-border">
         <router-link
           to="/menu"
-          class="inline-block w-full text-gray-400 dark:text-gray-500 hover:text-rose-500 dark:hover:text-rose-400 text-xs font-semibold text-center py-2 rounded-lg transition-colors duration-200"
+          class="inline-block w-full text-neo-text/50 hover:text-rose-500 dark:hover:text-rose-400 text-xs font-bold text-center py-2 rounded-none transition-colors duration-200"
         >
           {{ isHost ? 'Cancel & Close Room' : 'Leave Room' }}
         </router-link>
       </div>
     </div>
+
+    <!-- Bottom Spacer to force scrollbar container breathing room -->
+    <div class="h-8 sm:h-12 w-full flex-shrink-0"></div>
   </div>
 
   <!-- Escape Room Selector Modal -->
@@ -389,7 +397,7 @@
   >
     <div class="flex flex-col items-center">
       <div class="bg-white p-3 rounded-none neo-border-2 mb-4 flex items-center justify-center">
-        <canvas ref="qrCanvas" class="w-48 h-48 sm:w-56 sm:h-56"></canvas>
+        <canvas ref="qrCanvas" class="w-40 h-40 sm:w-52 sm:h-52 max-w-full block mx-auto"></canvas>
       </div>
       <p class="text-xs text-neo-text/70 text-center font-bold leading-relaxed max-w-[260px]">
         Scan this QR code with a friend's phone camera to join this game room instantly.
