@@ -478,7 +478,7 @@ export default defineComponent({
     },
     supportsAI(): boolean {
       const game = gamesData.find((g) => g.id === this.gameId);
-      return !!game?.supportsAI;
+      return !!game?.tags?.includes('ai');
     },
     players(): any[] {
       return this.initialGameState?.players || [];
