@@ -322,5 +322,39 @@
         "desc": "Solve all puzzles to unlock the final door and escape! The fewer attempts you use, the better your team performance."
       }
     ]
+  },
+  {
+    "id": "snakes-ladders",
+    "name": "Snakes and Ladders",
+    "minPlayers": 2,
+    "maxPlayers": 8,
+    "tags": ["multiplayer"],
+    "description": "A vibrant multiplayer board game of chance and climb! Customize board sizes, adjust the number of snakes and ladders, roll the die, and race to the top!",
+    "route": "/snakes-ladders/lobby",
+    "status": "active",
+    "color": "#eab308",
+    "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 14h16M4 10h16M4 6h16M4 18h16M19 3v18M5 3v18\"/></svg>",
+    "rules": [
+      {
+        "title": "Setup & Options",
+        "desc": "Play on the classic 10x10 fixed board, or customize to a randomized 8x8, 10x10, or 12x12 grid with your choice of snakes and ladders."
+      },
+      {
+        "title": "Taking Turns",
+        "desc": "Players take turns rolling a 6-sided die and moving forward that many spaces."
+      },
+      {
+        "title": "Snakes & Ladders",
+        "desc": "Land on a ladder's bottom to climb up to its top. Land on a snake's head to slide down to its tail!"
+      },
+      {
+        "title": "Roll a Six",
+        "desc": "Rolling a 6 grants you an immediate extra turn! Roll wisely."
+      },
+      {
+        "title": "Winning",
+        "desc": "You must land exactly on the last cell to win. If your roll exceeds it, you bounce back from the goal."
+      }
+    ]
   }
 ]

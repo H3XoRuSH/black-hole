@@ -9,7 +9,7 @@ export function getRecapConversationPrompt(gameName: string, formattedHistory: s
       ? playerNames.map((name) => `"${name}"`).join(', ')
       : '"Player 1", "Player 2"';
     playerRef = `Refer to players by their names: ${namesList}. This was a cooperative game.`;
-  } else if (gameId === 'bingo') {
+  } else if (gameId === 'bingo' || gameId === 'snakes-ladders') {
     const namesList = playerNames && playerNames.length > 0
       ? playerNames.map((name) => `"${name}"`).join(', ')
       : '"Player 1" and "Player 2"';
@@ -54,7 +54,7 @@ export function getRecapPrompt(gameName: string, formattedHistory: string, gameI
       playerRef += `. Be sure to briefly mention each player who participated: ${namesList}`;
       wordCountLimit = '60-80 words';
     }
-  } else if (gameId === 'bingo') {
+  } else if (gameId === 'bingo' || gameId === 'snakes-ladders') {
     const namesList = playerNames && playerNames.length > 0
       ? playerNames.map((name) => `"${name}"`).join(', ')
       : '"Player 1" and "Player 2"';

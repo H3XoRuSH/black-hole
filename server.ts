@@ -14,6 +14,7 @@ import * as trivia from './server/games/trivia.js';
 import * as infiniteWordChain from './server/games/infinite-word-chain.js';
 import * as pictionary from './server/games/pictionary.js';
 import * as escapeRoom from './server/games/escapeRoom.js';
+import * as snakesLadders from './server/games/snakesLadders.js';
 import { createRoomManager } from './server/roomManager.js';
 import { evaluateBugReport, createGitHubIssue } from './server/services/bugReportService.js';
 
@@ -79,6 +80,7 @@ const rooms = createRoomManager({
   'infinite-word-chain': infiniteWordChain as any,
   'pictionary': pictionary as any,
   'escape-room': escapeRoom as any,
+  'snakes-ladders': snakesLadders as any,
 });
 
 io.on('connection', (socket: Socket) => {
@@ -151,6 +153,10 @@ io.on('connection', (socket: Socket) => {
 
   socket.on('set-escape-room-options', ({ roomKey, roomId }: { roomKey: string; roomId: string }) => {
     rooms.setEscapeRoomOptions(roomKey, socket, { roomId }, io);
+  });
+
+  socket.on('set-snakes-ladders-options', ({ roomKey, boardType, gridSize, snakesCount, laddersCount }: { roomKey: string; boardType: 'classic' | 'random'; gridSize: number; snakesCount: number; laddersCount: number }) => {
+    rooms.setSnakesLaddersOptions(roomKey, socket, { boardType, gridSize, snakesCount, laddersCount }, io);
   });
 
   socket.on('send-chat', ({ roomKey, text }: { roomKey: string; text: string }) => {

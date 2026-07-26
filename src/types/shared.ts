@@ -285,3 +285,29 @@ export interface InfiniteWordChainGameState {
   mistakes: number;
   moveHistory?: any[];
 }
+
+export interface SnakesLaddersGameState {
+  boardType: 'classic' | 'random';
+  gridSize: number;
+  snakesCount: number;
+  laddersCount: number;
+  snakes: Record<number, number>;
+  ladders: Record<number, number>;
+  players: Player[];
+  currentPlayer: number;
+  positions: Record<number, number>;
+  winner: string;
+  totalMoves: number;
+  lastRoll: number | null;
+  lastRollWasSix: boolean;
+  lastMove?: {
+    player: number;
+    from: number;
+    to: number;
+    finalTo: number;
+    snakeOrLadder: 'snake' | 'ladder' | null;
+  } | null;
+  moveHistory?: any[];
+  recap?: string;
+  recapLoading?: boolean;
+}

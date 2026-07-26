@@ -214,7 +214,7 @@
           </div>
 
           <!-- Trivia Options (host only) -->
-          <div v-if="gameId === 'trivia' && isHost" class="pt-4 border-t-4 border-black">
+          <div v-if="gameId === 'trivia' && isHost" class="py-4 border-t-4 border-black">
             <h4 class="text-sm font-black uppercase tracking-wider text-neo-text mb-3">Trivia Settings</h4>
             <div class="flex gap-2 mb-2">
               <div class="flex-1">
@@ -245,7 +245,7 @@
           </div>
 
           <!-- Pictionary Options (host only) -->
-          <div v-if="gameId === 'pictionary' && isHost" class="pt-4 border-t-4 border-black">
+          <div v-if="gameId === 'pictionary' && isHost" class="py-4 border-t-4 border-black">
             <h4 class="text-sm font-black uppercase tracking-wider text-neo-text mb-3">Game Settings</h4>
             <div class="flex gap-2 mb-2">
               <div class="flex-1">
@@ -279,8 +279,72 @@
             </div>
           </div>
 
+          <!-- Snakes and Ladders Options (host only) -->
+          <div v-if="gameId === 'snakes-ladders' && isHost" class="py-4 border-t-4 border-black">
+            <h4 class="text-sm font-black uppercase tracking-wider text-neo-text mb-3">Game Settings</h4>
+            <div class="flex flex-col gap-3 text-left">
+              <div>
+                <label class="text-[10px] font-black uppercase tracking-wider text-neo-text mb-1 block">Board Type</label>
+                <div class="flex gap-2">
+                  <button
+                    type="button"
+                    @click="snakesLaddersBoardType = 'classic'; updateSnakesLaddersOptions()"
+                    class="flex-grow text-xs font-black py-2 px-3 neo-btn rounded-none cursor-pointer"
+                    :class="snakesLaddersBoardType === 'classic' ? 'bg-neo-secondary' : 'bg-white dark:bg-neo-card-bg text-neo-text'"
+                  >
+                    Classic
+                  </button>
+                  <button
+                    type="button"
+                    @click="snakesLaddersBoardType = 'random'; updateSnakesLaddersOptions()"
+                    class="flex-grow text-xs font-black py-2 px-3 neo-btn rounded-none cursor-pointer"
+                    :class="snakesLaddersBoardType === 'random' ? 'bg-neo-secondary' : 'bg-white dark:bg-neo-card-bg text-neo-text'"
+                  >
+                    Randomized
+                  </button>
+                </div>
+              </div>
+              <div v-if="snakesLaddersBoardType === 'random'" class="grid grid-cols-3 gap-2">
+                <div>
+                  <label class="text-[9px] font-black uppercase tracking-wider text-neo-text mb-1 block">Grid Size</label>
+                  <select
+                    v-model="snakesLaddersGridSize"
+                    @change="updateSnakesLaddersOptions"
+                    class="w-full text-xs font-bold py-2 px-3 h-10 neo-input rounded-none cursor-pointer"
+                  >
+                    <option :value="8">8x8</option>
+                    <option :value="10">10x10</option>
+                    <option :value="12">12x12</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="text-[9px] font-black uppercase tracking-wider text-neo-text mb-1 block">Snakes</label>
+                  <input
+                    type="number"
+                    v-model.number="snakesLaddersSnakes"
+                    @change="updateSnakesLaddersOptions"
+                    min="1"
+                    max="20"
+                    class="w-full text-xs font-bold py-2 px-3 h-10 neo-input rounded-none"
+                  />
+                </div>
+                <div>
+                  <label class="text-[9px] font-black uppercase tracking-wider text-neo-text mb-1 block">Ladders</label>
+                  <input
+                    type="number"
+                    v-model.number="snakesLaddersLadders"
+                    @change="updateSnakesLaddersOptions"
+                    min="1"
+                    max="20"
+                    class="w-full text-xs font-bold py-2 px-3 h-10 neo-input rounded-none"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Escape Room Options (host only) -->
-          <div v-if="gameId === 'escape-room' && isHost" class="pt-4 border-t-4 border-black">
+          <div v-if="gameId === 'escape-room' && isHost" class="py-4 border-t-4 border-black">
             <h4 class="text-sm font-black uppercase tracking-wider text-neo-text mb-3">Escape Room</h4>
             <label class="text-[10px] font-black uppercase tracking-wider text-neo-text mb-1 block">Select Room</label>
             <div class="flex gap-2 mb-3">
@@ -466,6 +530,10 @@ export default defineComponent({
       diceSpinning: false,
       cyclingRoomName: '',
       cyclingDifficulty: '',
+      snakesLaddersBoardType: 'classic' as 'classic' | 'random',
+      snakesLaddersGridSize: 10,
+      snakesLaddersSnakes: 8,
+      snakesLaddersLadders: 8,
       pageDarkMode: document.documentElement.classList.contains('dark'),
       darkModeObserver: null as MutationObserver | null,
       isReadyLocal: null as boolean | null,
@@ -619,6 +687,16 @@ export default defineComponent({
         roomKey: this.roomKey,
         timerDuration: this.pictionaryTimer,
         roundsPerPlayer: this.pictionaryRounds,
+      });
+    },
+    updateSnakesLaddersOptions() {
+      if (!this.socket || !this.roomKey) return;
+      this.socket.emit('set-snakes-ladders-options', {
+        roomKey: this.roomKey,
+        boardType: this.snakesLaddersBoardType,
+        gridSize: this.snakesLaddersGridSize,
+        snakesCount: this.snakesLaddersSnakes,
+        laddersCount: this.snakesLaddersLadders,
       });
     },
     openEscapeRoomSelector() {

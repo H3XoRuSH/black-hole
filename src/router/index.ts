@@ -13,6 +13,7 @@ const Trivia = () => import('../components/games/Trivia.vue');
 const InfiniteWordChain = () => import('../components/games/InfiniteWordChain.vue');
 const Pictionary = () => import('../components/games/Pictionary.vue');
 const EscapeRoom = () => import('../components/games/EscapeRoom.vue');
+const SnakesLadders = () => import('../components/games/SnakesLadders.vue');
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -166,6 +167,20 @@ const routes: Array<RouteRecordRaw> = [
     component: EscapeRoom,
     props: true,
     meta: { title: 'Escape Room - Gab\'s Arcade' },
+  },
+  {
+    path: '/snakes-ladders/lobby',
+    name: 'SnakesLaddersLobby',
+    component: Lobby,
+    props: { gameId: 'snakes-ladders', gameName: 'Snakes and Ladders' },
+    meta: { title: 'Snakes and Ladders - Gab\'s Arcade' },
+  },
+  {
+    path: '/snakes-ladders/game/:roomKey',
+    name: 'SnakesLaddersGame',
+    component: SnakesLadders,
+    props: true,
+    meta: { title: 'Snakes and Ladders - Gab\'s Arcade' },
   },
   {
     path: '/:pathMatch(.*)*',
