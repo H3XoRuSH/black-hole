@@ -13,6 +13,7 @@ function getGameName(gameId: string): string {
     case 'checkers': return 'Checkers';
     case 'bingo': return 'Bingo';
     case 'pictionary': return 'Pictionary';
+    case 'snakes-ladders': return 'Snakes and Ladders';
     default: return 'Arcade Game';
   }
 }
@@ -97,6 +98,16 @@ function formatMoveHistory(gameId: string, gameState: any): string {
         logs.push(`Move ${index + 1}: ${playerRef(move.player)} called BINGO!`);
       }
     });
+  } else if (gameId === 'snakes-ladders') {
+    history.forEach((move: any, index: number) => {
+      let desc = `rolled a ${move.roll} and moved from ${move.from} to ${move.to}`;
+      if (move.snakeOrLadder === 'snake') {
+        desc += ` and slid down a snake to ${move.finalTo}`;
+      } else if (move.snakeOrLadder === 'ladder') {
+        desc += ` and climbed a ladder to ${move.finalTo}`;
+      }
+      logs.push(`Move ${index + 1}: ${playerRef(move.player)} ${desc}`);
+    });
   }
 
   logs.push(`Outcome: ${gameState.winner}`);
@@ -142,6 +153,20 @@ function generateMockRecap(gameId: string, gameState: any): string {
 ${analysis}
 
 The match lasted for **${totalMoves}** total moves. Players tracked their cards closely as each number was called, celebrating every daub that brought them closer to victory.
+
+*Note: Set the \`DEEPSEEK_API_KEY\` environment variable to enable live AI-generated summaries from DeepSeek.*`;
+  } else if (gameId === 'snakes-ladders') {
+    const boardType = gameState.boardType || 'classic';
+    const size = gameState.gridSize || 10;
+    analysis = `Players raced across a ${size}x${size} ${boardType} board. The journey was filled with dramatic shifts as players landed on ladders to shoot ahead or slid down snakes. The race remained close until the final stretches, where landing exactly on the final tile decided the winner.`;
+
+    return `### 🎮 ${gameName} Match Recap (Simulated AI)
+
+**Outcome:** **${winner}**
+
+${analysis}
+
+The match lasted for **${totalMoves}** total moves. Players tested their luck on every roll, navigating the board with patience and hope.
 
 *Note: Set the \`DEEPSEEK_API_KEY\` environment variable to enable live AI-generated summaries from DeepSeek.*`;
   }

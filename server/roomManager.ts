@@ -1004,6 +1004,30 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       broadcastGameState(roomKey, room, io);
     },
 
+    setSnakesLaddersOptions(
+      roomKey: string,
+      socket: Socket,
+      data: { boardType: 'classic' | 'random'; gridSize: number; snakesCount: number; laddersCount: number },
+      io: SocketIOServer
+    ) {
+      if (!rooms.has(roomKey)) return;
+      const room = rooms.get(roomKey)!;
+      if (room.gameId !== 'snakes-ladders') return;
+      const host = room.gameState.players.find((p: any) => p.id === socket.id);
+      if (!host || host.player !== 1) return;
+
+      room.gameState.boardType = data.boardType;
+      room.gameState.gridSize = Math.max(8, Math.min(12, data.gridSize));
+      room.gameState.snakesCount = Math.max(1, Math.min(25, data.snakesCount));
+      room.gameState.laddersCount = Math.max(1, Math.min(25, data.laddersCount));
+
+      const game = gamesRegistry['snakes-ladders'] as any;
+      if (game.recreateBoard) {
+        game.recreateBoard(room.gameState);
+      }
+      broadcastGameState(roomKey, room, io);
+    },
+
     sendChat(roomKey: string, socket: Socket, data: { text: string }, io: SocketIOServer) {
       if (!rooms.has(roomKey)) return;
       const room = rooms.get(roomKey)!;
