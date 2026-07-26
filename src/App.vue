@@ -17,7 +17,7 @@
         </div>
       </div>
     </div>
-    <div v-else class="flex-grow flex flex-col min-h-0 overflow-y-auto">
+    <div v-else ref="scrollContainer" class="flex-grow flex flex-col min-h-0 overflow-y-auto">
       <router-view
         v-slot="{ Component, route }"
         :socket="socket"
@@ -79,6 +79,14 @@ export default defineComponent({
         this.player = null;
         this.connectionStatus = '';
       }
+      this.$nextTick(() => {
+        if (this.$refs.scrollContainer) {
+          (this.$refs.scrollContainer as HTMLElement).scrollTo({
+            top: 0,
+            behavior: 'smooth',
+          });
+        }
+      });
     },
   },
 });
