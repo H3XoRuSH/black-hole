@@ -10,7 +10,7 @@ const data: EscapeRoomData = {
     {
       id: 'study',
       name: 'Lord Blackwood\'s Study',
-      description: 'Gothic wood panels cover the walls. Lord Blackwood\'s body rests in the center chair. A grand fireplace, a grandfather clock, and his personal writing desk hold the initial keys to his death.'
+      description: 'Gothic wood panels cover the walls. Lord Blackwood\'s body rests in the center chair. A grand fireplace, a grandfather clock, and a locked wall safe hold the initial keys to his death.'
     },
     {
       id: 'conservatory',
@@ -175,23 +175,23 @@ const data: EscapeRoomData = {
       children: []
     },
     {
-      id: 'study-desk',
+      id: 'study-safe',
       locationId: 'study',
       parentId: null,
       type: 'locked',
-      label: 'Blackwood\'s Desk',
-      lockedByItem: 'study-desk-key',
-      lockedNarrative: 'Lord Blackwood\'s mahogany writing desk is locked. The lock is complex and requires the study desk key.',
-      narrative: 'You unlock the desk drawer. It slides open smoothly, revealing a collection of private papers and a secret compartment.',
-      children: ['study-desk-puzzle']
+      label: 'Wall Safe',
+      lockedByItem: 'study-safe-key',
+      lockedNarrative: 'A heavy metal Wall Safe is set into the oak paneling. It is locked and requires the safe key.',
+      narrative: 'You unlock the wall safe. The heavy door swings open, revealing a collection of private papers and a secret compartment.',
+      children: ['study-safe-puzzle']
     },
     {
-      id: 'study-desk-puzzle',
+      id: 'study-safe-puzzle',
       locationId: 'study',
-      parentId: 'study-desk',
+      parentId: 'study-safe',
       type: 'puzzle',
-      label: 'Desk Ledger',
-      narrative: 'A mathematical puzzle is scribbled on the desk ledger.',
+      label: 'Safe Ledger',
+      narrative: 'A mathematical puzzle is scribbled on the ledger inside the safe.',
       question: 'The ledger cover shows:\n\n|    A R T\n|  + E N D\n|  -------\n|  D I E D\n\nA small note reads: "Each letter is a unique digit (0-9). R times N equals 6. The safe code is the 4-digit sum of ART and END."',
       answer: '1451',
       hints: [
@@ -199,24 +199,24 @@ const data: EscapeRoomData = {
         'Since T + D ends in D (T + 1 = 1, since D = 1), T must be 0 (no carry from units).',
         'R times N = 6, so R=2 and N=3. R+N=E, so E=5. Then A+5=I+10 with remaining digits A=9, I=4. The sum is 920 + 531 = 1451.'
       ],
-      children: ['study-desk-compartment']
+      children: ['study-safe-compartment']
     },
     {
-      id: 'study-desk-compartment',
+      id: 'study-safe-compartment',
       locationId: 'study',
-      parentId: 'study-desk-puzzle',
+      parentId: 'study-safe-puzzle',
       type: 'dialogue',
       label: 'Flora Journal',
-      narrative: 'A hidden compartment clicks open. Inside is a brass garden trowel and a notebook labeled "Flora Journal". The journal reads:\n\n"Each plant appears exactly once in every row and column of Blackwood\'s 4x4 display grid. Rose anchors the top-left corner. I know the rest of the pattern holds — fill the gaps."',
+      narrative: 'A hidden compartment inside the safe clicks open. Inside is a brass garden trowel and a notebook labeled "Flora Journal". The journal reads:\n\n"Each plant appears exactly once in every row and column of Blackwood\'s 4x4 display grid. Rose anchors the top-left corner. I know the rest of the pattern holds — fill the gaps."',
       children: ['study-trowel-node']
     },
     {
       id: 'study-trowel-node',
       locationId: 'study',
-      parentId: 'study-desk-compartment',
+      parentId: 'study-safe-compartment',
       type: 'item',
       label: 'Garden Trowel',
-      narrative: 'You take the brass trowel from the desk compartment.',
+      narrative: 'You take the brass trowel from the safe compartment.',
       rewardItem: 'cons-trowel',
       children: []
     },
@@ -359,10 +359,9 @@ const data: EscapeRoomData = {
       id: 'cons-fountain-plaque-node',
       locationId: 'conservatory',
       parentId: 'cons-fountain',
-      type: 'item',
+      type: 'dialogue',
       label: 'Stone Plaque',
       narrative: 'A stone plaque rises from the basin floor, engraved with the number 324. Below it reads: "Fountain Volume."',
-      rewardItem: 'cons-fountain-plaque',
       children: []
     },
     {
@@ -497,16 +496,16 @@ const data: EscapeRoomData = {
         'Chef is at J. The Doctor is to the left of Chef, so Doctor is at I. Butler is not on either end (not G or K), so Butler is at H. Since Maid is to the right of Lawyer, Lawyer must be at G, and Maid at K.',
         'The order G to K is: Lawyer (L), Butler (B), Doctor (D), Chef (C), Maid (M). The code is lbdcm.'
       ],
-      children: ['cellar-desk-key-node']
+      children: ['cellar-safe-key-node']
     },
     {
-      id: 'cellar-desk-key-node',
+      id: 'cellar-safe-key-node',
       locationId: 'wine-cellar',
       parentId: 'cellar-lockers-puzzle',
       type: 'item',
-      label: 'Desk Key',
-      narrative: 'Locker K swings open, revealing Lord Blackwood\'s desk key.',
-      rewardItem: 'study-desk-key',
+      label: 'Safe Key',
+      narrative: 'Locker K swings open, revealing Lord Blackwood\'s safe key.',
+      rewardItem: 'study-safe-key',
       children: []
     },
     {
