@@ -120,97 +120,20 @@
     />
 
     <!-- Recap Modal -->
-    <BaseModal
+    <AiRecapModal
       :is-open="showRecapModal"
-      title="AI Match Recap"
-      :subtitle="activeGameName"
+      :recap-text="recapText"
+      :loading="recapLoading"
+      :conversation="recapConversation"
+      :question="recapQuestion"
+      :ask-loading="recapAskLoading"
+      :question-asked="recapQuestionAsked"
+      :game-name="activeGameName"
       @close="closeRecapModal"
-    >
-      <template #header-icon>
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd" />
-        </svg>
-      </template>
-
-      <div v-if="recapLoading" class="flex flex-col items-center py-8 space-y-3">
-        <div class="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-        <span class="text-xs text-neo-text/50 dark:text-slate-400 animate-pulse">Analyzing key moves...</span>
-      </div>
-
-      <div
-        v-else-if="!recapText"
-        class="flex justify-center py-6"
-      >
-        <button
-          @click="requestRecap"
-        class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-4 py-2 rounded-none transition-all duration-150 cursor-pointer shadow-md active:scale-95 flex items-center space-x-2"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd" />
-          </svg>
-          <span>Generate AI Recap</span>
-        </button>
-      </div>
-
-      <div
-        v-else
-        class="flex flex-col flex-grow overflow-hidden"
-      >
-        <div v-html="formattedRecapHtml"></div>
-
-        <div v-if="recapConversation.length > 0" class="border-t border-neo-border/20 dark:border-slate-700/50 pt-4 mt-4 space-y-3">
-          <div
-            v-for="(msg, idx) in recapConversation"
-            :key="idx"
-            class="flex"
-            :class="msg.role === 'user' ? 'justify-end' : 'justify-start'"
-          >
-            <div
-              class="max-w-[85%] rounded-none px-3 py-2 text-xs leading-relaxed"
-              :class="msg.role === 'user'
-                ? 'bg-indigo-500/10 dark:bg-indigo-600/20 text-indigo-700 dark:text-indigo-200 border border-indigo-500/20'
-                : 'bg-neo-card-bg dark:bg-slate-800 text-neo-text/80 dark:text-slate-300 border neo-border-2 dark:border-slate-700/50'"
-            >
-              <p class="font-medium text-[10px] uppercase tracking-wider mb-1 opacity-60">
-                {{ msg.role === 'user' ? 'You' : 'AI' }}
-              </p>
-              <p>{{ msg.content }}</p>
-            </div>
-          </div>
-          <div v-if="recapAskLoading" class="flex justify-start">
-            <div class="bg-neo-card-bg dark:bg-slate-800 text-neo-text/50 dark:text-slate-400 rounded-none px-3 py-2 text-xs border neo-border-2 dark:border-slate-700/50">
-              <span class="animate-pulse">Thinking...</span>
-            </div>
-          </div>
-        </div>
-
-        <div v-if="!recapQuestionAsked" class="flex-shrink-0 mt-3 pt-3 border-t border-neo-border/20 dark:border-slate-700/50">
-          <div class="flex items-center space-x-2">
-            <input
-              v-model="recapQuestion"
-              type="text"
-              placeholder="Ask a follow-up question about this match..."
-              class="flex-grow neo-input rounded-none px-3 py-2 text-xs placeholder:text-neo-text/30 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200 dark:placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
-              @keyup.enter="sendRecapQuestion"
-              :disabled="recapAskLoading"
-            />
-            <button
-              @click="sendRecapQuestion"
-              :disabled="recapAskLoading || !recapQuestion.trim()"
-              class="bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-300 dark:disabled:bg-slate-700 disabled:text-gray-500 dark:disabled:text-slate-500 text-white rounded-none px-3 py-2 text-xs transition-all duration-150 cursor-pointer active:scale-95 flex-shrink-0"
-            >
-              <svg v-if="recapAskLoading" class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </div>
-    </BaseModal>
+      @request-recap="requestRecap"
+      @send-question="sendRecapQuestion"
+      @update:question="recapQuestion = $event"
+    />
   </div>
 </template>
 
@@ -218,12 +141,12 @@
 import { defineComponent, toRef, watch, type Ref } from 'vue';
 import gamesData from '../../assets/games.json';
 import { useRecap } from '../../composables/useRecap.js';
-import BaseModal from '../ui/BaseModal.vue';
 import HowToPlayModal from '../modals/HowToPlayModal.vue';
+import AiRecapModal from '../modals/AiRecapModal.vue';
 
 export default defineComponent({
   name: 'GameHeader',
-  components: { BaseModal, HowToPlayModal },
+  components: { HowToPlayModal, AiRecapModal },
   props: {
     connectionStatus: String,
     title: {
@@ -297,7 +220,6 @@ export default defineComponent({
       sendRecapQuestion: recap.sendRecapQuestion,
       resetRecap: recap.resetRecap,
       initRecap: recap.initRecap,
-      formatRecap: recap.formattedRecapHtml,
     };
   },
   data() {
@@ -345,9 +267,6 @@ export default defineComponent({
       if (winnerLower.includes(`player ${this.player}`))
         return 'text-green-600';
       return 'text-red-600';
-    },
-    formattedRecapHtml(): string {
-      return this.formatRecap(this.recapText);
     },
     activeGameId(): string {
       const parts = this.$route.path.split('/');

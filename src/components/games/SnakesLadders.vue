@@ -223,67 +223,19 @@
     <HowToPlayModal :is-open="isHowToPlayOpen" game-id="snakes-ladders" @close="isHowToPlayOpen = false" />
 
     <!-- AI Recap Modal -->
-    <BaseModal :is-open="showRecapModal" @close="closeRecapModal">
-      <div class="text-neo-text select-text p-1 text-left">
-        <h2 class="text-2xl font-black uppercase tracking-tighter mb-4 text-center">AI Match Recap</h2>
-
-        <!-- Recap Content -->
-        <div class="max-h-72 overflow-y-auto mb-4 p-3 bg-neo-muted/10 border-2 border-black/10 text-sm">
-          <div v-if="recapLoading" class="flex flex-col items-center justify-center py-8 space-y-3">
-            <WaitingIndicator />
-            <span class="text-xs font-bold uppercase tracking-wider text-neo-text/50">Analyzing Match logs...</span>
-          </div>
-          <div v-else-if="recapText" class="prose dark:prose-invert text-neo-text font-medium leading-relaxed" v-html="formattedRecapHtml(recapText)">
-          </div>
-          <div v-else class="text-xs text-center font-bold text-neo-text/50 py-8">
-            Failed to generate recap.
-          </div>
-        </div>
-
-        <!-- Recap QA Section -->
-        <div v-if="recapText && !recapLoading" class="border-t border-black/10 pt-4">
-          <h4 class="text-xs font-black uppercase tracking-wider mb-2">Ask follow-up questions</h4>
-
-          <!-- Conversation History -->
-          <div v-if="recapConversation.length > 0" class="max-h-36 overflow-y-auto mb-3 space-y-2 text-xs p-2 bg-black/5 dark:bg-white/5 border border-black/10">
-            <div v-for="(msg, idx) in recapConversation" :key="idx" class="flex flex-col">
-              <span class="font-extrabold uppercase text-[9px] tracking-wider" :class="msg.role === 'user' ? 'text-blue-500' : 'text-green-600'">
-                {{ msg.role === 'user' ? 'You' : 'Assistant' }}
-              </span>
-              <p class="font-medium text-neo-text/80 whitespace-pre-wrap">{{ msg.content }}</p>
-            </div>
-          </div>
-
-          <div class="flex gap-2">
-            <input
-              v-model="recapQuestion"
-              type="text"
-              placeholder="Ask about specific moves, turn counts, luck..."
-              class="flex-grow neo-input rounded-none px-3 py-2 text-xs placeholder:text-neo-text/30 focus:outline-none dark:bg-slate-800 dark:border-slate-700"
-              @keyup.enter="sendRecapQuestion"
-              :disabled="recapAskLoading"
-            />
-            <button
-              @click="sendRecapQuestion"
-              :disabled="recapAskLoading || !recapQuestion.trim()"
-              class="bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-300 dark:disabled:bg-slate-700 text-white rounded-none px-3 py-2 text-xs transition-all cursor-pointer flex-shrink-0"
-            >
-              <WaitingIndicator v-if="recapAskLoading" />
-              <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
-              </svg>
-            </button>
-          </div>
-        </div>
-
-        <button
-          @click="closeRecapModal"
-          class="w-full bg-neo-muted text-neo-text font-black py-2 border-2 border-black mt-4 uppercase tracking-wider text-xs neo-btn cursor-pointer"
-        >
-          Close
-        </button>
-      </div>
-    </BaseModal>
+    <AiRecapModal
+      :is-open="showRecapModal"
+      :recap-text="recapText"
+      :loading="recapLoading"
+      :conversation="recapConversation"
+      :question="recapQuestion"
+      :ask-loading="recapAskLoading"
+      :question-asked="recapQuestionAsked"
+      @close="closeRecapModal"
+      @request-recap="requestRecap"
+      @send-question="sendRecapQuestion"
+      @update:question="recapQuestion = $event"
+    />
 
   </div>
 </template>
@@ -296,12 +248,12 @@ import { useConfetti } from '../../composables/useConfetti.js';
 import { useRecap } from '../../composables/useRecap.js';
 import type { SnakesLaddersGameState as GameState } from '../../types/shared.js';
 import WaitingIndicator from '../ui/WaitingIndicator.vue';
-import BaseModal from '../ui/BaseModal.vue';
+import AiRecapModal from '../modals/AiRecapModal.vue';
 import HowToPlayModal from '../modals/HowToPlayModal.vue';
 
 export default defineComponent({
   name: 'SnakesLadders',
-  components: { WaitingIndicator, BaseModal, HowToPlayModal },
+  components: { WaitingIndicator, AiRecapModal, HowToPlayModal },
   emits: ['update-connection-status', 'update-player', 'update-room-key'],
   props: {
     socket: { type: Object as PropType<Socket>, required: true },
