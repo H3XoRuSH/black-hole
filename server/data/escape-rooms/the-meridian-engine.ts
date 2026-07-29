@@ -5,7 +5,7 @@ const data: EscapeRoomData = {
   name: 'The Meridian Engine',
   description: 'A mathematical observatory built around a machine that can bend space itself. Decode its numerical mechanisms before the engine reaches alignment.',
   difficulty: 'extreme',
-  intro: 'You wake with your cheek pressed against a cold slate floor. Somewhere above, enormous gears grind against one another, and the whole chamber tilts as though the building is sliding down the face of the world.\n\nA strip of red light crawls across the ceiling. It measures time, but not in seconds: 74, 73, 72...\n\nOn the wall, hundreds of equations have been carved into the stone. Some are unfinished. Others have been violently crossed out. At the center of the chamber, a circular shaft descends into darkness, its rim marked with three words:\n\nMEASURE. DEDUCE. ALIGN.\n\nThe engine has begun its final rotation. The only visible route leads through the observatory below.',
+  intro: 'You wake with your cheek pressed against a cold slate floor. Water laps at the edges of the chamber — a sunken library of slate tablets and brass drawers. Somewhere above, enormous gears grind against one another, and the whole chamber tilts as though the building is sliding down the face of the world.\n\nA strip of red light crawls across the ceiling. It measures time, but not in seconds: 101, 100, 99...\n\nOn the wall, hundreds of equations have been carved into the stone. Some are unfinished. Others have been violently crossed out — abandoned mid-solution by whoever came before. Above the only passage leading deeper into the observatory, a single word is chiseled into the lintel:\n\nMEASURE.\n\nThe engine has begun its final rotation. It will align itself, wrongly, when the strip reaches zero. The machine must be aligned correctly before then — or the observatory tears itself apart.',
   locations: [
     {
       id: 'flooded-archive',
@@ -25,7 +25,7 @@ const data: EscapeRoomData = {
   ],
   nodes: [
     // =====================================================================
-    // THE FLOODED ARCHIVE — 7 root objects, max depth 4
+    // THE FLOODED ARCHIVE — 8 root objects, max depth 4
     //
     // Two knowledge-gated puzzles (pressure dials, factor puzzle) blocked by
     // teaching nodes in later locations. One locked drawer (brass drawer)
@@ -46,7 +46,7 @@ const data: EscapeRoomData = {
       parentId: null,
       type: 'dialogue',
       label: 'Surveyor\'s Stone Map',
-      narrative: 'A submerged map is etched into a stone table. The dry island began as a broad rectangle, but water has eaten away a right-angled triangular corner and carved a narrow channel into the northern edge. A brass ruler is fixed beside the map. The map holds the key to understanding how much floor remains above the water.',
+      narrative: 'A submerged map is etched into a stone table. The dry island began as a broad rectangle, but water has eaten away a right-angled triangular corner and carved a narrow channel into the northern edge. The channel stops short of the missing corner — the two eroded pieces do not overlap. A brass ruler is fixed beside the map. The map holds the key to understanding how much floor remains above the water.',
       children: ['fa-stone-map-puzzle']
     },
     {
@@ -55,8 +55,8 @@ const data: EscapeRoomData = {
       parentId: 'fa-surveyors-table',
       type: 'puzzle',
       label: 'Dry Floor Calculation',
-      narrative: 'The map table glows beneath the water. The brass ruler slides into position above the eroded edges.',
-      question: 'The island began as a 10 m by 8 m rectangle. Two pieces are now missing:\n\n   The full rectangle before the flood (10m wide, 8m tall):\n\n   +----------------------------+\n   |                            |\n   |                            |\n   |                            |\n   +----------------------------+\n\n   Missing piece 1 — right triangle (6m height, 4m base):\n   Two edges meet at a corner and a diagonal cut removed the piece between them.\n\n        +------+\n        |     /\n        |    /\n        |   /\n        |  /\n        | /\n        |/\n        +\n\n   Missing piece 2 — rectangle (2m wide, 7m long):\n\n        +--------------+\n        |              |\n        |              |\n        |              |\n        +--------------+\n\nThe plaque beneath the map reads DRY FLOOR = ____ square meters.',
+      narrative: 'The map table glows beneath the water. The brass ruler slides into position above the eroded edges. Enter the remaining area and the ruler will confirm it against the map.',
+      question: 'The island began as a 10 m by 8 m rectangle. Two pieces are now missing (the channel does not touch the eroded corner):\n\n   The full rectangle before the flood (10m wide, 8m tall):\n\n   +----------------------------+\n   |                            |\n   |                            |\n   |                            |\n   +----------------------------+\n\n   Missing piece 1 — right triangle (6m height, 4m base):\n   Two edges meet at a corner and a diagonal cut removed the piece between them.\n\n        +------+\n        |     /\n        |    /\n        |   /\n        |  /\n        | /\n        |/\n        +\n\n   Missing piece 2 — rectangle (2m wide, 7m long):\n\n        +--------------+\n        |              |\n        |              |\n        |              |\n        +--------------+\n\nThe plaque beneath the map reads DRY FLOOR = ____ square meters.',
       answer: '54',
       hints: [
         'The full rectangle covers 10 by 8 meters. That gives you a starting area. Now look at the two missing pieces one at a time.',
@@ -99,7 +99,7 @@ const data: EscapeRoomData = {
       parentId: null,
       type: 'dialogue',
       label: 'Remainder Principle Plaque',
-      narrative: 'A brass plaque is bolted to the wall beside the sluice gate. Its engraving is worn but legible:\n\n"All quantities may be gathered into equal groups. What cannot be gathered is the remainder — and remainders, added together, behave in their own arithmetic. A remainder of 1 plus a remainder of 2 gives a remainder of 0 when the groups are threes."\n\nThe plaque continues: "When every number is divided by 3, it leaves behind a remainder of 0, 1, or 2. Numbers that leave the same remainder belong to the same family. To make a multiple of 3 from three numbers, you must take one number from each family — or take three numbers all from the zero-remainder family. No other combination works."',
+      narrative: 'A brass plaque is bolted to the wall beside the sluice gate. Its engraving is worn but legible:\n\n"All quantities may be gathered into equal groups. What cannot be gathered is the remainder — and remainders, added together, behave in their own arithmetic. A remainder of 1 plus a remainder of 2 gives a remainder of 0 when the groups are threes."\n\nThe plaque continues: "When every number is divided by 3, it leaves behind a remainder of 0, 1, or 2. Numbers that leave the same remainder belong to the same family. To make a multiple of 3 from three numbers, you must take one number from each family — or take three numbers all from the zero-remainder family. With only two handles per family, no other combination can supply three."',
       children: ['fa-remainder-application']
     },
     {
@@ -108,7 +108,7 @@ const data: EscapeRoomData = {
       parentId: 'fa-remainder-plaque',
       type: 'dialogue',
       label: 'Remainder Application',
-      narrative: 'The lower half of the plaque applies the principle to the six sluice handles:\n\n"Handle 3 and Handle 6 leave zero remainder. Handles 1 and 4 leave one leftover. Handles 2 and 5 leave two leftovers. Each family has only two members — not enough to supply three. The gate demands one handle from each family."\n\nTo count valid sets: pick one handle from each remainder family. That gives 2 × 2 × 2 = 8 combinations. But Handles 1 and 6 can never be sealed together — and they appear together in only two of those combinations. Remove those, leaving 6 valid configurations.',
+      narrative: 'The lower half of the plaque applies the principle to a simpler case:\n\n"Consider the old four-handle gate (handles 1–4, seal two, exclude the {1,4} pair). Handle 4 leaves zero remainder; Handle 1 leaves one leftover; Handles 2 and — wait, Handle 2 leaves two leftovers, but Handle 3 also leaves zero. Two families hold one member each; one family holds two. The gate demands one from each family, so the valid sets are {1,2,4} and {1,3,2} — but {1,4} is forbidden, striking {1,2,4}. Only {1,2,3} remains: one valid configuration."\n\nThe six-handle gate before you demands the same reasoning, and tolerates one forbidden pairing — {1,6}. The counting is yours to perform.',
       children: []
     },
 
@@ -118,7 +118,7 @@ const data: EscapeRoomData = {
       parentId: null,
       type: 'dialogue',
       label: 'Sluice Gate Control Panel',
-      narrative: 'Six numbered sluice handles line the wall. Exactly three receive red seals. The water gate opens only when the sealed handle numbers add up to a multiple of 3. Handles 1 and 6 sit on opposite walls — the gate mechanism can never seal both at once. A brass counter beneath the gate clicks with anticipation.',
+      narrative: 'Six numbered sluice handles line the wall. Exactly three receive red seals. The water gate will open for whoever can prove they understand it — state how many valid ways three handles can be sealed so that their numbers sum to a multiple of 3. Handles 1 and 6 sit on opposite walls — the gate mechanism can never seal both at once. A brass counter beneath the gate clicks with anticipation.',
       children: ['fa-sluice-panel-puzzle']
     },
     {
@@ -127,8 +127,8 @@ const data: EscapeRoomData = {
       parentId: 'fa-sluice-gate-mechanism',
       type: 'puzzle',
       label: 'Sluice Handle Configuration',
-      narrative: 'The control panel awaits your configuration. The remainder plaque on the wall holds the key to counting valid sets — you may wish to review it before proceeding.',
-      question: 'The counter beneath the gate displays VALID SETS = ____.\n\n   The six sluice handles:\n\n   |   [1]   [2]   [3]\n   |   [4]   [5]   [6]\n\nPick exactly three handles. Their numbers must sum to a multiple of 3. Handles 1 and 6 can never be sealed together.',
+      narrative: 'The control panel awaits your proof. Enter the count of valid sealings — the gate will verify it against its own mechanism. The remainder plaque on the wall holds the key to counting valid sets.',
+      question: 'Enter the count and the gate will verify — if you are correct, the six handles will receive their seals and the sluice will open.\n\n   The six sluice handles:\n\n   |   [1]   [2]   [3]\n   |   [4]   [5]   [6]\n\nSeal exactly three handles. Their numbers must sum to a multiple of 3. Handles 1 and 6 can never be sealed together.\n\nThe counter beneath the gate displays VALID SETS = ____.',
       answer: '6',
       hints: [
         'When you split a number into groups of three, what is left over? The Remainder Principle plaque on the wall explains this. Check what each handle number leaves behind after taking away as many full groups of three as possible.',
@@ -143,7 +143,7 @@ const data: EscapeRoomData = {
       parentId: 'fa-sluice-panel-puzzle',
       type: 'dialogue',
       label: 'Sluice Chamber',
-      narrative: 'The sluice gate groans open. Water rushes through for a long moment, then calms to a steady trickle. Behind the gate, a narrow chamber has been carved into the stone — and inside it, an iron lockbox with a stone-key slot. The lockbox waits for the maul stone key from the surveyor\'s table.',
+      narrative: 'The sluice gate groans open. Water rushes through for a long moment, then calms to a steady trickle. The drained archive is safe to walk — wet silt lines mark where the water once stood, and the stone floor gleams under the red strip\'s fading light. Behind the gate, a narrow chamber has been carved into the stone — and inside it, an iron lockbox with a stone-key slot. The lockbox waits for the maul stone key from the surveyor\'s table.',
       children: ['fa-sluice-lockbox']
     },
     {
@@ -163,7 +163,7 @@ const data: EscapeRoomData = {
       parentId: 'fa-sluice-lockbox',
       type: 'item',
       label: 'Brass Gate Key',
-      narrative: 'The brass key is warm from the lockbox and stamped with a tannery mark — a leather press with crossed needles. It matches the lock on the brass drawer across the archive.',
+      narrative: 'The brass key is warm from the lockbox and stamped with a tannery mark — a leather press with crossed needles. The engine\'s architect was a tanner who bankrolled the entire observatory; the guild seal authenticates every locked mechanism in these chambers. This key matches the lock on the brass drawer across the archive.',
       rewardItem: 'sluice-gate-key'
     },
     {
@@ -193,7 +193,7 @@ const data: EscapeRoomData = {
       parentId: 'fa-brass-tannery-drawer',
       type: 'dialogue',
       label: 'Black Stone Factor Tablet',
-      narrative: 'The tablet displays the complete factor tree of 7560:\n\n   |   7560\n   |    /\\\n   |   2  3780\n   |       /\\\n   |      2  1890\n   |          /\\\n   |         2  945\n   |             /\\\n   |            3  315\n   |                /\\\n   |               3  105\n   |                   /\\\n   |                  3  35\n   |                      /\\\n   |                     5  7\n\nThe drawer carries a scratched formula: S = one of each type of building piece multiplied together + all exact dividers counted up. But the formula for counting dividers from the prime pieces has been torn away — the theorem is archived in the Meridian Core.',
+      narrative: 'The tablet displays the complete factor tree of 7560:\n\n   |   7560\n   |    /\\\n   |   2  3780\n   |       /\\\n   |      2  1890\n   |          /\\\n   |         2  945\n   |             /\\\n   |            3  315\n   |                /\\\n   |               3  105\n   |                   /\\\n   |                  3  35\n   |                      /\\\n   |                     5  7\n\nThe drawer carries a scratched formula: S = square-free kernel + divisor-count. But the formula for counting divisors from the prime pieces has been torn away — the theorem is archived in the Meridian Core.',
       children: []
     },
     {
@@ -203,7 +203,7 @@ const data: EscapeRoomData = {
       type: 'puzzle',
       label: 'Factor Reconstruction',
       narrative: 'The final brass window beneath the drawer flickers. It expects the value of S, but the divisor-counting formula has been removed — the Prime Decomposition Theorem in the Meridian Core holds the complete method.',
-      question: 'The drawer carries a scratched formula:\n\n   S = one of each type of building piece multiplied together + all exact dividers counted up\n\nThe final window reads S = ____.',
+      question: 'The drawer carries a scratched formula:\n\n   S = square-free kernel + divisor-count\n\nThe final window reads S = ____.',
       answer: '274',
       hints: [
         'The Prime Decomposition Theorem in the Meridian Core explains how to break a number into its fundamental building pieces and count its divisors. The black stone tablet already shows the factor tree of 7560 — you need the theorem to finish the calculation.',
@@ -246,13 +246,13 @@ const data: EscapeRoomData = {
       parentId: 'fa-pressure-pipe-assembly',
       type: 'puzzle',
       label: 'Periodic Alignment Puzzle',
-      narrative: 'A plaque beside the pipe waits. The dials show clear readings, but finding the number of strikes that could produce all three at once requires the Orbital Period Theorem from the Orrery Gallery.',
+      narrative: 'A plaque beside the pipe waits. Enter the strike count and the engine will replay it — the needles will settle at 4, 2, and 8 only if your count is true. Finding the number of strikes that could produce all three readings at once requires the Orbital Period Theorem from the Orrery Gallery.',
       question: 'A plaque beside the pipe asks: "How many times did the bell strike?"\n\nThe three dials after the bell fell silent:\n\n   Iron (7 ticks):    0, 1, 2, 3, [4], 5, 6  -> back to 0\n   Brass (9 ticks):    0, 1, [2], 3, 4, 5, 6, 7, 8  -> back to 0\n   Copper (11 ticks):  0, 1, 2, 3, 4, 5, 6, 7, [8], 9, 10  -> back to 0\n\nThe brass window beneath the dials displays n = ____.',
       answer: '74',
       hints: [
         'The Orbital Period Theorem in the Orrery Gallery explains how to align cycles of different lengths. Start with the iron dial: every 7 strikes bring it back to where it started. If it reads 4 now, the strike count could be 4, or 4+7=11, or 4+7+7=18, and so on. Make a list for each dial using its own full cycle length.',
         'Compare the three lists. Look for a number that shows up on all of them — that is the earliest moment every dial matched its current reading at the same time.',
-        'The number you need is bigger than the first few entries of any single list. Keep adding each dial\'s full cycle length and checking — the shared number will appear eventually.'
+        'Search each dial\'s cycle for numbers that match its current reading. Iron (7-cycle, reading 4): 4, 11, 18, 25, 32, 39, 46, 53, 60, 67, 74. Brass (9-cycle, reading 2): 2, 11, 20, 29, 38, 47, 56, 65, 74. Copper (11-cycle, reading 8): 8, 19, 30, 41, 52, 63, 74. The first number that appears in all three lists is 74 — that is the strike count.',
       ],
       children: ['fa-calibration-shaft']
     },
@@ -285,13 +285,32 @@ const data: EscapeRoomData = {
     },
 
     {
+      id: 'fa-architects-journal-1',
+      locationId: 'flooded-archive',
+      parentId: null,
+      type: 'dialogue',
+      label: 'Architect\'s Journal — First Entry',
+      narrative: 'A waterlogged journal lies open on a tilted lectern. The handwriting is confident, almost careless:\n\n"We laid the foundation-stone today. The tanners\' guild contributed enough brass to plate every theorem-carving in the observatory — more than I asked for. The crossed-needle mark will authenticate every lock, every seal, every drawer. Quid pro quo: the engine remembers the guild\'s generosity in its final alignment. I am certain the machine will be finished before the spring floods."',
+      children: []
+    },
+    {
+      id: 'fa-crossed-out-equation',
+      locationId: 'flooded-archive',
+      parentId: null,
+      type: 'dialogue',
+      label: 'Crossed-Out Wall Carving',
+      narrative: 'One of the violently crossed-out equations on the wall is still legible beneath the scratches. It attempts to reduce the wheel\'s turn count using the wrong cycle length — 19 instead of 20 — and ends in a frustrated scrawl: 807. Whoever carved this made the same mistake the walls warn against. The correct method, preserved in a theorem deeper in the observatory, uses the true 20-turn cycle.',
+      children: []
+    },
+
+    {
       id: 'fa-iron-stairwell',
       locationId: 'flooded-archive',
       parentId: null,
       type: 'locked',
       label: 'Iron Stairwell Hatch',
       narrative: 'The release pin slides into the emergency mechanism. Bolts retract with a cascading clank, and the iron hatch swings upward. Beyond it, a spiral stair climbs toward a vast mechanical chamber — the Orrery Gallery.',
-      lockedNarrative: 'A sealed iron stairwell is set into the far wall, its hatch locked by an emergency release mechanism. A slot beside the handle is shaped for a heavy iron pin. Water creeps closer by the minute.',
+      lockedNarrative: 'A sealed iron stairwell is set into the far wall, its hatch locked by an emergency release mechanism. A slot beside the handle is shaped for a heavy iron pin. Silt lines on the wall mark where the water once rose — the sluice has drained the archive, and the stairwell stands clear.',
       lockedByItem: 'archive-release-pin',
       children: ['fa-stairwell-hatch']
     },
@@ -310,7 +329,7 @@ const data: EscapeRoomData = {
       parentId: 'fa-stairwell-hatch',
       type: 'dialogue',
       label: 'Stairwell Passage',
-      narrative: 'Each step rings underfoot as you climb. The stairwell narrows near the top, ending at a heavy wooden door. Through its seams, a faint glow pulses — the Orrery Gallery\'s central lens.',
+      narrative: 'Each step rings underfoot as you climb. The stairwell narrows near the top, ending at a heavy wooden door. Through its seams, a faint glow pulses — the Orrery Gallery\'s central lens. A single word is carved above the door: DEDUCE.',
       children: ['fa-to-gallery']
     },
     {
@@ -319,12 +338,12 @@ const data: EscapeRoomData = {
       parentId: 'fa-stairwell-descent',
       type: 'dialogue',
       label: 'Enter the Orrery Gallery',
-      narrative: 'The iron stairwell opens into the Orrery Gallery. An immense mechanical model of the solar system hangs in the dark. Brass planets travel along intersecting rails while glass lenses cast geometric shadows across the floor. Narrow brass rails connect six planetary stations, each bearing an energy cost etched into the metal. A central lens waits at the heart of the model.',
+      narrative: 'The iron stairwell opens into the Orrery Gallery. Looking down, the drained archive glimmers far below — silt lines marking where the flood stood, the surveyor\'s map now fully dry. An immense mechanical model of the solar system hangs in the dark. Brass planets travel along intersecting rails while glass lenses cast geometric shadows across the floor. Narrow brass rails connect six planetary stations, each bearing an energy cost etched into the metal. A central lens waits at the heart of the model.',
       children: []
     },
 
     // =====================================================================
-    // THE ORRERY GALLERY — 7 root objects, max depth 3
+    // THE ORRERY GALLERY — 9 root objects, max depth 3
     //
     // Teaching node (orbital period theorem) provides knowledge for the
     // archive's pressure dials puzzle. Four accessible puzzles yield tokens.
@@ -402,12 +421,12 @@ const data: EscapeRoomData = {
       type: 'puzzle',
       label: 'Pendulum Measurement',
       narrative: 'The pendulum swings through the scale. Seven numbers wait to be ordered and measured.',
-      question: 'A note between the needles reads: "Find the reading in the heart of the ordered seven. Measure every gap from it. S is the heart and all the gaps together."\n\n   Brass scale with marked positions:\n\n   |  11    14    14    14    17    18    23\n   |   o     o     o     o     o     o     o\n   |  low   mid   mid   mid   |     |    high\n   |                           |     |\n   |                         E4    F4\n\nThe scale window waits at S = ____.',
+      question: 'A note between the needles reads: "Find the reading in the heart of the ordered seven. Measure every gap from it. S is the heart and all the gaps together."\n\n   Brass scale with marked positions (sorted low to high):\n\n   |  11    14    14    14    17    18    23\n   |   o     o     o     o     o     o     o\n\nEnter S and the scale will lock the measurement into the engine.\n\nThe scale window waits at S = ____.',
       answer: '33',
       hints: [
         'Sort the seven readings from lowest to highest. The "heart" is the one sitting at the center of the ordered list — the fourth reading.',
         'Once you have identified the heart, measure the distance from every reading to it. A distance is always counted as a positive gap — how far above or below the heart each reading falls.',
-        'S is the heart plus the sum of all seven gaps. Add carefully — every gap counts, even when it is zero.'
+        'The heart is 14. Every reading\'s distance from 14: 3, 0, 0, 0, 3, 4, 9. These seven gaps sum to 19. S = 14 + 19 = 33.'
       ],
       children: ['og-median-conclusion']
     },
@@ -445,8 +464,8 @@ const data: EscapeRoomData = {
       parentId: 'og-planet-balance-beam',
       type: 'puzzle',
       label: 'Planet Mass Calculation',
-      narrative: 'The ledger beside the scale shows four relationships. Solve for Saturn\'s mass alone.',
-      question: 'The ledger reads:\n\n   Mars  +  Venus  =  23\n   Mars  +  Jupiter =  31\n   Venus +  Jupiter =  28\n   Saturn +  Mars   =  39\n\nEach planet has a different mass, measured in stone units. Find Saturn\'s mass alone.\n\nThe scale counter reads ____.',
+      narrative: 'The ledger beside the scale shows four relationships. Enter Saturn\'s mass — the beam will tip to confirm your derivation.',
+      question: 'The ledger reads:\n\n   Mars  +  Venus  =  23\n   Mars  +  Jupiter =  31\n   Venus +  Jupiter =  28\n   Saturn +  Mars   =  39\n\nEach planet has a different mass, measured in stone units. Enter Saturn\'s mass and the beam will balance.\n\nThe scale counter reads ____.',
       answer: '26',
       hints: [
         'Look at the first two entries. Both include Mars. The difference between their totals tells you how much heavier Jupiter is than Venus.',
@@ -480,7 +499,7 @@ const data: EscapeRoomData = {
       parentId: null,
       type: 'dialogue',
       label: 'Moon Sampling Cage',
-      narrative: 'Twelve small moons rotate inside a sampling cage. Five pearl moons each have mass 2, four iron moons each have mass 5, and three glass moons each have mass 9. The mechanical arm reaches in and selects two different moons at random. A brass counter advances only when the two chosen masses make an odd total.',
+      narrative: 'Twelve small moons rotate inside a sampling cage. Five pearl moons each have mass 2, four iron moons each have mass 5, and three glass moons each have mass 9. The mechanical arm reaches in and selects two different moons. A brass counter advances once for every possible pairing that makes an odd total. Enter the final count and the arm will run the full sequence.',
       children: ['og-moon-cage-puzzle']
     },
     {
@@ -489,8 +508,8 @@ const data: EscapeRoomData = {
       parentId: 'og-moon-sampling-cage',
       type: 'puzzle',
       label: 'Favorable Moon Pairs',
-      narrative: 'The brass counter beneath the cage ticks with each possible selection. It wants the number of pairs that produce an odd total.',
-      question: 'The brass counter advances only when the two chosen masses make an odd total.\n\n   Moons in the sampling cage:\n\n   Pearl (mass 2):  P P P P P     (5 moons, even mass)\n   Iron  (mass 5):  I I I I       (4 moons, odd mass)\n   Glass (mass 9):  G G G         (3 moons, odd mass)\n\nIts display reads FAVORABLE PAIRS = ____.',
+      narrative: 'The brass counter beneath the cage ticks with each possible selection. Enter the final count and the arm will verify it by running the full sequence.',
+      question: 'The counter advances once for every possible pairing of two different moons that makes an odd total.\n\n   Moons in the sampling cage:\n\n   Pearl (mass 2):  P P P P P     (5 moons, even mass)\n   Iron  (mass 5):  I I I I       (4 moons, odd mass)\n   Glass (mass 9):  G G G         (3 moons, odd mass)\n\nEnter the count and the arm runs the sequence.\n\nIts display reads FAVORABLE PAIRS = ____.',
       answer: '35',
       hints: [
         'An odd total can only come from one even mass and one odd mass added together. Which moon types have even mass, and which have odd mass?',
@@ -558,18 +577,37 @@ const data: EscapeRoomData = {
     },
 
     {
+      id: 'og-architects-journal-2',
+      locationId: 'orrery-gallery',
+      parentId: null,
+      type: 'dialogue',
+      label: 'Architect\'s Journal — Second Entry',
+      narrative: 'The journal continues, wedged beneath a planetary rail. The handwriting is tighter now:\n\n"The periodic alignment refuses to hold. I have taught the theorem to every apprentice who can count — carved it into brass, bolted it to the wall — yet the pressure dials in the archive still drift. The engine will complete its rotation whether I am ready or not. The red strip counts down to zero. I have begun crossing out my failed attempts."',
+      children: []
+    },
+    {
+      id: 'og-jammed-telescope',
+      locationId: 'orrery-gallery',
+      parentId: null,
+      type: 'dialogue',
+      label: 'Jammed Telescope',
+      narrative: 'A brass telescope is mounted on a swivel, aimed at the observatory ceiling. Its eyepiece is cracked, and the housing is frozen at a sharp angle — the same tilt the building suffers, locked into the instrument\'s bearings. A small plaque reads: "SIGHTING ANGLE — RECALIBRATE AFTER ALIGNMENT." The telescope has been stuck since the last attempt.',
+      children: []
+    },
+
+    {
       id: 'og-central-alignment-lens',
       locationId: 'orrery-gallery',
       parentId: null,
       type: 'puzzle',
       label: 'Central Alignment Lens',
-      narrative: 'The orrery\'s central lens activates now that four planetary stations have been measured. Four lights glow on the console — one for each station. The lens awaits the single combined orbital value carried by the four tokens.',
-      question: 'Four measurements have been taken across the Orrery Gallery. The central lens waits for their combined orbital alignment value.',
+      narrative: 'The orrery\'s central lens activates now that four planetary stations have been measured. Four lights glow on the console — one for each station. The lens displays the value carried by each token you hold.',
+      question: 'Four measurements have been taken across the Orrery Gallery. The central lens reads each token\'s face and waits for their combined value.\n\nAdd the numbers from your four station tokens together.',
       answer: '106',
       hints: [
-        'Each planetary station yielded a brass token with its measurement. Gather the four tokens — the rail network, the pendulum, the planet balance, and the moon cage.',
-        'The rail network gave 12, the pendulum gave 33, the planet scale gave 26, and the moon cage gave 35. Add them together.',
-        '12 + 33 + 26 + 35 = 106. Enter this sum to align the lens.'
+        'Each planetary station yielded a brass token with its measurement. Check the face of each token — the rail network, the pendulum, the planet balance, and the moon cage.',
+        'Read the numbers stamped on your four tokens and add them together. The lens expects a single sum.',
+        'Add the four token values. The lens will confirm the combined orbital alignment value.'
       ],
       children: ['og-alignment-record']
     },
@@ -579,7 +617,7 @@ const data: EscapeRoomData = {
       parentId: 'og-central-alignment-lens',
       type: 'dialogue',
       label: 'Alignment Record',
-      narrative: 'The lens rotates to 106 and locks with a deep hum. The orrery\'s planets align for a single breath — then the floor beneath the central lens splits open, revealing a spiral descent into a vertical chamber wrapped around a column of white light. The Meridian Core.',
+      narrative: 'The lens rotates to 106 and locks with a deep hum. The orrery\'s planets align for a single breath — then the floor beneath the central lens splits open, revealing a spiral descent into a vertical chamber wrapped around a column of white light. The Meridian Core. The whole gallery lurches — the tilt deepens.',
       children: ['og-to-core']
     },
     {
@@ -588,7 +626,17 @@ const data: EscapeRoomData = {
       parentId: 'og-alignment-record',
       type: 'dialogue',
       label: 'Enter the Meridian Core',
-      narrative: 'The gallery floor folds downward, revealing the meridian core. Five concentric brass rings are interlocked around the column of light, their rims lined with gear teeth. Coordinates, number parts, and leftovers rotate across the stone walls — the engine\'s final calculations.',
+      narrative: 'The gallery floor folds downward, revealing the meridian core. Above the spiral descent, a single word is carved into the stone: ALIGN. The red strip is visible through a floor grate — its glow pulses faster now, lower than before. Five concentric brass rings are interlocked around the column of light, their rims lined with gear teeth. Coordinates, number parts, and leftovers rotate across the stone walls — the engine\'s final calculations.',
+      children: []
+    },
+
+    {
+      id: 'mc-architects-journal-3',
+      locationId: 'meridian-core',
+      parentId: null,
+      type: 'dialogue',
+      label: 'Architect\'s Journal — Final Entry',
+      narrative: 'The last page of the journal is pinned to the core wall by a brass tack, directly beneath the countdown strip. The handwriting is barely legible:\n\n"I have crossed out every equation that failed. The wheel, the gate, the gears — I solved each mechanism alone. But I cannot enter the final code. The engine demands all seven tokens, and I have no one left to solve the gallery with. The strip is at 101. I have made it stop here, at the number where every cycle begins. If you are reading this — you measured. You deduced. Now align it. Finish what the tanners paid for."',
       children: []
     },
 
@@ -628,7 +676,7 @@ const data: EscapeRoomData = {
       parentId: null,
       type: 'dialogue',
       label: 'Modular Exponentiation Theorem',
-      narrative: 'A theorem is etched beside the number wheel:\n\n"MODULAR EXPONENTIATION — When a number is repeatedly multiplied, only the final few digits matter. Every sequence eventually cycles. The cycle length, once found, allows any turn count to be reduced to a manageable remainder."\n\nA worked example uses base 3 modulo 50:\n\n1 → 3 → 9 → 27 → 31 → 43 → 29 → 37 → 11 → 33 → 49 → 47 → 41 → 23 → 19 → 7 → 21 → 13 → 39 → 17 → 1 (cycle length: 20 steps).\n\n"Given 47 turns: divide 47 by 20. The remainder is 7. Trace 7 multiplications from 1: 1 → 3 → 9 → 27 → 31 → 43 → 29. Keep only the last digits at each step — only the remainder matters."\n\nA note beside the theorem adds: "The number wheel uses base 7 modulo 1000. Find its cycle."',
+      narrative: 'A theorem is etched beside the number wheel:\n\n"MODULAR EXPONENTIATION — When a number is repeatedly multiplied, only the final few digits matter. Every sequence eventually cycles. The cycle length, once found, allows any turn count to be reduced to a manageable remainder."\n\nA worked example uses base 3 modulo 50:\n\n1 → 3 → 9 → 27 → 31 → 43 → 29 → 37 → 11 → 33 → 49 → 47 → 41 → 23 → 19 → 7 → 21 → 13 → 39 → 17 → 1 (cycle length: 20 steps).\n\n"Given 47 turns: divide 47 by 20. The remainder is 7. Trace 7 multiplications from 1: 1 → 3 → 9 → 27 → 31 → 43 → 29 → 37. Seven multiplications, landing on 37."\n\nA note beside the theorem adds: "The number wheel uses base 7 modulo 1000. Find its cycle."\n\nIn the margin, a trembling hand has scrawled: "The architect\'s last notes claim a true alignment does not move the engine — it moves the room."',
       children: []
     },
 
@@ -647,8 +695,8 @@ const data: EscapeRoomData = {
       parentId: 'mc-gear-ring-housing',
       type: 'puzzle',
       label: 'Gear Ring Recurrence',
-      narrative: 'The core display waits for the outermost ring\'s tooth count. The gear recurrence study you found in the Orrery Gallery demonstrates how to compute each successive ring.',
-      question: 'The innermost ring (Ring 1) has 4 teeth. Each ring outward follows the same rule: take the inner ring\'s tooth count, double it, then add two more.\n\n   Ring 1: 4 teeth\n   Ring 2: 4 doubled + 2 = ?\n   Ring 3: ? doubled + 2 = ?\n   Ring 4: ? doubled + 2 = ?\n   Ring 5: ? doubled + 2 = ?\n\nHow many teeth does the outermost ring (Ring 5) have?\n\nThe core display waits for ____.',
+      narrative: 'The core display waits for the outermost ring\'s tooth count. Enter the count and the rings will engage one by one, locking outward from the center. The gear recurrence study you found in the Orrery Gallery demonstrates how to compute each successive ring.',
+      question: 'The innermost ring (Ring 1) has 4 teeth. Each ring outward follows the same rule: take the inner ring\'s tooth count, double it, then add two more.\n\n   Ring 1: 4 teeth\n   Ring 2: 2 × 4 + 2 = 10\n   Ring 3: (continue outward)\n   Ring 4: (continue outward)\n   Ring 5: (outermost)\n\nHow many teeth does the outermost ring (Ring 5) have?\n\nThe core display waits for ____.',
       answer: '94',
       hints: [
         'Work outward one ring at a time. Each new ring\'s teeth depend only on the ring just inside it. The Gear Recurrence Study from the Orrery Gallery shows the full pattern.',
@@ -682,7 +730,7 @@ const data: EscapeRoomData = {
       parentId: null,
       type: 'dialogue',
       label: 'Number Gate Housing',
-      narrative: 'A circular gate is stamped 360. It accepts one brass ticket for each whole number from 1 through 360 that cannot be divided evenly by 2, by 3, or by 5. Three small seals marked 2, 3, and 5 sit beneath the gate. A column beside the gate is sealed shut — it requires the Core Alignment Code from the Orrery Gallery.',
+      narrative: 'A circular gate is stamped 360. It accepts one brass ticket for each whole number from 1 through 360 that cannot be divided evenly by any of 2, 3, or 5. Three small seals marked 2, 3, and 5 sit beneath the gate. A column beside the gate is sealed shut — it requires the Core Alignment Code from the Orrery Gallery.',
       children: ['mc-number-gate-column']
     },
     {
@@ -717,7 +765,7 @@ const data: EscapeRoomData = {
       hints: [
         'First, count how many numbers from 1 to 360 can be split evenly into groups of 2, of 3, or of 5. The Inclusion-Exclusion Principle panel explains how to avoid counting overlaps.',
         'A number like 6 can be split into equal groups of 2 AND into equal groups of 3. You must subtract these overlapping numbers so they are not counted twice. Do the same for numbers that split into 2 and 5, and for 3 and 5.',
-        'Numbers that split into 2, 3, and 5 all at once (like 30, 60, 90) were subtracted too many times. Add them back once. Remove the final rejected count from 360, then add the 3 seals.'
+        'Rejected = 180+120+72 − 60−36−24 + 12 = 264. Accepted = 360−264 = 96. Add the 3 seals: 96+3 = 99. Enter 99.'
       ],
       children: ['mc-gate-conclusion']
     },
@@ -761,7 +809,7 @@ const data: EscapeRoomData = {
       hints: [
         'Twenty turns bring the wheel full circle. Any complete group of 20 turns can be ignored — you only need to count the leftover turns. Find how many full groups of 20 fit into 2026.',
         'The Modular Exponentiation Theorem on the wall shows the full cycle and the computation: 2026 ÷ 20 = 101 remainder 6. Only 6 turns matter.',
-        'Start from 1 and multiply by 7 once for each leftover turn. After each multiplication, keep only the last three digits. Those three digits are the answer.'
+        'Start from 1 and multiply by 7 six times, keeping only the last three digits each step: 1 → 7 → 49 → 343 → 401 → 807 → 649. The three-place window reads 649.'
       ],
       children: ['mc-wheel-conclusion']
     },
@@ -801,7 +849,7 @@ const data: EscapeRoomData = {
       parentId: 'mc-engine-alignment-terminal',
       type: 'locked',
       label: 'Engine Ring 1 — Gallery Rail',
-      narrative: 'The token slides into the outermost brass ring. A chime rings through the observatory — the rail network\'s shortest path is counted. Six more rings await their tokens.',
+      narrative: 'The token slides into the outermost brass ring. A chime rings through the observatory — the rail network\'s shortest path is counted. The column of white light brightens by a degree. Six more rings await their tokens.',
       lockedNarrative: 'The outermost brass ring encircles the engine aperture. A slot is cut into its rim, stamped with the shortest-path rail diagram. The ring glows faintly — it waits for the Shortest Path Token from the Orrery Gallery.',
       lockedByItem: 'shortest-path-token',
       children: ['mc-token-gate-g2']
@@ -812,7 +860,7 @@ const data: EscapeRoomData = {
       parentId: 'mc-token-gate-g1',
       type: 'locked',
       label: 'Engine Ring 2 — Gallery Pendulum',
-      narrative: 'The second token slides home. The engine hum resonates lower — the pendulum\'s median measurement is registered. Five rings remain.',
+      narrative: 'The second token slides home. The engine hum resonates lower — the pendulum\'s median measurement is registered. The light column swells brighter. Five rings remain.',
       lockedNarrative: 'The second brass ring has a slot stamped with a pendulum arc. The Median Code Token from the Orrery Gallery will fit here.',
       lockedByItem: 'median-code-token',
       children: ['mc-token-gate-g3']
@@ -823,7 +871,7 @@ const data: EscapeRoomData = {
       parentId: 'mc-token-gate-g2',
       type: 'locked',
       label: 'Engine Ring 3 — Gallery Planet',
-      narrative: 'The third ring accepts its token with a deep vibration. Saturn\'s mass is absorbed into the engine\'s calculation. Four rings left.',
+      narrative: 'The third ring accepts its token with a deep vibration. Saturn\'s mass is absorbed into the engine\'s calculation. The gears above grind faster, and the building lurches another degree. Four rings left.',
       lockedNarrative: 'The third ring is heavier than the others, stamped with a planetary balance beam. It needs the Saturn Mass Token from the Orrery Gallery.',
       lockedByItem: 'saturn-mass-token',
       children: ['mc-token-gate-g4']
@@ -834,7 +882,7 @@ const data: EscapeRoomData = {
       parentId: 'mc-token-gate-g3',
       type: 'locked',
       label: 'Engine Ring 4 — Gallery Moon',
-      narrative: 'The fourth token clicks into place. The moon cage\'s favorable pairs are counted. Three rings remain — the gallery band is now complete.',
+      narrative: 'The fourth token clicks into place. The moon cage\'s favorable pairs are counted. The light column now fills the core with radiance. Three rings remain — the gallery band is now complete.',
       lockedNarrative: 'The fourth ring glows with a pearl-white light, its slot shaped like a moon. The Moon Pair Token from the Orrery Gallery completes the gallery set.',
       lockedByItem: 'moon-pair-token',
       children: ['mc-token-gate-c1']
@@ -845,7 +893,7 @@ const data: EscapeRoomData = {
       parentId: 'mc-token-gate-g4',
       type: 'locked',
       label: 'Engine Ring 5 — Core Gear',
-      narrative: 'The fifth ring vibrates in sympathy with the gear rings above. The outermost gear tooth count is verified. Two rings remain — the core band takes shape.',
+      narrative: 'The fifth ring vibrates in sympathy with the gear rings above. The outermost gear tooth count is verified. The building groans as the tilt sharpens. Two rings remain — the core band takes shape.',
       lockedNarrative: 'The fifth ring\'s slot is etched with concentric gear teeth. The Outermost Ring Token from the Meridian Core is required.',
       lockedByItem: 'outermost-ring-token',
       children: ['mc-token-gate-c2']
@@ -856,7 +904,7 @@ const data: EscapeRoomData = {
       parentId: 'mc-token-gate-c1',
       type: 'locked',
       label: 'Engine Ring 6 — Core Gate',
-      narrative: 'The sixth ring flares as the token seats. The number gate\'s tally is written into the engine\'s memory — 360 numbers, three forbidden divisors, three seals. One final ring awaits.',
+      narrative: 'The sixth ring flares as the token seats. The number gate\'s tally is written into the engine\'s memory — 360 numbers, three forbidden divisors, three seals. A deep pulse shakes the walls. One final ring awaits.',
       lockedNarrative: 'The sixth ring is stamped with a gate and three seals — 2, 3, and 5. It waits for the Gate Count Token from the Meridian Core.',
       lockedByItem: 'gate-count-token',
       children: ['mc-token-gate-c3']
@@ -867,7 +915,7 @@ const data: EscapeRoomData = {
       parentId: 'mc-token-gate-c2',
       type: 'locked',
       label: 'Engine Ring 7 — Core Wheel',
-      narrative: 'The seventh and final ring closes around the token. The number wheel\'s display — six turns beyond 001 — is factored into the engine. All seven rings lock together and the three brass alignment bands slide into view.',
+      narrative: 'The seventh and final ring closes around the token. The number wheel\'s display — six turns beyond 001 — is factored into the engine. All seven rings lock together with a thunderous clap, and the three brass alignment bands slide into view. The light column is blinding now.',
       lockedNarrative: 'The innermost ring is the narrowest, its slot barely wide enough for a thin brass token. The Wheel Display Token from the Meridian Core is the final piece.',
       lockedByItem: 'wheel-display-token',
       children: ['mc-engine-alignment-inner']
@@ -878,7 +926,7 @@ const data: EscapeRoomData = {
       parentId: 'mc-token-gate-c3',
       type: 'dialogue',
       label: 'Alignment Chamber',
-      narrative: 'Three brass bands slide into view, each carrying the numbers recovered from one chamber. The first remembers the archive. The second remembers the gallery. The third remembers the core. An old rule is carved beneath them: "Add each band. Tie away bundles of ten. Let only what cannot make a bundle pass into the three windows."',
+      narrative: 'Three brass bands slide into view, each carrying the numbers recovered from one chamber. The first remembers what the engine collected from the archive — reference values measured at the start, carried here without tokens. The second remembers the gallery. The third remembers the core. An old rule is carved beneath them: "Add each band. Tie away bundles of ten. Let only what cannot make a bundle pass into the three windows."',
       children: ['mc-engine-alignment-puzzle']
     },
     {
@@ -904,7 +952,7 @@ const data: EscapeRoomData = {
       parentId: 'mc-engine-alignment-puzzle',
       type: 'dialogue',
       label: 'Engine Alignment Complete',
-      narrative: 'The three windows light up: 8 — 6 — 2.\n\nThe Meridian Engine aligns for the first time in centuries. The column of white light expands outward, wrapping the observatory in a perfect ring of radiance. The gears fall silent. The red strip on the ceiling stops counting.\n\nThe stone wall before you ripples and becomes a doorway — not into another chamber, but into a sky you have never seen. Stars wheel above a landscape that bends gently at the edges.\n\nBelow the final window, a single line of new engraving glows:\n\nYOU MEASURED. YOU DEDUCED. YOU ALIGNED.\n\nStep through.',
+      narrative: 'The three windows light up: 8 — 6 — 2.\n\nThe Meridian Engine aligns for the first time in centuries. The column of white light expands outward, wrapping the observatory in a perfect ring of radiance. The gears fall silent. The red strip on the ceiling freezes — it never reaches zero. The building\'s tilt straightens as the engine pulls the room into true alignment.\n\nThe stone wall before you ripples and becomes a doorway — not into another chamber, but into a sky you have never seen. Just as the architect\'s margin note predicted: the engine does not move. The room does. Stars wheel above a landscape that bends gently at the edges.\n\nBelow the final window, a single line of new engraving glows:\n\nYOU MEASURED. YOU DEDUCED. YOU ALIGNED.\n\nStep through.',
       children: []
     }
   ]

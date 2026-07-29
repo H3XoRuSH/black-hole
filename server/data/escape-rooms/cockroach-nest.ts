@@ -26,6 +26,15 @@ const data: EscapeRoomData = {
   nodes: [
     // ===== KITCHEN =====
     {
+      id: 'kitchen-main-door',
+      locationId: 'kitchen',
+      parentId: null,
+      type: 'dialogue',
+      label: 'Barricaded Main Door',
+      narrative: 'The apartment\'s main door is buried beneath thick layers of amber resin, fused to the frame as though the swarm sealed it from the inside. The resin pulses faintly — as if something on the other side is waiting. There is no way through it yet.',
+      children: [],
+    },
+    {
       id: 'kitchen-counter',
       locationId: 'kitchen',
       parentId: null,
@@ -196,10 +205,10 @@ const data: EscapeRoomData = {
       type: 'puzzle',
       label: 'Magazine Numbers',
       narrative: 'Roach trails circle three numbers on a magazine page: 5, 3, and 2. The calculator beside them has a single key worn smooth by tiny feet.',
-      question: 'Multiply the three circled numbers together.',
+      question: 'The calculator\'s worn key shows what the swarm practised. What total did it reach?',
       answer: '30',
       hints: [
-        'The clue is on the roach-marked magazine page beside the coffee table calculator.',
+        'The worn key on the calculator beside the magazine reveals the operation the swarm used.',
         'Combine the three circled numbers by multiplication: 5 x 3 x 2.',
         '5 x 3 x 2 = 30. Enter 30.',
       ],
@@ -231,12 +240,8 @@ const data: EscapeRoomData = {
       parentId: 'livingroom-couch',
       type: 'dialogue',
       label: 'Children\'s Bug Book',
-      narrative: `A children's book lies open beneath the couch. Its surviving rhyme reads:
+      narrative: 'A children\'s book lies open beneath the couch. Its surviving rhyme reads:\n\n"I hide in cracks and come out at night.\nCount all my legs and speak what is right."\n\nA sketch of a cockroach fills the margin, its six legs splayed and numbered by a child\'s careful hand.',
 
-"I hide in cracks and come out at night.
-Count all my legs and speak what is right."
-
-A sketch of a cockroach fills the margin.`,
       children: [],
     },
     {
@@ -249,7 +254,7 @@ A sketch of a cockroach fills the margin.`,
       question: 'What is the final population after those changes?',
       answer: '54',
       hints: [
-        'The growth clue is written on the torn population chart beneath the couch.',
+        'Two finds belong together — the chart beneath the couch and the note taped to the remote.',
         'Start with 12, double it, double that result, then add the 6 newcomers.',
         '12 becomes 24, then 48, then 54. Enter 54.',
       ],
@@ -261,7 +266,7 @@ A sketch of a cockroach fills the margin.`,
       parentId: 'livingroom-population-puzzle',
       type: 'item',
       label: 'Closet Key',
-      narrative: 'The chart rolls itself into a narrow metal key. A tag reads: "CLOSET - KEEP QUIET."',
+      narrative: 'A cluster of roaches drags a narrow metal key from beneath the chart and offers it up. A tag reads: "CLOSET - KEEP QUIET."',
       rewardItem: 'livingroom-closet-key',
     },
     {
@@ -270,7 +275,7 @@ A sketch of a cockroach fills the margin.`,
       parentId: null,
       type: 'locked',
       label: 'Hall Closet',
-      narrative: 'The closet opens with a reluctant click. A keypad is mounted inside among coats and empty roach traps.',
+      narrative: 'The closet opens with a reluctant click. Whatever was scratching has gone still — or gone deeper. A keypad is mounted inside among coats and empty roach traps.',
       lockedNarrative: 'The hall closet is secured with a small keyhole. Something scratches against the door from inside.',
       lockedByItem: 'livingroom-closet-key',
       children: ['livingroom-leg-puzzle'],
@@ -337,7 +342,7 @@ A sketch of a cockroach fills the margin.`,
       parentId: 'bedroom-wardrobe',
       type: 'dialogue',
       label: 'Shape Sketch',
-      narrative: 'The drawing shows an infinity symbol, a triangle, and a sharply angled L-shaped mark. No numbers are written beside the shapes.',
+      narrative: 'The drawing shows an infinity symbol lying on its side like a sleeping eight, a triangle — three-sided, and proud of it — and a bent mark, unmistakably a seven. No numbers are written beside the shapes.',
       children: [],
     },
     {
@@ -362,7 +367,7 @@ A sketch of a cockroach fills the margin.`,
       parentId: 'bedroom-mattress',
       type: 'item',
       label: 'Nightstand Key',
-      narrative: 'The mattress formations collapse into a small key. Its bow is shaped like a queen roach.',
+      narrative: 'The roaches shift their formation and drag a small key out from beneath the mattress, offering it up. Its bow is shaped like a queen roach.',
       rewardItem: 'bedroom-nightstand-key',
     },
     {
@@ -371,7 +376,7 @@ A sketch of a cockroach fills the margin.`,
       parentId: null,
       type: 'locked',
       label: 'Queen\'s Nightstand',
-      narrative: 'The nightstand opens. Behind the drawer, a velvet-lined passage leads to the queen\'s lair and its final keypad.',
+      narrative: 'The nightstand opens. The queen is enthroned inside the drawer, surrounded by her guards, atop the final keypad.',
       lockedNarrative: 'The nightstand is sealed with a tiny crown lock. A line of roaches guards the drawer as if it were a throne.',
       lockedByItem: 'bedroom-nightstand-key',
       children: ['bedroom-queen-lair'],
@@ -382,12 +387,7 @@ A sketch of a cockroach fills the margin.`,
       parentId: 'bedroom-nightstand',
       type: 'dialogue',
       label: 'The Queen\'s Lair',
-      narrative: `The largest roach in the apartment waits atop a final keypad. Four lines are scratched into its casing:
-
-"The droppings' final shape.
-The label letter that returned most.
-The swarm's ending number.
-The shapes upon the bed, together as one."`,
+      narrative: 'The largest roach in the apartment sits atop the keypad, utterly still. Four lines are scratched into its casing:\n\n"The droppings\' ending figure.\nThe label letter that returned most.\nThe swarm\'s final count.\nThe shapes upon the bed, together as one.\nKeep only the last whisper of each \u2014 four endings open the way."',
       children: ['bedroom-queen-code'],
     },
     {
@@ -401,10 +401,19 @@ The shapes upon the bed, together as one."`,
       answer: '4648',
       hints: [
         'The keypad refers to four earlier discoveries: the droppings total, the repeated label letter, the swarm population, and the mattress formations.',
-        'Take the final digit from 14, the E-count 6, the final population 54, and the mattress formations 18.',
+        'Take the final digit from each: 14 → 4, 6 → 6, 54 → 4, 18 → 8.',
         'The final code is 4648. Enter 4648.',
       ],
       isMeta: true,
+      children: ['bedroom-escape'],
+    },
+    {
+      id: 'bedroom-escape',
+      locationId: 'bedroom',
+      parentId: 'bedroom-queen-code',
+      type: 'dialogue',
+      label: 'The Way Out',
+      narrative: 'The keypad clicks. For a moment, nothing happens — then the queen lifts her wings and takes flight. Every roach in the bedroom follows, a dark river flowing beneath the door gap and away. The apartment falls completely silent. From the kitchen, a low crack echoes through the walls. You find the main door: the amber resin has split from top to bottom, flaking away in dry curls. Pale daylight bleeds through the gap. The swarm has released its hold. You push the door open and walk out.',
       children: [],
     },
   ],

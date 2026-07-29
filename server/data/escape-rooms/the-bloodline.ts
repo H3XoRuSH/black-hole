@@ -10,7 +10,7 @@ const data: EscapeRoomData = {
     {
       id: 'the-crypt',
       name: 'The Crypt',
-      description: 'A vaulted stone chamber smelling of wet earth and melted wax. Your overturned coffin rests in the centre — its lid split open, a tarnished silver mirror set into the inner face. Three other coffins stand sealed along the far wall; one bears a corroded bronze plaque reading ALDRIC with Roman numeral dates. On a stone altar in the alcove, a small music box stands open, its mechanism winding slowly down.',
+      description: 'A vaulted stone chamber smelling of wet earth and melted wax. Your overturned coffin rests in the centre — its lid split open, a tarnished silver mirror set into the inner face. Three other coffins stand sealed along the far wall: one bears a silver plaque reading LEENA, another marked OTTO, and the largest carries a corroded bronze plaque reading ALDRIC with Roman numeral dates. On a stone altar in the alcove, a small music box stands open, its mechanism winding slowly down.',
     },
     {
       id: 'the-library',
@@ -40,7 +40,7 @@ const data: EscapeRoomData = {
       parentId: 'crypt-coffin',
       type: 'puzzle',
       label: 'Mirror Inscription',
-      narrative: 'The tarnished mirror set into the coffin lid catches the inscription from the opposite angle. The letters shift and realign.',
+      narrative: 'The tarnished mirror set into the coffin lid catches the inscription from the opposite angle. A vampire casts no reflection — perhaps that is why the truth only appears backwards. The letters shift and realign.',
       question: 'What word does the reflection reveal?',
       answer: 'gate',
       hints: [
@@ -65,7 +65,7 @@ const data: EscapeRoomData = {
       parentId: null,
       type: 'dialogue',
       label: 'Aldric\'s Coffin',
-      narrative: 'One sealed coffin along the far wall bears a corroded bronze plaque:\n\nCOUNT ALDRIC\nMDCCCXXXIII — MDCCCLXXXIX\n\nBeneath the dates, a sentence has been scratched into the bronze:\n\n*What lasts longer than the blood?*\n\nAn old lock on the coffin\'s clasp has four letter slots.',
+      narrative: 'One sealed coffin along the far wall bears a corroded bronze plaque:\n\nCOUNT ALDRIC\nMDCCCXXXIII — MDCCCLXXXIX\n\nBeneath the dates, a sentence has been scratched into the bronze in the same cramped hand that marked the coffin lid:\n\n*What lasts longer than the blood?*\n*Kings, counts and beggars all end as me.*\n\nAn old lock on the coffin\'s clasp has four letter slots.',
       children: ['crypt-eternal'],
     },
     {
@@ -78,9 +78,9 @@ const data: EscapeRoomData = {
       question: 'What did the count believe outlasts even the bloodline?',
       answer: 'dust',
       hints: [
-        'The epitaph scratched beneath the dates on Aldric\'s coffin asks what outlasts ancient blood. Read it again — the answer is something final.',
-        'Everything mortal, even the ancient bloodline, eventually crumbles to the same fine state.',
-        'The word is dust — what even vampires become in the end.',
+        'The epitaph scratched beneath the dates on Aldric\'s coffin asks what outlasts ancient blood — and adds that all rulers meet the same end. Read both lines again.',
+        'The scratched second line tells you that kings, counts, and beggars all arrive at the same destination. What single substance is every mortal reduced to in the end?',
+        'The word is dust — what even vampires become.',
       ],
       children: ['crypt-aldric-signet'],
     },
@@ -90,7 +90,7 @@ const data: EscapeRoomData = {
       parentId: 'crypt-eternal',
       type: 'item',
       label: 'Aldric\'s Signet',
-      narrative: 'The clasp lock clicks open. Inside the coffin, on the Count\'s folded hands, rests a heavy silver signet ring — the seal of the bloodline itself.',
+      narrative: 'The clasp lock clicks open. Inside the coffin, on the Count\'s folded hands, rests a heavy silver signet ring — the seal of the bloodline itself. As you lift the ring, a cold draft pours through the crypt.',
       rewardItem: 'aldrics-signet',
     },
     {
@@ -113,7 +113,7 @@ const data: EscapeRoomData = {
       answer: 'dead',
       hints: [
         'Watch the labelled brass comb inside the music box as it plays. Each tooth carries a letter name — the pins strike them in a deliberate order.',
-        'Note the letter struck by each pin, in sequence: the first note hits D, the second E, the third A, the fourth D.',
+        'Write down the letter of the tooth that trembles with each of the four strikes, in order. The first note trembles the D tooth.',
         'D-E-A-D spells dead — the four notes together speak what the castle is.',
       ],
       sound: {
@@ -168,7 +168,7 @@ const data: EscapeRoomData = {
       parentId: 'crypt-iron-grating',
       type: 'locked',
       label: 'Stairwell Seal',
-      narrative: 'The silver comb vibrates as you near the seal. You press it into the lock and the mechanism hums four notes in answer. The seal shatters, and the stairwell opens fully.',
+      narrative: 'The silver comb vibrates as you near the seal. You press it into the lock and the mechanism hums four notes in answer. The seal shatters, and the stairwell opens fully. From somewhere above, in the dark, something stirs again.',
       lockedNarrative: 'A thin silver seal spans the last few steps of the stairwell. Its mechanism thrums faintly — a harmonic lock, waiting for the right note.',
       lockedByItem: 'silver-comb',
       children: ['crypt-to-library'],
@@ -179,7 +179,7 @@ const data: EscapeRoomData = {
       parentId: 'crypt-stairwell-seal',
       type: 'dialogue',
       label: 'Enter the Library',
-      narrative: 'You step through the doorway into the Dark Library. The air smells of old paper and melted candle wax.',
+      narrative: 'You step through the doorway into the Dark Library. The air smells of old paper and melted candle wax. A grey hairline of light shows at the high window-slit — the night is thinning.',
       children: [],
     },
 
@@ -190,7 +190,7 @@ const data: EscapeRoomData = {
       parentId: null,
       type: 'dialogue',
       label: 'Cipher Table',
-      narrative: 'The carved stone cipher-table on the far wall is scored with a precise grid of letters:\n\n     | 1 | 2 | 3 | 4 | 5 |\n  A  | V | A | M | P | X |\n  B  | F | L | N | D | R |\n  C  | K | I | E | G | S |\n  D  | T | O | W | H | U |\n  E  | C | Y | Q | Z | J |\n\nBelow it, four ornate candle holders are bolted to the floor at careful intervals. Each base bears a scratched pair of numbers — as though describing a position on the table above.',
+      narrative: 'The carved stone cipher-table on the far wall is scored with a precise grid of letters:\n\n     | 1 | 2 | 3 | 4 | 5 |\n  1  | V | A | M | P | X |\n  2  | F | L | N | D | R |\n  3  | K | I | E | G | S |\n  4  | T | O | W | H | U |\n  5  | C | Y | Q | Z | J |\n\nBelow it, four ornate candle holders are bolted to the floor at careful intervals. Each base bears a scratched pair of numbers — 21, 12, 23, 34 — in the same cramped hand, as though describing a position on the table above.',
       children: ['library-candle-grid'],
     },
     {
@@ -200,11 +200,11 @@ const data: EscapeRoomData = {
       type: 'puzzle',
       label: 'Candle Grid',
       narrative: 'The four candle holders stand before the cipher table. The iron-banded chest in the corner waits for a word.',
-      question: 'Candle 1 — 21. Candle 2 — 12. Candle 3 — 23. Candle 4 — 34.\n\nEach number-pair names a row and column on the cipher table. What four-letter word do the candles spell?',
+      question: 'Each scratched number-pair names a row and column on the cipher table. What four-letter word do the candles spell?',
       answer: 'fang',
       hints: [
-        'The cipher table above the candles is your reference. Each candle\'s pair of numbers describes a single cell on the grid — the first digit names the row, the second the column.',
-        'Read what sits at each candle\'s position on the grid: 21 = row 2, col 1 = F. 12 = row 1, col 2 = A. 23 = row 2, col 3 = N. 34 = row 3, col 4 = G.',
+        'The cipher table above the candles is your reference. Each candle\'s scratched pair of numbers describes a single cell on the grid — a row and a column.',
+        'Read the row first, then the column: pair 21 = row 2, column 1. Do this for all four pairs.',
         'The word is fang — F-A-N-G.',
       ],
       children: ['library-chest'],
@@ -224,7 +224,7 @@ const data: EscapeRoomData = {
       parentId: null,
       type: 'dialogue',
       label: 'Portrait Gallery',
-      narrative: 'Five oil portraits of vampire elders hang in gilded frames on the west wall. The century of each one\'s final death is inscribed in the lower corner:\n\n  Yara . . . XV\n  Talitha . . . XIII\n  Radu . . . XVI\n  Countess Vera . . . XVII\n  Polidor . . . XIV\n\nThey are not arranged by age. A velvet placard beneath the portraits reads: "The seal answers to their names — youngest first to oldest last."',
+      narrative: 'Five oil portraits of vampire elders hang in gilded frames on the west wall. The century of each one\'s final death is inscribed in the lower corner:\n\n  Yara . . . XV\n  Talitha . . . XIII\n  Radu . . . XVI\n  Carmilla . . . XVII\n  Polidor . . . XIV\n\nThey are not arranged by age. A velvet placard beneath the portraits reads: "The seal answers to their names — most recently perished first, longest dead last."',
       children: ['library-elder-order'],
     },
     {
@@ -237,8 +237,8 @@ const data: EscapeRoomData = {
       question: 'Five elders wait to be named. Let the first letter of each speak for itself, youngest first.\n\nEnter the five-letter word:',
       answer: 'crypt',
       hints: [
-        'The portraits hang in no particular order, but each bears a Roman numeral century of death. The placard says "youngest first to oldest last" — sort by century, not by where they hang.',
-        'Re-order the five from highest century (most recent death) to lowest: Countess Vera (XVII), Radu (XVI), Yara (XV), Polidor (XIV), Talitha (XIII). Read the first letter of each name.',
+        'The portraits hang in no particular order, but each bears a Roman numeral century of death. The placard says "most recently perished first" — sort by century, from highest to lowest.',
+        'Re-order from highest century to lowest: Carmilla (XVII), Radu (XVI), Yara (XV), Polidor (XIV), Talitha (XIII). Take the first letter of each name in that order.',
         'The initials spell C-R-Y-P-T — the word is crypt.',
       ],
       children: ['library-portrait-medallion'],
@@ -267,7 +267,7 @@ const data: EscapeRoomData = {
       parentId: 'library-desk',
       type: 'puzzle',
       label: 'Book Pages',
-      narrative: 'A small four-digit lock sits beside the reading desk.',
+      narrative: 'A small four-digit lock seals the reading desk\'s catalogue drawer.',
       question: 'Read the page numbers as the books sit on the desk, left to right.\n\nEnter the four-digit code:',
       answer: '3142',
       hints: [
@@ -283,7 +283,7 @@ const data: EscapeRoomData = {
       parentId: 'library-book-pages',
       type: 'item',
       label: 'Ancient Codex',
-      narrative: 'The lock snaps. A hidden compartment in the desk slides open, revealing a vellum codex page — brittle with age, covered in bloodline chronicles.',
+      narrative: 'The lock snaps. A hidden compartment in the desk slides open, revealing a vellum codex page — brittle with age, covered in bloodline chronicles. The pages name the five ancestors you saw in the portrait gallery: Carmilla, Radu, Yara, Polidor, Talitha.',
       rewardItem: 'ancient-codex',
     },
     {
@@ -325,7 +325,7 @@ const data: EscapeRoomData = {
       parentId: 'library-bloodline-vault',
       type: 'dialogue',
       label: 'Enter the Throne Room',
-      narrative: 'You step into the Throne Room. Black marble stretches before you, and the exit gate glows red at the far end.',
+      narrative: 'You step into the Throne Room. Black marble stretches before you, and the exit gate glows red at the far end. Through a narrow slit high in the wall, the sky is the colour of ash — dawn comes.',
       children: [],
     },
 
@@ -336,7 +336,7 @@ const data: EscapeRoomData = {
       parentId: null,
       type: 'dialogue',
       label: 'Bone Throne',
-      narrative: 'The throne of carved bone dominates the far end of the hall. Above it, chiselled directly into the black marble, is the family genealogy — five names branching outward from a single ancestor at the crown. A stone inscription beneath reads: "Root to branch — left before right."\n\nA wax-sealed scroll rests on the throne\'s armrest.',
+      narrative: 'The throne of carved bone dominates the far end of the hall — its master conspicuously absent. Above it, chiselled directly into the black marble, is the family genealogy — five names branching outward from a single ancestor at the crown. A stone inscription beneath reads: "Root to branch — left before right."\n\nA wax-sealed scroll rests on the throne\'s armrest.',
       children: ['throne-family-tree', 'throne-scroll'],
     },
     {
@@ -350,7 +350,7 @@ const data: EscapeRoomData = {
       answer: 'blood',
       hints: [
         'The genealogy carved into the marble above the throne shows five names. The inscription says "Root to branch — left before right" — follow this order and look at the first letter of each.',
-        'Take the first letter generation by generation, root first, left branch before right: Bathor (B), Leena (L), Otto (O), Olaf (O), Drahomira (D).',
+        'Starting at the root (Bathor), traverse generation by generation, always left before right. Take the first letter of each name you encounter.',
         'The five letters spell B-L-O-O-D — the word is blood.',
       ],
       children: ['throne-ancestral-seal'],
@@ -370,7 +370,7 @@ const data: EscapeRoomData = {
       parentId: 'throne-bone',
       type: 'dialogue',
       label: 'Wax-Sealed Scroll',
-      narrative: 'You crack open the wax-sealed scroll. Inside, in a neat archaic hand, four questions are posed — each one reaching back to something you have already found:\n\n"Four truths seal the final door.\n\nHow many letters freed you from your stone-sealed sleep?\nHow many letters name the hidden word the portraits guard?\nHow many pages does the second book on the reading desk mark?\nHow many letters cry aloud in the music box\'s song?\n\nRead them as one."',
+      narrative: 'You crack open the wax-sealed scroll. Inside, in a neat archaic hand, four questions are posed — each one reaching back to something you have already found:\n\n"Four truths seal the final door.\n\nHow many letters did the mirror show you in the crypt?\nHow many letters name the hidden word the portraits guard?\nHow many pages does the second book on the reading desk mark?\nHow many letters cry aloud in the music box\'s song?\n\nRead them as one."',
       children: [],
     },
     {
@@ -395,10 +395,19 @@ const data: EscapeRoomData = {
       answer: '4514',
       hints: [
         'The four questions are sealed inside the scroll on the throne\'s armrest. If you have not yet opened it, search the Bone Throne.',
-        'Gate freed you from the crypt (4 letters). The portrait word was crypt (5 letters). Book II on the reading desk marked page I (1). The music box cried "dead" (4 letters).',
+        'The mirror showed you a word in the crypt (4 letters). The portrait word was crypt (5 letters). Book II on the reading desk marked page I (1). The music box cried "dead" (4 letters).',
         'The four answers placed together: 4-5-1-4. The code is 4514.',
       ],
       isMeta: true,
+      children: ['throne-exit-outro'],
+    },
+    {
+      id: 'throne-exit-outro',
+      locationId: 'the-throne-room',
+      parentId: 'throne-exit',
+      type: 'dialogue',
+      label: 'Dawn',
+      narrative: 'The gate swings wide on grey morning. Cold air washes over you — the first breath outside the keep.\n\nAnd then you remember. The road. The storm. The castle. The count\'s cold voice in the dark:\n\n"Every bloodline needs fresh blood."\n\nThe sky brightens. Whatever stirred in the dark has gone silent. You step through the gate, and this time, the dawn holds.',
       children: [],
     },
   ],

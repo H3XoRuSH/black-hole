@@ -5,7 +5,7 @@ const data: EscapeRoomData = {
   name: 'The Cinnabar Lab',
   description: 'Beneath the volcanic island of Cinnabar, a shrouded laboratory still hums with residual power. Someone tried to play creator here — and lost. Decrypt the geneticist\'s legacy and escape before the geothermal failsafes entomb you forever.',
   difficulty: 'medium',
-  intro: 'The floor gave way six seconds ago.\n\nYou hit the grating shoulder-first, breath punched clean out of you. Above, through the hole you just made in the ceiling, volcanic rock glows a dull orange through twisted rebar. Below: a sprawling underground laboratory lit only by emergency strobes — every surface coated in fine grey ash that tastes of copper and scorched wiring.\n\nA synthetic voice gargles through a half-drowned speaker:\n\n"GEOTHERMAL PURGE ACTIVE. FIFTY-THREE MINUTES TO FACILITY SEAL."\n\nThe central chamber is dominated by a shattered stasis tube three times your height. Its armored glass is blown outward — not inward. Claw marks run the length of the floor like God dragged His fingernails through the concrete. You\'re not the first thing to fall through that ceiling.\n\nTo the south, a research wing hums with residual power, workstations still online. To the north, a vault door pulses red — and behind it, the master override console.\n\nFifty-three minutes. Move.',
+  intro: 'The floor gave way six seconds ago.\n\nYou hit the grating shoulder-first, breath punched clean out of you. Above, through the hole you just made in the ceiling, volcanic rock glows a dull orange through twisted rebar. Below: the Research Wing of an underground genetics laboratory, lit only by emergency strobes — every surface coated in fine grey ash that tastes of copper and scorched wiring.\n\nA synthetic voice gargles through a half-drowned speaker:\n\n"GEOTHERMAL PURGE ACTIVE — TRIGGER: STRUCTURAL BREACH, SECTION 7. FIFTY-THREE MINUTES TO FACILITY SEAL."\n\nYou caused this. Your ceiling is the clock.\n\nWorkstations ring the room, most dark, a few still drawing power. A Poké Ball assembly rack stands against the eastern pillar. To the north, a formidable blast door pulses red — keycard required. Whatever is beyond it, you\'ll need credentials first.\n\nFifty-three minutes. Move.',
   locations: [
     {
       id: 'research-wing',
@@ -15,7 +15,7 @@ const data: EscapeRoomData = {
     {
       id: 'containment-vault',
       name: 'The Containment Vault',
-      description: 'The blast door parts with a tortured screech. You step into near-darkness — only a single crimson emergency beacon strobes overhead, painting the room in waves of blood-red light. A shattered central tank, easily fifteen feet tall, dominates the space. Whatever gestated here escaped violently. Along the walls, filing cabinets have been thrown aside like toys. At the rear of the chamber, a master terminal pulses with a faint green glow — the override console. Scattered around it lie Dr. Fuji\'s final research journals, their pages singed and water-damaged.'
+      description: 'Near-darkness swallows you the moment you step through. A single crimson emergency beacon strobes overhead, painting the chamber in slow waves of blood-red light. The air is thick with ozone and the sharp bite of old preservative fluid. Filing cabinets line the walls, several thrown aside like toys. Something heavy was dragged across the floor toward the back wall — the trail is unmistakable.'
     }
   ],
   nodes: [
@@ -32,10 +32,10 @@ const data: EscapeRoomData = {
       type: 'puzzle',
       label: 'Poké Ball Assembly Rack',
       narrative: 'You approach the Poké Ball rack bolted to the eastern pillar. Eight spheres rest in individual cradles numbered 1 through 8, left to right. Each sphere is either sealed tight with its indicator light dark, or split open with its light blazing. A brass plaque beneath the rack reads:\n\n"STORED ENERGY STATES — DORMANT SHELLS COUNT FOR NOTHING. ACTIVE BURSTS ARE EVERYTHING."\n\nA technician\'s notepad lies open beside the rack:\n\nBALL 1 — AWAKENED. BALL 2 — SLUMBERING. BALL 3 — SLUMBERING. BALL 4 — AWAKENED. BALL 5 — SLUMBERING. BALL 6 — AWAKENED. BALL 7 — AWAKENED. BALL 8 — SLUMBERING.',
-      question: 'A security terminal next to the rack displays: "CONVERT THE EIGHT-ENERGY PATTERN TO DECIMAL." The keypad blinks, waiting.',
+      question: 'A security terminal next to the rack displays: "CONVERT THE EIGHT SPHERES INTO THE STORED ENERGY TOTAL." The keypad blinks, waiting.',
       answer: '150',
       hints: [
-        'The rack shows eight spheres in two states — dormant or awakened. The brass plaque beneath the rack holds the key to counting them.',
+        'The plaque is worded strangely — read it aloud and look at the balls again.',
         'Dormant shells count for nothing, active bursts for everything. Treat awakened as 1 and slumbering as 0, then convert the binary pattern to decimal.',
         '1 0 0 1 0 1 1 0 in binary is 128 + 16 + 4 + 2 = 150.'
       ],
@@ -47,7 +47,7 @@ const data: EscapeRoomData = {
       parentId: 'research-wing-pokeball-rack',
       type: 'dialogue',
       label: 'Type-Effectiveness Chart',
-      narrative: 'The terminal logs the decoded value — 150 — and the massive chart on the western wall flickers to life. A grid of eighteen Pokémon types appears, numbered sequentially from 1 to 18, reading left to right, top to bottom:\n\nROW 1: Normal(1) — Fire(2) — Water(3) — Electric(4) — Grass(5) — Ice(6)\nROW 2: Fighting(7) — Poison(8) — Ground(9) — Flying(10) — Psychic(11) — Bug(12)\nROW 3: Rock(13) — Ghost(14) — Dragon(15) — Dark(16) — Steel(17) — Fairy(18)\n\nThe technician\'s log notes: "Energy calibration complete. The type grid is now online — use it to authenticate the operatives at the security terminal."\n\nA scribbled margin note adds: "Ash from Pallet calibrated this. Kid\'s electric — nearly fried the whole board testing it."',
+      narrative: 'The terminal logs the decoded value — 150. You recognise that number — Kanto #150. The massive chart on the western wall flickers to life. A grid of eighteen Pokémon types appears, numbered sequentially from 1 to 18, reading left to right, top to bottom:\n\nROW 1: Normal(1) — Fire(2) — Water(3) — Electric(4) — Grass(5) — Ice(6)\nROW 2: Fighting(7) — Poison(8) — Ground(9) — Flying(10) — Psychic(11) — Bug(12)\nROW 3: Rock(13) — Ghost(14) — Dragon(15) — Dark(16) — Steel(17) — Fairy(18)\n\nThe technician\'s log notes: "Energy calibration complete. The type grid is now online — use it to authenticate the operatives at the security terminal. Four contacts breached Gate 7 in total — three were later confirmed as external trainers, not Rocket staff."\n\nA scribbled margin note adds: "Ash from Pallet calibrated this. Kid\'s electric — nearly fried the whole board testing it."',
       children: []
     },
 
@@ -57,8 +57,8 @@ const data: EscapeRoomData = {
       parentId: null,
       type: 'puzzle',
       label: 'Security Terminal',
-      narrative: 'A security terminal hums quietly beside the western wall. Its screen displays an access log — four type icons flash in sequence: a flame, a snowflake, a fissure, and a clenched fist. Below them, a prompt blinks:\n\n"SPEAK THE GRID NUMBERS OF THE FOUR THAT OPENED THE GATE."\n\nThe terminal expects a four-digit passcode, but the grid it references is dark — you\'ll need to find a way to power it on.',
-      question: 'Enter the four-digit passcode:',
+      narrative: 'A security terminal hums quietly beside the western wall. Its screen displays an access log — four type icons flash in sequence: a flame, a snowflake, a fissure, and a clenched fist. Below them, a prompt blinks:\n\n"SPEAK THE GRID NUMBERS OF THE FOUR THAT OPENED THE GATE."\n\nThe terminal expects a four-digit passcode, but the grid it references is dark — you\'ll need to find a way to power it on. A margin note in the access log reads: "Fire fought first, Ice next, Ground rose, Fighting last."',
+      question: 'Key in the four-digit sequence.',
       answer: '2697',
       hints: [
         'The terminal shows four type icons but the grid is dark. The type chart on the western wall needs power — check the Poké Ball rack on the eastern pillar.',
@@ -107,7 +107,7 @@ const data: EscapeRoomData = {
       question: 'That four-letter word is the password to the encrypted directory.',
       answer: 'CALL',
       hints: [
-        'The keypress log records deliberate strikes on an old mobile-style keypad. Each number key cycles through letters — recall how T9 texting worked.',
+        'Look at the reference diagram taped to the monitor — each key cycles through its assigned letters. The number of strikes tells you which letter to land on.',
         'Key 2 cycles A-B-C (struck 3 times = C, struck once = A). Key 5 cycles J-K-L (struck 3 times = L, struck 3 times = L).',
         'The word is CALL — type C-A-L-L.'
       ],
@@ -119,7 +119,7 @@ const data: EscapeRoomData = {
       parentId: 'research-wing-rotom-puzzle',
       type: 'item',
       label: 'Filing Cabinet Access Code',
-      narrative: 'The directory unlocks. A file labeled "FURNITURE OVERRIDES" opens automatically, displaying a 4-digit code. Beneath it: "FILING CABINET — PROJECT GENESIS MITOSIS LOG. USE IMMEDIATELY."',
+      narrative: 'The directory unlocks. A file labeled "FURNITURE OVERRIDES" opens automatically, displaying a 4-digit code. Beneath it: "FILING CABINET — PROJECT GENESIS FISSION LOG."',
       rewardItem: 'filing-cabinet-access-code'
     },
     {
@@ -128,7 +128,7 @@ const data: EscapeRoomData = {
       parentId: 'research-wing-rotom-puzzle',
       type: 'dialogue',
       label: 'Research Memo',
-      narrative: 'The directory also reveals a file: "PROJECT GENESIS — GROWTH PATTERN ANALYSIS."\n\nDr. Fuji\'s memo reads: "The culture exhibits predictable mitosis. Each generation DOUBLES ITSELF, then SPAWNS ONE MORE. The sequence is governed by N × 2 + 1. The raw sequence data is filed in the cabinet."\n\nA handwritten postscript adds: "P.S. — The vault spectrograph records Subject 150\'s vocal imprint using an ancient runic cipher. I\'ve left the decoder index in my journal. Check it before using the terminal."\n\nSomeone else has scribbled in the margin: "Misty from Cerulean always said growth was like a current — double the flow, add one more tributary. She\'d have loved this formula."',
+      narrative: 'The directory also reveals a file: "PROJECT GENESIS — GROWTH PATTERN ANALYSIS."\n\nDr. Fuji\'s memo reads: "The culture exhibits predictable mitosis. Each generation DOUBLES ITSELF, then SPAWNS ONE MORE. The formula is N × 2 + 1. The raw sequence data is filed in the cabinet."\n\nA handwritten postscript adds: "P.S. — The vault spectrograph records the splice chorus of all seven donors using the Unown Forms Index. I\'ve left the index in my journal. Check it before using the terminal."\n\nSomeone else has scribbled in the margin: "Misty from Cerulean always said growth was like a current — double the flow, add one more tributary. She\'d have loved this formula."',
       children: []
     },
 
@@ -138,7 +138,7 @@ const data: EscapeRoomData = {
       parentId: null,
       type: 'locked',
       label: 'Filing Cabinet',
-      narrative: 'The code is accepted. The top drawer slides open, revealing a manila folder stamped "MITOSIS LOG — PROJECT GENESIS."',
+      narrative: 'The code is accepted. The top drawer slides open, revealing a manila folder stamped "FISSION LOG — PROJECT GENESIS (asymmetric double-and-spawn model)."',
       lockedNarrative: 'A tall metal filing cabinet stands against the wall, its drawer secured by a digital lock. A small screen reads "ENTER OVERRIDE CODE."',
       lockedByItem: 'filing-cabinet-access-code',
       children: ['research-wing-mitosis-puzzle']
@@ -186,7 +186,7 @@ const data: EscapeRoomData = {
       parentId: 'research-wing-blast-door',
       type: 'dialogue',
       label: 'Enter the Vault',
-      narrative: 'The blast door parts with a tortured screech. You step into near-darkness — only a single crimson emergency beacon strobes overhead.',
+      narrative: 'You step through the blast door into near-darkness. The seal catches on twisted metal and the door grinds to a halt with a tortured screech.\n\nThen you see it.\n\nA stasis tube, easily fifteen feet tall, dominates the chamber — its armored glass blown outward from within. Pale blue fluid still drips from the ruptured seals, pooling on the cracked tile floor. Whatever gestated here escaped violently. Claw marks gouge the concrete in long, deliberate furrows, leading toward the far wall.\n\nYou\'re not the first thing to escape through a ceiling.\n\nA speaker crackles overhead: "GEOTHERMAL PURGE ACTIVE. THIRTY MINUTES TO FACILITY SEAL."\n\nThe floor shudders. The mountain is counting down.',
       children: []
     },
 
@@ -211,7 +211,7 @@ const data: EscapeRoomData = {
       parentId: 'containment-vault-shattered-tank',
       type: 'dialogue',
       label: 'Dr. Fuji\'s Journal',
-      narrative: 'Dr. Fuji\'s personal journal lies open on the toppled cabinet, its pages warped by humidity. Two sections are bookmarked with faded ribbons.\n\n--- TRAINER INTELLIGENCE ---\n\nThree trainers breached the facility years ago. Fuji\'s notes identify them only by their hometowns and mastered types:\n\n"The boy from Pallet Town — Electric. Water scatters before him."\n"The girl from Cerulean — Water. Her creatures douse any flame."\n"The man from Pewter — Rock. Lightning breaks against his titans."\n\nEach trainer mastered one type — none was shared.\n\n--- RUNECRAFT INDEX ---\n\nA torn reference sheet is tucked into the spine:\n\n"SPECTROGRAPH DECODER — ALPHABETIC RUNE INDEX"\n1=A  2=B  3=C  4=D  5=E  6=F  7=G  8=H  9=I  10=J\n11=K 12=L 13=M 14=N 15=O 16=P 17=Q 18=R 19=S 20=T\n21=U 22=V 23=W 24=X 25=Y 26=Z',
+      narrative: 'Dr. Fuji\'s personal journal lies open on the toppled cabinet, its pages warped by humidity. Unown glyphs are scratched compulsively into every margin — pencil, dried ink, some circled as though Fuji was trying to remember a shape. Two sections are bookmarked with faded ribbons.\n\n--- TRAINER INTELLIGENCE ---\n\nThree trainers breached the facility years ago. Fuji\'s notes identify them only by their hometowns and mastered types:\n\n"The boy from Pallet Town — Electric. Water scatters before him."\n"The girl from Cerulean — Water. Her creatures douse any flame."\n"The man from Pewter — Rock. Lightning breaks against his titans."\n\nEach trainer mastered one type — none was shared.\n\nA later entry, in a shakier hand: "The Pewter boy reached the vault. The Subject made an example of him. I locked the door and told myself it was the purge I feared."\n\n--- UNOWN FORMS INDEX ---\n\nA torn reference sheet is tucked into the spine:\n\n"SPECTROGRAPH DECODER — UNOWN FORMS INDEX"\nEach Unown form is catalogued by its position in the Kanto alphabet — a shape for every sound.\n1=A  2=B  3=C  4=D  5=E  6=F  7=G  8=H  9=I  10=J\n11=K 12=L 13=M 14=N 15=O 16=P 17=Q 18=R 19=S 20=T\n21=U 22=V 23=W 24=X 25=Y 26=Z',
       children: ['containment-vault-spectrograph', 'containment-vault-trainer-puzzle']
     },
 
@@ -221,12 +221,12 @@ const data: EscapeRoomData = {
       parentId: 'containment-vault-journal',
       type: 'puzzle',
       label: 'Sound Spectrograph',
-      narrative: 'A sound spectrograph terminal on the adjacent wall has survived the chaos. Its screen displays the recorded battle cries of seven Pokémon whose genetic material was spliced into Subject 150. Each cry is annotated only by its duration, measured in tenths of a second:\n\nCRY 1 — 16\nCRY 2 — 19\nCRY 3 — 25\nCRY 4 —  3\nCRY 5 —  8\nCRY 6 —  9\nCRY 7 —  3\n\nA faded label beneath the screen reads: "EACH TENTH OF A SECOND REVEALS ONE RUNE OF THE ANCIENT SCRIPT." The decoder key has been torn away — you\'ll need to find the runic index elsewhere.',
+      narrative: 'A sound spectrograph terminal on the adjacent wall has survived the chaos. Its screen displays the recorded battle cries of seven Pokémon whose genetic material was spliced into Subject 150. Each cry is annotated only by its duration, measured in tenths of a second:\n\nCRY 1 — 16\nCRY 2 — 19\nCRY 3 — 25\nCRY 4 —  3\nCRY 5 —  8\nCRY 6 —  9\nCRY 7 —  3\n\nA faded label beneath the screen reads: "EACH TENTH OF A SECOND MAPS TO ONE UNOWN FORM." The Unown Forms Index has been torn away from the housing — you\'ll need to find it elsewhere.',
       question: 'The seven cries, laid end to end, sang a single word — a name shared by creator and creation alike.',
       answer: 'PSYCHIC',
       hints: [
         'The runic decoder key is missing from the terminal. Check Dr. Fuji\'s journal — it has a reference table mapping numbers to letters.',
-        'The journal\'s Runecraft Index maps each duration to a letter: 16 = P, 19 = S, 25 = Y, 3 = C, 8 = H, 9 = I, 3 = C.',
+        'The journal\'s Unown Forms Index maps each duration to a letter: 16 = P, 19 = S, 25 = Y, 3 = C, 8 = H, 9 = I, 3 = C.',
         'The word is PSYCHIC — the type shared by Mew and Mewtwo.'
       ],
       children: ['containment-vault-cryo-frequency']
@@ -247,13 +247,13 @@ const data: EscapeRoomData = {
       parentId: 'containment-vault-journal',
       type: 'puzzle',
       label: 'Trainer Access Code',
-      narrative: 'Beneath the trainer profiles, Fuji had scratched a note to himself — the combination to the specimen manifest:\n\n"Let their names decide the order. Let their arts decide the numbers. Three digits, no spaces."',
-      question: 'Enter the three-digit code:',
+      narrative: 'Beneath the trainer profiles, Fuji had scratched a note to himself — the combination to the specimen manifest:\n\n"Let their names decide the order. Let one letter of their arts — each name spoken once — decide each digit. Three digits, no spaces."',
+      question: 'Key in the three-digit manifest code.',
       answer: '845',
       hints: [
         'The journal only gives hometowns — Pallet, Cerulean, Pewter. You need their actual names to sort alphabetically. A security dossier might identify them. Check the cryo-containment lock on the rear wall.',
         'The intruder file gives first letters: A___ (3 letters, Pallet), M_____ (5 letters, Cerulean), B____ (5 letters, Pewter). Sort alphabetically by name.',
-        'Alphabetical order: Ash (Electric = 8), Brock (Rock = 4), Misty (Water = 5). Concatenated: 845.'
+        'Count the letters in each type name: Electric = 8 letters, Rock = 4 letters, Water = 5 letters. Alphabetical order (Ash, Brock, Misty) gives 8-4-5 = 845.'
       ],
       children: ['containment-vault-trainer-manifest']
     },
@@ -293,7 +293,7 @@ const data: EscapeRoomData = {
       parentId: 'containment-vault-cryo-lock',
       type: 'dialogue',
       label: 'Intruder Identification File',
-      narrative: 'The security dossier is stamped "INTRUDER PROFILES — DECLASSIFIED." Three partially redacted trainer cards are clipped inside:\n\n"A___ — The boy from Pallet Town — Electric Specialist"\n"M_____ — The Cerulean gym leader\'s youngest — Water Specialist"\n"B____ — The former Pewter Gym Leader — Rock Specialist"\n\nA handwritten note from Fuji reads: "Memorize their arts. Alphabetical order reveals the manifest code."',
+      narrative: 'The security dossier is stamped "INTRUDER PROFILES — DECLASSIFIED." Three partially redacted trainer cards are clipped inside:\n\n"A___ — The boy from Pallet Town — Electric Specialist"\n"M_____ — The Cerulean gym leader\'s youngest — Water Specialist"\n"B____ — The former Pewter Gym Leader — Rock Specialist"\n\nA handwritten note from Fuji reads: "Count the letters in each art\'s name. Alphabetical order of the trainers reveals the manifest code."',
       children: []
     },
     {
@@ -314,12 +314,12 @@ const data: EscapeRoomData = {
       parentId: 'containment-vault-manifest-terminal',
       type: 'puzzle',
       label: 'Specimen Jars',
-      narrative: 'Against the rear wall, seven specimen jars sit in a precise row, each filled with pale blue preservative fluid now glowing faintly. Faded labels identify the tissue donors, but the Pokémon names have dissolved away — only Dr. Fuji\'s cryptic shorthand remains, scrawled beneath each jar in fading ink:\n\n"The turtle — its fifth armored plate."\n"The spear-beak — its third ruffled quill."\n"The bulb-carrier — its third unfurling leaf."\n"The pigeon — its fifth downy feather."\n"The electric mouse — its fourth scarlet cheek-pouch."\n"The flowering frog — its fifth blooming petal."\n"The evolution child — its very first breath."',
+      narrative: 'Against the rear wall, seven specimen jars sit in a precise row, each filled with pale blue preservative fluid now glowing faintly. Faded labels identify the tissue donors, but the Pokémon names have dissolved away — only Dr. Fuji\'s cryptic shorthand remains, scrawled beneath each jar in fading ink:\n\n"The turtle — its fifth armored plate."\n"The spear-beak — its third ruffled quill."\n"The bulb-carrier — its third unfurling leaf."\n"The Tiny Bird — its fifth downy feather."\n"The electric mouse — its fourth scarlet cheek-pouch."\n"The Seed Pokémon — its fifth blooming petal."\n"The evolution child — its very first breath."',
       question: 'Seven jars, seven clues. Left to right, they give up a single word — one letter each.',
       answer: 'RELEASE',
       hints: [
         'Each jar describes a Pokémon with a riddle and points to a specific letter position in its name. Knowledge of Kanto Pokémon will help identify each one.',
-        'Identify each: turtle = Squirtle (5th = R), spear-beak = Spearow (3rd = E), bulb-carrier = Bulbasaur (3rd = L), pigeon = Pidgey (5th = E), electric mouse = Pikachu (4th = A), flowering frog = Venusaur (5th = S), evolution child = Eevee (1st = E).',
+        'The trickier ones: the Tiny Bird is Pidgey (5th letter = E), the Seed Pokémon is Venusaur (5th letter = S), and the evolution child is Eevee (1st letter = E). Work out the rest from the Specimen Donor Log.',
         'The seven letters spell RELEASE — type R-E-L-E-A-S-E.'
       ],
       children: ['containment-vault-master-terminal']
@@ -330,15 +330,54 @@ const data: EscapeRoomData = {
       parentId: 'containment-vault-specimen-jars',
       type: 'puzzle',
       label: 'Master Override Console',
-      narrative: 'As the word RELEASE echoes from the specimen chambers, a panel slides open behind the jars — revealing the master override console. Seven Unown — the Symbol Pokémon — drift across the screen, each taking the shape of a different letter. One by one they arrange themselves into a sequence, then fade, leaving seven empty input boxes on the display.\n\nA final log entry from Dr. Fuji renders onscreen:\n\n"IF YOU HAVE TRULY FOLLOWED MY RESEARCH, YOU HOLD SEVEN KEYS. THE UNOWN WILL JUDGE WHETHER YOU ARE WORTHY OF THE EIGHTH. TYPE ALL SEVEN IN ORDER — NUMBERS AND LETTERS, NO SPACES BETWEEN THEM."\n\nBelow the entry, each input box bears a cryptic label:\n\n"THE BINARY EGG\'S FIRST SPARK."\n"THE TYPING GRID\'S FINAL EDGE."\n"THE POLTERGEIST\'S SECOND TAP."\n"THE DIVIDING CELL\'S THIRD BLOOM."\n"THE SUBJECT\'S PLEA — ITS SECOND PULSE."\n"THE TRAINERS\' OPENING COUNT."\n"THE CODED WORD\'S FINAL SOUND."',
+      narrative: 'As the word RELEASE echoes from the specimen chambers, a speaker overhead crackles: "GEOTHERMAL PURGE ACTIVE. TEN MINUTES TO FACILITY SEAL." A panel slides open behind the jars — revealing the master override console. Seven Unown — the Symbol Pokémon — drift across the screen, each taking the shape of a different letter. One by one they arrange themselves into a sequence, then fade, leaving seven empty input boxes on the display.\n\nA final log entry from Dr. Fuji renders onscreen:\n\n"IF YOU HAVE TRULY FOLLOWED MY RESEARCH, YOU HOLD SEVEN KEYS. THE UNOWN WILL JUDGE WHETHER YOU ARE WORTHY OF THE EIGHTH. TYPE ALL SEVEN IN ORDER — NUMBERS AND LETTERS, NO SPACES BETWEEN THEM."\n\nBelow the entry, each input box bears a cryptic label:\n\n"THE BINARY EGG\'S FIRST SPARK."\n"THE TYPING GRID\'S FINAL EDGE."\n"THE POLTERGEIST\'S SECOND TAP."\n"THE DIVIDING CELL\'S THIRD BLOOM."\n"THE SUBJECT\'S PLEA — ITS SECOND PULSE."\n"THE TRAINERS\' OPENING COUNT."\n"THE CODED WORD\'S FINAL SOUND."',
       question: 'Seven input boxes await, one for each label. The terminal expects the seven characters typed as a single passcode — no spaces.',
       answer: '17A9S8E',
       hints: [
         'Each cryptic label describes one of your previous puzzles — and a specific character position within its answer. Trace each label back to the puzzle it references.',
-        'Binary egg = Poké Ball rack (150, 1st = 1). Typing grid = type chart (2697, last = 7). Poltergeist = Rotom\'s PC (CALL, 2nd = A). Dividing cell = mitosis (159, 3rd = 9). Subject\'s plea = spectrograph (PSYCHIC, 2nd = S). Trainers\' count = trainer code (845, 1st = 8). Coded word = specimen jars (RELEASE, last = E).',
+        'Three of the harder labels: the Poltergeist is Rotom\'s PC (CALL, 2nd character = A). The Subject\'s plea is the spectrograph (PSYCHIC, 2nd character = S). The Coded word is the specimen jars (RELEASE, last character = E). Trace the other four labels back to their puzzles.',
         'Concatenate in order: 1 + 7 + A + 9 + S + 8 + E = 17A9S8E.'
       ],
       isMeta: true,
+      children: ['containment-vault-epilogue']
+    },
+
+    // ===== EPILOGUE =====
+    // Cross-location: parented to master terminal, located in research wing.
+    // Engine note: makeMove blocks post-escape navigation; this node is correctly
+    // structured for when engine support (e.g. an `outro` affordance) is added.
+
+    {
+      id: 'containment-vault-epilogue',
+      locationId: 'research-wing',
+      parentId: 'containment-vault-master-terminal',
+      type: 'dialogue',
+      label: 'The Way Out',
+      narrative: 'The seven Unown dissolve into soft light. The klaxon cuts mid-whoop.\n\n"GEOTHERMAL PURGE SUSPENDED — OVERRIDE CODE ACCEPTED."\n\nA new sound: a low mechanical whirr from above. A maintenance ladder unspools from the ceiling — dropping through the hole you made when you fell in. The orange glow of volcanic sky bleeds through from above.\n\nClaw marks trace the concrete floor all the way to the base of the ladder.\n\nYou\'re not the first to leave this way. But unlike the last one, you were invited.\n\nDr. Fuji\'s voice, pre-recorded, clicks through a speaker one final time:\n\n"I sealed it from inside. You unsealed it. Run."',
+      children: []
+    },
+
+    // ===== RESEARCH WING FLAVOR NODES =====
+    // Non-puzzle environmental nodes. Seed the mystical register (Unown) and
+    // pre-haunt the second act (vault preview) without touching the dependency graph.
+
+    {
+      id: 'research-wing-incident-report',
+      locationId: 'research-wing',
+      parentId: null,
+      type: 'dialogue',
+      label: 'Incident Report Board',
+      narrative: 'A corkboard beside the door is still pinned with a laminated incident report — the only document in the room with a legible date:\n\n"INCIDENT REPORT #47 — GEOTHERMAL VENT 3\nSYMBOL POKÉMON SIGHTED IN THE LOWER THERMAL CORRIDOR. THIRD INCIDENT THIS MONTH. STAFF ADVISED NOT TO ENGAGE. FUJI HAS BEEN NOTIFIED.\n\nNOTE FROM DR. FUJI: They come up through the vents. They always have. I have taken samples. The shapes they make are not random."\n\nA second note, pinned beside it in different handwriting: "Fuji — you said the same thing about the mitosis curve. You were right then. Please be wrong now."',
+      children: []
+    },
+
+    {
+      id: 'research-wing-vault-grate',
+      locationId: 'research-wing',
+      parentId: null,
+      type: 'dialogue',
+      label: 'Grated Observation Window',
+      narrative: 'Set into the blast door at eye height: a small steel grate, barely a hand\'s width. You press your face against it.\n\nBeyond the door, a crimson emergency beacon pulses in steady rhythm. Somewhere in the red-lit dark, something the size of a freight container juts upward at a broken angle — its surface catching the light in long, irregular lines. The floor around it glistens with fluid.\n\nWhatever that is, it used to be whole.',
       children: []
     }
   ]

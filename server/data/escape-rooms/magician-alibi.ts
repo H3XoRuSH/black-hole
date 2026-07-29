@@ -5,7 +5,7 @@ const data: EscapeRoomData = {
   name: 'The Magician\'s Alibi',
   description: 'Condemned for a magistrate\'s murder you did not commit, you have one night in Blackthorn Prison. A vanished illusionist has hidden a chain of puzzles that can expose the real culprit and open a path to freedom.',
   difficulty: 'hard',
-  intro: 'The execution bell is due at dawn. In Blackthorn Prison, your cell has been sealed since Magistrate Vale was killed, though the bloodied knife was found in another man\'s hand and your protest was buried beneath the verdict. Tonight, a deck of cards slides under the door. The ace of spades has been cut open. Inside is a note in violet ink:\n\nI performed at Vale\'s theater the night he died. You were framed. The real evidence is locked beneath the prison, and the warden has buried the one thing that clears you. Follow my marks. Do not trust any sentence that looks too clean.\n- Silas Vane\n\nA key turns somewhere beyond the wall. The corridor lights go dark. If Silas is still helping you, he has chosen riddles instead of ropes.',
+  intro: 'The execution bell is due at dawn. In Blackthorn Prison, your cell has been sealed since Magistrate Vale was killed — to everyone but a man who once vanished from a locked stage — though the bloodied knife was found in another man\'s hand and your protest was buried beneath the verdict. Tonight, a deck of cards slides under the door. The ace of spades has been cut open. Inside is a note in violet ink:\n\nI performed at Vale\'s theater the night he died. You were framed. The real evidence is locked beneath the prison, and the warden has buried the one thing that clears you. Follow my marks. Do not trust any sentence that looks too clean.\n- Silas Vane\n\nA key turns somewhere beyond the wall. The corridor lights go dark. If Silas is still helping you, he has chosen riddles instead of ropes.',
   locations: [
     {
       id: 'cell-17',
@@ -15,7 +15,7 @@ const data: EscapeRoomData = {
     {
       id: 'evidence-office',
       name: 'The Evidence Office',
-      description: 'A records office frozen in the middle of a trial: locked evidence cabinets, dust-filmed ledgers, and a long table beneath a dead gas lamp. The magistrate\'s trial dossier is missing its final page.'
+      description: 'A records office frozen in the middle of a trial: locked evidence cabinets, dust-filmed ledgers, and a long table beneath a dead gas lamp. A locked drawer beneath the table is sealed with a brass court order.'
     },
     {
       id: 'clockwork-workshop',
@@ -30,7 +30,7 @@ const data: EscapeRoomData = {
     {
       id: 'understage',
       name: 'The Understage',
-      description: 'Beneath the chapel lies an abandoned theater: a low stage, velvet curtains, trapdoors, telegraph wire, and a black iron exit with a five-letter lock. The old audience seats face the darkness as if waiting for the final act.'
+      description: 'Beneath the chapel lies an abandoned theater — the old Blackthorn Playhouse, swallowed whole when the prison was built over its stage. A low stage, velvet curtains, trapdoors, and telegraph wire fill the space. A black iron exit bears a five-letter lock. The old audience seats face the darkness as if waiting for the final act.'
     }
   ],
   nodes: [
@@ -93,7 +93,7 @@ const data: EscapeRoomData = {
       parentId: null,
       type: 'dialogue',
       label: 'Iron Bars',
-      narrative: 'The iron bars overlook a dark corridor. Tiny card-suit marks are carved into the stone beside them — hearts, diamonds, clubs, spades — arranged in no obvious pattern. A cut in one bar catches the light at a strange angle.',
+      narrative: 'The iron bars overlook a dark corridor. Tiny card-suit marks are carved into the stone beside them — hearts, diamonds, clubs, spades — Silas\'s signature, left wherever he passed. A cut in one bar catches the light at a strange angle.',
       children: ['cell-cipher-puzzle']
     },
     {
@@ -102,7 +102,7 @@ const data: EscapeRoomData = {
       parentId: 'cell-iron-bars',
       type: 'puzzle',
       label: 'Cipher Puzzle',
-      narrative: 'You hold the playing card to the violet light, recalling the cipher method Silas taught you. The six letters begin to resolve. The magician\'s name turns each one backward by a different amount.',
+      narrative: 'The wall latch yielded a playing card bearing a six-letter string and the performer\'s name. Hold it to the violet light and recall the cipher method Silas left beside it — the magician\'s name turns each letter backward by a different amount.',
       question: 'On the card:\n\nEQCRGJ\n\nAround it: SILAS\n\nA line in purple ink reads: A name turns every letter; the same name returns when the road ends.\n\nWhat six-letter word is concealed?',
       answer: 'mirror',
       hints: [
@@ -163,7 +163,7 @@ const data: EscapeRoomData = {
       parentId: 'cell-copper-ladder',
       type: 'dialogue',
       label: 'Rotating Passage',
-      narrative: 'The correct word triggers a deep metallic click. The entire wall panel rotates on a hidden axis, and cold air pours through from the darkness beyond — the evidence office, frozen in time like a crime scene.',
+      narrative: 'The correct word triggers a deep metallic click. Somewhere above, a bell tolls once — the first of the night. The entire wall panel rotates on a hidden axis, and cold air pours through from the darkness beyond — the evidence office, frozen in time like a crime scene.',
       children: []
     },
 
@@ -196,7 +196,7 @@ const data: EscapeRoomData = {
       question: 'The cabinet shows:\n\n# % & * + = ?\n\nSilas has written beneath: \'The marks keep nothing of their wards except the beginning.\'\n\nWhat word should the cabinet accept?',
       answer: 'justice',
       hints: [
-        'The examination table holds an evidence ledger that lists what each marked symbol represents. Cross-reference the cabinet\'s symbol order with the ledger entries — each symbol takes only the first letter of its label.',
+        'The examination table holds an evidence ledger that lists what each marked symbol represents. Cross-reference the cabinet\'s symbols with the ledger — Silas\'s note beneath the list tells you what to take from each entry.',
         'Use the beginning of each ledger entry, not the visual shape of the symbol. # = Judicial seal (J), % = Unsigned confession (U), & = Smudged fingerprint (S), * = Torn testimony (T), + = Inmate\'s key (I), = = Court docket (C), ? = Exhibit ledger (E).',
         'Read in cabinet order: # % & * + = ? gives J-U-S-T-I-C-E. Enter JUSTICE.'
       ],
@@ -237,7 +237,7 @@ const data: EscapeRoomData = {
       parentId: 'office-case-file',
       type: 'puzzle',
       label: 'Swapped Testimony',
-      narrative: 'The misspelled word appears in three positions, yet the letters are always the same — two of them simply reversed. Behind the page, a spring-loaded mechanism seems primed to release something.',
+      narrative: 'The misspelled word appears in three positions, yet the letters are always the same — two of them simply reversed. Behind the page, a seven-dial mechanism is primed to release something when the buried name is spelled out.',
       question: 'The page shows:\n\nEYE WINTESS\nSTAR WINTESS\nWINTESS STAND\n\nSilas has written beneath: \'The court buried a name beneath a swapped pair. The same pair, every time. The phrases remember who should stand here.\' What name was buried?',
       answer: 'witness',
       hints: [
@@ -273,7 +273,7 @@ const data: EscapeRoomData = {
       parentId: 'office-spring-panel',
       type: 'dialogue',
       label: 'Enter the Workshop',
-      narrative: 'You step through the panel into a disused workshop. Gears, wire automata, and stage props clutter every surface. In the center stands a life-sized automaton, frozen mid-gesture. Four brass drawers are set into the wall beside it, and a faint mechanical hum vibrates through the floor.',
+      narrative: 'A second bell tolls from the cell block above as you step through the panel into a disused workshop. Gears, wire automata, and stage props clutter every surface. In the center stands a life-sized automaton, frozen mid-gesture. Four brass drawers are set into the wall beside it, and a faint mechanical hum vibrates through the floor.',
       children: []
     },
 
@@ -285,7 +285,7 @@ const data: EscapeRoomData = {
       type: 'puzzle',
       label: 'Brass Drawer Array',
       narrative: 'Four shallow brass drawers stand in a row beneath a stopped automaton. Their colors have faded, but the objects inside are still sharply outlined through frosted glass panels. A gear slot in the automaton\'s chest waits for the right component.',
-      question: 'Four drawers stand from left to right. Each drawer has one color — red, blue, green, or gold — and holds one object — a key, lens, deck, or wire. No color or object repeats.\n\nThe wire is in the far-right drawer.\nThe blue drawer is immediately left of the lens.\nThe deck is somewhere left of the green drawer.\nThe key is to the right of the deck.\nThe key is not in the blue drawer.\nThe green drawer holds neither the lens nor the wire.\n\nWhich color holds the key?',
+      question: 'Four drawers stand from left to right. Each drawer has one color — red, blue, green, or gold — and holds one object — a key, lens, deck, or wire. No color or object repeats.\n\nThe wire is in the far-right drawer.\nThe blue drawer is immediately left of the lens.\nThe deck is somewhere left of the green drawer.\nThe key is to the right of the deck.\nThe key is not in the blue drawer.\nThe gold drawer is not beside the blue drawer.\nThe green drawer holds neither the lens nor the wire.\n\nWhich color holds the key?',
       answer: 'green',
       hints: [
         'Four drawers, four colors, four objects — none repeated. The wire is fixed in the far-right spot. Start from position 4 and work inward, testing each rule one constraint at a time.',
@@ -309,7 +309,7 @@ const data: EscapeRoomData = {
       parentId: null,
       type: 'locked',
       label: 'Wire Automaton',
-      narrative: 'The gear clicks into the automaton\'s chest. Copper teeth begin to turn, and a strip of paper feeds through the automaton\'s jaw — an old inspection log, calm in tone and wrong in places. The type bars seem to have struck some letters twice.',
+      narrative: 'The gear clicks into the automaton\'s chest. Copper teeth begin to turn, and a strip of paper feeds through the automaton\'s jaw — an old inspection log, calm in tone and wrong in places. Silas\'s warning returns: do not trust any sentence that looks too clean. The type bars seem to have struck some letters twice.',
       lockedNarrative: 'A life-sized wire automaton stands motionless in the center of the workshop. A slot in its chest is shaped like a missing gear — the mechanism is incomplete. The brass drawers might hold what it needs.',
       lockedByItem: 'drawer-gear',
       children: ['workshop-inspection-log']
@@ -381,7 +381,7 @@ const data: EscapeRoomData = {
       parentId: 'workshop-channel-zigzag',
       type: 'dialogue',
       label: 'Sconce Passage',
-      narrative: 'The door swings open and wall sconces flare to life in sequence, illuminating a narrow stone passage. The air grows heavy with ash and incense as you step toward the prison chapel.',
+      narrative: 'The door swings open and wall sconces flare to life in sequence, illuminating a narrow stone passage. A third bell tolls through the stone — fainter now, swallowed by the foundations. The air grows heavy with ash and incense as you step toward the prison chapel.',
       children: []
     },
     {
@@ -428,7 +428,7 @@ const data: EscapeRoomData = {
       parentId: 'workshop-card-trick-lock',
       type: 'dialogue',
       label: 'Silas\'s Cipher Notes',
-      narrative: 'Silas\'s notes show a Vigenère table with the alphabet spiraling around the card suits. His annotations are playful: \'The key is always a name. The name is always the one who signs the trick. The trick is always the same — turn every letter backward by the one beneath it.\' The cipher you solved in the cell was his signature move.',
+      narrative: 'Silas\'s notes show a Vigenère table with the alphabet spiraling around the card suits. His annotations are playful: \'The key is always a name. The name is always the one who signs the trick. The trick is always the same — turn every letter backward by the one beneath it.\' One marginal note reads: \'Every answer I leave you has a position. The number the floor gives you is the position the cabinet\'s word needs.\' The cipher you solved in the cell was his signature move.',
       children: []
     },
 
@@ -450,7 +450,7 @@ const data: EscapeRoomData = {
       parentId: 'chapel-organ-bench',
       type: 'dialogue',
       label: 'Priest\'s Torn Card',
-      narrative: 'The card shows five rotating letter shutters spelling:\n\nG R A V E\n\nThe second shutter is marked with a red false-witness seal. A brass letter tile marked L lies outside the shutters, and a violet arrow points to the open end. A note reads: \'Remove the false witness. Let the seal enter. Keep the surviving testimony in order.\'',
+      narrative: 'The card shows five rotating letter shutters spelling:\n\nG R A V E\n\nThe second shutter is marked with a red false-witness seal. A brass letter tile marked L lies outside the shutters, and a violet arrow points to the open end. A note reads: \'Remove the false witness. Let the brass tile enter. Keep the surviving testimony in order.\'',
       children: ['chapel-letter-shutters']
     },
     {
@@ -460,7 +460,7 @@ const data: EscapeRoomData = {
       type: 'puzzle',
       label: 'Letter Shutters',
       narrative: 'Five shutters stand in a row. One bears the red seal of a false witness — its testimony must be struck. A loose brass tile marked L waits to enter where the arrow points. The compartment beneath the shutters holds a wooden mallet, but it won\'t release until the shutters spell the mallet\'s name.',
-      question: 'The card shows five shutters spelling:\n\nG R A V E\n\nThe second shutter is marked with a red false-witness seal. A brass letter tile marked L lies outside the shutters, and a violet arrow points to the open end. A note reads: \'Remove the false witness. Let the seal enter. Keep the surviving testimony in order.\' What five-letter word opens the organ compartment?',
+      question: 'The card shows five shutters spelling:\n\nG R A V E\n\nThe second shutter is marked with a red false-witness seal. A brass letter tile marked L lies outside the shutters, and a violet arrow points to the open end. A note reads: \'Remove the false witness. Let the brass tile enter. Keep the surviving testimony in order.\' What five-letter word opens the organ compartment?',
       answer: 'gavel',
       hints: [
         'The concealed compartment contains five letter shutters showing GRAVE, a loose brass L tile, and a red seal. The seal marks one shutter as false — remove it and read what remains, then let the loose tile enter where the arrow points.',
@@ -495,7 +495,7 @@ const data: EscapeRoomData = {
       parentId: 'chapel-trapdoor',
       type: 'dialogue',
       label: 'Enter the Understage',
-      narrative: 'You descend the spiral stairs into a forgotten theater beneath the chapel. A low stage faces empty velvet seats. The air is thick with dust and ozone. An antique telegraph key is wired to the far wall, and a black iron exit door looms at the back of the stage.',
+      narrative: 'A fourth bell — its toll swallowed by stone before it reaches the street — follows you down the spiral stairs into the old Blackthorn Playhouse beneath the chapel. A low stage faces empty velvet seats. The air is thick with dust and ozone. A bolted trapdoor is set into the stage floor, its surface marked with a grid. An antique telegraph key is wired to the far wall, and a black iron exit door looms at the back of the stage.',
       children: []
     },
     {
@@ -504,7 +504,7 @@ const data: EscapeRoomData = {
       parentId: null,
       type: 'dialogue',
       label: 'Stained Glass Window',
-      narrative: 'Cracked stained glass filters violet light across the ash-covered pews. Among the religious motifs, small card suits — hearts, diamonds, clubs, spades — are worked into the glass, barely visible in the colored panes. Silas left his mark even here.',
+      narrative: 'Cracked stained glass filters violet light across the ash-covered pews. Among the religious motifs, small card suits — hearts, diamonds, clubs, spades — are worked into the glass, barely visible in the colored panes. Silas left his signature even here — a flourish, not a cipher.',
       children: []
     },
     {
@@ -533,8 +533,8 @@ const data: EscapeRoomData = {
       parentId: null,
       type: 'puzzle',
       label: 'Telegraph Key',
-      narrative: 'The antique telegraph key is wired directly to the stage floor. Its paper tape has been torn away, leaving only a rhythm pressed into the brass contacts. Each cluster of taps is separated by a deliberate pause. Beneath the key, a trapdoor in the stage floor is bolted shut.',
-      question: 'The key has left this rhythm, with each slash marking a pause:\n\n./.../-.-./.-/.--./.\n\nSilas wrote beside it: Short breath. Long breath. The dead telegraph still knows the way.\n\nWhat word is tapped out?',
+      narrative: 'The antique telegraph key is wired directly to the stage floor. Its paper tape survives, though one cluster is water-damaged and barely legible. Each cluster of taps is separated by a deliberate pause. The word it spells should be clear to anyone standing before a locked door.',
+      question: 'The key has left this rhythm, with each slash marking a pause:\n\n./.../-.-./.-/[~~]/.\n\nSilas wrote beside it: Short breath. Long breath. The dead telegraph still knows the way. One cluster is water-stained — but the word it spells is not hard to guess from where you\'re standing.\n\nWhat word is tapped out?',
       answer: 'escape',
       hints: [
         'The telegraph key\'s tape shows dots and dashes separated by slashes. Each cluster between pauses is one Morse character — short taps are dots, long taps are dashes.',
@@ -595,7 +595,7 @@ const data: EscapeRoomData = {
       type: 'puzzle',
       label: 'Silas\'s Final Card',
       narrative: 'The final card shimmers into view inside the lock. Five cryptic lines are written in violet ink, each pointing backward — to locks you\'ve already turned and words you\'ve already spoken. The five letter slots glow, waiting.',
-      question: 'Silas\'s final card reads:\n\nThe reflection leads.\nThe cell\'s confession lends its second breath.\nThe judge\'s hammer speaks first.\nThe square\'s number points into the cabinet\'s word.\nThe escape leaves its third mark.\n\nThe iron lock has five letter slots. What word belongs in them?',
+      question: 'Silas\'s final card reads:\n\nThe reflection leads.\nThe word you first whispered lends its second breath.\nThe judge\'s hammer speaks first.\nThe square\'s number points into the cabinet\'s word.\nThe escape leaves its third mark.\n\nThe iron lock has five letter slots. What word belongs in them?',
       answer: 'magic',
       hints: [
         'Silas\'s final card lists five clues, each pointing to an answer from a previous puzzle. The reflection (the cipher solved in the cell), the confession (the cell\'s first word spoken), the hammer (the chapel\'s word), the cabinet\'s word (from the office), and the escape (the telegraph\'s word) — each holds one letter.',
@@ -603,6 +603,24 @@ const data: EscapeRoomData = {
         'M + A + G + I + C = MAGIC.'
       ],
       isMeta: true,
+      children: ['understage-escape-ending']
+    },
+    {
+      id: 'understage-escape-ending',
+      locationId: 'understage',
+      parentId: 'understage-final-card',
+      type: 'dialogue',
+      label: 'The Door Opens',
+      narrative: 'The five letters settle. The iron door shudders — and swings open.\n\nCold night air floods the understage. Somewhere above the stone, a bell begins to count: dawn. The execution bell — and it is the last one.\n\nOn the threshold, held down by a brass organ stop, is a single sheet of paper in the warden\'s hand. It is Magistrate Vale\'s missing testimony — the page that should have been read aloud at trial. Your name appears in the margin, followed by two words: wrongly held.\n\nA playing card is propped against the door frame, its face scraped clean except for a single line in violet ink:\n\nI was in the audience the night the magistrate died. So was the warden. One of us came to watch. The other came to ensure the wrong man hanged. The door is open now. Walk through it.\n\n— Silas Vane',
+      children: []
+    },
+    {
+      id: 'understage-tile-pit',
+      locationId: 'understage',
+      parentId: null,
+      type: 'dialogue',
+      label: 'Stage Trap Pit',
+      narrative: 'A metal trapdoor is cut into the stage floor, its surface bearing a four-by-four grid of recessed panels. A small star marks one of them, and a wire runs from the trapdoor\'s edge to a control panel on the far wall. The bolts are set — something elsewhere in the theater must release the mechanism beneath.',
       children: []
     },
     {

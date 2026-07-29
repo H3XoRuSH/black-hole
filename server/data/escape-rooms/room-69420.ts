@@ -15,7 +15,7 @@ const data: EscapeRoomData = {
     {
       id: 'bedroom',
       name: 'Gab\'s Bedroom',
-      description: 'A small, cold bedroom frozen in time. A race-car bed, a half-built solar-system mobile, a music box, and walls covered in crayon. The number 69420 has been scratched into the floorboards beside the bed, over and over. In the far corner, a door has been wallpapered over — someone wanted it forgotten.'
+      description: 'A small, cold bedroom frozen in time. A race-car bed, a half-built solar-system mobile, a music box, and walls covered in crayon. The number 69420 has been scratched into the floorboards beside the bed, over and over. In the far corner, torn wallpaper surrounds a wooden door that someone tried to hide — and someone else tried to claw their way through.'
     },
     {
       id: 'heart',
@@ -25,6 +25,25 @@ const data: EscapeRoomData = {
   ],
   nodes: [
     // ===== THE THRESHOLD =====
+
+    {
+      id: 'th-sealed-door',
+      locationId: 'threshold',
+      parentId: null,
+      type: 'dialogue',
+      label: 'Sealed Door',
+      narrative: 'The second door is sealed — not locked, but sealed. Layers of yellowed paint and brittle caulk fuse it to the frame. Faint letters beneath the peeling paint read: BOILER ROOM — NO ENTRY. Whatever the house is hiding here, it is not meant to be found tonight.',
+      children: []
+    },
+    {
+      id: 'th-brass-number',
+      locationId: 'threshold',
+      parentId: null,
+      type: 'dialogue',
+      label: 'Brass Room Number',
+      narrative: 'The tarnished brass number — 69420 — hangs from a single bent nail beside the doorframe. Beneath the corrosion, the metal is scored with tiny, deliberate scratches — a child\'s hand, marking his ward number into the only thing that bore it. A thin cord of grey thread dangles from the nail, as if something was once tied here and torn away.',
+      children: []
+    },
 
     {
       id: 'th-wall-plaster',
@@ -37,7 +56,7 @@ const data: EscapeRoomData = {
       answer: 'HELP',
       hints: [
         'Not every letter was cut with the same force. Some are larger and carved deeper into the plaster.',
-        'The oversized letters, read in order, are H, E, L, P.',
+        'Ignore the lowercase letters entirely. Read only the deep-cut capitals from left to right.',
         '"tHe End of Lost Play" — the deeper capitals spell H-E-L-P.'
       ],
       children: ['th-alphabet-codex']
@@ -49,7 +68,7 @@ const data: EscapeRoomData = {
       type: 'dialogue',
       label: 'Alphabet Codex',
       narrative: 'The plaster crumbles as Gab\'s message fades. In its place, a child\'s hand scratches the alphabet into the wall — each letter numbered beneath:\n\nA=1  B=2  C=3  D=4  E=5  F=6  G=7  H=8  I=9  J=10\nK=11 L=12 M=13 N=14 O=15 P=16 Q=17 R=18 S=19 T=20\nU=21 V=22 W=23 X=24 Y=25 Z=26\n\nScrawled beneath in red crayon: "the alphabet knows my pain."',
-      children: []
+      children: ['th-number-carvings']
     },
 
     {
@@ -63,7 +82,7 @@ const data: EscapeRoomData = {
       answer: 'TOMB',
       hints: [
         'The crayon drawing shows a subterranean vault. The four letter blocks can be rearranged to name that burial chamber.',
-        'M, T, O, B rearrange to T-O-M-B.',
+        'Name what the drawing shows. Four letters, and you already hold all four.',
         'The only four-letter word these blocks can form is TOMB.'
       ],
       children: ['th-floorboard-reveal']
@@ -90,15 +109,15 @@ const data: EscapeRoomData = {
     {
       id: 'th-number-carvings',
       locationId: 'threshold',
-      parentId: null,
+      parentId: 'th-alphabet-codex',
       type: 'puzzle',
       label: 'Number Carvings',
-      narrative: 'Beside the bedroom door, three numbers have been gouged into the wooden frame with the same desperate force as the plaster scrawl. A fresh stroke of red crayon arrows toward the numbered alphabet scratched into the nearby wall.',
+      narrative: 'Beside the bedroom door, three numbers have been gouged into the wooden frame with the same desperate force as the plaster scrawl. A red crayon arrow points at the freshly uncovered alphabet — Gab knew the codex would lead you here.',
       question: '3 — 18 — 25\n\nWhat word does Gab want you to speak?',
       answer: 'CRY',
       hints: [
-        'The alphabet has twenty-six letters. Gab scratched a numbered reference chart into the wall plaster — look for it elsewhere in this room.',
-        '3 = C, 18 = R, 25 = Y.',
+        'The numbered alphabet you uncovered on the plaster wall is the key. Match each carved number to the letter at that position.',
+        'Read the alphabet chart: the third letter is C, the eighteenth is R, the twenty-fifth is Y.',
         '3 is the third letter (C), 18 is the eighteenth (R), 25 is the twenty-fifth (Y) — together they spell CRY.'
       ],
       children: ['th-teardrop-key']
@@ -119,7 +138,7 @@ const data: EscapeRoomData = {
       parentId: null,
       type: 'dialogue',
       label: 'Crayon Drawings Wall',
-      narrative: 'The wall beside the doorframe is a gallery of Gab\'s childhood. Dozens of crayon drawings are pinned with rusted tacks — stick figures, a race car, a music box, a dark shape with red eyes. Two drawings stand out.\n\nOne shows two calendars side by side. "I ARRIVED" is written above the first, marked MCMLXXIII. "I LEFT" is written above the second, marked MCMLXXXVI.\n\nPinned beside the drawings is a faded educational poster from the children\'s home:\n"ROMAN NUMERALS — Learn to Count Like the Ancients!"\nI=1  V=5  X=10  L=50  C=100  D=500  M=1000\nExamples: IV=4  IX=9  XL=40  XC=90  CM=900\nMCMLXXIII = M(1000) + CM(900) + L(50) + X(10) + X(10) + III(3) = 1973',
+      narrative: 'The wall beside the doorframe is a gallery of Gab\'s childhood. Dozens of crayon drawings are pinned with rusted tacks — stick figures, a race car, a music box, a dark shape with red eyes. Two drawings stand out.\n\nOne shows two calendars side by side. "I WAS BORN" is written above the first, marked MCMLXXIII. "I LEFT" is written above the second, marked MCMLXXXVI.\n\nPinned beside the drawings is a faded educational poster from the children\'s home:\n"ROMAN NUMERALS — Learn to Count Like the Ancients!"\nI=1  V=5  X=10  L=50  C=100  D=500  M=1000\nExamples: IV=4  IX=9  XL=40  XC=90  CM=900\nMCMLIV = M(1000) + CM(900) + L(50) + IV(4) = 1954',
       children: ['th-calendar-puzzle']
     },
     {
@@ -160,15 +179,15 @@ const data: EscapeRoomData = {
     {
       id: 'th-doorframe-carving',
       locationId: 'threshold',
-      parentId: null,
+      parentId: 'th-to-bedroom',
       type: 'puzzle',
       label: 'Doorframe Carving',
-      narrative: 'The doorframe beside the bedroom entrance bears a scratched inscription — four letters dug into the wood with desperate force, deeper than any of Gab\'s drawings. Beneath them, in faded red crayon: "speak the truth backward."',
+      narrative: 'Though you entered the bedroom, the doorframe you passed through deserves a second look. Four letters are dug into the wood with desperate force, deeper than any of Gab\'s drawings. Beneath them, in faded red crayon: "the mirror remembers the truth."',
       question: 'The carved letters:\n\nK  I  Z  B\n\nWhat word was Gab trying to say?',
       answer: 'PRAY',
       hints: [
-        'The message says "speak the truth backward." Gab\'s race-car bed headboard — in the bedroom beyond — has a chart pairing each letter with its mirror opposite.',
-        'K pairs with P, I with R, Z with A, B with Y. Read the mirrored letters in order.',
+        'The headboard chart in Gab\'s bedroom shows the alphabet folded in half — each letter paired with its mirror opposite. Match the carved letters to their reflections.',
+        'Read across the chart: K reflects to P, I to R, Z to A, B to Y. Read the reflected letters in order.',
         'K becomes P, I becomes R, Z becomes A, B becomes Y — the Atbash cipher gives you PRAY.'
       ],
       children: ['th-silver-locket']
@@ -201,7 +220,7 @@ const data: EscapeRoomData = {
       type: 'dialogue',
       label: 'Enter the Bedroom',
       narrative: 'You step through the doorway into a small, cold bedroom frozen in time. The number 69420 has been scratched into the floorboards beside the bed, over and over — Gab marking his own existence.',
-      children: []
+      children: ['th-doorframe-carving']
     },
 
     // ===== GAB'S BEDROOM =====
@@ -234,6 +253,7 @@ const data: EscapeRoomData = {
       type: 'dialogue',
       label: 'Inside the Music Box',
       narrative: 'Two slips of paper rest inside the velvet-lined interior.\n\nThe first, in a child\'s careful hand, is a folded grid — the alphabet written out in twenty-six rows, each row starting one letter later than the last. A note on the grid reads: "To find the true letter, go to the row of the key letter and find the cipher letter within it. The column it sits in gives you the true letter."\n\nThe second slip, in an adult\'s rigid hand: "His true name is locked here. The word they whisper is the key." An eight-letter ciphertext is scribbled beneath.',
+      sound: { type: 'melody', notes: [{ pitch: 'E4', dur: 500, rest: false }, { pitch: 'G4', dur: 500, rest: false }, { pitch: 'C5', dur: 1000, rest: false }] },
       children: ['bed-vigenere-teaching', 'bed-true-name']
     },
     {
@@ -252,11 +272,11 @@ const data: EscapeRoomData = {
       type: 'puzzle',
       label: 'The Hidden Name',
       narrative: 'The ciphertext slip is clutched beneath the grid — eight letters inscribed with a trembling hand. The adult\'s note is folded over it: "the word they whisper is the key."\n\nYou remember Gab\'s voice from the locket — the word he whispered.',
-      question: 'Ciphertext: NAVLKPUM\nKey: HAUNT\n\nWhat is the boy\'s full name?',
+      question: 'Ciphertext: NAVLKPUM\n\nWhat is the boy\'s full name?',
       answer: 'GABYRIUS',
       hints: [
         'The Vigenère decoding guide — also inside the music box — walks through a full example. You also need the five-letter key: Gab whispered it when you opened the silver locket in the threshold.',
-        'N in key row H = G, A in row A = A, V in row U = B, L in row N = Y, K in row T = R, P in row H = I, U in row A = U, M in row T = S.',
+        'Row H of the grid, column N → top of column is G. Row A, column A → A. Row U, column V → B. Row N, column L → Y. Repeat the key HAUNT for all eight cipher letters.',
         'GABYRIUS — at last, the boy\'s full name.'
       ],
       children: ['bed-name-token']
@@ -282,7 +302,7 @@ const data: EscapeRoomData = {
       answer: 'DEATH',
       hints: [
         'The note says the first step is always the most important. Look at how each line of the poem begins.',
-        'The first letter of each line: D, E, A, T, H.',
+        'Take only the first letter of each line, in order.',
         'Darkness → D, Every → E, And → A, The → T, Hush → H. Together: DEATH.'
       ],
       children: ['bed-death-page']
@@ -303,12 +323,12 @@ const data: EscapeRoomData = {
       parentId: null,
       type: 'puzzle',
       label: 'Science Workbook',
-      narrative: 'A half-built solar-system mobile hangs crooked from the ceiling. Beside it lies a science workbook open to the periodic table. One element is circled in red crayon over and over, the paper nearly worn through. Beneath it Gab scratched a label: "O — the breath I lost."',
+      narrative: 'A half-built solar-system mobile hangs crooked from the ceiling. Beside it lies a science workbook open to the periodic table. The page is torn at the corner, but a handful of elements are still legible:\n\n6 C Carbon · 7 N Nitrogen · 8 O Oxygen · 9 F Fluorine · 10 Ne Neon\n\nOne element is circled in red crayon over and over, the paper nearly worn through. Beside the 8, a crayon smudge blurs the number — as if Gab traced it until the wax built up, trying to make it stick. Beneath the entry, he scratched a label: "O — the breath I lost."',
       question: 'How many protons left Gab when he lost his breath?',
       answer: '8',
       hints: [
         'The science workbook is open to the periodic table. Oxygen — the breath we breathe — has a number all its own on the chart.',
-        'O is the chemical symbol for oxygen. Its atomic number — equal to its proton count — is 8.',
+        'The circled element is oxygen, symbol O. Find its number on the workbook\'s table — that is the proton count.',
         'Oxygen is element 8 on the periodic table. Eight protons left Gab.'
       ],
       children: ['bed-element-scrap']
@@ -330,7 +350,7 @@ const data: EscapeRoomData = {
       type: 'locked',
       label: 'Wardrobe',
       narrative: 'The numbered key slots into the clock-face latch and it spins free. The wardrobe creaks open, releasing the smell of mothballs and forgotten clothes.',
-      lockedNarrative: 'A tall wooden wardrobe stands against the wall, its latch frozen in the shape of a clock face. A child\'s number lock is built into the mechanism — it expects a two-digit number.',
+      lockedNarrative: 'A tall wooden wardrobe stands against the wall, its latch frozen in the shape of a clock face. A narrow keyway is built into the mechanism — the size and shape of a small numbered key.',
       lockedByItem: 'age-key',
       children: ['bed-wardrobe-contents']
     },
@@ -353,7 +373,7 @@ const data: EscapeRoomData = {
       question: 'The circled phrase reads:\n\n"...he calls thiS INnocent..."\n\nWhat is the three-letter word?',
       answer: 'SIN',
       hints: [
-        'A verdict hidden where two words meet. Look at the capital letters at the boundary of the circled phrase.',
+        'The red pen circled that spot for a reason. The verdict hides exactly where the two words touch.',
         'thiS INnocent — the capitals where the words touch are S, I, N.',
         'The capital letters at the boundary of "thiS" and "INnocent" spell SIN.'
       ],
@@ -447,11 +467,11 @@ const data: EscapeRoomData = {
       type: 'puzzle',
       label: 'Word Chain',
       narrative: 'On the floor, a chain of words has been scratched into the wood in red crayon — each one almost identical to the last, changing by a single letter. The final word has been gouged out entirely, leaving splinters and a child\'s broken fingernail.',
-      question: 'The scratched chain reads:\n\nMUST → MUSK → DUSK → ????\n\nGab\'s nail rests beneath the faded final link.',
+      question: 'The scratched chain reads:\n\nMUST → MUSK → DUSK → ????\n\nEach step changes one letter — first the end, then the start, then the end again. Gab\'s nail rests beneath the faded final link, and everything in this room ends the same way.',
       answer: 'DUST',
       hints: [
-        'Each word is a single thread pulled from the one before it. The chain changes one letter at a time.',
-        'DUSK becomes DUST — the K changes to a T.',
+        'Each word is a single thread pulled from the one before it — one letter changes each time. The pattern alternates: the last letter changed, then the first, now it returns to the last.',
+        'After the change at the end (T→K) and the change at the start (M→D), the pattern returns to the end. What letter turns DUSK into the grey powder that coats every surface in this room?',
         'MUST → MUSK (T→K) → DUSK (M→D) → DUST (K→T).'
       ],
       children: ['heart-dust-token']
@@ -472,7 +492,7 @@ const data: EscapeRoomData = {
       parentId: null,
       type: 'locked',
       label: 'Case File',
-      narrative: 'The wax seal cracks as you wedge the stiff card beneath it. The folder springs open. Admission date: March 15, 1973. The intake form describes a frail boy with dark eyes who "refuses to speak his full name and responds only to Gab." Subsequent incident reports grow darker each year — a broken arm at seven, a locked closet at nine, a final entry stamped DECEASED: October 31, 1986. Cause of death: pending investigation.\n\nA final page has been added — not by Greyfield staff, but in a child\'s wobbly crayon:\n\n"They gave me a number. They took my name. They called me a verdict. The fire took what was left. The poem knew before I did. My name was locked in a song no one would play.\n\nSay what I became. Take the letters you\'ve already found."\n\nTucked behind the final page, two narrow slots are cut into the folder\'s backing — one blackened with soot, the other coated in fine grey powder.',
+      narrative: 'The wax seal cracks as you wedge the stiff card beneath it. The folder springs open. Admission date: March 15, 1973. The intake form describes a frail boy with dark eyes who "refuses to speak his full name and responds only to Gab." Subsequent incident reports grow darker each year — a broken arm at seven, a locked closet at nine. One report, dated six months before the final entry, describes Gab\'s repeated drawings of "a dark shape with red eyes that watches from the corner of my room at night." The staff psychologist noted: "persistent night-terror imagery; no intervention required." A final entry is stamped DECEASED: October 31, 1986. Cause of death: pending investigation.\n\nBehind the file\'s backing, two narrow slots are cut into the board — one blackened with soot, the other coated in fine grey powder. Something is hidden deeper.',
       lockedNarrative: 'A faded manila folder lies on the floor, stamped "WARD 69420 — GAB" in red ink across the cover. The file is sealed with a brittle wax stamp bearing the Greyfield Home crest — too thick to peel with bare fingers.',
       lockedByItem: 'element-scrap',
       children: ['heart-ash-barrier']
@@ -494,7 +514,7 @@ const data: EscapeRoomData = {
       parentId: 'heart-ash-barrier',
       type: 'locked',
       label: 'Dust Barrier',
-      narrative: 'The glass vial crushes into the powder-coated slot. Pale grey dust fills the recess and the second panel slides away with a sigh. Behind the folder\'s backing, a final door is revealed — and at its centre, a narrow slot shaped like a child\'s locket.',
+      narrative: 'The glass vial crushes into the powder-coated slot. Pale grey dust fills the recess and the second panel slides away with a sigh.\n\nBehind the folder\'s backing, a final page slides into view — written in a child\'s wobbly crayon:\n\n"They gave me a number. They took my name. They called me a verdict. The fire took what was left. The poem knew before I did. My name was locked in a song no one would play.\n\nSay what I became. Take the letters you\'ve already found."\n\nBeneath the final page, a narrow slot shaped like a child\'s locket is cut into the folder\'s backing board.',
       lockedNarrative: 'The second slot is coated in fine grey powder. A glass vial would fit perfectly.',
       lockedByItem: 'dust-token',
       children: ['heart-final-door']
@@ -516,12 +536,12 @@ const data: EscapeRoomData = {
       parentId: 'heart-final-door',
       type: 'puzzle',
       label: 'Speak What I Became',
-      narrative: 'The bare bulb flares bright white, then settles to a warm, steady glow. A child\'s shadow stretches across the floor — your own — but for a moment, it looks smaller. Younger. At peace.\n\nThrough the open door, a stone tablet bears seven empty input boxes, each with a cryptic label.',
+      narrative: 'The bare bulb flares bright white, then settles to a warm, steady glow. Through the open door, a stone tablet bears five empty input boxes, each with a cryptic label.',
       question: 'Gab whispers:\n\n"Take the first breath of the name locked in song,\nthe third of what fire leaves behind,\nthe second of the chamber of the dead,\nthe third of the ladder\'s ending,\nand the fourth of what the poem spells."\n\nGab waits for you to speak.',
       answer: 'GHOST',
       hints: [
         'Gab scattered pieces of himself through every puzzle you solved. Each line points to a word you\'ve already spoken — take the letter at the position he asks for.',
-        '"The name locked in song" is GABYRIUS (first letter: G). "What fire leaves behind" is ASH (third: H). "The chamber of the dead" is TOMB (second: O). "The ladder\'s ending" is DUST (third: S). "What the poem spells" is DEATH (fourth: T).',
+        '"The name locked in song" points to the boy\'s full name — take its first letter. "What fire leaves behind" is the three-letter riddle answer — take its third letter. "The chamber of the dead" is the four-letter burial word — take its second. "The ladder\'s ending" is the word-chain\'s final rung — take its third. "What the poem spells" is the five-letter acrostic — take its fourth.',
         'GABYRIUS[1] = G, ASH[3] = H, TOMB[2] = O, DUST[3] = S, DEATH[4] = T. Together: GHOST.'
       ],
       isMeta: true,

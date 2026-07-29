@@ -10,7 +10,7 @@ const data: EscapeRoomData = {
     {
       id: 'study',
       name: 'Lord Blackwood\'s Study',
-      description: 'Gothic wood panels cover the walls. Lord Blackwood\'s body rests in the center chair. A grand fireplace, a grandfather clock, and a locked wall safe hold the initial keys to his death.'
+      description: 'Gothic wood panels cover the walls. Lord Blackwood\'s body rests in the center chair, the faint scent of bitter almonds still clinging to his lips. A grand fireplace, a grandfather clock, and a locked wall safe hold the initial keys to his death.'
     },
     {
       id: 'conservatory',
@@ -44,6 +44,15 @@ const data: EscapeRoomData = {
       children: []
     },
     {
+      id: 'study-corpse',
+      locationId: 'study',
+      parentId: null,
+      type: 'dialogue',
+      label: 'Lord Blackwood\'s Body',
+      narrative: 'Lord Blackwood\'s body is slumped in the leather chair. His skin carries the telltale bluish tinge of cyanide poisoning, and the faint, bitter scent of almonds rises from his lips. A torn drink label is crumpled in his stiff fingers — it bears a crest you recognise from the wine cellar\'s racks. Whatever killed him came from the estate\'s own stores.',
+      children: []
+    },
+    {
       id: 'study-fireplace',
       locationId: 'study',
       parentId: null,
@@ -62,7 +71,7 @@ const data: EscapeRoomData = {
       question: 'The charred diary entry reads:\n\n"I hid the iron poker in the fireplace. The clock casing holds the key to the manor."\n\nBelow it, a grid of coordinates is etched:\n\n| 23 15 34 34 21 13\n\nAt the top of the page, a keyword is faintly visible: M U R D E R.',
       answer: 'cellar',
       hints: [
-        'This is a grid-coordinate cipher using the keyword MURDER.',
+        'Lord Blackwood kept a notebook explaining his personal code system. It\'s still on the shelf.',
         'Construct a 5x5 grid. Write MURDER first (omitting the duplicate R to get M U R D E), then fill the remaining alphabet (combining J with I): M U R D E / A B C F G / H I K L N / O P Q S T / V W X Y Z.',
         'Find the letter at row-column intersections: 23=C, 15=E, 34=L, 34=L, 21=A, 13=R. The code is cellar.'
       ],
@@ -74,7 +83,7 @@ const data: EscapeRoomData = {
       parentId: 'study-diary',
       type: 'item',
       label: 'Iron Poker',
-      narrative: 'You reach into the secret brick compartment behind the grate and pull out a heavy iron poker.',
+      narrative: 'You reach into the secret brick compartment behind the grate — the grid\'s latch releases — and pull out a heavy iron poker.',
       rewardItem: 'study-poker',
       children: []
     },
@@ -86,7 +95,7 @@ const data: EscapeRoomData = {
       label: 'Grandfather Clock',
       lockedByItem: 'study-poker',
       lockedNarrative: 'The grandfather clock\'s wooden casing is jammed shut, possibly containing something inside. The seam is narrow — you need a heavy metal tool to pry it open.',
-      narrative: 'Using the iron poker, you leverage the clock\'s door open. The internal brass pendulum is missing, but the clock face is visible and covered in scratches.',
+      narrative: 'Using the iron poker, you leverage the clock\'s door open. The internal brass pendulum is missing, but the clock face is visible and covered in scratches. A faint hum emanates from within — the security grid\'s override phrase is engraved somewhere on the dial.',
       children: ['study-clock-puzzle']
     },
     {
@@ -96,10 +105,10 @@ const data: EscapeRoomData = {
       type: 'puzzle',
       label: 'Clock Face',
       narrative: 'The hands of the clock are broken off, but the face has been scratched with pigpen-like grids and dots.',
-      question: 'The scratches on the dial show:\n\n|  _                      __    \\ . /   \\   /\n|   |   _|   |._   |._   |._     \\ /     \\ /\n\nA plaque below the dial blinks: "Where does the traitor swing?"',
+      question: 'The scratches on the dial show:\n\n|  _                      __    \\ . /   \\   /\n|   |   _|   |._   |._   |._     \\ /     \\ /\n\nA brass plate below the dial is engraved: "Where does the traitor swing?"',
       answer: 'gallows',
       hints: [
-        'These symbols represent letters in a border-enclosure cipher.',
+        'Each scratched shape encodes a letter. The Draftsman\'s Sketch in the study drew the legend — match the shapes to the diagrams.',
         'Match the shapes to the grid and diagonal cross structures shown in the Draftsman\'s Sketch.',
         'The shapes translate to G, A, L, L, O, W, S. Enter gallows.'
       ],
@@ -175,6 +184,15 @@ const data: EscapeRoomData = {
       children: []
     },
     {
+      id: 'study-staff-roster',
+      locationId: 'study',
+      parentId: null,
+      type: 'dialogue',
+      label: 'Staff Roster',
+      narrative: 'A yellowed staff roster is tacked to the wall beside the servant\'s hatch. Five names are listed in meticulous copperplate:\n\n  Dr. Marcus Thorne — Physician\n  Chef Henri Delacroix\n  Edmund Barrow — Butler & Head of Staff\n  Miss Clara Vane — Lady\'s Maid\n  Mr. Alan Redwick — Family Lawyer\n\nThe ink has faded with age, but every name is still legible.',
+      children: []
+    },
+    {
       id: 'study-safe',
       locationId: 'study',
       parentId: null,
@@ -192,10 +210,10 @@ const data: EscapeRoomData = {
       type: 'puzzle',
       label: 'Safe Ledger',
       narrative: 'A mathematical puzzle is scribbled on the ledger inside the safe.',
-      question: 'The ledger cover shows:\n\n|    A R T\n|  + E N D\n|  -------\n|  D I E D\n\nA small note reads: "Each letter is a unique digit (0-9). R times N equals 6. The safe code is the 4-digit sum of ART and END."',
+      question: 'The ledger cover shows:\n\n|    A R T\n|  + E N D\n|  -------\n|  D I E D\n\nA small note reads: "Each letter is a unique digit (0-9). R times N equals 6." A checksum in the ledger margin reads: "Verify my accounts — the four-digit total of ART and END."',
       answer: '1451',
       hints: [
-        'Since we add two 3-digit numbers to get a 4-digit number, the carry digit D must be 1.',
+        'Each letter stands for a different digit. Adding two 3-digit numbers giving a 4-digit result forces D to be 1 — the only possible carry into the thousands place.',
         'Since T + D ends in D (T + 1 = 1, since D = 1), T must be 0 (no carry from units).',
         'R times N = 6, so R=2 and N=3. R+N=E, so E=5. Then A+5=I+10 with remaining digits A=9, I=4. The sum is 920 + 531 = 1451.'
       ],
@@ -207,7 +225,7 @@ const data: EscapeRoomData = {
       parentId: 'study-safe-puzzle',
       type: 'dialogue',
       label: 'Flora Journal',
-      narrative: 'A hidden compartment inside the safe clicks open. Inside is a brass garden trowel and a notebook labeled "Flora Journal". The journal reads:\n\n"Each plant appears exactly once in every row and column of Blackwood\'s 4x4 display grid. Rose anchors the top-left corner. I know the rest of the pattern holds — fill the gaps."',
+      narrative: 'The security grid\'s hidden compartment inside the safe clicks open. Inside is a brass garden trowel and a notebook labeled "Flora Journal". The journal reads:\n\n"Each plant appears exactly once in every row and column of Blackwood\'s 4x4 display grid. Rose anchors the top-left corner. I know the rest of the pattern holds — fill the gaps."',
       children: ['study-trowel-node']
     },
     {
@@ -226,13 +244,13 @@ const data: EscapeRoomData = {
       parentId: null,
       type: 'puzzle',
       label: 'Will and Testament',
-      narrative: 'A parchment document sits on the desk. A padlock secures the document, awaiting the sole heir\'s name.',
+      narrative: 'A parchment document sits on the desk. A padlock secures the document — the mechanism is double-layered, as though Blackwood trusted no single safeguard. The name alone may not be enough.',
       question: 'The document reads:\n\n"To my dearest relative, I leave my entire estate. I have written their name in the mirror script of our family:\n\nS Z I E V B\n\nMay they govern my legacy well."',
       answer: 'yevrah',
       hints: [
-        'Apply the Atbash cipher (mirror script) to the letters: S=H, Z=A, I=R, E=V, V=E, B=Y. This spells harvey.',
-        'Try entering harvey. The lock refuses! There is a correction rule somewhere in the Wine Cellar.',
-        'The Wine Cellar winery ledger tells you to reverse the heir\'s name. Reverse harvey to get yevrah.'
+        'The family mirror script pairs letters from opposite ends of the alphabet — the scratched hatch slab in the cellar explains the code.',
+        'Apply the Atbash cipher to S Z I E V B: S=H, Z=A, I=R, E=V, V=E, B=Y. This spells harvey — but the lock won\'t accept it. There is a correction note hidden somewhere in the Wine Cellar.',
+        'The Wine Cellar ledger note reveals Blackwood wrote the heir\'s name entirely backwards out of paranoia. Reverse harvey to get yevrah.'
       ],
       children: ['study-will-cabinet']
     },
@@ -242,7 +260,7 @@ const data: EscapeRoomData = {
       parentId: 'study-will',
       type: 'dialogue',
       label: 'Will Compartment',
-      narrative: 'The padlock clicks open. Beneath the will, you find a small drawer containing a key and a heavy brass seal. The solved diary page reads: "I know they are trying to kill me. They have been slipping POISON into my evening wine..."',
+      narrative: 'The padlock clicks open. Beneath the will, you find a small drawer containing a key and the Blackwood family crest. A loose diary page reads: "I know they are trying to kill me. They have been slipping POISON into my evening wine..."',
       children: ['study-cabinet-key-node', 'study-master-seal-node']
     },
     {
@@ -260,8 +278,8 @@ const data: EscapeRoomData = {
       locationId: 'study',
       parentId: 'study-will-cabinet',
       type: 'item',
-      label: 'Mastermind\'s Seal',
-      narrative: 'You take the heavy brass Mastermind\'s Seal.',
+      label: 'Blackwood Family Crest',
+      narrative: 'You take the heavy brass Blackwood family crest.',
       rewardItem: 'study-master-seal',
       children: []
     },
@@ -294,10 +312,10 @@ const data: EscapeRoomData = {
       type: 'puzzle',
       label: 'Scytale Parchment',
       narrative: 'The leather strip is covered in scrambled letters.',
-      question: 'The letters read:\n\n| D N S X I T O X G H I X I E L X\n\nA small brass cylinder lies beside it. The inscription reads: "Wrap the leather around the rod of circumference 4."',
+      question: 'The letters read:\n\n| D N S X I T O X G H I X I E L X\n\nA small brass cylinder lies beside it. The inscription reads: "Wrap the leather around the rod of circumference 4." Enter the revealed instruction as one word.',
       answer: 'diginthesoil',
       hints: [
-        'This is a Scytale cipher. Arrange the letters in columns of height 4 (the circumference).',
+        'The fallen pillar\'s carving shows how the leather was read — wrap it around a rod of circumference 4 and read along the length.',
         'Grid:\nD I G I\nN T H E\nS O I L\nX X X X',
         'Read row by row: D-I-G-I-N-T-H-E-S-O-I-L. Enter diginthesoil.'
       ],
@@ -309,7 +327,7 @@ const data: EscapeRoomData = {
       parentId: 'cons-scytale',
       type: 'item',
       label: 'Locker Key',
-      narrative: 'A compartment under the cylinder opens, containing a key labeled "Locker Key".',
+      narrative: 'A compartment under the cylinder clicks open — the security grid\'s machinery acknowledges the phrase. Inside is a key labeled "Locker Key".',
       rewardItem: 'cellar-locker-key',
       children: []
     },
@@ -328,7 +346,7 @@ const data: EscapeRoomData = {
       parentId: 'cons-statue',
       type: 'puzzle',
       label: 'Dripping Basin',
-      narrative: 'Water drops from the maiden\'s vase into the pool below. Listen to the rhythmic pattern of the drips.',
+      narrative: 'Water drops from the maiden\'s vase into the pool below. The conservatory\'s irrigation gauge is missing its volume setting — but the basin still measures it aloud, cycle by cycle. Listen to the rhythmic pattern of the drips.',
       question: 'The stone basin is engraved with three number slots: _ _ _.\n\nListen to the dripping rhythm.',
       answer: '324',
       hints: [
@@ -395,7 +413,7 @@ const data: EscapeRoomData = {
       parentId: 'cons-sundial-puzzle',
       type: 'dialogue',
       label: 'Sundial Clue',
-      narrative: 'The shadow aligns, revealing a symbol: "The shadow points to the letter H."',
+      narrative: 'The shadow aligns, revealing a symbol: "The shadow points to the letter H." A card tucked under the sundial reads: "The Butler keeps to the shadows — his locker is the one the sundial points to."',
       children: []
     },
     {
@@ -431,12 +449,21 @@ const data: EscapeRoomData = {
       parentId: 'cons-soilbox',
       type: 'item',
       label: 'Brass Tap',
-      narrative: 'The brass box opens, containing a heavy brass barrel tap.',
+      narrative: 'The brass box swings open under the grid\'s watchful mechanism, containing a heavy brass barrel tap.',
       rewardItem: 'cellar-tap',
       children: []
     },
 
     // Wine Cellar & Vault Nodes
+    {
+      id: 'cellar-monogrammed-tray',
+      locationId: 'wine-cellar',
+      parentId: null,
+      type: 'dialogue',
+      label: 'Monogrammed Tray',
+      narrative: 'A silver serving tray rests on a barrel head, still set for one. The monogram "E.B." is engraved on the handle, and a single wine glass beside it bears a faint lipstick stain on the rim. A crumpled masquerade invitation lies beneath the tray — tonight was meant to be a grand affair.',
+      children: []
+    },
     {
       id: 'cellar-racks',
       locationId: 'wine-cellar',
@@ -453,7 +480,7 @@ const data: EscapeRoomData = {
       type: 'puzzle',
       label: 'Winery Ledger',
       narrative: 'An old leather ledger lies open on the wine rack. A turning paper grille with cutouts lies on top of a letter matrix. A dark ink smudge covers the very last letter of the ledger, leaving it obscured.',
-      question: 'The ledger shows a letter grid:\n\n| S L S E\n| C T B U\n| U S E R\n| S P I T\n\nThe grille is marked with cutouts at:\n\n| X . . .\n| . . . X\n| . X . .\n| . X . .\n\nThe code is revealed by rotating the grille 90 degrees clockwise after reading each word.',
+      question: 'The ledger shows a letter grid:\n\n| S L S E\n| C T B U\n| U S E R\n| S P I T\n\nThe grille is marked with cutouts at:\n\n| X . . .\n| . . . X\n| . X . .\n| . X . .\n\nRead the cutout letters across each row, top to bottom; then turn the grille a quarter-turn clockwise and read again. The ink smudge hides the final mark — ignore it. Enter the accusation as one word.',
       answer: 'suspectisbutler',
       hints: [
         'Read the letters through the cutouts in the default orientation (Orientation 0): (1,1)=S, (2,4)=U, (3,2)=S, (4,2)=P. Word 1 is susp.',
@@ -468,7 +495,7 @@ const data: EscapeRoomData = {
       parentId: 'cellar-ledger',
       type: 'dialogue',
       label: 'Ledger Note',
-      narrative: 'A private letter from Lord Blackwood is slipped inside the ledger: "The Atbash key to my will is correct, but my paranoia forced me to reverse the final letters of the heir\'s name to baffle intruders."',
+      narrative: 'A private letter from Lord Blackwood is slipped inside the ledger: "The Atbash key to my will is correct, but my paranoia forced me to write the heir\'s name entirely backwards to baffle intruders."',
       children: []
     },
     {
@@ -489,11 +516,11 @@ const data: EscapeRoomData = {
       type: 'puzzle',
       label: 'Locker Code',
       narrative: 'Five lockers are labeled with letters: G, H, I, J, K.',
-      question: 'A note states:\n\n"The Doctor is to the left of the Chef.\nThe Butler is not on either end.\nThe Maid is to the right of the Lawyer.\nThe Chef is in Locker J.\nLocker H is the shadow of the Sundial."\n\nThe keypad on the last locker (K) expects the first letter of each suspect\'s name from locker G to K.',
+      question: 'A note states:\n\n"The Doctor is in the locker immediately to the left of the Chef\'s.\nThe Butler is not on either end.\nThe Maid is to the right of the Lawyer.\nThe Chef is in Locker J.\nThe Butler keeps to the shadows — his locker is the one the sundial points to."\n\nThe keypad on the last locker (K) expects the first letter of each suspect\'s name from locker G to K.',
       answer: 'lbdcm',
       hints: [
-        'Locker H corresponds to the shadow of the sundial, which is H.',
-        'Chef is at J. The Doctor is to the left of Chef, so Doctor is at I. Butler is not on either end (not G or K), so Butler is at H. Since Maid is to the right of Lawyer, Lawyer must be at G, and Maid at K.',
+        'The sundial in the conservatory points to locker H, and the card tucked there says the Butler keeps to the shadows — so Butler is in H.',
+        'Chef is at J. The Doctor is immediately left of the Chef, so Doctor is at I. Butler (H) is not on either end. Maid is to the right of Lawyer, so Lawyer is at G and Maid at K.',
         'The order G to K is: Lawyer (L), Butler (B), Doctor (D), Chef (C), Maid (M). The code is lbdcm.'
       ],
       children: ['cellar-safe-key-node']
@@ -526,7 +553,7 @@ const data: EscapeRoomData = {
       type: 'puzzle',
       label: 'Poison Dilution',
       narrative: 'The sample cup contains dark wine with a heavy scent of bitter almonds (cyanide).',
-      question: 'A chalk message on the barrel reads:\n\n"To neutralize the arsenic and safely retrieve the key, calculate the required dilution percentage.\n\nDilution % = (Fountain Volume * 100) / Barrel Capacity\n\nThe barrel capacity is exactly 540 liters."\n\nThe keypad awaits the percentage integer.',
+      question: 'An apothecary\'s label is tacked to the barrel:\n\n"To neutralize the cyanide and safely retrieve the key, calculate the required dilution percentage.\n\nDilution % = (Fountain Volume * 100) / Barrel Capacity\n\nThe barrel capacity is exactly 540 liters."\n\nThe keypad awaits the percentage integer.',
       answer: '60',
       hints: [
         'Get the Fountain Volume from the Stone Plaque found in the Conservatory fountain: it is 324.',
@@ -541,7 +568,7 @@ const data: EscapeRoomData = {
       parentId: 'cellar-barrel-puzzle',
       type: 'item',
       label: 'Vault Key',
-      narrative: 'A secret valve in the barrel releases a small waterproof container. Inside is a heavy iron vault key.',
+      narrative: 'The security grid detects the neutralized solution — a hidden valve in the barrel releases a small waterproof container. Inside is a heavy iron vault key.',
       rewardItem: 'cellar-vault-key',
       children: []
     },
@@ -563,8 +590,8 @@ const data: EscapeRoomData = {
       type: 'locked',
       label: 'Inner Sanctum',
       lockedByItem: 'study-master-seal',
-      lockedNarrative: 'A secondary gate inside the vault has an indentation shaped like a crest or seal. It requires the Mastermind\'s Seal.',
-      narrative: 'You place the Mastermind\'s Seal into the indentation. The gate slides open.',
+      lockedNarrative: 'A secondary gate inside the vault has an indentation shaped like a crest. It requires the Blackwood family crest.',
+      narrative: 'You place the Blackwood family crest into the indentation. The gate slides open.',
       children: ['cellar-console']
     },
     {
@@ -574,14 +601,23 @@ const data: EscapeRoomData = {
       type: 'puzzle',
       label: 'Terminal Console',
       isMeta: true,
-      narrative: 'The mastermind\'s terminal displays a glowing green prompt.',
-      question: 'The prompt reads:\n\nCONFIRM DOSSIER DETAILS:\n1. SUSPECT ROLE (Ledger)\n2. WEAPON/METHOD (Will)\n3. CRIME LOCATION (Diary)\n4. DOSSIER KEY (Safe Code + Fountain Code + Barrel Code)\n\nEnter the full sequence concatenated (lowercase, no spaces).',
+      narrative: 'The estate\'s security grid lockdown terminal displays a glowing green prompt.',
+      question: 'The prompt reads:\n\nCONFIRM DOSSIER DETAILS:\n1. SUSPECT ROLE (Ledger)\n2. WEAPON/METHOD (Will)\n3. CRIME LOCATION (Diary)\n4. DOSSIER KEY (the sum of the Safe, Fountain, and Barrel codes)\n\nEnter the full sequence concatenated (lowercase, no spaces).',
       answer: 'butlerpoisoncellar1835',
       hints: [
-        'Mild poison is cyanide. Weapon/method is poison. Crime location is cellar.',
+        'The dossier wants answers you already hold: who the ledger accuses, how the will says Blackwood was killed, and where the diary points.',
         'The dossier key is Safe Code (1451) + Fountain Code (324) + Barrel Code (60) = 1835.',
         'Concatenate the answers: butler + poison + cellar + 1835. Enter butlerpoisoncellar1835.'
       ],
+      children: ['cellar-victory']
+    },
+    {
+      id: 'cellar-victory',
+      locationId: 'wine-cellar',
+      parentId: 'cellar-console',
+      type: 'dialogue',
+      label: 'The Seal Lifts',
+      narrative: 'The terminal screen flares white.\n\nDOSSIER VERIFIED. EVIDENCE TRANSMITTED.\n\nA deep mechanical groan echoes through the manor as the iron seal slides back from the entrance. The grandfather clock in the foyer stirs — its missing pendulum ticks once, twice — and then it strikes the hour: one clear chime, now that the thirteenth has been answered.\n\nThe security grid releases its lockdown. Lord Blackwood\'s ledger, his will, and the winery records have been dispatched to Scotland Yard.\n\nThe Butler\'s masquerade is over.',
       children: []
     }
   ]

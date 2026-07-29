@@ -219,6 +219,7 @@ export interface EscapeRoomNode {
   hintsRevealed?: number;
   solved?: boolean;
   sound?: SoundPuzzle;
+  key?: string;
   isMeta?: boolean;
   rewardItem?: string;
   lockedByItem?: string;

@@ -13,19 +13,19 @@ const data: EscapeRoomData = {
       id: 'entrance',
       name: 'The Entrance Chamber',
       description:
-        'A square antechamber lined with faded murals and cracked stone. Hieroglyphs cover every wall, telling the story of Pharaoh Amenhotep\'s reign. A stone pedestal in the center bears a ceremonial offering bowl, now dry. Four doorways lead deeper into the burial complex, but only the eastern passage shows signs of a mechanism.'
+        'A square antechamber lined with faded murals and cracked stone. Hieroglyphs cover every wall, telling the story of Pharaoh Amenhotep\'s reign. A stone pedestal in the center bears a ceremonial offering bowl, now dry. Four doorways lead deeper into the burial complex — only the eastern passage shows signs of a mechanism. The other three are solid stone, false doors dressed to look like exits: the chisel marks are there if you look, and so are older marks — scorched stone, pry gouges, a sealed niche that was once forced from the outside. Someone did not choose wisely. Amenhotep was not bluffing.'
     },
     {
       id: 'antechamber',
       name: 'The Antechamber of Offerings',
       description:
-        'A wide chamber filled with offerings left for the pharaoh\'s journey: piles of grain, alabaster jars of oils, and golden trinkets scattered across a marble floor. Four alabaster jars sit on a marble shelf, their colors faded with age. A sandstone tablet lies at the foot of an enormous statue of Anubis, its jackal head catching the torchlight. The statue\'s eyes seem to follow you.'
+        'A wide chamber filled with offerings left for the pharaoh\'s journey: alabaster jars of oils and golden trinkets scattered across a marble floor. Four alabaster jars sit on a marble shelf, their colors faded with age. An enormous statue of Anubis looms at the far end, its jackal head catching the torchlight. A reed-shaped keyhole is set into the base — whatever the statue guards, it guards it well.'
     },
     {
       id: 'hall',
       name: 'The Hall of Pillars',
       description:
-        'Massive pillars carved to resemble the gods line this long corridor. Their eyes are inlaid with lapis lazuli, glinting in the wavering torchlight. A sundial carved into the floor shows the passage of time, and a series of inscriptions between the pillars suggest they must be invoked in a specific order. The air is still, save for the distant drip of water echoing from somewhere ahead.'
+        'Massive pillars carved to resemble the gods line this long corridor. Their eyes are inlaid with lapis lazuli, glinting in the wavering torchlight. A sundial is carved into the floor between the pillars — its bronze gnomon stands dormant, waiting. A series of inscriptions between the pillars suggest they must be invoked in a specific order. The air is utterly still.'
     },
     {
       id: 'vault',
@@ -43,7 +43,7 @@ const data: EscapeRoomData = {
       type: 'dialogue',
       label: 'Bronze Plaque',
       narrative:
-        'A bronze plaque on the eastern wall reads: "The first trial awaits those who can read the language of the gods." Beneath it, a sandstone slab is covered in strange letters. A wall chart beside it appears to be a cipher reference, and five painted panels hang in a row further along the wall.',
+        'A bronze plaque on the eastern wall reads: "The first trial awaits those who can read the language of the gods." Beneath it, a sandstone slab is covered in strange letters. A wall chart beside it appears to be a cipher reference.',
       children: ['ent-cipher-chart', 'ent-stone-slab']
     },
     {
@@ -53,7 +53,7 @@ const data: EscapeRoomData = {
       type: 'dialogue',
       label: 'Cipher Reference',
       narrative:
-        'A student scribe\'s practice tablet is chipped into the wall beside the bronze plaque. It shows the Egyptian backwards-alphabet technique — three steps back for every letter:\n\nA ↔ X\nB ↔ Y\nC ↔ Z\nD ↔ A\nE ↔ B\nF ↔ C\n\nAnd so on. Each letter hides three steps from the truth. The scribes believed the language of the gods was written in reverse.\n\nAbove the tablet, a faded mural depicts an ibis-headed figure holding a reed brush and scribe\'s palette — the god Thoth, who legend says invented writing and recorded every deed of every soul.',
+        'A student scribe\'s practice tablet is chipped into the wall beside the bronze plaque. It shows the encoding technique used throughout this tomb: each letter is written three steps deeper into the alphabet — A is written as X, B as Y, C as Z, D as A, and so on.\n\nA → X\nB → Y\nC → Z\nD → A\nE → B\nF → C\n\nEach letter is hidden three steps from the truth. A note in the margin — written in a later hand, Greek letters rather than hieroglyphs — reads: "We who renewed these trials learned the cipher from the priests who remained." A second civilization of keepers, layering their study notes over Amenhotep\'s own inscriptions.\n\nAbove the tablet, a faded mural depicts an ibis-headed figure holding a reed brush and scribe\'s palette — the god Thoth, who legend says invented writing and recorded every deed of every soul.',
       children: []
     },
     {
@@ -156,7 +156,7 @@ const data: EscapeRoomData = {
         'The captions whisper a name when you look past the surface:\n\n1. "Hieroglyphs cover every surface."\n2. "Oarsmen once rowed boats down this corridor."\n3. "Ra\'s light guides the way."\n4. "Underneath the stone, gold waits in the dark."\n5. "Sphinx statues guard each corner."\n\nWhat message do they hide?',
       answer: 'HORUS',
       hints: [
-        'The paintings flank the eastern wall. Look for a pattern in how they\'re captioned — each caption begins with a different letter.',
+        'The plaque tells you to listen with your eyes. The captions are speaking — but only their openings matter.',
         'String together the first letter of each caption: the opening words form a single name.',
         'H (Hieroglyphs), O (Oarsmen), R (Ra\'s), U (Underneath), S (Sphinx) — the name is HORUS, the falcon-headed sky god.'
       ],
@@ -251,9 +251,9 @@ const data: EscapeRoomData = {
       type: 'locked',
       label: 'Statue of Anubis',
       narrative:
-        'The lapis key turns with a soft click. The statue\'s base opens — revealing two hidden compartments. The first holds a sandstone tablet covered in scrambled hieroglyphs. The second contains a set of bronze grain scales, three piles of grain beside them, and a papyrus scroll listing their paired weights.',
+        'The lapis key turns with a soft click. As the base opens, the statue\'s obsidian gaze tilts downward — both eyes now pointing into the revealed compartments, as if Anubis himself is directing your attention. The first compartment holds a sandstone tablet covered in scrambled hieroglyphs. The second contains a set of bronze grain scales, three piles of grain offerings beside them, and a papyrus scroll listing their paired weights.',
       lockedNarrative:
-        'An enormous statue of Anubis looms at the far end of the chamber, its jackal head catching the torchlight. A keyhole shaped like a reed is set into the base. The statue\'s obsidian eyes seem to track your movements.',
+        'An enormous statue of Anubis looms at the far end of the chamber, its jackal head catching the torchlight. A reed-shaped keyhole is set into the base. The obsidian eyes seem to follow you — patient, expectant.',
       lockedByItem: 'lapis-key',
       children: ['ante-sandstone-tablet', 'ante-grain-scales']
     },
@@ -265,7 +265,7 @@ const data: EscapeRoomData = {
       label: 'Sandstone Tablet',
       narrative:
         'A sandstone tablet lies in the first compartment, its hieroglyphs scratched and rearranged out of order. A footnote in ancient Greek reads: "The letters are scattered like dust in the wind. Gather them to find the ruler who rests here."',
-      question: 'The tablet reads: "AHOPHAR — KING OF THE NILE"\n\nWhat title do these scattered letters reveal?',
+      question: 'Seven scattered glyphs: A H O P H A R\n\nBeneath them, in Greek: "…king of the Nile."\n\nWhat title do these scattered letters reveal?',
       answer: 'PHARAOH',
       hints: [
         'The tablet holds the same letters as the ruler\'s title — they\'ve just been scattered out of order. An Egyptian ruler\'s title, not just a name.',
@@ -281,7 +281,7 @@ const data: EscapeRoomData = {
       type: 'item',
       label: 'Copper Seal',
       narrative:
-        'As the letters realign on the tablet, a small copper seal drops from a hidden slot beneath it. The seal is stamped with the image of a grain stalk and a balance scale. On its reverse, a reed symbol is etched — matching the inner passage door beyond the western gate.',
+        'As the letters realign on the tablet, a small copper seal drops from a hidden slot beneath it. The seal is stamped with the image of a grain stalk and a balance scale. On its reverse, a reed symbol is etched — matching the inner passage door at the end of the eastern corridor.',
       rewardItem: 'copper-seal'
     },
     {
@@ -293,7 +293,7 @@ const data: EscapeRoomData = {
       narrative:
         'Three piles of grain offerings sit before the statue, each on a bronze scale. A papyrus scroll lists the weights of pairs of piles — but strangely, no individual weight is given. "Find the weight of the second pile to balance the scales."',
       question:
-        'The scroll reads:\nPile A + Pile B = 15 stone\nPile B + Pile C = 20 stone\nPile A + Pile C = 13 stone\n\nHow many stone does Pile B contain?',
+        'The scroll reads:\nPile A + Pile B = 15 stone\nPile B + Pile C = 20 stone\nPile A + Pile C = 13 stone\n\nHow many stone does Pile B contain? (Enter just the number.)',
       answer: '11',
       hints: [
         'The scroll only tells you the weight of pairs, not individual piles. An offering niche in this chamber contains a papyrus that explains how to solve systems of equations — it may help.',
@@ -309,7 +309,7 @@ const data: EscapeRoomData = {
       type: 'item',
       label: 'Lotus Token',
       narrative:
-        'The scales balance perfectly at 11 stone. A drawer beneath the scales clicks open — inside is a carved lotus token of pale green stone, cool and smooth. Its petals are etched with the symbol of the western gate.',
+        'The scales balance perfectly at 11 stone. A drawer beneath the scales clicks open — inside is a carved lotus token of pale green stone, cool and smooth. Its petals are etched with the symbol of the eastern gate.',
       rewardItem: 'lotus-token'
     },
     {
@@ -340,11 +340,11 @@ const data: EscapeRoomData = {
       locationId: 'antechamber',
       parentId: null,
       type: 'locked',
-      label: 'Western Gate',
+      label: 'Eastern Gate',
       narrative:
-        'The lotus token slots into the gate\'s central mechanism. Ancient gears grind and the gate slides open — revealing a short inner passage sealed by another, smaller door.',
+        'The lotus token slots into the gate\'s central mechanism. Ancient gears grind and the portcullis grinds upward — stone grinding on stone — revealing a short inner passage sealed by a second, lighter pivoting door.',
       lockedNarrative:
-        'A stone gate bars the western end of the chamber. A lotus-shaped recess is carved into its locking mechanism. The gate hums faintly, as if already on the verge of opening.',
+        'A heavy stone portcullis bars the eastern end of the chamber. A lotus-shaped recess is carved into its locking mechanism. The gate hums faintly, as if already on the verge of opening.',
       lockedByItem: 'lotus-token',
       children: ['ante-inner-passage']
     },
@@ -355,9 +355,9 @@ const data: EscapeRoomData = {
       type: 'locked',
       label: 'Inner Passage',
       narrative:
-        'The copper seal fits the reed-shaped lock. The inner door slides upward into the ceiling, and beyond it, torchlight illuminates a long corridor of towering pillars — the Hall of Pillars.',
+        'The copper seal fits the reed-shaped lock. The pivoting door swings inward on a single stone hinge — a lighter leaf than the portcullis behind you — and beyond it, torchlight illuminates a long corridor of towering pillars — the Hall of Pillars.',
       lockedNarrative:
-        'The inner passage ends in a smaller stone door with a reed-shaped lock. A seal stamped with the same symbol is needed to open it.',
+        'The inner passage ends in a lighter pivoting stone door with a reed-shaped lock. A seal stamped with the same symbol is needed to open it.',
       lockedByItem: 'copper-seal',
       children: ['ante-to-hall']
     },
@@ -380,7 +380,7 @@ const data: EscapeRoomData = {
       type: 'dialogue',
       label: 'Pillar Pedestal',
       narrative:
-        'Four stone pillars stand along the corridor, each carved to represent a different god: Osiris, Isis, Ra, and Anubis. The Isis pillar shows her wearing the throne-shaped crown, one arm cradling the infant Horus while the other holds an ankh — the queen of magic, wife to Osiris, protector of her son. A scroll on a pedestal between them lists the rules for invocation. "The gods must be invoked in the correct order to open the door," it warns.',
+        'Four stone pillars stand along the corridor, each carved to represent a different god: Osiris, Isis, Ra, and Anubis. The Isis pillar shows her wearing the throne-shaped crown, one arm cradling the infant Horus while the other holds an ankh — the queen of magic, wife to Osiris, protector of her son. A scroll on a pedestal between them lists the rules for invocation. "The gods must be invoked in the correct order to open the door," it warns.\n\nYou reach out and touch the Ra pillar. The lapis lazuli eye catches the torchlight and holds it — a deep, steady gleam, as if the stone itself registered the contact.',
       children: ['hall-invocation-rules', 'hall-god-order']
     },
     {
@@ -492,10 +492,10 @@ const data: EscapeRoomData = {
       label: 'Shadow Puzzle',
       narrative:
         'An inscription beside the sundial reads: "Ra\'s shadow shrinks by half with each passing hour. Read the pattern." The fourth hour\'s shadow is missing from the dial.',
-      question: 'What is the fourth shadow\'s length?',
+      question: 'What is the fourth shadow\'s length? (Enter just the number.)',
       answer: '8',
       hints: [
-        'The shadow marks on the sundial\'s surface show a clear pattern. A weighing papyrus in the Antechamber of Offerings described a similar technique — halving a total to reveal a hidden value. Look for the same principle here.',
+        'Ra\'s shadow never grows as the sun climbs — compare each hour\'s measurement to the one before it.',
         'Each hour, the shadow is exactly half the length of the previous hour. The pattern is: divide by 2 each time.',
         'The fourth shadow: 16 ÷ 2 = 8 cubits.'
       ],
@@ -543,7 +543,7 @@ const data: EscapeRoomData = {
       type: 'puzzle',
       label: 'Sarcophagus Lid',
       narrative:
-        'The pharaoh\'s sarcophagus is engraved with a riddle on its lid. The gold inlay catches the torchlight, making the letters pulse. "The pharaoh\'s spirit must be judged. Answer this to proceed."',
+        'The pharaoh\'s sarcophagus is engraved with a riddle on its lid. The gold inlay catches the soft glow of the vault itself, making the letters pulse. "The pharaoh\'s spirit must be judged. Answer this to proceed."',
       question:
         'Riddle of the Afterlife:\n\n"I am the goddess whose hieroglyph is the throne.\nI am the wife of Osiris and mother of Horus.\nI am the protector of the dead and goddess of magic.\nWho am I?"\n\nName me.',
       answer: 'ISIS',
@@ -611,9 +611,9 @@ const data: EscapeRoomData = {
       type: 'locked',
       label: 'Sealed Treasury',
       narrative:
-        'The Anubis seal slides into the final slot. The treasury door splits down the middle and parts — revealing a stone dial bearing four Egyptian symbols, each glowing faintly. A final inscription reads: "You have passed the trials. Now remember what you learned. The seal breaks for those who see."',
+        'The Anubis seal slides into the final slot. The treasury door splits down the middle and parts — revealing the treasury\'s inner wall set with a stone dial bearing four Egyptian symbols, each glowing faintly. A final inscription above it reads: "You have passed the trials. Now remember what you learned. The seal breaks for those who see."',
       lockedNarrative:
-        'A sealed treasury door stands at the rear of the vault. Four symbol slots are carved into its surface — each one a different Egyptian emblem: ankh, eye, lotus, and scarab. One slot remains empty.',
+        'A sealed treasury door stands at the rear of the vault. Four symbol slots are carved into its surface — each one a different Egyptian emblem: ankh, eye, lotus, and scarab. Four slots wait, each bearing the mark of a trial already passed.',
       lockedByItem: 'anubis-seal',
       children: ['vault-final-seal']
     },
@@ -624,14 +624,14 @@ const data: EscapeRoomData = {
       type: 'puzzle',
       label: 'Final Seal',
       narrative:
-        'The stone dial has four positions, each marked with an Egyptian symbol and a clue. The entire chamber holds its breath — this is the final lock.',
+        'The stone dial has four positions, each marked with an Egyptian symbol. The entire chamber holds its breath — this is the final lock.',
       question:
-        'The four positions read:\n\n☥ (Ankh) — The FIRST digit of the cartouche sum from the Entrance Chamber.\n𓂀 (Eye of Horus) — The number of LETTERS in the goddess\'s name from the riddle in this vault.\n𓆼 (Lotus) — The shadow length at the FOURTH hour on the sundial.\n𓋹 (Scarab) — The LAST digit of the missing number from the dial sequence.\n\nEnter the four-digit code:',
+        'The four symbols speak:\n\n☥ (Ankh) — "I remember the offering. I keep only its first."\n𓂀 (Eye of Horus) — "I watched you name the goddess of this vault. I keep only her count."\n𓆼 (Lotus) — "I drank from the sundial at the fourth hour. I keep what I found."\n𓋹 (Scarab) — "I buried the dials\' secret. I keep only its end."\n\nEnter the four-digit code:',
       answer: '1482',
       hints: [
-        'The final seal asks for digits from four earlier puzzles. Retrace your steps — the cartouche sum (Entrance), the sarcophagus riddle (this vault), the sundial (Hall of Pillars), and the dial sequence (this vault) each hold one digit.',
-        'Cartouche sum was 1453 — first digit is 1. The goddess in the sarcophagus riddle has a 4-letter name. The sundial\'s fourth shadow is 8. The dial sequence ends in 22 — whose last digit is 2.',
-        'Ankh = 1 (from 1453). Eye of Horus = 4 (from ISIS). Lotus = 8 (fourth shadow on sundial). Scarab = 2 (22 ends in 2). Code: 1-4-8-2.'
+        'The final seal draws on four earlier trials. Retrace your steps — the cartouche sum (Entrance), the sarcophagus riddle (this vault), the sundial (Hall of Pillars), and the dial sequence (this vault) each carry one digit.',
+        'The Ankh remembers the Entrance pedestal — its sum begins with one digit. The Eye watched you name the goddess here — count her letters. The Lotus drank from the sundial\'s fourth hour. The Scarab buries the dials\' last secret.',
+        'Ankh = 1 (first digit of 1453). Eye of Horus = 4 (ISIS has four letters). Lotus = 8 (fourth shadow on sundial). Scarab = 2 (22 ends in 2). Code: 1-4-8-2.'
       ],
       isMeta: true,
       children: ['vault-treasure-revealed']
@@ -643,7 +643,7 @@ const data: EscapeRoomData = {
       type: 'dialogue',
       label: 'Treasure Revealed',
       narrative:
-        'The final seal shatters with a sound like breaking glass. The sarcophagus slides open on its own — golden light floods the vault, revealing treasures untouched for millennia: jeweled necklaces, golden death masks, and at the center, Amenhotep\'s crown. The shaft above grinds open. You\'re free — and richer than any pharaoh\'s dreams.',
+        'The final seal shatters with a sound like breaking glass. The treasury\'s inner wall parts — golden light floods the vault, revealing treasures untouched for millennia: jeweled necklaces, golden death masks, and at the center, Amenhotep\'s crown.\n\nBehind you, the sarcophagus lid shifts. Not gold inside — only stillness, and a sense of something completed. Amenhotep bargained: treasure to those who solved his riddles. You solved them. He keeps his word.\n\nAbove, a grinding deep in the ceiling — the same counterweights that sealed the shaft when you fell now grind in reverse, faithful to their architect\'s final instruction. A stone stair rises from the floor, step by step, leading upward into daylight. The tomb, satisfied, escorts you out.',
       children: []
     }
   ]
