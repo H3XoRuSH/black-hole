@@ -18,6 +18,7 @@ import * as snakesLadders from './server/games/snakesLadders.js';
 import * as jigsaw from './server/games/jigsaw.js';
 import { createRoomManager } from './server/roomManager.js';
 import { evaluateBugReport, createGitHubIssue } from './server/services/bugReportService.js';
+import escapeRooms from './server/data/escape-rooms/rooms.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -59,6 +60,47 @@ app.get(/^\/(sw|service-worker)\.js$/, (req, res) => {
 
 app.get('/health', (req, res) => {
   res.status(200).send('OK');
+});
+
+app.use('/api/escape-rooms', (req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+    return;
+  }
+  next();
+});
+
+app.get('/api/escape-rooms', (req, res) => {
+  try {
+    const list = Object.values(escapeRooms)
+      .filter((r) => r.nodes.some((n) => n.isMeta))
+      .map((r) => ({
+        id: r.id,
+        name: r.name,
+        description: r.description,
+        difficulty: r.difficulty,
+      }));
+    res.json(list);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/escape-rooms/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    const room = escapeRooms[id];
+    if (!room) {
+      res.status(404).json({ error: `Escape room with ID "${id}" not found` });
+      return;
+    }
+    res.json(room);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 app.get('*', (req, res) => {
@@ -212,4 +254,7 @@ io.on('connection', (socket: Socket) => {
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  escapeRoom.initializeEscapeRooms().catch((err) => {
+    console.error('Failed to initialize escape rooms:', err);
+  });
 });

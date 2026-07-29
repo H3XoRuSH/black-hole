@@ -506,7 +506,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
         });
       }
 
-      if (room.gameId === 'infinite-word-chain') {
+      if (room.gameId === 'infinite-word-chain' || room.gameId === 'escape-room') {
         (startPromise || Promise.resolve()).then(() => {
           const r = rooms.get(roomKey);
           if (r) {
@@ -889,6 +889,20 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
 
           if (room.gameId === 'infinite-word-chain') {
             const mod = gamesRegistry['infinite-word-chain'];
+            if (mod?.onGameStart) {
+              const p = mod.onGameStart(room);
+              const promise = p ? Promise.resolve(p) : Promise.resolve();
+              promise.then(() => {
+                const r = rooms.get(roomKey);
+                if (r) {
+                  broadcastGameState(roomKey, r, io);
+                }
+              });
+            }
+          }
+
+          if (room.gameId === 'escape-room') {
+            const mod = gamesRegistry['escape-room'];
             if (mod?.onGameStart) {
               const p = mod.onGameStart(room);
               const promise = p ? Promise.resolve(p) : Promise.resolve();

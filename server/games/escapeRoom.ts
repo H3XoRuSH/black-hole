@@ -3,7 +3,38 @@ import escapeRooms from '../data/escape-rooms/rooms.js';
 
 export type { Player, EscapeRoomGameState, EscapeRoomNode, EscapeRoomData, EscapeRoomLocation, Room };
 
+const PORT = process.env.PORT || 3000;
+const API_URL = process.env.ESCAPE_ROOMS_API_URL || `http://localhost:${PORT}/api/escape-rooms`;
+
+let cachedAvailableRooms: { id: string; name: string; description: string; difficulty: string }[] = [];
+const cachedRoomsDetail: Record<string, EscapeRoomData> = {};
+
+export const initializeEscapeRooms = async (): Promise<void> => {
+  try {
+    const res = await fetch(API_URL);
+    if (res.ok) {
+      cachedAvailableRooms = await res.json() as any[];
+      console.log('Escape rooms list loaded from API:', cachedAvailableRooms.map((r) => r.id));
+    } else {
+      throw new Error(`Failed with status ${res.status}`);
+    }
+  } catch (error) {
+    console.warn('Failed to initialize escape rooms from API, falling back to local static data:', error);
+    cachedAvailableRooms = Object.values(escapeRooms)
+      .filter((r) => r.nodes.some((n) => n.isMeta))
+      .map((r) => ({
+        id: r.id,
+        name: r.name,
+        description: r.description,
+        difficulty: r.difficulty,
+      }));
+  }
+};
+
 export const getAvailableRooms = (): { id: string; name: string; description: string; difficulty: string }[] => {
+  if (cachedAvailableRooms.length > 0) {
+    return cachedAvailableRooms;
+  }
   return Object.values(escapeRooms)
     .filter((r) => r.nodes.some((n) => n.isMeta))
     .map((r) => ({
@@ -71,9 +102,27 @@ function shuffleArray<T>(arr: T[]): void {
   }
 }
 
-export const onGameStart = (room: Room): void => {
+export const onGameStart = async (room: Room): Promise<void> => {
   const gameState = room.gameState as EscapeRoomGameState;
-  const roomData = escapeRooms[gameState.selectedRoomId || 'abandoned-lab'];
+  const roomId = gameState.selectedRoomId || 'abandoned-lab';
+
+  let roomData = cachedRoomsDetail[roomId];
+  if (!roomData) {
+    try {
+      const res = await fetch(`${API_URL}/${roomId}`);
+      if (res.ok) {
+        roomData = await res.json() as EscapeRoomData;
+        cachedRoomsDetail[roomId] = roomData;
+        console.log(`Fetched escape room "${roomId}" from API successfully.`);
+      } else {
+        throw new Error(`Failed with status ${res.status}`);
+      }
+    } catch (error) {
+      console.warn(`Failed to fetch escape room "${roomId}" from API, falling back to local:`, error);
+      roomData = escapeRooms[roomId];
+    }
+  }
+
   if (roomData) {
     gameState.roomName = roomData.name;
     gameState.roomDescription = roomData.description;
@@ -379,7 +428,10 @@ export const makeMove = (
 
 export const setRoom = (room: Room, roomId: string): void => {
   const gameState = room.gameState as EscapeRoomGameState;
-  if (escapeRooms[roomId]) {
+  const exists = cachedAvailableRooms.length > 0
+    ? cachedAvailableRooms.some((r) => r.id === roomId)
+    : !!escapeRooms[roomId];
+  if (exists) {
     gameState.selectedRoomId = roomId;
   }
 };
