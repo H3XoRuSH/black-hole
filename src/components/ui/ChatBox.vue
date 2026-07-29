@@ -59,7 +59,7 @@
             type="text"
             placeholder="Type a message..."
             maxlength="200"
-            class="flex-grow text-sm neo-input rounded-none py-2 placeholder:text-neo-text/40"
+            class="flex-grow text-sm neo-input rounded-none px-3 py-2 placeholder:text-neo-text/40 focus:outline-none focus:!shadow-none focus-visible:!shadow-none"
           />
           <button
             @click="send"
