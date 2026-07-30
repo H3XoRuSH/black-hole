@@ -18,6 +18,9 @@ coverage
 /cypress/screenshots/
 
 /server/data/escape-rooms/evals/*
+/server/data/escape-rooms/export/*
+/server/data/escape-rooms/prompts/*
+/server/data/escape-rooms/drafts/*
 
 # Editor directories and files
 .vscode/*

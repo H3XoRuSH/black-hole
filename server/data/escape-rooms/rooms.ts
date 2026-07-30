@@ -20,7 +20,7 @@ const rooms: Record<string, EscapeRoomData> = {
   'room-69420': room69420,
   'the-bloodline': theBloodline,
   'the-meridian-engine': theMeridianEngine,
-  'the-blackwood-masquerade': theBlackwoodMasquerade,
+  'the-blackwood-masquerade': theBlackwoodMasquerade
 };
 
 export default rooms;
