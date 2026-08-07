@@ -105,7 +105,7 @@ export interface CheckersGameState {
   lastMoveTo?: string;
 }
 
-export type SpotItImageShape = 'circle' | 'diamond' | 'triangle' | 'square' | 'hexagon' | 'star' | 'burst' | 'ring' | 'cross' | 'leaf' | 'bolt' | 'wave';
+export type SpotItImageShape = 'circle' | 'diamond' | 'triangle' | 'square' | 'hexagon' | 'star' | 'burst' | 'ring' | 'cross' | 'leaf' | 'bolt' | 'wave' | `image-${number}` | string;
 
 export interface SpotItImage {
   id: string;

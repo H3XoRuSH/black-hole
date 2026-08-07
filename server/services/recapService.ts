@@ -117,67 +117,44 @@ function formatMoveHistory(gameId: string, gameState: any): string {
 function generateMockRecap(gameId: string, gameState: any): string {
   const gameName = getGameName(gameId);
   const winner = gameState.winner || 'Tie game!';
-  const totalMoves = gameState.totalMoves;
+  const totalMoves = gameState.totalMoves || 0;
   const p1Name = getPlayerName(gameState.players, 1);
   const p2Name = getPlayerName(gameState.players, 2);
 
-  let analysis = '';
+  let mockParagraph = '';
+
   if (gameId === 'black-hole') {
-    analysis = `${p1Name} ended with a score of ${gameState.scores?.player1 || 0}, while ${p2Name} finished with ${gameState.scores?.player2 || 0}. Since the objective is to have the lower sum of tiles adjacent to the final empty circle (the Black Hole), the tactical placements near the end proved decisive. Both players carefully balanced high and low tiles, trying to push high numbers onto their opponent.`;
+    const p1Score = gameState.scores?.player1 || 0;
+    const p2Score = gameState.scores?.player2 || 0;
+    const diff = Math.abs(p1Score - p2Score);
+    const vibe = diff <= 3 ? 'nail-biter thriller' : 'commanding tactical masterclass';
+    mockParagraph = `What a ${vibe} in **${gameName}**! ${p1Name} and ${p2Name} traded blows across ${totalMoves} turns, carefully maneuvering high-numbered tiles away from danger while trying to nudge toxic numbers onto each other. The **devastating final tile placement** sealed the trap around the Black Hole, locking in a final score of ${p1Name}: ${p1Score} to ${p2Name}: ${p2Score}. **${winner}** takes the crown as 🏆 **Gravitational Mastermind**, while their rival gets the 💥 **Black Hole Casualty** title after getting swallowed in the end!`;
   } else if (gameId === 'connect-four') {
-    analysis = `Discs were dropped in rapid succession across the columns. The critical struggle took place in the central columns, where both players fought for positional dominance. The game ended when a player found a critical path to connect four, or when the board became fully saturated.`;
+    mockParagraph = `Pure tactical suspense in **${gameName}**! Both players fought tooth and nail for central board dominance across ${totalMoves} rapid-fire turns. The turning point came during a **tense mid-game standoff** when **${winner}** laid a sneaky double-threat trap that was impossible to block. **${winner}** walks away with the 🧠 **Tactical Genius** badge, while their opponent takes home the 💥 **Trap-Victim** award!`;
   } else if (gameId === 'dots-and-boxes') {
-    analysis = `The battle for boxes was intense, with ${p1Name} scoring ${gameState.scores?.player1 || 0} boxes and ${p2Name} scoring ${gameState.scores?.player2 || 0} boxes. The opening phase saw a cautious layout of lines, avoiding early double-contact setups. A chain of box completions near the mid-game shifted the momentum.`;
+    const p1Boxes = gameState.scores?.player1 || 0;
+    const p2Boxes = gameState.scores?.player2 || 0;
+    mockParagraph = `An absolute game of chicken in **${gameName}**! After turns of cautious setup and avoiding third-wall traps, a **catastrophic mid-game mistake** opened up a massive chain reaction. **${winner}** pounced on the opportunity, sweeping ${Math.max(p1Boxes, p2Boxes)} boxes to claim the 🏆 **Chain Reaction Combo King** title, leaving the runner-up holding the 💥 **Floodgate Opener** badge!`;
   } else if (gameId === 'battleship') {
-    analysis = `Both fleets were deployed on the 6x6 grid. The artillery phase began with players trading blind shots. Hits were registered on crucial ships, and key coordinates were defended or systematically bombarded until the last of the opponent's ships were sent to the bottom.`;
+    mockParagraph = `High-seas warfare in **${gameName}**! The cannons thundered over ${totalMoves} rounds of blind bombardments and desperate radar sweeps. The climax arrived during a **nail-biting final duel** where **${winner}** accurately predicted the opponent's hiding spot to sink their flagship. **${winner}** earns the 🎯 **Sharpshooter Admiral** title, while their rival takes home the ⚓ **Sunken Fleet** badge!`;
   } else if (gameId === 'checkers') {
-    const capCount = gameState.moveHistory?.filter((m: any) => Math.abs(m.toRow - m.fromRow) === 2).length || 0;
-    const promoCount = gameState.moveHistory?.filter((m: any) => (m.player === 1 && m.toRow === 0) || (m.player === 2 && m.toRow === 7)).length || 0;
-    analysis = `The board saw aggressive play from the opening moves.`;
-    if (capCount > 0) analysis += ` A total of ${capCount} capture${capCount > 1 ? 's' : ''} were made, steadily thinning the opponent's ranks.`;
-    if (promoCount > 0) analysis += ` ${promoCount} piece${promoCount > 1 ? 's were' : ' was'} promoted to king, adding powerful ranged threats.`;
-    analysis += ` The endgame came down to piece advantage and positional control, where one player outmaneuvered the other to seal the victory.`;
+    mockParagraph = `Absolute carnage on the board in **${gameName}**! Mandatory jumps forced both players into a **brutal exchange of sacrifices**, clearing the grid piece by piece. **${winner}** outmaneuvered the enemy to promote critical Kings in the endgame, earning the 👑 **Board Overlord** title while leaving their opponent with the 💥 **Mandatory Sacrifice** badge!`;
   } else if (gameId === 'pictionary') {
-    const totalRounds = gameState.roundNumber || 0;
     const wordCount = gameState.wordHistory?.length || 0;
     const totalGuesses = (Object.values(gameState.scores || {}) as number[]).reduce((a, b) => a + b, 0);
-    analysis = `The team played ${totalRounds} rounds of cooperative Pictionary. Each player took turns drawing while the rest guessed. The team managed to correctly guess ${totalGuesses} words out of ${wordCount} total rounds.`;
+    mockParagraph = `Non-stop hilarity in **${gameName}**! The squad powered through ${wordCount} frantic rounds of scribble art and wild guesses, correctly solving ${totalGuesses} mystery words. Through **clutch last-second guesses** and unhinged artistic masterpieces, the team earned the 🎨 **Picasso Squad** award for peak telepathic teamwork!`;
   } else if (gameId === 'bingo') {
     const totalDraws = gameState.drawnNumbers?.length || 0;
-    analysis = `The caller drew ${totalDraws} numbers out of 75 total. Players daubed their cards, watching their rows, columns, and diagonals fill up. The tension built with every call until one player finally completed a winning pattern and shouted BINGO!`;
-
-    return `### 🎮 ${gameName} Match Recap (Simulated AI)
-
-**Outcome:** **${winner}**
-
-${analysis}
-
-The match lasted for **${totalMoves}** total moves. Players tracked their cards closely as each number was called, celebrating every daub that brought them closer to victory.
-
-*Note: Set the \`DEEPSEEK_API_KEY\` environment variable to enable live AI-generated summaries from DeepSeek.*`;
+    mockParagraph = `Heart-pounding card tension in **${gameName}**! As ${totalDraws} numbers were drawn from the wheel, players watched their grid rows light up, waiting on single-number near-misses. In a **dramatic race to the line**, **${winner}** shouted BINGO first to claim the 🎲 **RNG God** title, leaving the rest of the lobby as 💥 **Heartbroken One-Away Victims**!`;
   } else if (gameId === 'snakes-ladders') {
-    const boardType = gameState.boardType || 'classic';
-    const size = gameState.gridSize || 10;
-    analysis = `Players raced across a ${size}x${size} ${boardType} board. The journey was filled with dramatic shifts as players landed on ladders to shoot ahead or slid down snakes. The race remained close until the final stretches, where landing exactly on the final tile decided the winner.`;
-
-    return `### 🎮 ${gameName} Match Recap (Simulated AI)
-
-**Outcome:** **${winner}**
-
-${analysis}
-
-The match lasted for **${totalMoves}** total moves. Players tested their luck on every roll, navigating the board with patience and hope.
-
-*Note: Set the \`DEEPSEEK_API_KEY\` environment variable to enable live AI-generated summaries from DeepSeek.*`;
+    mockParagraph = `A chaotic roller-coaster in **${gameName}**! Players rocketed skyward on ladders only to suffer **catastrophic snake slides** that flipped the leaderboard upside down. In the thrilling final stretch, **${winner}** rolled the exact target number to cross the finish line, earning the 🎲 **Dice Roller MVP** award while leaving their opponent with the 🐍 **Snake Magnet** badge!`;
+  } else {
+    mockParagraph = `An unforgettable showdown in **${gameName}**! After ${totalMoves} turns of fierce back-and-forth competition, **${winner}** turned the tide during a **dramatic endgame play**, seizing victory and claiming the 🏆 **Match MVP** title!`;
   }
 
   return `### 🎮 ${gameName} Match Recap (Simulated AI)
 
-**Outcome:** **${winner}**
-
-${analysis}
-
-The match lasted for **${totalMoves}** total moves. In the early game, both players laid down solid foundations. The mid-game brought several tense moments as defensive blocks were forced. Ultimately, the endgame strategy separated the victor from the vanquished.
+${mockParagraph}
 
 *Note: Set the \`DEEPSEEK_API_KEY\` environment variable to enable live AI-generated summaries from DeepSeek.*`;
 }
@@ -189,6 +166,13 @@ function calculateGameStats(gameId: string, gameState: any): string {
   const stats: string[] = [];
 
   if (gameId === 'black-hole') {
+    const p1Score = gameState.scores?.player1 || 0;
+    const p2Score = gameState.scores?.player2 || 0;
+    const diff = Math.abs(p1Score - p2Score);
+    const storyVibe = diff === 0 ? 'TIE GAME THRILLER' : diff <= 3 ? 'NAIL-BITER CLOSE FINISH' : 'COMMANDING BLOWOUT WIN';
+    stats.push(`[MATCH STORY VIBE: ${storyVibe}]`);
+    stats.push(`Final Scores: ${p1Name} (Blue): ${p1Score}, ${p2Name} (Red): ${p2Score} (Lower score wins).`);
+
     const taken = Object.keys(gameState.circles || {});
     const allPositions: string[] = [];
     for (let r = 1; r <= 6; r++) {
@@ -198,8 +182,6 @@ function calculateGameStats(gameId: string, gameState: any): string {
     }
     const emptyCircle = allPositions.find((pos) => !taken.includes(pos));
     if (emptyCircle) {
-      stats.push(`Final Black Hole position: Row ${emptyCircle.split('-')[0]}, Col ${emptyCircle.split('-')[1]}`);
-
       const [r, c] = emptyCircle.split('-').map(Number);
       const neighbors: string[] = [];
       if (c > 1) neighbors.push(`${r}-${c - 1}`);
@@ -222,132 +204,63 @@ function calculateGameStats(gameId: string, gameState: any): string {
           else if (cell.player === 2) p2Tiles.push(cell.turn);
         }
       });
-      stats.push(`${p1Name} (Blue) tiles sucked into the Black Hole: [${p1Tiles.join(', ') || 'None'}] (Sum: ${p1Tiles.reduce((a, b) => a + b, 0)})`);
-      stats.push(`${p2Name} (Red) tiles sucked into the Black Hole: [${p2Tiles.join(', ') || 'None'}] (Sum: ${p2Tiles.reduce((a, b) => a + b, 0)})`);
-    }
-
-    const history = gameState.moveHistory || [];
-    if (history.length > 0) {
-      const lastMove = history[history.length - 1];
-      const lastPlayerName = getPlayerName(gameState.players, lastMove.player);
-      stats.push(`Final move made by: ${lastPlayerName} placing tile #${Math.floor((history.length - 1) / 2) + 1} at Row ${lastMove.row}, Col ${lastMove.col}, leaving the remaining empty circle as the Black Hole.`);
+      stats.push(`${p1Name} tiles swallowed by Black Hole: [${p1Tiles.join(', ') || 'None'}] (Sum: ${p1Tiles.reduce((a, b) => a + b, 0)})`);
+      stats.push(`${p2Name} tiles swallowed by Black Hole: [${p2Tiles.join(', ') || 'None'}] (Sum: ${p2Tiles.reduce((a, b) => a + b, 0)})`);
     }
   } else if (gameId === 'connect-four') {
-    const board = gameState.board || [];
-    const rows = board.length;
-    const cols = board[0]?.length || 0;
-
-    let winType = '';
-    let winLine = '';
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const val = board[r][c];
-        if (val === null) continue;
-        if (c + 3 < cols && board[r][c + 1] === val && board[r][c + 2] === val && board[r][c + 3] === val) {
-          winType = 'horizontal';
-          winLine = `Row ${r + 1}, columns ${c + 1} through ${c + 4}`;
-        }
-        if (r + 3 < rows && board[r + 1][c] === val && board[r + 2][c] === val && board[r + 3][c] === val) {
-          winType = 'vertical';
-          winLine = `Column ${c + 1}, rows ${r + 1} through ${r + 4}`;
-        }
-        if (r + 3 < rows && c + 3 < cols && board[r + 1][c + 1] === val && board[r + 2][c + 2] === val && board[r + 3][c + 3] === val) {
-          winType = 'diagonal down-right';
-          winLine = `From Row ${r + 1},Col ${c + 1} down to Row ${r + 4},Col ${c + 4}`;
-        }
-        if (r - 3 >= 0 && c + 3 < cols && board[r - 1][c + 1] === val && board[r - 2][c + 2] === val && board[r - 3][c + 3] === val) {
-          winType = 'diagonal up-right';
-          winLine = `From Row ${r + 1},Col ${c + 1} up to Row ${r - 2},Col ${c + 4}`;
-        }
-      }
-    }
-    if (winType) {
-      stats.push(`Winning combination: ${winType} line (${winLine})`);
-    }
-
-    let p1Mid = 0;
-    let p2Mid = 0;
-    for (let r = 0; r < rows; r++) {
-      if (board[r]?.[3] === 1) p1Mid++;
-      else if (board[r]?.[3] === 2) p2Mid++;
-    }
-    stats.push(`Middle Column Dominance (Col 4): ${p1Name} (Blue) has ${p1Mid} discs, ${p2Name} (Red) has ${p2Mid} discs.`);
+    const totalMoves = gameState.moveHistory?.length || 0;
+    const storyVibe = totalMoves < 12 ? 'LIGHTNING QUICK KNOCKOUT' : totalMoves > 28 ? 'MARATHON WAR OF ATTRITION' : 'TACTICAL CHESS MATCH';
+    stats.push(`[MATCH STORY VIBE: ${storyVibe}]`);
+    stats.push(`Total Discs Dropped: ${totalMoves} turns.`);
   } else if (gameId === 'dots-and-boxes') {
-    const history = gameState.moveHistory || [];
-    const turns: { player: number; moves: number }[] = [];
-    let curTurn: { player: number; moves: number } | null = null;
-    for (const m of history) {
-      if (!curTurn || curTurn.player !== m.player) {
-        curTurn = { player: m.player, moves: 1 };
-        turns.push(curTurn);
-      } else {
-        curTurn.moves++;
-      }
-    }
-    let p1Longest = 0;
-    let p2Longest = 0;
-    turns.forEach((t) => {
-      const chain = Math.max(0, t.moves - 1);
-      if (t.player === 1) p1Longest = Math.max(p1Longest, chain);
-      else if (t.player === 2) p2Longest = Math.max(p2Longest, chain);
-    });
-    stats.push(`Longest single-turn box completion chain: ${p1Name}: ${p1Longest} box(es), ${p2Name}: ${p2Longest} box(es).`);
-    stats.push(`Total lines drawn: ${history.length} out of 40 lines.`);
-    stats.push(`Final boxes completed score: ${p1Name}: ${gameState.scores?.player1 || 0}, ${p2Name}: ${gameState.scores?.player2 || 0}.`);
+    const p1Boxes = gameState.scores?.player1 || 0;
+    const p2Boxes = gameState.scores?.player2 || 0;
+    const diff = Math.abs(p1Boxes - p2Boxes);
+    const storyVibe = diff <= 2 ? 'EDGE-OF-SEAT CLOSE THRILLER' : 'CHAIN-COMBO DOMINATION';
+    stats.push(`[MATCH STORY VIBE: ${storyVibe}]`);
+    stats.push(`Final Box Score: ${p1Name}: ${p1Boxes} boxes vs ${p2Name}: ${p2Boxes} boxes.`);
   } else if (gameId === 'battleship') {
     let p1Shots = 0, p1Hits = 0;
     let p2Shots = 0, p2Hits = 0;
-    const sunkList: string[] = [];
     (gameState.moveHistory || []).forEach((m: any) => {
       if (m.action === 'shoot') {
         if (m.player === 1) {
           p1Shots++;
-          if (m.hit) {
-            p1Hits++;
-          }
+          if (m.hit) p1Hits++;
         } else if (m.player === 2) {
           p2Shots++;
-          if (m.hit) {
-            p2Hits++;
-          }
-        }
-        if (m.sunkShipName) {
-          const shooterName = getPlayerName(gameState.players, m.player);
-          sunkList.push(`${shooterName} sunk the opponent's ${m.sunkShipName}`);
+          if (m.hit) p2Hits++;
         }
       }
     });
     const p1Acc = p1Shots > 0 ? Math.round((p1Hits / p1Shots) * 100) : 0;
     const p2Acc = p2Shots > 0 ? Math.round((p2Hits / p2Shots) * 100) : 0;
-    stats.push(`Artillery Accuracy: ${p1Name}: ${p1Acc}% (${p1Hits}/${p1Shots} hits), ${p2Name}: ${p2Acc}% (${p2Hits}/${p2Shots} hits).`);
-    if (sunkList.length > 0) {
-      stats.push(`Sunk Ships order: ${sunkList.join(', ')}`);
-    }
+    stats.push(`[MATCH STORY VIBE: NAVAL BATTLE]`);
+    stats.push(`Fleet Accuracy: ${p1Name}: ${p1Acc}% accuracy, ${p2Name}: ${p2Acc}% accuracy.`);
   } else if (gameId === 'checkers') {
-    let p1Count = 0;
-    let p2Count = 0;
-    let p1Kings = 0;
-    let p2Kings = 0;
-    const board = gameState.board || [];
-    board.forEach((row: number[]) => {
-      row.forEach((cell: number) => {
-        if (cell === 1) {
-          p1Count++;
-        } else if (cell === 3) {
-          p1Count++;
-          p1Kings++;
-        } else if (cell === 2) {
-          p2Count++;
-        } else if (cell === 4) {
-          p2Count++;
-          p2Kings++;
-        }
-      });
+    const history = gameState.moveHistory || [];
+    const captures = history.filter((m: any) => Math.abs(m.toRow - m.fromRow) === 2).length;
+    stats.push(`[MATCH STORY VIBE: BOARD CARNAGE]`);
+    stats.push(`Total Captures Made: ${captures} total jumps executed across the board.`);
+  } else if (gameId === 'pictionary') {
+    const wordCount = gameState.wordHistory?.length || 0;
+    const totalCorrect = (Object.values(gameState.scores || {}) as number[]).reduce((a, b) => a + b, 0);
+    const rate = wordCount > 0 ? Math.round((totalCorrect / wordCount) * 100) : 0;
+    stats.push(`[MATCH STORY VIBE: COOPERATIVE SQUAD GOALS]`);
+    stats.push(`Drawing Accuracy: ${totalCorrect}/${wordCount} words guessed correctly (${rate}% success rate).`);
+  } else if (gameId === 'bingo') {
+    const totalDraws = gameState.drawnNumbers?.length || 0;
+    stats.push(`[MATCH STORY VIBE: RNG RACE]`);
+    stats.push(`Numbers Drawn: ${totalDraws} out of 75 numbers before winning BINGO was called.`);
+  } else if (gameId === 'snakes-ladders') {
+    const history = gameState.moveHistory || [];
+    let ladderCount = 0, snakeCount = 0;
+    history.forEach((m: any) => {
+      if (m.snakeOrLadder === 'ladder') ladderCount++;
+      else if (m.snakeOrLadder === 'snake') snakeCount++;
     });
-    const p1Captured = 12 - p2Count;
-    const p2Captured = 12 - p1Count;
-    stats.push(`Material Balance: ${p1Name} has ${p1Count} pieces remaining (${p1Kings} kings), ${p2Name} has ${p2Count} pieces remaining (${p2Kings} kings).`);
-    stats.push(`Captured pieces: ${p1Name} captured ${p1Captured} pieces, ${p2Name} captured ${p2Captured} pieces.`);
+    stats.push(`[MATCH STORY VIBE: ROLLERCOASTER RACE]`);
+    stats.push(`Board Hazards & Boosts: ${ladderCount} ladders climbed, ${snakeCount} snakes slid down.`);
   }
 
   return stats.join('\n');

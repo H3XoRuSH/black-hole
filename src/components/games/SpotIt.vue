@@ -321,7 +321,7 @@ export default defineComponent({
           player: player.player,
           name: player.name || `Player ${player.player}`,
           score: gameState.value.scores?.[player.player] || 0,
-        }))
+        }));
     });
 
     function imageFor(imageId: string): SpotItImage {

@@ -22,46 +22,37 @@
       <div
         class="bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow p-2 sm:p-4 rounded-none w-full max-w-[260px] xs:max-w-[320px] sm:max-w-[430px] md:max-w-[480px]"
       >
-        <!-- Mobile column selector (touch-friendly) -->
-        <div class="flex justify-center gap-1 mb-2 md:hidden">
+        <!-- Column Drop Indicators (Aligned 1-to-1 with grid columns) -->
+        <div class="grid grid-cols-7 gap-1 sm:gap-3 mb-1 sm:mb-2">
           <button
             v-for="colIndex in 7"
-            :key="`mobile-col-${colIndex - 1}`"
+            :key="`drop-col-${colIndex - 1}`"
             @click="makeMove(colIndex - 1)"
             :disabled="!canPlayColumn(colIndex - 1)"
-            class="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-100 touch-target disabled:opacity-30 disabled:cursor-not-allowed"
+            class="w-full flex items-center justify-center py-1 transition-transform cursor-pointer disabled:cursor-not-allowed"
             :class="canPlayColumn(colIndex - 1) ? 'hover:scale-110 active:scale-95' : ''"
             :aria-label="`Drop disc in column ${colIndex}`"
           >
             <div
               v-if="canPlayColumn(colIndex - 1)"
-              class="w-5 h-5 rounded-full border-2 border-neo-border animate-bounce opacity-70"
+              class="w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 rounded-full neo-border-2 animate-bounce opacity-80"
               :class="player === 1 ? 'bg-blue-500' : 'bg-rose-500'"
             ></div>
-            <div v-else class="w-5 h-5 rounded-full border-2 border-neo-border/30 bg-neo-bg"></div>
+            <div
+              v-else
+              class="w-3.5 h-3.5 xs:w-4 xs:h-4 sm:w-5 sm:h-5 rounded-full border border-neo-border/20 bg-neo-bg/40"
+            ></div>
           </button>
         </div>
 
         <!-- Columns Grid -->
         <div class="grid grid-cols-7 gap-1 sm:gap-3">
-          <!-- Hover & Interactive Columns -->
           <div
             v-for="colIndex in 7"
             :key="`col-${colIndex - 1}`"
-            class="flex flex-col space-y-1.5 sm:space-y-3 cursor-pointer group rounded-none p-1 hover:bg-neo-secondary/20 dark:hover:bg-neo-secondary/10 transition-colors duration-100 relative"
+            class="flex flex-col space-y-1 sm:space-y-2.5 cursor-pointer group rounded-none p-0.5 sm:p-1 hover:bg-neo-secondary/20 dark:hover:bg-neo-secondary/10 transition-colors duration-100 relative"
             @click="makeMove(colIndex - 1)"
           >
-            <!-- Preview slot at the top (desktop hover, mobile always shows) -->
-            <div
-              class="absolute -top-10 left-1/2 -translate-x-1/2 md:group-hover:block pointer-events-none hidden md:block"
-            >
-              <div
-                v-if="canPlayColumn(colIndex - 1)"
-                class="w-8 h-8 rounded-full animate-bounce opacity-60 neo-border-2"
-                :class="player === 1 ? 'bg-blue-500' : 'bg-rose-500'"
-              ></div>
-            </div>
-
             <!-- Vertical grid slots in column -->
             <div
               v-for="rowIndex in 6"
