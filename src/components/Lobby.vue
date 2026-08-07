@@ -509,6 +509,7 @@ const gamePreloaders: Record<string, () => Promise<any>> = {
   'escape-room': () => import('./games/EscapeRoom.vue'),
   'snakes-ladders': () => import('./games/SnakesLadders.vue'),
   'jigsaw': () => import('./games/Jigsaw.vue'),
+  'spot-it': () => import('./games/SpotIt.vue'),
 };
 
 export default defineComponent({

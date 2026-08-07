@@ -421,5 +421,41 @@
         "desc": "Complete the puzzle to win! Your team's total time is shown — try to beat your record!"
       }
     ]
+  },
+  {
+    "id": "spot-it",
+    "name": "Pattern Hunt",
+    "minPlayers": 2,
+    "maxPlayers": 8,
+    "tags": [
+      "multiplayer"
+    ],
+    "description": "A fast multiplayer visual matching race for 2-8 players. Find the one image shared by your card and the center card before anyone else!",
+    "route": "/spot-it/lobby",
+    "status": "active",
+    "color": "#e05a47",
+    "icon": "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"5\" width=\"12\" height=\"15\" rx=\"1\"/><rect x=\"9\" y=\"3\" width=\"12\" height=\"15\" rx=\"1\" fill=\"currentColor\" fill-opacity=\"0.18\"/><circle cx=\"14\" cy=\"9\" r=\"2\"/><path d=\"m10 16 2.5-3 2 2 1.5-2 2 3\"/></svg>",
+    "rules": [
+      {
+        "title": "The Cards",
+        "desc": "Each card has eight images. Every pair of cards shares exactly one image, so there is always one correct match."
+      },
+      {
+        "title": "Find the Match",
+        "desc": "Compare your active card with the center card and select the single image they have in common."
+      },
+      {
+        "title": "Race Together",
+        "desc": "Everyone can claim at the same time. The first valid claim takes the center card and reveals the next one."
+      },
+      {
+        "title": "Build Your Score",
+        "desc": "Each center card you claim is worth one point and becomes your new active card."
+      },
+      {
+        "title": "Winning",
+        "desc": "When the center stack is empty, the player with the most claimed cards wins. Equal scores create a tie."
+      }
+    ]
   }
 ]

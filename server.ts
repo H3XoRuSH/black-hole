@@ -16,6 +16,7 @@ import * as pictionary from './server/games/pictionary.js';
 import * as escapeRoom from './server/games/escapeRoom.js';
 import * as snakesLadders from './server/games/snakesLadders.js';
 import * as jigsaw from './server/games/jigsaw.js';
+import * as spotIt from './server/games/spotIt.js';
 import { createRoomManager } from './server/roomManager.js';
 import { evaluateBugReport, createGitHubIssue } from './server/services/bugReportService.js';
 import escapeRooms from './server/data/escape-rooms/rooms.js';
@@ -125,6 +126,7 @@ const rooms = createRoomManager({
   'escape-room': escapeRoom as any,
   'snakes-ladders': snakesLadders as any,
   'jigsaw': jigsaw as any,
+  'spot-it': spotIt as any,
 });
 
 io.on('connection', (socket: Socket) => {

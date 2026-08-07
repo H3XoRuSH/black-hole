@@ -15,6 +15,7 @@ const Pictionary = () => import('../components/games/Pictionary.vue');
 const EscapeRoom = () => import('../components/games/EscapeRoom.vue');
 const SnakesLadders = () => import('../components/games/SnakesLadders.vue');
 const Jigsaw = () => import('../components/games/Jigsaw.vue');
+const SpotIt = () => import('../components/games/SpotIt.vue');
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -196,6 +197,20 @@ const routes: Array<RouteRecordRaw> = [
     component: Jigsaw,
     props: true,
     meta: { title: 'Jigsaw Puzzle - Gab\'s Arcade' },
+  },
+  {
+    path: '/spot-it/lobby',
+    name: 'SpotItLobby',
+    component: Lobby,
+    props: { gameId: 'spot-it', gameName: 'Pattern Hunt' },
+    meta: { title: 'Pattern Hunt - Gab\'s Arcade' },
+  },
+  {
+    path: '/spot-it/game/:roomKey',
+    name: 'SpotItGame',
+    component: SpotIt,
+    props: true,
+    meta: { title: 'Pattern Hunt - Gab\'s Arcade' },
   },
   {
     path: '/:pathMatch(.*)*',
