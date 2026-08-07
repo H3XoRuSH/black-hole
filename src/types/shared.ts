@@ -105,6 +105,45 @@ export interface CheckersGameState {
   lastMoveTo?: string;
 }
 
+export type SpotItImageShape = 'circle' | 'diamond' | 'triangle' | 'square' | 'hexagon' | 'star' | 'burst' | 'ring' | 'cross' | 'leaf' | 'bolt' | 'wave';
+
+export interface SpotItImage {
+  id: string;
+  label: string;
+  shape: SpotItImageShape;
+  color: string;
+  rotation: number;
+}
+
+export interface SpotItCard {
+  id: string;
+  imageIds: string[];
+}
+
+export interface SpotItGameState {
+  phase: 'lobby' | 'playing' | 'game-over';
+  activeCards: Record<number, SpotItCard>;
+  centerCard: SpotItCard | null;
+  /** The draw pile is server-only and must be removed before broadcasting. */
+  drawPile: SpotItCard[];
+  remainingCards: number;
+  penaltyUntil: Record<number, number>;
+  scores: Record<number, number>;
+  winner: string;
+  players: Player[];
+  currentPlayer: number;
+  totalMoves: number;
+  lastClaim?: {
+    player: number;
+    imageId: string;
+    cardId: string;
+    timestamp: number;
+  };
+  moveHistory?: any[];
+  recap?: string;
+  recapLoading?: boolean;
+}
+
 export interface RecapEntry {
   text: string;
   loading: boolean;

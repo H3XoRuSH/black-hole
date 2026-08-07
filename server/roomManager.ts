@@ -299,6 +299,9 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
         return node;
       });
     }
+    if (room.gameId === 'spot-it') {
+      delete gs.drawPile;
+    }
     return gs;
   }
 
@@ -939,6 +942,10 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
         return;
       }
       const room = rooms.get(roomKey)!;
+      if (room.gameId === 'spot-it') {
+        socket.emit('room-error', { message: 'AI opponents are not available for Pattern Hunt.' });
+        return;
+      }
       const gameConfig = gamesConfig.find((g: any) => g.id === room.gameId);
       const maxPlayers = gameConfig?.maxPlayers ?? 2;
       if (room.gameState.players.length >= maxPlayers) {
