@@ -99,7 +99,7 @@
 
     <!-- AI Recap Button -->
     <div
-      v-if="gameOver && gameState"
+      v-if="gameOver && gameState && isRecapSupported"
       class="w-full mt-4 flex justify-center"
     >
       <button
@@ -277,6 +277,10 @@ export default defineComponent({
     },
     activeGameName(): string {
       return this.activeGame ? this.activeGame.name : 'Board Game';
+    },
+    isRecapSupported(): boolean {
+      const supported = ['black-hole', 'connect-four', 'dots-and-boxes', 'battleship', 'checkers'];
+      return supported.includes(this.activeGameId);
     },
   },
   watch: {

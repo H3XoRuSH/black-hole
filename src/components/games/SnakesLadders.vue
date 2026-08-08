@@ -52,19 +52,6 @@
       </div>
     </div>
 
-    <!-- Match Recap Button if Game Over -->
-    <div v-if="gameOver" class="w-full max-w-lg flex justify-center mb-3 flex-shrink-0 animate-scale-in">
-      <button
-        @click="openRecapModal"
-        class="bg-neo-muted text-black dark:text-white font-black px-4 py-2 rounded-none transition-all duration-100 cursor-pointer neo-btn flex items-center space-x-2 text-xs"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7z" clip-rule="evenodd" />
-        </svg>
-        <span>AI Recap</span>
-      </button>
-    </div>
-
     <!-- Main Game Board Container -->
     <div class="flex-grow flex flex-col items-center justify-center w-full max-w-lg min-h-0 py-1">
       <div class="w-full aspect-square max-h-[460px] bg-white dark:bg-zinc-900 border-4 border-black neo-shadow relative select-none">
@@ -222,38 +209,21 @@
     <!-- How to Play Modal -->
     <HowToPlayModal :is-open="isHowToPlayOpen" game-id="snakes-ladders" @close="isHowToPlayOpen = false" />
 
-    <!-- AI Recap Modal -->
-    <AiRecapModal
-      :is-open="showRecapModal"
-      :recap-text="recapText"
-      :loading="recapLoading"
-      :conversation="recapConversation"
-      :question="recapQuestion"
-      :ask-loading="recapAskLoading"
-      :question-asked="recapQuestionAsked"
-      @close="closeRecapModal"
-      @request-recap="requestRecap"
-      @send-question="sendRecapQuestion"
-      @update:question="recapQuestion = $event"
-    />
-
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, toRef } from 'vue';
+import { defineComponent, PropType, ref } from 'vue';
 import { Socket } from 'socket.io-client';
 import { useGame } from '../../composables/useGame.js';
 import { useConfetti } from '../../composables/useConfetti.js';
-import { useRecap } from '../../composables/useRecap.js';
 import type { SnakesLaddersGameState as GameState } from '../../types/shared.js';
 import WaitingIndicator from '../ui/WaitingIndicator.vue';
-import AiRecapModal from '../modals/AiRecapModal.vue';
 import HowToPlayModal from '../modals/HowToPlayModal.vue';
 
 export default defineComponent({
   name: 'SnakesLadders',
-  components: { WaitingIndicator, AiRecapModal, HowToPlayModal },
+  components: { WaitingIndicator, HowToPlayModal },
   emits: ['update-connection-status', 'update-player', 'update-room-key'],
   props: {
     socket: { type: Object as PropType<Socket>, required: true },
@@ -295,11 +265,6 @@ export default defineComponent({
     const waiting = ref(false);
 
     const confetti = useConfetti();
-
-    // Setup AI match recap using shared composable
-    const socketRef = toRef(props, 'socket');
-    const roomKeyRef = toRef(props, 'roomKey');
-    const recap = useRecap(socketRef, roomKeyRef);
 
     // Step-by-step token movement animation
     async function animatePlayerMove(lastMove: any) {
@@ -365,7 +330,6 @@ export default defineComponent({
 
         if (newState.totalMoves === 0) {
           waiting.value = false;
-          recap.resetRecap();
           // Reset token positions instantly on game reset
           Object.keys(newState.positions).forEach((pNum) => {
             localPositions.value[Number(pNum)] = newState.positions[Number(pNum)];
@@ -409,8 +373,6 @@ export default defineComponent({
       },
     });
 
-    recap.initRecap();
-
     return {
       ...game,
       gameState,
@@ -420,7 +382,6 @@ export default defineComponent({
       isAnimating,
       localPositions,
       waiting,
-      ...recap,
     };
   },
   computed: {

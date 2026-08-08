@@ -170,11 +170,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, toRef, computed, watch, onBeforeUnmount, nextTick } from 'vue';
+import { defineComponent, PropType, ref, computed, watch, onBeforeUnmount, nextTick } from 'vue';
 import { Socket } from 'socket.io-client';
 import { useGame } from '../../composables/useGame.js';
 import { useConfetti } from '../../composables/useConfetti.js';
-import { useRecap } from '../../composables/useRecap.js';
 import type { InfiniteWordChainGameState as GameState } from '../../types/shared.js';
 import WaitingIndicator from '../ui/WaitingIndicator.vue';
 import BaseModal from '../ui/BaseModal.vue';
@@ -223,7 +222,6 @@ export default defineComponent({
     const submitting = ref(false);
 
     const confetti = useConfetti();
-    const recap = useRecap(toRef(props, 'socket'), toRef(props, 'roomKey'));
 
     const displayChars = computed(() => (gameState.value.answerDisplay || '').split(''));
     const gameOver = computed(() => !!gameState.value.winner);
@@ -326,7 +324,6 @@ export default defineComponent({
       gameOver,
       solvedPairs,
       confetti,
-      recap,
       submitGuess,
       finishGame,
       handlePlayAgain,

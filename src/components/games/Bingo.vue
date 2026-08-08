@@ -45,21 +45,6 @@
       Game Over! {{ gameState.winner }}
     </div>
 
-    <div
-      v-if="gameOver"
-      class="w-full max-w-lg flex justify-center mb-2 flex-shrink-0 animate-slide-up"
-    >
-      <button
-        @click="openRecapModal"
-        class="bg-neo-muted text-black dark:text-white font-black px-4 py-2 rounded-none transition-all duration-100 cursor-pointer neo-btn flex items-center space-x-2 text-xs"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7z" clip-rule="evenodd" />
-        </svg>
-        <span>AI Recap</span>
-      </button>
-    </div>
-
     <div class="flex-grow flex flex-col items-center justify-start w-full overflow-y-auto py-1">
       <div class="bg-white dark:bg-neo-card-bg text-neo-text neo-border neo-shadow p-2 sm:p-3 rounded-none w-full max-w-[320px] xs:max-w-[360px] sm:max-w-[400px]">
         <div class="grid grid-cols-5 gap-1 mb-1">
@@ -138,115 +123,21 @@
     @close="closeHowToPlay"
   />
 
-  <!-- Recap Modal -->
-  <BaseModal
-    :is-open="showRecapModal"
-    title="AI Match Recap"
-    subtitle="Bingo"
-    @close="closeRecapModal"
-  >
-    <template #header-icon>
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-        <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd" />
-      </svg>
-    </template>
-
-    <div v-if="recapLoading" class="flex flex-col items-center py-8 space-y-3">
-      <div class="w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-        <span class="text-xs text-neo-text/50 dark:text-slate-400 animate-pulse">Analyzing key moves...</span>
-    </div>
-
-    <div
-      v-else-if="!recapText"
-      class="flex justify-center py-6"
-    >
-      <button
-        @click="requestRecap"
-        class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-4 py-2 rounded-none transition-all duration-150 cursor-pointer shadow-md active:scale-95 flex items-center space-x-2"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd" />
-        </svg>
-        <span>Generate AI Recap</span>
-      </button>
-    </div>
-
-    <div
-      v-else
-      class="flex flex-col flex-grow overflow-hidden"
-    >
-      <div v-html="formattedRecapHtml"></div>
-
-      <div v-if="recapConversation.length > 0" class="border-t border-neo-border/20 dark:border-slate-700/50 pt-4 mt-4 space-y-3">
-        <div
-          v-for="(msg, idx) in recapConversation"
-          :key="idx"
-          class="flex"
-          :class="msg.role === 'user' ? 'justify-end' : 'justify-start'"
-        >
-          <div
-            class="max-w-[85%] rounded-none px-3 py-2 text-xs leading-relaxed"
-            :class="msg.role === 'user'
-              ? 'bg-indigo-600/20 text-indigo-200 border border-indigo-500/20'
-              : 'bg-neo-card-bg dark:bg-slate-800 text-neo-text/80 dark:text-slate-300 border neo-border-2 dark:border-slate-700/50'"
-          >
-            <p class="font-medium text-[10px] uppercase tracking-wider mb-1 opacity-60">
-              {{ msg.role === 'user' ? 'You' : 'AI' }}
-            </p>
-            <p>{{ msg.content }}</p>
-          </div>
-        </div>
-        <div v-if="recapAskLoading" class="flex justify-start">
-          <div class="bg-neo-card-bg dark:bg-slate-800 text-neo-text/50 dark:text-slate-400 rounded-none px-3 py-2 text-xs border neo-border-2 dark:border-slate-700/50">
-            <span class="animate-pulse">Thinking...</span>
-          </div>
-        </div>
-      </div>
-
-      <div v-if="!recapQuestionAsked" class="flex-shrink-0 mt-3 pt-3 border-t border-neo-border/20 dark:border-slate-700/50">
-        <div class="flex items-center space-x-2">
-          <input
-            v-model="recapQuestion"
-            type="text"
-            placeholder="Ask a follow-up question about this match..."
-            class="flex-grow neo-input rounded-none px-3 py-2 text-xs placeholder:text-neo-text/30 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-200 dark:placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-all"
-            @keyup.enter="sendRecapQuestion"
-            :disabled="recapAskLoading"
-          />
-          <button
-            @click="sendRecapQuestion"
-            :disabled="recapAskLoading || !recapQuestion.trim()"
-            class="bg-indigo-600 hover:bg-indigo-500 disabled:bg-gray-300 dark:disabled:bg-slate-700 disabled:text-gray-500 dark:disabled:text-slate-500 text-white rounded-none px-3 py-2 text-xs transition-all duration-150 cursor-pointer active:scale-95 flex-shrink-0"
-          >
-            <svg v-if="recapAskLoading" class="h-4 w-4 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-              <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
-            </svg>
-          </button>
-        </div>
-      </div>
-    </div>
-  </BaseModal>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref, toRef, watch, onBeforeUnmount } from 'vue';
+import { defineComponent, PropType, ref, watch } from 'vue';
 import { Socket } from 'socket.io-client';
 import { useGame } from '../../composables/useGame.js';
 import { useSpeech } from '../../composables/useSpeech.js';
 import { useConfetti } from '../../composables/useConfetti.js';
-import { useRecap } from '../../composables/useRecap.js';
 import type { BingoGameState as GameState } from '../../types/shared.js';
 import WaitingIndicator from '../ui/WaitingIndicator.vue';
-import BaseModal from '../ui/BaseModal.vue';
 import HowToPlayModal from '../modals/HowToPlayModal.vue';
 
 export default defineComponent({
   name: 'Bingo',
-  components: { WaitingIndicator, BaseModal, HowToPlayModal },
+  components: { WaitingIndicator, HowToPlayModal },
   emits: ['update-connection-status', 'update-player', 'update-room-key'],
   props: {
     socket: { type: Object as PropType<Socket>, required: true },
@@ -278,87 +169,7 @@ export default defineComponent({
       isHowToPlayOpen.value = false;
     };
 
-    const showRecapModal = ref(false);
-    const recapText = ref('');
-    const recapLoading = ref(false);
-    const recapConversation = ref<Array<{ role: string; content: string }>>([]);
-    const recapQuestion = ref('');
-    const recapAskLoading = ref(false);
-    const recapQuestionAsked = ref(false);
-
-    function requestRecap() {
-      if (props.socket && props.roomKey) {
-        recapLoading.value = true;
-        props.socket.emit('request-recap', { roomKey: props.roomKey });
-      }
-    }
-
-    function openRecapModal() {
-      showRecapModal.value = true;
-      document.addEventListener('keydown', handleRecapEscKey);
-      if (recapLoading.value) return;
-      if (!recapText.value && props.socket && props.roomKey) {
-        recapLoading.value = true;
-        props.socket.emit('request-recap', { roomKey: props.roomKey });
-      }
-    }
-
-    function closeRecapModal() {
-      showRecapModal.value = false;
-      document.removeEventListener('keydown', handleRecapEscKey);
-    }
-
-    function handleRecapEscKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') {
-        closeRecapModal();
-      }
-    }
-
-    function sendRecapQuestion() {
-      const q = recapQuestion.value.trim();
-      if (!q || recapAskLoading.value || !props.socket || !props.roomKey) return;
-      recapConversation.value.push({ role: 'user', content: q });
-      recapAskLoading.value = true;
-      recapQuestion.value = '';
-      props.socket.emit('recap-question', { roomKey: props.roomKey, question: q });
-    }
-
-    function setupRecapListeners() {
-      if (!props.socket) return;
-      props.socket.on('recap-loading', () => {
-        recapLoading.value = true;
-      });
-      props.socket.on('recap-generated', ({ text }: { text: string }) => {
-        recapText.value = text;
-        recapLoading.value = false;
-      });
-      props.socket.on('recap-answering', () => {
-        recapAskLoading.value = true;
-      });
-      props.socket.on('recap-answer', ({ answer, error }: { answer?: string; error?: string }) => {
-        recapAskLoading.value = false;
-        if (error) {
-          recapConversation.value.push({ role: 'assistant', content: `Error: ${error}` });
-          return;
-        }
-        recapConversation.value.push({ role: 'assistant', content: answer || '' });
-        recapQuestionAsked.value = true;
-      });
-    }
-
-    function teardownRecapListeners() {
-      if (!props.socket) return;
-      props.socket.off('recap-loading');
-      props.socket.off('recap-generated');
-      props.socket.off('recap-answering');
-      props.socket.off('recap-answer');
-    }
-
-    setupRecapListeners();
-
     const confetti = useConfetti();
-    const recap = useRecap(toRef(props, 'socket'), toRef(props, 'roomKey'));
-
     const { muted, speak, toggleMute } = useSpeech();
 
     let prevLen = gameState.value.drawnNumbers.length;
@@ -377,21 +188,6 @@ export default defineComponent({
     });
 
     watch(
-      () => gameState.value.phase,
-      (newPhase) => {
-        if (newPhase === 'playing') {
-          recapText.value = '';
-          recapLoading.value = false;
-          showRecapModal.value = false;
-          recapConversation.value = [];
-          recapQuestion.value = '';
-          recapAskLoading.value = false;
-          recapQuestionAsked.value = false;
-        }
-      }
-    );
-
-    watch(
       () => gameState.value?.winner,
       (winner) => {
         if (winner) {
@@ -399,11 +195,6 @@ export default defineComponent({
         }
       }
     );
-
-    onBeforeUnmount(() => {
-      document.removeEventListener('keydown', handleRecapEscKey);
-      teardownRecapListeners();
-    });
 
     const game = useGame({
       socket: props.socket as any,
@@ -427,20 +218,8 @@ export default defineComponent({
       isHowToPlayOpen,
       openHowToPlay,
       closeHowToPlay,
-      showRecapModal,
-      recapText,
-      recapLoading,
-      recapConversation,
-      recapQuestion,
-      recapAskLoading,
-      recapQuestionAsked,
       muted,
       confetti,
-      recap,
-      requestRecap,
-      openRecapModal,
-      closeRecapModal,
-      sendRecapQuestion,
       toggleMute,
     };
   },
@@ -469,31 +248,6 @@ export default defineComponent({
       if (n <= 45) return 'N';
       if (n <= 60) return 'G';
       return 'O';
-    },
-    formattedRecapHtml(): string {
-      if (!this.recapText) return '';
-      let html = this.recapText;
-
-      html = html
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
-
-      html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-
-      html = html.replace(/### (.*?)\n/g, '<h3 class="text-sm font-bold text-neo-text dark:text-slate-100 mt-3 mb-1">$1</h3>');
-      html = html.replace(/## (.*?)\n/g, '<h2 class="text-base font-bold text-neo-text dark:text-slate-100 mt-4 mb-2">$1</h2>');
-
-      html = html.replace(/^\* (.*?)$/gm, '<li class="ml-4 list-disc text-neo-text/80 dark:text-slate-300">$1</li>');
-
-      html = html.split('\n\n').map((p) => {
-        if (p.trim().startsWith('<li') || p.trim().startsWith('<h3') || p.trim().startsWith('<h2')) {
-          return p;
-        }
-        return `<p class="mb-2 leading-relaxed text-neo-text/80 dark:text-slate-300">${p}</p>`;
-      }).join('');
-
-      return html;
     },
   },
   methods: {

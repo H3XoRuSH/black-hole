@@ -3,7 +3,7 @@ import type { Room, TriviaGameState as TGS, ChatMessage } from '../src/types/sha
 import { readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { generateRecap, recapConversation } from './services/recapService.js';
+import { generateRecap, recapConversation, isRecapSupported } from './services/recapService.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -747,6 +747,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
     requestRecap(roomKey: string, socket: Socket) {
       if (!rooms.has(roomKey)) return;
       const room = rooms.get(roomKey)!;
+      if (!isRecapSupported(room.gameId)) return;
       if (!room.gameState.winner) return;
 
       const playerEntry = room.gameState.players.find((p: any) => p.id === socket.id);
@@ -778,6 +779,10 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
         return;
       }
       const room = rooms.get(roomKey)!;
+      if (!isRecapSupported(room.gameId)) {
+        socket.emit('recap-answer', { error: 'AI Recap is not supported for this game.' });
+        return;
+      }
       if (!room.gameState.winner) {
         socket.emit('recap-answer', { error: 'Game is not over yet.' });
         return;
@@ -800,7 +805,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       const history = room.recapConversations.get(playerNum)!;
 
       socket.emit('recap-answering');
-      recapConversation(room.gameId, room.gameState, recap.text, history, data.question)
+      recapConversation(room.gameId, room.gameState, recap.text, history, data.question, playerNum)
         .then((answer) => {
           history.push({ role: 'user', content: data.question });
           history.push({ role: 'assistant', content: answer });

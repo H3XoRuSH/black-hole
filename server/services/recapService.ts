@@ -4,6 +4,12 @@ import { getSystemPrompt, getRecapPrompt, getRecapConversationPrompt } from './p
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
+export const RECAP_SUPPORTED_GAMES = ['black-hole', 'connect-four', 'dots-and-boxes', 'battleship', 'checkers'];
+
+export function isRecapSupported(gameId: string): boolean {
+  return RECAP_SUPPORTED_GAMES.includes(gameId);
+}
+
 function getGameName(gameId: string): string {
   switch (gameId) {
     case 'black-hole': return 'Black Hole';
@@ -11,10 +17,7 @@ function getGameName(gameId: string): string {
     case 'dots-and-boxes': return 'Dots and Boxes';
     case 'battleship': return 'Battleship';
     case 'checkers': return 'Checkers';
-    case 'bingo': return 'Bingo';
-    case 'pictionary': return 'Pictionary';
-    case 'snakes-ladders': return 'Snakes and Ladders';
-    default: return 'Arcade Game';
+    default: return 'Tactical Game';
   }
 }
 
@@ -33,9 +36,6 @@ function formatMoveHistory(gameId: string, gameState: any): string {
 
   const playerRef = (playerNum: number) => {
     const name = getPlayerName(gameState.players, playerNum);
-    if (gameId === 'bingo') {
-      return name;
-    }
     return `${name} (Player ${playerNum})`;
   };
 
@@ -77,37 +77,6 @@ function formatMoveHistory(gameId: string, gameState: any): string {
       if (isPromotion) desc += ' (king promotion)';
       logs.push(`Move ${index + 1}: ${playerRef(move.player)} ${desc}`);
     });
-  } else if (gameId === 'pictionary') {
-    history.forEach((move: any, index: number) => {
-      if (move.action === 'guess') {
-        logs.push(`Round ${Math.floor(index / gameState.players.length) + 1}: ${playerRef(move.player)} guessed "${move.guess}"`);
-      }
-    });
-    const pScores = gameState.players?.map((p: any) => `${p.name || 'Player ' + p.player}: ${gameState.scores?.[p.player] || 0}`).join(', ');
-    logs.push(`Final Scores: ${pScores}`);
-  } else if (gameId === 'bingo') {
-    let drawIdx = 0;
-    history.forEach((move: any, index: number) => {
-      if (move.action === 'draw') {
-        const num = gameState.drawnNumbers?.[drawIdx++];
-        const letter = num ? (num <= 15 ? 'B' : num <= 30 ? 'I' : num <= 45 ? 'N' : num <= 60 ? 'G' : 'O') : '?';
-        logs.push(`Move ${index + 1}: Host drew ${letter} ${num}`);
-      } else if (move.action === 'daub') {
-        logs.push(`Move ${index + 1}: ${playerRef(move.player)} daubed row ${move.row}, col ${move.col}`);
-      } else if (move.action === 'call-bingo') {
-        logs.push(`Move ${index + 1}: ${playerRef(move.player)} called BINGO!`);
-      }
-    });
-  } else if (gameId === 'snakes-ladders') {
-    history.forEach((move: any, index: number) => {
-      let desc = `rolled a ${move.roll} and moved from ${move.from} to ${move.to}`;
-      if (move.snakeOrLadder === 'snake') {
-        desc += ` and slid down a snake to ${move.finalTo}`;
-      } else if (move.snakeOrLadder === 'ladder') {
-        desc += ` and climbed a ladder to ${move.finalTo}`;
-      }
-      logs.push(`Move ${index + 1}: ${playerRef(move.player)} ${desc}`);
-    });
   }
 
   logs.push(`Outcome: ${gameState.winner}`);
@@ -139,15 +108,6 @@ function generateMockRecap(gameId: string, gameState: any): string {
     mockParagraph = `High-seas warfare in **${gameName}**! The cannons thundered over ${totalMoves} rounds of blind bombardments and desperate radar sweeps. The climax arrived during a **nail-biting final duel** where **${winner}** accurately predicted the opponent's hiding spot to sink their flagship. **${winner}** earns the 🎯 **Sharpshooter Admiral** title, while their rival takes home the ⚓ **Sunken Fleet** badge!`;
   } else if (gameId === 'checkers') {
     mockParagraph = `Absolute carnage on the board in **${gameName}**! Mandatory jumps forced both players into a **brutal exchange of sacrifices**, clearing the grid piece by piece. **${winner}** outmaneuvered the enemy to promote critical Kings in the endgame, earning the 👑 **Board Overlord** title while leaving their opponent with the 💥 **Mandatory Sacrifice** badge!`;
-  } else if (gameId === 'pictionary') {
-    const wordCount = gameState.wordHistory?.length || 0;
-    const totalGuesses = (Object.values(gameState.scores || {}) as number[]).reduce((a, b) => a + b, 0);
-    mockParagraph = `Non-stop hilarity in **${gameName}**! The squad powered through ${wordCount} frantic rounds of scribble art and wild guesses, correctly solving ${totalGuesses} mystery words. Through **clutch last-second guesses** and unhinged artistic masterpieces, the team earned the 🎨 **Picasso Squad** award for peak telepathic teamwork!`;
-  } else if (gameId === 'bingo') {
-    const totalDraws = gameState.drawnNumbers?.length || 0;
-    mockParagraph = `Heart-pounding card tension in **${gameName}**! As ${totalDraws} numbers were drawn from the wheel, players watched their grid rows light up, waiting on single-number near-misses. In a **dramatic race to the line**, **${winner}** shouted BINGO first to claim the 🎲 **RNG God** title, leaving the rest of the lobby as 💥 **Heartbroken One-Away Victims**!`;
-  } else if (gameId === 'snakes-ladders') {
-    mockParagraph = `A chaotic roller-coaster in **${gameName}**! Players rocketed skyward on ladders only to suffer **catastrophic snake slides** that flipped the leaderboard upside down. In the thrilling final stretch, **${winner}** rolled the exact target number to cross the finish line, earning the 🎲 **Dice Roller MVP** award while leaving their opponent with the 🐍 **Snake Magnet** badge!`;
   } else {
     mockParagraph = `An unforgettable showdown in **${gameName}**! After ${totalMoves} turns of fierce back-and-forth competition, **${winner}** turned the tide during a **dramatic endgame play**, seizing victory and claiming the 🏆 **Match MVP** title!`;
   }
@@ -157,6 +117,99 @@ function generateMockRecap(gameId: string, gameState: any): string {
 ${mockParagraph}
 
 *Note: Set the \`DEEPSEEK_API_KEY\` environment variable to enable live AI-generated summaries from DeepSeek.*`;
+}
+
+function analyzeTacticalHeuristics(gameId: string, gameState: any): string[] {
+  if (!gameState) return [];
+  const blunders: string[] = [];
+  const history = gameState.moveHistory || [];
+
+  if (gameId === 'black-hole') {
+    const taken = Object.keys(gameState.circles || {});
+    const allPositions: string[] = [];
+    for (let r = 1; r <= 6; r++) {
+      for (let c = 1; c <= r; c++) {
+        allPositions.push(`${r}-${c}`);
+      }
+    }
+    const emptyCircle = allPositions.find((pos) => !taken.includes(pos));
+    if (emptyCircle) {
+      const [blackR, blackC] = emptyCircle.split('-').map(Number);
+      history.forEach((move: any, index: number) => {
+        const tileVal = Math.floor(index / 2) + 1;
+        const player = getPlayerName(gameState.players, move.player);
+        const dr = Math.abs(move.row - blackR);
+        const dc = Math.abs(move.col - blackC);
+        const isNeighbor = (dr <= 1 && dc <= 1) && !(dr === 0 && dc === 0);
+
+        if (isNeighbor && tileVal >= 8) {
+          blunders.push(`CRITICAL BLUNDER (Move ${index + 1}): ${player} placed high Tile #${tileVal} adjacent to the Black Hole at Row ${move.row}, Col ${move.col}, getting swallowed for a severe penalty.`);
+        } else if (!isNeighbor && tileVal <= 3 && (move.row === 1 || move.row === 6 || move.col === 1 || move.col === move.row)) {
+          blunders.push(`TACTICAL MISPLACEMENT (Move ${index + 1}): ${player} placed low Tile #${tileVal} on an outer edge/corner (Row ${move.row}, Col ${move.col}) instead of placing it near the Black Hole.`);
+        }
+      });
+    }
+  } else if (gameId === 'connect-four') {
+    let p1Center = 0;
+    let p2Center = 0;
+    history.forEach((m: any, idx: number) => {
+      const colNum = m.col + 1;
+      if (colNum === 4) {
+        if (m.player === 1) p1Center++;
+        else if (m.player === 2) p2Center++;
+      }
+      if (idx === 7 && p1Center === 0 && p2Center === 0) {
+        blunders.push(`POSITIONAL BLUNDER (Early Game): Both players neglected Column 4 (Center Column) in the first 8 moves, abandoning central board control.`);
+      }
+    });
+
+    if (history.length > 0) {
+      const lastMove = history[history.length - 1];
+      const winningPlayer = getPlayerName(gameState.players, lastMove.player);
+      const losingPlayer = getPlayerName(gameState.players, lastMove.player === 1 ? 2 : 1);
+      blunders.push(`DECISIVE CLINCH (Move ${history.length}): ${winningPlayer} dropped the winning disc in Column ${lastMove.col + 1} past ${losingPlayer}'s defense.`);
+    }
+  } else if (gameId === 'dots-and-boxes') {
+    history.forEach((m: any, idx: number) => {
+      if (m.boxesEarned && m.boxesEarned >= 2) {
+        const sweeper = getPlayerName(gameState.players, m.player);
+        const prevMove = history[idx - 1];
+        const victim = prevMove ? getPlayerName(gameState.players, prevMove.player) : 'opponent';
+        blunders.push(`3RD-WALL BLUNDER (Move ${idx}): ${victim} drew the 3rd wall, enabling ${sweeper} to launch a massive ${m.boxesEarned}-box chain sweep on Move ${idx + 1}.`);
+      }
+    });
+  } else if (gameId === 'battleship') {
+    let lastHitMove: { player: number; turn: number; row: number; col: number } | null = null;
+    history.forEach((m: any, idx: number) => {
+      if (m.action === 'shoot') {
+        const shooter = getPlayerName(gameState.players, m.player);
+        if (lastHitMove && lastHitMove.player === m.player && !m.sunkShipName) {
+          const dr = Math.abs(m.row - lastHitMove.row);
+          const dc = Math.abs(m.col - lastHitMove.col);
+          const isAdjacent = (dr + dc === 1);
+          if (!isAdjacent && !m.hit) {
+            blunders.push(`TARGET ABANDONMENT (Move ${idx + 1}): ${shooter} hit a vessel on Move ${lastHitMove.turn}, but abandoned the target on Move ${idx + 1} to fire blindly elsewhere.`);
+          }
+        }
+        if (m.hit && !m.sunkShipName) {
+          lastHitMove = { player: m.player, turn: idx + 1, row: m.row, col: m.col };
+        } else if (m.sunkShipName) {
+          lastHitMove = null;
+        }
+      }
+    });
+  } else if (gameId === 'checkers') {
+    history.forEach((m: any, idx: number) => {
+      const isPromotion = (m.player === 1 && m.toRow === 0) || (m.player === 2 && m.toRow === 7);
+      if (isPromotion) {
+        const promoter = getPlayerName(gameState.players, m.player);
+        const defender = getPlayerName(gameState.players, m.player === 1 ? 2 : 1);
+        blunders.push(`DEFENSE BREAKDOWN (Move ${idx + 1}): ${defender}'s back-row defense broke down, allowing ${promoter} to promote a piece to King.`);
+      }
+    });
+  }
+
+  return blunders.slice(0, 3);
 }
 
 function calculateGameStats(gameId: string, gameState: any): string {
@@ -183,6 +236,8 @@ function calculateGameStats(gameId: string, gameState: any): string {
     const emptyCircle = allPositions.find((pos) => !taken.includes(pos));
     if (emptyCircle) {
       const [r, c] = emptyCircle.split('-').map(Number);
+      stats.push(`Black Hole Location: Row ${r}, Col ${c}`);
+
       const neighbors: string[] = [];
       if (c > 1) neighbors.push(`${r}-${c - 1}`);
       if (c < r) neighbors.push(`${r}-${c + 1}`);
@@ -204,14 +259,49 @@ function calculateGameStats(gameId: string, gameState: any): string {
           else if (cell.player === 2) p2Tiles.push(cell.turn);
         }
       });
-      stats.push(`${p1Name} tiles swallowed by Black Hole: [${p1Tiles.join(', ') || 'None'}] (Sum: ${p1Tiles.reduce((a, b) => a + b, 0)})`);
-      stats.push(`${p2Name} tiles swallowed by Black Hole: [${p2Tiles.join(', ') || 'None'}] (Sum: ${p2Tiles.reduce((a, b) => a + b, 0)})`);
+      const p1Max = p1Tiles.length > 0 ? Math.max(...p1Tiles) : 0;
+      const p2Max = p2Tiles.length > 0 ? Math.max(...p2Tiles) : 0;
+
+      stats.push(`${p1Name} tiles swallowed by Black Hole: [${p1Tiles.join(', ') || 'None'}] (Total Penalty: ${p1Score} pts, Worst Penalty Tile: #${p1Max})`);
+      stats.push(`${p2Name} tiles swallowed by Black Hole: [${p2Tiles.join(', ') || 'None'}] (Total Penalty: ${p2Score} pts, Worst Penalty Tile: #${p2Max})`);
+    }
+
+    const history = gameState.moveHistory || [];
+    if (history.length > 0) {
+      const lastMove = history[history.length - 1];
+      const lastPlayerName = getPlayerName(gameState.players, lastMove.player);
+      stats.push(`Clutch Final Tile (#10) placed by: ${lastPlayerName} at Row ${lastMove.row}, Col ${lastMove.col}`);
     }
   } else if (gameId === 'connect-four') {
-    const totalMoves = gameState.moveHistory?.length || 0;
+    const history = gameState.moveHistory || [];
+    const totalMoves = history.length;
     const storyVibe = totalMoves < 12 ? 'LIGHTNING QUICK KNOCKOUT' : totalMoves > 28 ? 'MARATHON WAR OF ATTRITION' : 'TACTICAL CHESS MATCH';
     stats.push(`[MATCH STORY VIBE: ${storyVibe}]`);
     stats.push(`Total Discs Dropped: ${totalMoves} turns.`);
+
+    const colCounts: Record<number, { p1: number; p2: number }> = {
+      1: { p1: 0, p2: 0 }, 2: { p1: 0, p2: 0 }, 3: { p1: 0, p2: 0 },
+      4: { p1: 0, p2: 0 }, 5: { p1: 0, p2: 0 }, 6: { p1: 0, p2: 0 }, 7: { p1: 0, p2: 0 }
+    };
+    history.forEach((m: any) => {
+      const colNum = m.col + 1;
+      if (colCounts[colNum]) {
+        if (m.player === 1) colCounts[colNum].p1++;
+        else if (m.player === 2) colCounts[colNum].p2++;
+      }
+    });
+
+    const c4P1 = colCounts[4].p1;
+    const c4P2 = colCounts[4].p2;
+    const c4Total = c4P1 + c4P2;
+    const c4Dominance = c4Total > 0 ? (c4P1 > c4P2 ? p1Name : c4P2 > c4P1 ? p2Name : 'Even Standoff') : 'None';
+    stats.push(`Center Column (Col 4) Control: ${p1Name}: ${c4P1} discs, ${p2Name}: ${c4P2} discs (Dominant Center Player: ${c4Dominance}).`);
+
+    if (history.length > 0) {
+      const lastMove = history[history.length - 1];
+      const winningPlayer = getPlayerName(gameState.players, lastMove.player);
+      stats.push(`Winning Final Disc dropped in Column ${lastMove.col + 1} by ${winningPlayer}.`);
+    }
   } else if (gameId === 'dots-and-boxes') {
     const p1Boxes = gameState.scores?.player1 || 0;
     const p2Boxes = gameState.scores?.player2 || 0;
@@ -219,51 +309,132 @@ function calculateGameStats(gameId: string, gameState: any): string {
     const storyVibe = diff <= 2 ? 'EDGE-OF-SEAT CLOSE THRILLER' : 'CHAIN-COMBO DOMINATION';
     stats.push(`[MATCH STORY VIBE: ${storyVibe}]`);
     stats.push(`Final Box Score: ${p1Name}: ${p1Boxes} boxes vs ${p2Name}: ${p2Boxes} boxes.`);
+
+    const history = gameState.moveHistory || [];
+    let p1MaxChain = 0, p2MaxChain = 0;
+    let currPlayer = 0, currChain = 0;
+    let firstBoxTurn = 0;
+
+    history.forEach((m: any, idx: number) => {
+      if (m.boxesEarned && m.boxesEarned > 0) {
+        if (!firstBoxTurn) firstBoxTurn = idx + 1;
+        if (m.player === currPlayer) {
+          currChain += m.boxesEarned;
+        } else {
+          currPlayer = m.player;
+          currChain = m.boxesEarned;
+        }
+        if (currPlayer === 1 && currChain > p1MaxChain) p1MaxChain = currChain;
+        if (currPlayer === 2 && currChain > p2MaxChain) p2MaxChain = currChain;
+      } else {
+        currPlayer = 0;
+        currChain = 0;
+      }
+    });
+
+    if (firstBoxTurn > 0) {
+      stats.push(`First Box Claimed: Move ${firstBoxTurn}.`);
+    }
+    stats.push(`Max Chain Reaction Sweeps: ${p1Name}: ${p1MaxChain} boxes in 1 turn sequence, ${p2Name}: ${p2MaxChain} boxes in 1 turn sequence.`);
   } else if (gameId === 'battleship') {
     let p1Shots = 0, p1Hits = 0;
     let p2Shots = 0, p2Hits = 0;
-    (gameState.moveHistory || []).forEach((m: any) => {
+    const sunkEvents: string[] = [];
+    let firstHitPlayer: string | null = null;
+
+    (gameState.moveHistory || []).forEach((m: any, index: number) => {
       if (m.action === 'shoot') {
-        if (m.player === 1) {
-          p1Shots++;
-          if (m.hit) p1Hits++;
-        } else if (m.player === 2) {
-          p2Shots++;
-          if (m.hit) p2Hits++;
+        const shooter = getPlayerName(gameState.players, m.player);
+        if (m.hit) {
+          if (!firstHitPlayer) firstHitPlayer = shooter;
+          if (m.player === 1) {
+            p1Shots++;
+            p1Hits++;
+          } else if (m.player === 2) {
+            p2Shots++;
+            p2Hits++;
+          }
+          if (m.sunkShipName) {
+            sunkEvents.push(`Move ${index + 1}: ${shooter} sank opponent's ${m.sunkShipName}`);
+          }
+        } else {
+          if (m.player === 1) p1Shots++;
+          else if (m.player === 2) p2Shots++;
         }
       }
     });
+
     const p1Acc = p1Shots > 0 ? Math.round((p1Hits / p1Shots) * 100) : 0;
     const p2Acc = p2Shots > 0 ? Math.round((p2Hits / p2Shots) * 100) : 0;
+
     stats.push(`[MATCH STORY VIBE: NAVAL BATTLE]`);
-    stats.push(`Fleet Accuracy: ${p1Name}: ${p1Acc}% accuracy, ${p2Name}: ${p2Acc}% accuracy.`);
+    stats.push(`Fleet Accuracy: ${p1Name}: ${p1Acc}% (${p1Hits}/${p1Shots} hits), ${p2Name}: ${p2Acc}% (${p2Hits}/${p2Shots} hits).`);
+    if (firstHitPlayer) {
+      stats.push(`First Blood (First Hit): ${firstHitPlayer}.`);
+    }
+    if (sunkEvents.length > 0) {
+      stats.push(`Sunk Ships Timeline:\n  - ${sunkEvents.join('\n  - ')}`);
+    }
   } else if (gameId === 'checkers') {
     const history = gameState.moveHistory || [];
-    const captures = history.filter((m: any) => Math.abs(m.toRow - m.fromRow) === 2).length;
-    stats.push(`[MATCH STORY VIBE: BOARD CARNAGE]`);
-    stats.push(`Total Captures Made: ${captures} total jumps executed across the board.`);
-  } else if (gameId === 'pictionary') {
-    const wordCount = gameState.wordHistory?.length || 0;
-    const totalCorrect = (Object.values(gameState.scores || {}) as number[]).reduce((a, b) => a + b, 0);
-    const rate = wordCount > 0 ? Math.round((totalCorrect / wordCount) * 100) : 0;
-    stats.push(`[MATCH STORY VIBE: COOPERATIVE SQUAD GOALS]`);
-    stats.push(`Drawing Accuracy: ${totalCorrect}/${wordCount} words guessed correctly (${rate}% success rate).`);
-  } else if (gameId === 'bingo') {
-    const totalDraws = gameState.drawnNumbers?.length || 0;
-    stats.push(`[MATCH STORY VIBE: RNG RACE]`);
-    stats.push(`Numbers Drawn: ${totalDraws} out of 75 numbers before winning BINGO was called.`);
-  } else if (gameId === 'snakes-ladders') {
-    const history = gameState.moveHistory || [];
-    let ladderCount = 0, snakeCount = 0;
-    history.forEach((m: any) => {
-      if (m.snakeOrLadder === 'ladder') ladderCount++;
-      else if (m.snakeOrLadder === 'snake') snakeCount++;
+    let capturesCount = 0;
+    const promotions: string[] = [];
+
+    history.forEach((m: any, idx: number) => {
+      const isCapture = Math.abs(m.toRow - m.fromRow) === 2;
+      const isPromotion = (m.player === 1 && m.toRow === 0) || (m.player === 2 && m.toRow === 7);
+      if (isCapture) capturesCount++;
+      if (isPromotion) {
+        promotions.push(`Move ${idx + 1}: ${getPlayerName(gameState.players, m.player)} promoted piece to King`);
+      }
     });
-    stats.push(`[MATCH STORY VIBE: ROLLERCOASTER RACE]`);
-    stats.push(`Board Hazards & Boosts: ${ladderCount} ladders climbed, ${snakeCount} snakes slid down.`);
+
+    stats.push(`[MATCH STORY VIBE: BOARD CARNAGE]`);
+    stats.push(`Total Captures Made: ${capturesCount} total jumps executed across the board.`);
+    if (promotions.length > 0) {
+      stats.push(`King Promotions Timeline:\n  - ${promotions.join('\n  - ')}`);
+    }
+
+    if (gameState.board) {
+      let p1Pieces = 0, p1Kings = 0;
+      let p2Pieces = 0, p2Kings = 0;
+      for (let r = 0; r < 8; r++) {
+        for (let c = 0; c < 8; c++) {
+          const v = gameState.board[r][c];
+          if (v === 1) {
+            p1Pieces++;
+          } else if (v === 3) {
+            p1Pieces++;
+            p1Kings++;
+          } else if (v === 2) {
+            p2Pieces++;
+          } else if (v === 4) {
+            p2Pieces++;
+            p2Kings++;
+          }
+        }
+      }
+      stats.push(`Endgame Board State: ${p1Name}: ${p1Pieces} pieces (${p1Kings} Kings), ${p2Name}: ${p2Pieces} pieces (${p2Kings} Kings).`);
+    }
+  }
+
+  const heuristicAnalysis = analyzeTacticalHeuristics(gameId, gameState);
+  if (heuristicAnalysis.length > 0) {
+    stats.push(`\n[TACTICAL HEURISTIC & BLUNDER EVALUATION]:\n  - ${heuristicAnalysis.join('\n  - ')}`);
   }
 
   return stats.join('\n');
+}
+
+function getPlayerMatchStatus(gameState: any, playerNum: number): 'WINNER' | 'LOST' | 'TIE' {
+  if (!gameState || !gameState.winner) return 'LOST';
+  const winnerStr = String(gameState.winner).toLowerCase();
+  if (winnerStr.includes('tie') || winnerStr.includes('draw')) return 'TIE';
+  const pName = getPlayerName(gameState.players, playerNum).toLowerCase();
+  if (winnerStr.includes(pName) || winnerStr.includes(`player ${playerNum}`)) {
+    return 'WINNER';
+  }
+  return 'LOST';
 }
 
 export async function recapConversation(
@@ -271,10 +442,24 @@ export async function recapConversation(
   gameState: any,
   originalRecap: string,
   conversationHistory: Array<{ role: string; content: string }>,
-  question: string
+  question: string,
+  askingPlayerNum: number = 1
 ): Promise<string> {
+  if (!isRecapSupported(gameId)) {
+    return 'AI Recap is not supported for this game.';
+  }
+
+  const askingPlayerName = getPlayerName(gameState.players, askingPlayerNum);
+  const askingPlayerStatus = getPlayerMatchStatus(gameState, askingPlayerNum);
+  const winnerName = gameState.winner || 'Tie game!';
+
   if (!isDeepSeekConfigured) {
-    return `[Simulated AI] That's an interesting question about the ${getGameName(gameId)} match! In a live AI scenario, I'd analyze the move data and original recap to give you a detailed answer. Set the \`DEEPSEEK_API_KEY\` environment variable to enable live AI answers.`;
+    if (askingPlayerStatus === 'LOST') {
+      return `[Simulated AI] As ${askingPlayerName} (Player ${askingPlayerNum}), you lost this ${getGameName(gameId)} match to ${winnerName}. Based on the match log, your opponent gained pivotal tactical control in the mid-game. Set the \`DEEPSEEK_API_KEY\` environment variable to enable live AI follow-up answers.`;
+    } else if (askingPlayerStatus === 'WINNER') {
+      return `[Simulated AI] Great question! As ${askingPlayerName} (Player ${askingPlayerNum}), you won this ${getGameName(gameId)} match by securing the decisive play. Set the \`DEEPSEEK_API_KEY\` environment variable to enable live AI follow-up answers.`;
+    }
+    return `[Simulated AI] That's an interesting question from ${askingPlayerName} about the ${getGameName(gameId)} match! Set the \`DEEPSEEK_API_KEY\` environment variable to enable live AI answers.`;
   }
 
   const formattedHistory = formatMoveHistory(gameId, gameState);
@@ -282,7 +467,17 @@ export async function recapConversation(
   const playerNames = sortedPlayers.map((p: any) => p.name).filter(Boolean);
   const statsSummary = calculateGameStats(gameId, gameState);
   const conversationPrompt = getRecapConversationPrompt(
-    getGameName(gameId), formattedHistory, originalRecap, question, gameId, playerNames, statsSummary
+    getGameName(gameId),
+    formattedHistory,
+    originalRecap,
+    question,
+    gameId,
+    playerNames,
+    statsSummary,
+    askingPlayerNum,
+    askingPlayerName,
+    askingPlayerStatus,
+    winnerName
   );
 
   try {
@@ -303,6 +498,10 @@ export async function recapConversation(
 }
 
 export async function generateRecap(gameId: string, gameState: any): Promise<string> {
+  if (!isRecapSupported(gameId)) {
+    return '';
+  }
+
   if (!DEEPSEEK_API_KEY && !OPENROUTER_API_KEY) {
     console.warn('LLM API keys are not configured. Using local mock generator.');
     return generateMockRecap(gameId, gameState);
