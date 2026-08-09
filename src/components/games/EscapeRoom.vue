@@ -40,7 +40,7 @@
         >
           <h2 class="text-lg font-black uppercase text-neo-accent mb-2">{{ gameState.roomName || 'Escape Room' }}</h2>
           <p class="text-sm text-neo-text/70 mb-4 leading-relaxed font-bold">{{ gameState.roomDescription }}</p>
-          <div class="bg-neo-bg border-2 border-black rounded-none p-4">
+          <div class="bg-neo-bg border-2 border-black rounded-none p-4 max-h-[40vh] sm:max-h-[50vh] overflow-y-auto custom-scroll">
             <p class="text-base text-neo-text whitespace-pre-line leading-relaxed font-bold">{{ gameState.roomIntro }}</p>
           </div>
           <div class="flex justify-center mt-4">
@@ -672,6 +672,7 @@ import { useGame } from '../../composables/useGame.js';
 import { useToast } from '../../composables/useToast.js';
 import { useConfetti } from '../../composables/useConfetti.js';
 import type { EscapeRoomGameState as GameState, EscapeRoomNode, EscapeRoomLocation } from '../../types/shared.js';
+import { useAudioTones } from '../../composables/useAudioTones.js';
 import HowToPlayModal from '../modals/HowToPlayModal.vue';
 
 export default defineComponent({
@@ -727,15 +728,7 @@ export default defineComponent({
       }, 3000);
     }
 
-    const audioCtx = ref<AudioContext | null>(null);
-    const isSoundPlaying = ref(false);
-    const activeOscillators: OscillatorNode[] = [];
-
-    const NOTE_FREQS: Record<string, number> = {
-      C4: 261.63, D4: 293.66, E4: 329.63, F4: 349.23,
-      G4: 392.00, A4: 440.00, B4: 493.88, C5: 523.25,
-      low: 220, medium: 440, high: 880
-    };
+    const { playNotes, stopSound, isSoundPlaying } = useAudioTones();
 
     const isHowToPlayOpen = ref(false);
     const openHowToPlay = () => {
@@ -745,71 +738,9 @@ export default defineComponent({
       isHowToPlayOpen.value = false;
     };
 
-    function stopSound() {
-      for (const osc of activeOscillators) {
-        try {
-          osc.stop();
-        } catch {
-          /* already stopped */
-        }
-      }
-      activeOscillators.length = 0;
-      isSoundPlaying.value = false;
-    }
-
-    async function playPuzzleSound(node: EscapeRoomNode) {
+    function playPuzzleSound(node: EscapeRoomNode) {
       if (!node?.sound) return;
-      stopSound();
-
-      if (!audioCtx.value) {
-        audioCtx.value = new AudioContext();
-      }
-      if (audioCtx.value.state === 'suspended') {
-        await audioCtx.value.resume();
-      }
-
-      const ctx = audioCtx.value;
-      const { notes } = node.sound;
-      let timeOffset = 0;
-
-      for (const note of notes) {
-        if (note.rest || !note.pitch) {
-          timeOffset += note.dur / 1000;
-          continue;
-        }
-        const freq = NOTE_FREQS[note.pitch];
-        if (!freq) {
-          timeOffset += note.dur / 1000;
-          continue;
-        }
-
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.value = freq;
-
-        const startTime = ctx.currentTime + timeOffset;
-        const endTime = startTime + note.dur / 1000;
-
-        gain.gain.setValueAtTime(0, startTime);
-        gain.gain.linearRampToValueAtTime(0.3, startTime + 0.015);
-        gain.gain.setValueAtTime(0.3, endTime - 0.015);
-        gain.gain.linearRampToValueAtTime(0, endTime);
-
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.start(startTime);
-        osc.stop(endTime + 0.02);
-
-        activeOscillators.push(osc);
-        timeOffset += note.dur / 1000;
-      }
-
-      isSoundPlaying.value = true;
-      const totalMs = timeOffset * 1000 + 100;
-      setTimeout(() => {
-        isSoundPlaying.value = false;
-      }, totalMs);
+      playNotes(node.sound.notes);
     }
 
     function splitArtSegments(text: string): { type: 'text' | 'art'; content: string }[] {
@@ -1420,10 +1351,6 @@ export default defineComponent({
 
     onUnmounted(() => {
       stopSound();
-      if (audioCtx.value) {
-        audioCtx.value.close();
-        audioCtx.value = null;
-      }
       if (props.socket) {
         props.socket.off('chat-message', onChatMessage);
         props.socket.off('waiting-for-player', onWaitingForPlayer);

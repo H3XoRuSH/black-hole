@@ -4,6 +4,16 @@ import type { Router } from 'vue-router';
 
 let isInitialized = false;
 
+function applyTransitionLock(htmlEl: HTMLElement, parent: HTMLElement | null) {
+  htmlEl.classList.add('barba-transitioning');
+  parent?.classList.add('barba-transitioning');
+}
+
+function releaseTransitionLock(htmlEl: HTMLElement, parent: HTMLElement | null) {
+  htmlEl.classList.remove('barba-transitioning');
+  parent?.classList.remove('barba-transitioning');
+}
+
 export function initBarba(router: Router) {
   if (isInitialized) return;
 
@@ -24,15 +34,15 @@ export function initBarba(router: Router) {
             const currentPath = window.location.pathname;
             return currentPath.includes('/game/');
           },
-          leave(data) {
-            const done = this.async();
+          leave(data: any) {
+            const done = (this as any).async();
             const container = data.current.container as HTMLElement;
             if (!container) {
               done();
               return;
             }
-            const origOverflow = container.style.overflow;
-            container.style.overflow = 'hidden';
+            const parent = container.parentElement;
+            applyTransitionLock(container, parent);
             gsap.to(container, {
               duration: 0.4,
               scale: 0.05,
@@ -40,20 +50,20 @@ export function initBarba(router: Router) {
               filter: 'blur(16px)',
               ease: 'power4.in',
               onComplete: () => {
-                container.style.overflow = origOverflow;
+                releaseTransitionLock(container, parent);
                 done();
               },
             });
           },
-          enter(data) {
-            const done = this.async();
+          enter(data: any) {
+            const done = (this as any).async();
             const container = data.next.container as HTMLElement;
             if (!container) {
               done();
               return;
             }
-            const origOverflow = container.style.overflow;
-            container.style.overflow = 'hidden';
+            const parent = container.parentElement;
+            applyTransitionLock(container, parent);
             gsap.set(container, {
               scale: 0.08,
               opacity: 0,
@@ -66,7 +76,7 @@ export function initBarba(router: Router) {
               filter: 'blur(0px)',
               ease: 'power3.out',
               onComplete: () => {
-                container.style.overflow = origOverflow;
+                releaseTransitionLock(container, parent);
                 done();
               },
             });
@@ -74,42 +84,35 @@ export function initBarba(router: Router) {
         },
         {
           name: 'arcade-slide-fade',
-          leave(data) {
-            const done = this.async();
+          leave(data: any) {
+            const done = (this as any).async();
             const container = data.current.container as HTMLElement;
             if (!container) {
               done();
               return;
             }
             const parent = container.parentElement;
-            const origParentOverflowX = parent ? parent.style.overflowX : '';
-            if (parent) parent.style.overflowX = 'hidden';
-            const origOverflow = container.style.overflow;
-            container.style.overflow = 'hidden';
+            applyTransitionLock(container, parent);
             gsap.to(container, {
               duration: 0.3,
               x: -50,
               opacity: 0,
               ease: 'power2.in',
               onComplete: () => {
-                container.style.overflow = origOverflow;
-                if (parent) parent.style.overflowX = origParentOverflowX;
+                releaseTransitionLock(container, parent);
                 done();
               },
             });
           },
-          enter(data) {
-            const done = this.async();
+          enter(data: any) {
+            const done = (this as any).async();
             const container = data.next.container as HTMLElement;
             if (!container) {
               done();
               return;
             }
             const parent = container.parentElement;
-            const origParentOverflowX = parent ? parent.style.overflowX : '';
-            if (parent) parent.style.overflowX = 'hidden';
-            const origOverflow = container.style.overflow;
-            container.style.overflow = 'hidden';
+            applyTransitionLock(container, parent);
             gsap.set(container, {
               x: 50,
               opacity: 0,
@@ -120,8 +123,7 @@ export function initBarba(router: Router) {
               opacity: 1,
               ease: 'power2.out',
               onComplete: () => {
-                container.style.overflow = origOverflow;
-                if (parent) parent.style.overflowX = origParentOverflowX;
+                releaseTransitionLock(container, parent);
                 done();
               },
             });
@@ -142,28 +144,28 @@ export function initBarba(router: Router) {
 }
 
 export function onTransitionLeave(el: Element, done: () => void) {
-  const isGameRoute = window.location.pathname.includes('/game/');
   const htmlEl = el as HTMLElement;
   const parent = htmlEl.parentElement;
-  const originalOverflow = htmlEl.style.overflow;
-  const originalParentOverflowX = parent ? parent.style.overflowX : '';
+  const isLeavingGame = htmlEl.getAttribute('data-is-game') === 'true';
+  const isEnteringGame = window.location.pathname.includes('/game/');
+  const isPortalTransition = isLeavingGame || isEnteringGame;
 
-  htmlEl.style.overflow = 'hidden';
-  if (parent) parent.style.overflowX = 'hidden';
+  applyTransitionLock(htmlEl, parent);
 
-  if (isGameRoute) {
-    // Black Hole Implosion (Portal Void Collapse without rotating scrollbars)
+  const onComplete = () => {
+    releaseTransitionLock(htmlEl, parent);
+    done();
+  };
+
+  if (isPortalTransition) {
+    // Black Hole Implosion (Portal Void Collapse)
     gsap.to(el, {
       duration: 0.4,
       scale: 0.05,
       opacity: 0,
       filter: 'blur(16px)',
       ease: 'power4.in',
-      onComplete: () => {
-        htmlEl.style.overflow = originalOverflow;
-        if (parent) parent.style.overflowX = originalParentOverflowX;
-        done();
-      },
+      onComplete,
     });
   } else {
     // Arcade Slide Fade Leave
@@ -172,27 +174,31 @@ export function onTransitionLeave(el: Element, done: () => void) {
       x: -50,
       opacity: 0,
       ease: 'power2.in',
-      onComplete: () => {
-        htmlEl.style.overflow = originalOverflow;
-        if (parent) parent.style.overflowX = originalParentOverflowX;
-        done();
-      },
+      onComplete,
     });
   }
 }
 
 export function onTransitionEnter(el: Element, done: () => void) {
-  const isGameRoute = window.location.pathname.includes('/game/');
   const htmlEl = el as HTMLElement;
   const parent = htmlEl.parentElement;
-  const originalOverflow = htmlEl.style.overflow;
-  const originalParentOverflowX = parent ? parent.style.overflowX : '';
+  const isEnteringGame = window.location.pathname.includes('/game/');
+  const isLeavingGame = htmlEl.getAttribute('data-is-game') === 'true';
+  const isPortalTransition = isEnteringGame || isLeavingGame;
 
-  htmlEl.style.overflow = 'hidden';
-  if (parent) parent.style.overflowX = 'hidden';
+  if (parent) parent.scrollTop = 0;
+  htmlEl.scrollTop = 0;
+  if (typeof window !== 'undefined') window.scrollTo(0, 0);
 
-  if (isGameRoute) {
-    // Black Hole Portal Expansion (Vortex zoom in without rotating scrollbars)
+  applyTransitionLock(htmlEl, parent);
+
+  const onComplete = () => {
+    releaseTransitionLock(htmlEl, parent);
+    done();
+  };
+
+  if (isPortalTransition) {
+    // Black Hole Portal Expansion
     gsap.set(el, {
       scale: 0.08,
       opacity: 0,
@@ -204,11 +210,7 @@ export function onTransitionEnter(el: Element, done: () => void) {
       opacity: 1,
       filter: 'blur(0px)',
       ease: 'power3.out',
-      onComplete: () => {
-        htmlEl.style.overflow = originalOverflow;
-        if (parent) parent.style.overflowX = originalParentOverflowX;
-        done();
-      },
+      onComplete,
     });
   } else {
     // Arcade Slide Fade Enter
@@ -221,11 +223,7 @@ export function onTransitionEnter(el: Element, done: () => void) {
       x: 0,
       opacity: 1,
       ease: 'power2.out',
-      onComplete: () => {
-        htmlEl.style.overflow = originalOverflow;
-        if (parent) parent.style.overflowX = originalParentOverflowX;
-        done();
-      },
+      onComplete,
     });
   }
 }

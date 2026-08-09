@@ -147,6 +147,7 @@
 @layer base {
   html, body {
     overflow-x: hidden;
+    scrollbar-gutter: stable;
   }
 
   html {
@@ -190,6 +191,23 @@
 * {
   scrollbar-width: auto;
   scrollbar-color: var(--color-neo-accent) var(--neo-card-bg);
+}
+
+/* =============================================
+   BARBA TRANSITION OVERFLOW & SCROLLBAR CONTROL
+   ============================================= */
+.barba-transitioning,
+.barba-transitioning * {
+  overflow: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.barba-transitioning::-webkit-scrollbar,
+.barba-transitioning *::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 /* =============================================

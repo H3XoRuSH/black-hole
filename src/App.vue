@@ -39,6 +39,7 @@
             :key="route.path"
             data-barba="container"
             :data-barba-namespace="String(route.name || 'default')"
+            :data-is-game="String(route.path.includes('/game/'))"
             class="flex-grow flex flex-col min-h-0 w-full overflow-x-hidden"
           >
             <component
