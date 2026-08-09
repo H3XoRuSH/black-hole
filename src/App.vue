@@ -1,5 +1,5 @@
 <template>
-  <div class="h-dvh md:h-screen bg-neo-bg bg-neo-grid text-neo-text overflow-hidden flex flex-col min-h-0 font-sans">
+  <div data-barba="wrapper" class="h-dvh md:h-screen bg-neo-bg bg-neo-grid text-neo-text overflow-hidden flex flex-col min-h-0 font-sans">
     <div v-if="isInitialLoading" class="flex-grow flex flex-col items-center justify-center select-none">
       <div class="flex flex-col items-center space-y-6 animate-scale-in">
         <div class="relative w-36 h-36 flex items-center justify-center">
@@ -29,8 +29,18 @@
         @update-player="player = $event"
         @update-room-key="roomKey = $event"
       >
-        <Transition name="page" mode="out-in">
-          <div :key="route.path" class="flex-grow flex flex-col min-h-0">
+        <Transition
+          :css="false"
+          @leave="onTransitionLeave"
+          @enter="onTransitionEnter"
+          mode="out-in"
+        >
+          <div
+            :key="route.path"
+            data-barba="container"
+            :data-barba-namespace="String(route.name || 'default')"
+            class="flex-grow flex flex-col min-h-0"
+          >
             <component
               :is="Component"
               :socket="socket"
@@ -57,17 +67,41 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted, watch, nextTick } from 'vue';
 import { useRouter } from 'vue-router';
 import { useSocket } from './composables/useSocket.js';
+import { initBarba, onTransitionLeave, onTransitionEnter } from './utils/barbaTransitions.js';
 import ToastContainer from './components/ui/ToastContainer.vue';
 import BugReportModal from './components/modals/BugReportModal.vue';
 import ChatBox from './components/ui/ChatBox.vue';
+
 export default defineComponent({
   components: { ToastContainer, BugReportModal, ChatBox },
   setup() {
     const router = useRouter() as any;
-    return { ...useSocket(router) };
+    const socketState = useSocket(router);
+
+    watch(socketState.isInitialLoading, (loading) => {
+      if (!loading) {
+        nextTick(() => {
+          initBarba(router);
+        });
+      }
+    });
+
+    onMounted(() => {
+      if (!socketState.isInitialLoading.value) {
+        nextTick(() => {
+          initBarba(router);
+        });
+      }
+    });
+
+    return {
+      ...socketState,
+      onTransitionLeave,
+      onTransitionEnter,
+    };
   },
   watch: {
     $route(to: any) {
