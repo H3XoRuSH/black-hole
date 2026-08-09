@@ -26,42 +26,49 @@ export function initBarba(router: Router) {
           },
           leave(data) {
             const done = this.async();
-            const container = data.current.container;
+            const container = data.current.container as HTMLElement;
             if (!container) {
               done();
               return;
             }
+            const origOverflow = container.style.overflow;
+            container.style.overflow = 'hidden';
             gsap.to(container, {
-              duration: 0.45,
+              duration: 0.4,
               scale: 0.05,
-              rotation: 360,
               opacity: 0,
-              filter: 'blur(12px)',
-              ease: 'back.in(1.7)',
-              onComplete: done,
+              filter: 'blur(16px)',
+              ease: 'power4.in',
+              onComplete: () => {
+                container.style.overflow = origOverflow;
+                done();
+              },
             });
           },
           enter(data) {
             const done = this.async();
-            const container = data.next.container;
+            const container = data.next.container as HTMLElement;
             if (!container) {
               done();
               return;
             }
+            const origOverflow = container.style.overflow;
+            container.style.overflow = 'hidden';
             gsap.set(container, {
-              scale: 0.1,
-              rotation: -180,
+              scale: 0.08,
               opacity: 0,
-              filter: 'blur(10px)',
+              filter: 'blur(16px)',
             });
             gsap.to(container, {
-              duration: 0.5,
+              duration: 0.45,
               scale: 1,
-              rotation: 0,
               opacity: 1,
               filter: 'blur(0px)',
               ease: 'power3.out',
-              onComplete: done,
+              onComplete: () => {
+                container.style.overflow = origOverflow;
+                done();
+              },
             });
           },
         },
@@ -69,26 +76,33 @@ export function initBarba(router: Router) {
           name: 'arcade-slide-fade',
           leave(data) {
             const done = this.async();
-            const container = data.current.container;
+            const container = data.current.container as HTMLElement;
             if (!container) {
               done();
               return;
             }
+            const origOverflow = container.style.overflow;
+            container.style.overflow = 'hidden';
             gsap.to(container, {
               duration: 0.3,
               x: -50,
               opacity: 0,
               ease: 'power2.in',
-              onComplete: done,
+              onComplete: () => {
+                container.style.overflow = origOverflow;
+                done();
+              },
             });
           },
           enter(data) {
             const done = this.async();
-            const container = data.next.container;
+            const container = data.next.container as HTMLElement;
             if (!container) {
               done();
               return;
             }
+            const origOverflow = container.style.overflow;
+            container.style.overflow = 'hidden';
             gsap.set(container, {
               x: 50,
               opacity: 0,
@@ -98,7 +112,10 @@ export function initBarba(router: Router) {
               x: 0,
               opacity: 1,
               ease: 'power2.out',
-              onComplete: done,
+              onComplete: () => {
+                container.style.overflow = origOverflow;
+                done();
+              },
             });
           },
         },
@@ -118,17 +135,22 @@ export function initBarba(router: Router) {
 
 export function onTransitionLeave(el: Element, done: () => void) {
   const isGameRoute = window.location.pathname.includes('/game/');
+  const htmlEl = el as HTMLElement;
+  const originalOverflow = htmlEl.style.overflow;
+  htmlEl.style.overflow = 'hidden';
 
   if (isGameRoute) {
-    // Black Hole Portal Leave (Vortex collapse effect)
+    // Black Hole Implosion (Portal Void Collapse without rotating scrollbars)
     gsap.to(el, {
-      duration: 0.45,
+      duration: 0.4,
       scale: 0.05,
-      rotation: 360,
       opacity: 0,
-      filter: 'blur(12px)',
-      ease: 'back.in(1.7)',
-      onComplete: done,
+      filter: 'blur(16px)',
+      ease: 'power4.in',
+      onComplete: () => {
+        htmlEl.style.overflow = originalOverflow;
+        done();
+      },
     });
   } else {
     // Arcade Slide Fade Leave
@@ -137,30 +159,37 @@ export function onTransitionLeave(el: Element, done: () => void) {
       x: -50,
       opacity: 0,
       ease: 'power2.in',
-      onComplete: done,
+      onComplete: () => {
+        htmlEl.style.overflow = originalOverflow;
+        done();
+      },
     });
   }
 }
 
 export function onTransitionEnter(el: Element, done: () => void) {
   const isGameRoute = window.location.pathname.includes('/game/');
+  const htmlEl = el as HTMLElement;
+  const originalOverflow = htmlEl.style.overflow;
+  htmlEl.style.overflow = 'hidden';
 
   if (isGameRoute) {
-    // Black Hole Portal Enter (Vortex expanding effect)
+    // Black Hole Portal Expansion (Vortex zoom in without rotating scrollbars)
     gsap.set(el, {
-      scale: 0.1,
-      rotation: -180,
+      scale: 0.08,
       opacity: 0,
-      filter: 'blur(10px)',
+      filter: 'blur(16px)',
     });
     gsap.to(el, {
-      duration: 0.5,
+      duration: 0.45,
       scale: 1,
-      rotation: 0,
       opacity: 1,
       filter: 'blur(0px)',
       ease: 'power3.out',
-      onComplete: done,
+      onComplete: () => {
+        htmlEl.style.overflow = originalOverflow;
+        done();
+      },
     });
   } else {
     // Arcade Slide Fade Enter
@@ -173,7 +202,10 @@ export function onTransitionEnter(el: Element, done: () => void) {
       x: 0,
       opacity: 1,
       ease: 'power2.out',
-      onComplete: done,
+      onComplete: () => {
+        htmlEl.style.overflow = originalOverflow;
+        done();
+      },
     });
   }
 }
