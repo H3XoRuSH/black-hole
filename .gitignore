@@ -36,6 +36,7 @@ coverage
 
 # Agent configuration
 .agents/
+.reasonix/
 opencode.json
 AGENTS.md
 

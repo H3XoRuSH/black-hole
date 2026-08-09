@@ -1,7 +1,7 @@
-import type { Player, EscapeRoomGameState, EscapeRoomNode, EscapeRoomData, EscapeRoomLocation, Room } from '../../src/types/shared.js';
+import type { Player, EscapeRoomGameState, EscapeRoomNode, EscapeRoomData, Room } from '../../src/types/shared.js';
 import escapeRooms from '../data/escape-rooms/rooms.js';
 
-export type { Player, EscapeRoomGameState, EscapeRoomNode, EscapeRoomData, EscapeRoomLocation, Room };
+export type { Player, EscapeRoomGameState, Room };
 
 const PORT = process.env.PORT || 3000;
 const API_URL = process.env.ESCAPE_ROOMS_API_URL || `http://localhost:${PORT}/api/escape-rooms`;
@@ -44,8 +44,6 @@ export const getAvailableRooms = (): { id: string; name: string; description: st
       difficulty: r.difficulty,
     }));
 };
-
-export const noTurns = true;
 
 export const createInitialState = (playerId: string): EscapeRoomGameState => {
   return {

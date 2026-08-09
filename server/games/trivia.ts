@@ -3,8 +3,6 @@ import { fetchQuestions } from '../services/triviaService.js';
 
 export type { TriviaGameState };
 
-export const noTurns = true;
-
 function isHiddenChar(ch: string): boolean {
   return /[a-zA-Z0-9]/.test(ch);
 }

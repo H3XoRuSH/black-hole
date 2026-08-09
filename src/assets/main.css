@@ -147,7 +147,6 @@
 @layer base {
   html, body {
     overflow-x: hidden;
-    scrollbar-gutter: stable;
   }
 
   html {
@@ -198,7 +197,6 @@
    ============================================= */
 .barba-transitioning,
 .barba-transitioning * {
-  overflow: hidden !important;
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
 }

@@ -11,8 +11,6 @@ export interface BingoGameState {
   totalMoves: number;
 }
 
-export const noTurns = true;
-
 const generateCardArray = (): number[][] => {
   const card: number[][] = Array.from({ length: 5 }, () => Array(5).fill(0));
   const usedInCol: Record<number, Set<number>> = {};

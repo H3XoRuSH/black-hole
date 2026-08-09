@@ -14,5 +14,3 @@ export const createRoom = <T extends Record<string, any>>(gameId: string, gameSt
   gameId,
   gameState,
 });
-
-export const emittedEvents = (socket: any) => socket.emitted.map((e: any) => e.event);

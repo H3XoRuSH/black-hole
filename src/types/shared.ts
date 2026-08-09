@@ -7,7 +7,7 @@ export interface Player {
   difficulty?: 'easy' | 'medium' | 'hard';
 }
 
-export interface CircleData {
+interface CircleData {
   player: number;
   turn: number;
 }
@@ -105,7 +105,7 @@ export interface CheckersGameState {
   lastMoveTo?: string;
 }
 
-export type SpotItImageShape = 'circle' | 'diamond' | 'triangle' | 'square' | 'hexagon' | 'star' | 'burst' | 'ring' | 'cross' | 'leaf' | 'bolt' | 'wave' | `image-${number}` | string;
+type SpotItImageShape = 'circle' | 'diamond' | 'triangle' | 'square' | 'hexagon' | 'star' | 'burst' | 'ring' | 'cross' | 'leaf' | 'bolt' | 'wave' | `image-${number}` | string;
 
 export interface SpotItImage {
   id: string;
@@ -144,12 +144,12 @@ export interface SpotItGameState {
   recapLoading?: boolean;
 }
 
-export interface RecapEntry {
+interface RecapEntry {
   text: string;
   loading: boolean;
 }
 
-export interface RecapChatMessage {
+interface RecapChatMessage {
   role: 'user' | 'assistant';
   content: string;
 }
@@ -188,7 +188,7 @@ export interface TriviaQuestion {
   correctAnswer: string;
 }
 
-export interface TriviaOptions {
+interface TriviaOptions {
   categorySlug?: string;
   categoryName?: string;
   difficulty?: string;
@@ -238,12 +238,12 @@ export interface SoundNote {
   rest: boolean;
 }
 
-export interface SoundPuzzle {
+interface SoundPuzzle {
   type: 'rhythm' | 'melody' | 'pitch-sequence';
   notes: SoundNote[];
 }
 
-export type EscapeRoomNodeType = 'dialogue' | 'puzzle' | 'item' | 'locked';
+type EscapeRoomNodeType = 'dialogue' | 'puzzle' | 'item' | 'locked';
 
 export interface EscapeRoomNode {
   id: string;

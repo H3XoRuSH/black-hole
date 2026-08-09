@@ -227,5 +227,3 @@ export function onTransitionEnter(el: Element, done: () => void) {
     });
   }
 }
-
-export { barba, gsap };

@@ -9,7 +9,7 @@ export interface DeepSeekChatOptions {
 }
 
 export const isDeepSeekConfigured = !!DEEPSEEK_API_KEY;
-export const isOpenRouterConfigured = !!OPENROUTER_API_KEY;
+const isOpenRouterConfigured = !!OPENROUTER_API_KEY;
 
 async function deepSeekFetch(model: string, options: DeepSeekChatOptions): Promise<string> {
   if (!DEEPSEEK_API_KEY) {
@@ -97,8 +97,4 @@ async function callDeepSeekWithFallback(model: string, label: string, options: D
 
 export function callDeepSeek(options: DeepSeekChatOptions): Promise<string> {
   return callDeepSeekWithFallback('deepseek-v4-flash', 'DeepSeek', options);
-}
-
-export function callDeepSeekPro(options: DeepSeekChatOptions): Promise<string> {
-  return callDeepSeekWithFallback('deepseek-v4-pro', 'DeepSeek Pro', options);
 }

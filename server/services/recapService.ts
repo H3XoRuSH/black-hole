@@ -4,7 +4,7 @@ import { getSystemPrompt, getRecapPrompt, getRecapConversationPrompt } from './p
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY;
 const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY;
 
-export const RECAP_SUPPORTED_GAMES = ['black-hole', 'connect-four', 'dots-and-boxes', 'battleship', 'checkers'];
+const RECAP_SUPPORTED_GAMES = ['black-hole', 'connect-four', 'dots-and-boxes', 'battleship', 'checkers'];
 
 export function isRecapSupported(gameId: string): boolean {
   return RECAP_SUPPORTED_GAMES.includes(gameId);

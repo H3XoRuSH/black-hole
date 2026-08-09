@@ -1,11 +1,9 @@
 import type { Player, Room, SpotItCard, SpotItGameState } from '../../src/types/shared.js';
 
-export const SPOT_IT_ORDER = 7;
+const SPOT_IT_ORDER = 7;
 export const SPOT_IT_CARD_COUNT = SPOT_IT_ORDER ** 2 + SPOT_IT_ORDER + 1;
 export const SPOT_IT_IMAGES_PER_CARD = SPOT_IT_ORDER + 1;
 export const WRONG_CLAIM_PENALTY_MS = 3000;
-
-export const noTurns = true;
 
 const AFFINE_IMAGE_COUNT = SPOT_IT_ORDER ** 2;
 const SLOPE_IMAGE_START = AFFINE_IMAGE_COUNT;

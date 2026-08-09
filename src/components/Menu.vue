@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-col items-center justify-start min-h-full bg-transparent p-4 pt-8 sm:pt-10 pb-8 select-none">
     <!-- Header Section -->
-    <header class="text-center mb-6 sm:mb-8 max-w-md w-full animate-slide-up">
+    <header class="text-center mb-6 sm:mb-8 max-w-md w-full">
       <h1 class="text-4xl sm:text-5xl font-black text-neo-text uppercase tracking-tighter mb-2">
         Gab's Arcade
       </h1>
@@ -11,7 +11,7 @@
     </header>
 
     <!-- Join via Room Code Card -->
-    <div class="w-full max-w-md bg-white dark:bg-neo-card-bg neo-border neo-shadow p-6 mb-6 rounded-none relative animate-scale-in" style="animation-delay: 0.1s">
+    <div class="w-full max-w-md bg-white dark:bg-neo-card-bg neo-border neo-shadow p-6 mb-6 rounded-none relative">
       <div class="flex items-center space-x-2.5 mb-4">
         <div class="p-2 bg-white dark:bg-neo-card-bg neo-border-2 text-neo-text rounded-none">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -107,7 +107,7 @@
     </div>
 
     <!-- Filter Bar -->
-    <div class="w-full max-w-md px-4 sm:px-0 mb-4 animate-slide-up relative z-10" style="animation-delay: 0.2s">
+    <div class="w-full max-w-md px-4 sm:px-0 mb-4 relative z-10">
       <div class="flex flex-wrap items-center gap-2">
         <!-- View Mode Dropdown -->
         <div class="relative">
@@ -196,7 +196,7 @@
     </div>
 
     <!-- Games Display Section -->
-    <main class="w-full max-w-md relative px-4 sm:px-0 animate-slide-up" style="animation-delay: 0.3s" role="region" aria-label="Games list">
+    <main class="w-full max-w-md relative px-4 sm:px-0" role="region" aria-label="Games list">
       <component :is="activeComponent" :games="filteredGames" @select-game="handleSelectGame" />
     </main>
 
