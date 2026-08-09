@@ -81,6 +81,9 @@ export function initBarba(router: Router) {
               done();
               return;
             }
+            const parent = container.parentElement;
+            const origParentOverflowX = parent ? parent.style.overflowX : '';
+            if (parent) parent.style.overflowX = 'hidden';
             const origOverflow = container.style.overflow;
             container.style.overflow = 'hidden';
             gsap.to(container, {
@@ -90,6 +93,7 @@ export function initBarba(router: Router) {
               ease: 'power2.in',
               onComplete: () => {
                 container.style.overflow = origOverflow;
+                if (parent) parent.style.overflowX = origParentOverflowX;
                 done();
               },
             });
@@ -101,6 +105,9 @@ export function initBarba(router: Router) {
               done();
               return;
             }
+            const parent = container.parentElement;
+            const origParentOverflowX = parent ? parent.style.overflowX : '';
+            if (parent) parent.style.overflowX = 'hidden';
             const origOverflow = container.style.overflow;
             container.style.overflow = 'hidden';
             gsap.set(container, {
@@ -114,6 +121,7 @@ export function initBarba(router: Router) {
               ease: 'power2.out',
               onComplete: () => {
                 container.style.overflow = origOverflow;
+                if (parent) parent.style.overflowX = origParentOverflowX;
                 done();
               },
             });
@@ -136,8 +144,12 @@ export function initBarba(router: Router) {
 export function onTransitionLeave(el: Element, done: () => void) {
   const isGameRoute = window.location.pathname.includes('/game/');
   const htmlEl = el as HTMLElement;
+  const parent = htmlEl.parentElement;
   const originalOverflow = htmlEl.style.overflow;
+  const originalParentOverflowX = parent ? parent.style.overflowX : '';
+
   htmlEl.style.overflow = 'hidden';
+  if (parent) parent.style.overflowX = 'hidden';
 
   if (isGameRoute) {
     // Black Hole Implosion (Portal Void Collapse without rotating scrollbars)
@@ -149,6 +161,7 @@ export function onTransitionLeave(el: Element, done: () => void) {
       ease: 'power4.in',
       onComplete: () => {
         htmlEl.style.overflow = originalOverflow;
+        if (parent) parent.style.overflowX = originalParentOverflowX;
         done();
       },
     });
@@ -161,6 +174,7 @@ export function onTransitionLeave(el: Element, done: () => void) {
       ease: 'power2.in',
       onComplete: () => {
         htmlEl.style.overflow = originalOverflow;
+        if (parent) parent.style.overflowX = originalParentOverflowX;
         done();
       },
     });
@@ -170,8 +184,12 @@ export function onTransitionLeave(el: Element, done: () => void) {
 export function onTransitionEnter(el: Element, done: () => void) {
   const isGameRoute = window.location.pathname.includes('/game/');
   const htmlEl = el as HTMLElement;
+  const parent = htmlEl.parentElement;
   const originalOverflow = htmlEl.style.overflow;
+  const originalParentOverflowX = parent ? parent.style.overflowX : '';
+
   htmlEl.style.overflow = 'hidden';
+  if (parent) parent.style.overflowX = 'hidden';
 
   if (isGameRoute) {
     // Black Hole Portal Expansion (Vortex zoom in without rotating scrollbars)
@@ -188,6 +206,7 @@ export function onTransitionEnter(el: Element, done: () => void) {
       ease: 'power3.out',
       onComplete: () => {
         htmlEl.style.overflow = originalOverflow;
+        if (parent) parent.style.overflowX = originalParentOverflowX;
         done();
       },
     });
@@ -204,6 +223,7 @@ export function onTransitionEnter(el: Element, done: () => void) {
       ease: 'power2.out',
       onComplete: () => {
         htmlEl.style.overflow = originalOverflow;
+        if (parent) parent.style.overflowX = originalParentOverflowX;
         done();
       },
     });

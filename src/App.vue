@@ -17,7 +17,7 @@
         </div>
       </div>
     </div>
-    <div v-else ref="scrollContainer" class="flex-grow flex flex-col min-h-0 overflow-y-auto">
+    <div v-else ref="scrollContainer" class="flex-grow flex flex-col min-h-0 overflow-y-auto overflow-x-hidden">
       <router-view
         v-slot="{ Component, route }"
         :socket="socket"
@@ -39,7 +39,7 @@
             :key="route.path"
             data-barba="container"
             :data-barba-namespace="String(route.name || 'default')"
-            class="flex-grow flex flex-col min-h-0"
+            class="flex-grow flex flex-col min-h-0 w-full overflow-x-hidden"
           >
             <component
               :is="Component"

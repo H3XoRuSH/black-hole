@@ -145,6 +145,10 @@
 }
 
 @layer base {
+  html, body {
+    overflow-x: hidden;
+  }
+
   html {
     transition: color 0.2s ease;
   }
