@@ -189,8 +189,12 @@ io.on('connection', (socket: Socket) => {
     rooms.removeAI(roomKey, socket, io);
   });
 
-  socket.on('set-trivia-options', ({ roomKey, categorySlug, categoryName, difficulty }: { roomKey: string; categorySlug?: string; categoryName?: string; difficulty?: string }) => {
-    rooms.setTriviaOptions(roomKey, socket, { categorySlug, categoryName, difficulty }, io);
+  socket.on('set-trivia-options', ({ roomKey, categorySlug, categoryName, difficulty, customTopic }: { roomKey: string; categorySlug?: string; categoryName?: string; difficulty?: string; customTopic?: string }) => {
+    rooms.setTriviaOptions(roomKey, socket, { categorySlug, categoryName, difficulty, customTopic }, io);
+  });
+
+  socket.on('generate-ai-trivia-questions', ({ roomKey, customTopic }: { roomKey: string; customTopic: string }) => {
+    rooms.generateAiTriviaQuestions(roomKey, socket, { customTopic }, io);
   });
 
   socket.on('set-pictionary-options', ({ roomKey, timerDuration, roundsPerPlayer }: { roomKey: string; timerDuration: number; roundsPerPlayer?: number }) => {

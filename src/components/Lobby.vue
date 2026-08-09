@@ -214,26 +214,71 @@
           </div>
 
           <!-- Trivia Options (host only) -->
-          <div v-if="gameId === 'trivia' && isHost" class="py-4 border-t-4 border-black">
-            <h4 class="text-sm font-black uppercase tracking-wider text-neo-text mb-3">Trivia Settings</h4>
-            <div class="flex gap-2 mb-2">
-              <div class="flex-1">
-                <label class="text-[10px] font-black uppercase tracking-wider text-neo-text mb-1 block">Category</label>
-                <select
-                  v-model="triviaCategory"
-                  @change="updateTriviaOptions"
-                  class="w-full text-xs font-bold py-2 px-3 neo-input rounded-none cursor-pointer"
+          <div v-if="gameId === 'trivia' && isHost" class="py-4 border-t-4 border-black space-y-3">
+            <div class="flex items-center justify-between">
+              <h4 class="text-sm font-black uppercase tracking-wider text-neo-text">Trivia Settings</h4>
+              <!-- Tab Controls -->
+              <div class="flex border-2 border-black">
+                <button
+                  type="button"
+                  @click="triviaTab = 'ai'; updateTriviaOptions()"
+                  class="px-2.5 py-1 text-[10px] sm:text-[11px] font-black uppercase tracking-wider transition-colors cursor-pointer"
+                  :class="triviaTab === 'ai' ? 'bg-neo-secondary text-black' : 'bg-white dark:bg-neo-card-bg text-neo-text/60'"
                 >
-                  <option :value="null">Any Category</option>
-                  <option v-for="cat in categories" :key="cat.slug" :value="cat.slug">{{ cat.name }}</option>
-                </select>
+                  ✨ AI Topic
+                </button>
+                <button
+                  type="button"
+                  @click="triviaTab = 'curated'; updateTriviaOptions()"
+                  class="px-2.5 py-1 text-[10px] sm:text-[11px] font-black uppercase tracking-wider transition-colors border-l-2 border-black cursor-pointer"
+                  :class="triviaTab === 'curated' ? 'bg-neo-secondary text-black' : 'bg-white dark:bg-neo-card-bg text-neo-text/60'"
+                >
+                  📚 Curated
+                </button>
               </div>
-              <div class="flex-1">
-                <label class="text-[10px] font-black uppercase tracking-wider text-neo-text mb-1 block">Difficulty</label>
+            </div>
+            
+            <!-- TAB 1: AI Custom Topic -->
+            <div v-if="triviaTab === 'ai'" class="bg-violet-50 dark:bg-violet-950/40 p-3 border-2 border-black text-left space-y-3">
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <label class="text-[11px] font-black uppercase tracking-wider text-violet-900 dark:text-violet-200 flex items-center gap-1">
+                    <span>Custom Topic Prompt</span>
+                  </label>
+                  <span class="text-[10px] font-mono font-bold text-gray-500">{{ (customTopic || '').length }}/40</span>
+                </div>
+                
+                <div class="flex gap-2">
+                  <input
+                    v-model="customTopic"
+                    maxlength="40"
+                    @input="updateTriviaOptions"
+                    placeholder="e.g. 90s Anime, Video Game Music..."
+                    class="flex-1 text-xs font-bold py-2 px-3 neo-input rounded-none bg-white dark:bg-neo-card-bg min-w-0"
+                  />
+                  <button
+                    type="button"
+                    @click="generateAiTrivia"
+                    :disabled="!customTopic.trim() || isGeneratingAiTrivia || isAiQuestionsGeneratedForCurrentTopic"
+                    class="px-3 py-2 bg-neo-accent text-white font-black text-xs uppercase neo-btn rounded-none flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 flex-shrink-0"
+                  >
+                    <template v-if="isGeneratingAiTrivia">
+                      <WaitingIndicator /> <span>Generating</span>
+                    </template>
+                    <template v-else>
+                      <span>Generate AI</span>
+                    </template>
+                  </button>
+                </div>
+              </div>
+
+              <!-- AI Topic Difficulty Selection -->
+              <div>
+                <label class="text-[10px] font-black uppercase tracking-wider text-violet-900 dark:text-violet-200 mb-1 block">Difficulty</label>
                 <select
                   v-model="triviaDifficulty"
                   @change="updateTriviaOptions"
-                  class="w-full text-xs font-bold py-2 px-3 neo-input rounded-none cursor-pointer"
+                  class="w-full text-xs font-bold py-2 px-3 neo-input rounded-none cursor-pointer bg-white dark:bg-neo-card-bg"
                 >
                   <option value="">Any Difficulty</option>
                   <option value="easy">Easy</option>
@@ -241,6 +286,66 @@
                   <option value="hard">Hard</option>
                 </select>
               </div>
+
+              <!-- Status Feedback -->
+              <div v-if="isGeneratingAiTrivia" class="text-xs font-bold text-violet-700 dark:text-violet-300 flex items-center gap-1.5 animate-pulse">
+                <WaitingIndicator />
+                <span>Generating 10 AI questions for "{{ customTopic }}"</span>
+              </div>
+
+              <div v-else-if="hasAiTriviaQuestions" class="text-xs font-black text-emerald-800 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950/60 p-2 border border-black flex items-center gap-2">
+                <span class="text-base font-black text-emerald-600 dark:text-emerald-400">✓</span>
+                <span>10 AI Questions pre-generated for "{{ triviaOptions.customTopic }}"</span>
+              </div>
+
+              <div v-else-if="aiTriviaError" class="text-xs font-bold text-red-700 dark:text-red-300 bg-red-100 dark:bg-red-950/60 p-2 border border-black">
+                ⚠️ {{ aiTriviaError }} (Will fall back to standard questions)
+              </div>
+            </div>
+
+            <!-- TAB 2: Curated Category -->
+            <div v-else-if="triviaTab === 'curated'" class="p-3 border-2 border-black text-left space-y-3 bg-slate-50 dark:bg-slate-900/40">
+              <div class="flex gap-2">
+                <div class="flex-1">
+                  <label class="text-[10px] font-black uppercase tracking-wider text-neo-text mb-1 block">Category</label>
+                  <select
+                    v-model="triviaCategory"
+                    @change="updateTriviaOptions"
+                    class="w-full text-xs font-bold py-2 px-3 neo-input rounded-none cursor-pointer bg-white dark:bg-neo-card-bg"
+                  >
+                    <option :value="null">Any Category</option>
+                    <option v-for="cat in categories" :key="cat.slug" :value="cat.slug">{{ cat.name }}</option>
+                  </select>
+                </div>
+                <div class="flex-1">
+                  <label class="text-[10px] font-black uppercase tracking-wider text-neo-text mb-1 block">Difficulty</label>
+                  <select
+                    v-model="triviaDifficulty"
+                    @change="updateTriviaOptions"
+                    class="w-full text-xs font-bold py-2 px-3 neo-input rounded-none cursor-pointer bg-white dark:bg-neo-card-bg"
+                  >
+                    <option value="">Any Difficulty</option>
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Trivia Options (non-host preview) -->
+          <div v-if="gameId === 'trivia' && !isHost && (triviaOptions.customTopic || triviaOptions.isGeneratingAi || hasAiTriviaQuestions)" class="py-3 px-4 border-t-4 border-black bg-violet-50 dark:bg-violet-950/40 font-bold text-xs text-left">
+            <div v-if="triviaOptions.isGeneratingAi" class="text-violet-700 dark:text-violet-300 flex items-center gap-1.5 animate-pulse">
+              <WaitingIndicator />
+              <span>Host is generating AI Trivia questions for "{{ triviaOptions.customTopic }}"</span>
+            </div>
+            <div v-else-if="hasAiTriviaQuestions" class="text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5">
+              <span>✨ AI Deck Ready:</span>
+              <span class="font-black text-black dark:text-white">"{{ triviaOptions.customTopic }}"</span>
+            </div>
+            <div v-else-if="triviaOptions.customTopic" class="text-violet-900 dark:text-violet-200">
+              <span>Topic:</span> <span class="font-black text-black dark:text-white">"{{ triviaOptions.customTopic }}"</span>
             </div>
           </div>
 
@@ -542,6 +647,8 @@ export default defineComponent({
       isQRModalOpen: false,
       editingName: false,
       newName: '',
+      triviaTab: 'ai' as 'ai' | 'curated',
+      customTopic: '',
       triviaCategory: null as string | null,
       triviaDifficulty: '',
       pictionaryTimer: 60,
@@ -587,7 +694,33 @@ export default defineComponent({
       return !!me?.ready;
     },
     canStartGame(): boolean {
-      return !this.diceSpinning && this.players.length >= this.minPlayers && this.players.every((p: any) => p.ready);
+      if (this.diceSpinning || this.players.length < this.minPlayers || !this.players.every((p: any) => p.ready)) {
+        return false;
+      }
+      if (this.gameId === 'trivia' && this.triviaTab === 'ai') {
+        if (this.isGeneratingAiTrivia) {
+          return false;
+        }
+      }
+      return true;
+    },
+    triviaOptions(): any {
+      return this.initialGameState?.triviaOptions || {};
+    },
+    isGeneratingAiTrivia(): boolean {
+      return !!this.triviaOptions.isGeneratingAi;
+    },
+    hasAiTriviaQuestions(): boolean {
+      return (this.triviaOptions.aiQuestions?.length || 0) > 0;
+    },
+    isAiQuestionsGeneratedForCurrentTopic(): boolean {
+      if (!this.hasAiTriviaQuestions) return false;
+      const currentTrimmed = (this.customTopic || '').trim().toLowerCase();
+      const generatedTopic = (this.triviaOptions.customTopic || '').trim().toLowerCase();
+      return currentTrimmed === generatedTopic;
+    },
+    aiTriviaError(): string {
+      return this.triviaOptions.aiGenerationError || '';
     },
     categories(): Array<{ slug: string; name: string }> {
       return [
@@ -696,11 +829,27 @@ export default defineComponent({
     updateTriviaOptions() {
       if (!this.socket || !this.roomKey) return;
       const cat = this.categories.find((c) => c.slug === this.triviaCategory);
+
+      const isAi = this.triviaTab === 'ai';
+      const customTopic = isAi && this.customTopic ? this.customTopic.slice(0, 40) : undefined;
+      const categorySlug = !isAi ? (this.triviaCategory || undefined) : undefined;
+      const categoryName = !isAi ? cat?.name : undefined;
+
       this.socket.emit('set-trivia-options', {
         roomKey: this.roomKey,
-        categorySlug: this.triviaCategory || undefined,
-        categoryName: cat?.name,
+        categorySlug,
+        categoryName,
         difficulty: this.triviaDifficulty || undefined,
+        customTopic,
+      });
+    },
+    generateAiTrivia() {
+      if (!this.socket || !this.roomKey || !this.customTopic.trim()) return;
+      this.triviaTab = 'ai';
+      this.updateTriviaOptions();
+      this.socket.emit('generate-ai-trivia-questions', {
+        roomKey: this.roomKey,
+        customTopic: this.customTopic.trim().slice(0, 40),
       });
     },
     updatePictionaryOptions() {

@@ -1,4 +1,4 @@
-import type { Player, Room, TriviaGameState } from '../../src/types/shared.js';
+import type { Player, Room, TriviaGameState, TriviaQuestion } from '../../src/types/shared.js';
 import { fetchQuestions } from '../services/triviaService.js';
 
 export type { TriviaGameState };
@@ -53,7 +53,14 @@ export const resetState = (players: Player[]): TriviaGameState => {
 
 export const onGameStart = async (room: Room): Promise<void> => {
   const gameState = room.gameState as TriviaGameState;
-  const questions = await fetchQuestions(10, gameState.triviaOptions);
+  let questions: TriviaQuestion[] = [];
+
+  if (gameState.triviaOptions?.aiQuestions && gameState.triviaOptions.aiQuestions.length > 0) {
+    questions = gameState.triviaOptions.aiQuestions;
+  } else {
+    questions = await fetchQuestions(10, gameState.triviaOptions);
+  }
+
   gameState.questions = questions;
   gameState.currentQuestionIndex = 0;
   gameState.players.forEach((p: any) => {

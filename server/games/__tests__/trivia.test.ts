@@ -8,13 +8,18 @@ import {
 } from '../trivia.js';
 import type { TriviaGameState, TriviaQuestion } from '../../../src/types/shared.js';
 import { createRoom, createSocketMock } from './helpers.js';
+import { validateAndCleanQuestions } from '../../services/triviaService.js';
 
-vi.mock('../../services/triviaService.js', () => ({
-  fetchQuestions: vi.fn(async () => [
-    { category: 'g', difficulty: 'easy', question: 'Q1', correctAnswer: 'apple' },
-    { category: 'g', difficulty: 'easy', question: 'Q2', correctAnswer: 'banana' },
-  ]),
-}));
+vi.mock('../../services/triviaService.js', async (importOriginal) => {
+  const actual: any = await importOriginal();
+  return {
+    ...actual,
+    fetchQuestions: vi.fn(async () => [
+      { category: 'g', difficulty: 'easy', question: 'Q1', correctAnswer: 'apple' },
+      { category: 'g', difficulty: 'easy', question: 'Q2', correctAnswer: 'banana' },
+    ]),
+  };
+});
 
 const stateWithPlayers = (overrides: Partial<TriviaGameState> = {}): TriviaGameState => ({
   questions: [
@@ -69,6 +74,19 @@ describe('createInitialState / resetState / onGameStart', () => {
     expect(state.answerDisplay).toBe('_____');
     expect(state.totalLetters).toBe(5);
   });
+
+  it('onGameStart uses pre-generated aiQuestions when present', async () => {
+    const aiQs = [
+      { category: 'AI Custom', difficulty: 'medium', question: 'What is 2+2?', correctAnswer: 'four' },
+    ];
+    const state = stateWithPlayers({
+      triviaOptions: { aiQuestions: aiQs as any, customTopic: 'Math' },
+    });
+    const room = createRoom('trivia', state);
+    await onGameStart(room);
+    expect(state.questions).toEqual(aiQs);
+    expect(state.answerDisplay).toBe('____');
+  });
 });
 
 describe('prepareNextQuestion', () => {
@@ -121,5 +139,21 @@ describe('makeMove - submit-answer', () => {
     const room = createRoom('trivia', state);
     const socket = createSocketMock('p1');
     expect(makeMove(room, socket, { action: 'submit-answer', answer: 'apple' })).toBe(false);
+  });
+});
+
+describe('validateAndCleanQuestions anti-leak filter', () => {
+  it('filters out questions that leak the answer in the question string', () => {
+    const raw = [
+      { question: 'What term refers to the tradition of merienda?', correctAnswer: 'merienda', difficulty: 'easy' },
+      { question: 'What afternoon snack is popular in the Philippines?', correctAnswer: 'Merienda', difficulty: 'easy' },
+      { question: 'What is the capital city?', correctAnswer: 'Manila', difficulty: 'easy' },
+      { question: 'What is the national flower?', correctAnswer: 'Sampaguita', difficulty: 'easy' },
+      { question: 'What dish features pork stewed in vinegar?', correctAnswer: 'Adobo', difficulty: 'easy' },
+      { question: 'What currency is used?', correctAnswer: 'Peso', difficulty: 'easy' },
+    ];
+    const cleaned = validateAndCleanQuestions(raw, 'Philippines');
+    expect(cleaned).toHaveLength(5);
+    expect(cleaned.some((q) => q.question.includes('tradition of merienda'))).toBe(false);
   });
 });

@@ -188,10 +188,14 @@ export interface TriviaQuestion {
   correctAnswer: string;
 }
 
-interface TriviaOptions {
+export interface TriviaOptions {
   categorySlug?: string;
   categoryName?: string;
   difficulty?: string;
+  customTopic?: string;
+  aiQuestions?: TriviaQuestion[];
+  isGeneratingAi?: boolean;
+  aiGenerationError?: string;
 }
 
 export interface TriviaGameState {

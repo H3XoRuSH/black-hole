@@ -4,6 +4,7 @@ import { readFileSync } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { generateRecap, recapConversation, isRecapSupported } from './services/recapService.js';
+import { generateAiQuestions, sanitizeTopic } from './services/triviaService.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -1000,18 +1001,68 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       }
     },
 
-    setTriviaOptions(roomKey: string, socket: Socket, data: { categorySlug?: string; categoryName?: string; difficulty?: string }, io: SocketIOServer) {
+    setTriviaOptions(roomKey: string, socket: Socket, data: { categorySlug?: string; categoryName?: string; difficulty?: string; customTopic?: string }, io: SocketIOServer) {
       if (!rooms.has(roomKey)) return;
       const room = rooms.get(roomKey)!;
       if (room.gameId !== 'trivia') return;
       const host = room.gameState.players.find((p: any) => p.id === socket.id);
       if (!host || host.player !== 1) return;
+
+      const topic = data.customTopic ? sanitizeTopic(data.customTopic) : undefined;
+      const existingAiQuestions = room.gameState.triviaOptions?.aiQuestions;
+
       room.gameState.triviaOptions = {
         categorySlug: data.categorySlug,
         categoryName: data.categoryName,
         difficulty: data.difficulty,
+        customTopic: topic,
+        aiQuestions: existingAiQuestions,
       };
       broadcastGameState(roomKey, room, io);
+    },
+
+    async generateAiTriviaQuestions(roomKey: string, socket: Socket, data: { customTopic: string }, io: SocketIOServer) {
+      if (!rooms.has(roomKey)) return;
+      const room = rooms.get(roomKey)!;
+      if (room.gameId !== 'trivia') return;
+      const host = room.gameState.players.find((p: any) => p.id === socket.id);
+      if (!host || host.player !== 1) return;
+
+      const topic = sanitizeTopic(data.customTopic);
+      if (!topic) return;
+
+      room.gameState.triviaOptions = {
+        ...room.gameState.triviaOptions,
+        customTopic: topic,
+        isGeneratingAi: true,
+        aiGenerationError: undefined,
+        aiQuestions: undefined,
+      };
+      broadcastGameState(roomKey, room, io);
+
+      try {
+        const questions = await generateAiQuestions(topic, 10);
+        const updatedRoom = rooms.get(roomKey);
+        if (!updatedRoom) return;
+
+        updatedRoom.gameState.triviaOptions = {
+          ...updatedRoom.gameState.triviaOptions,
+          isGeneratingAi: false,
+          aiQuestions: questions,
+          aiGenerationError: undefined,
+        };
+        broadcastGameState(roomKey, updatedRoom, io);
+      } catch (err: any) {
+        const updatedRoom = rooms.get(roomKey);
+        if (!updatedRoom) return;
+
+        updatedRoom.gameState.triviaOptions = {
+          ...updatedRoom.gameState.triviaOptions,
+          isGeneratingAi: false,
+          aiGenerationError: err.message || 'Failed to generate AI questions.',
+        };
+        broadcastGameState(roomKey, updatedRoom, io);
+      }
     },
 
     setPictionaryOptions(roomKey: string, socket: Socket, data: { timerDuration: number; roundsPerPlayer?: number }, io: SocketIOServer) {

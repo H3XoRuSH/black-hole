@@ -411,12 +411,12 @@ export default defineComponent({
       return 'bg-white dark:bg-neo-card-bg text-neo-text border-2 border-black opacity-70 font-black';
     },
     displayCharClass(ch: string, _idx: number) {
-      if (ch === '_') return 'text-slate-600';
+      if (ch === '_') return 'text-slate-400 dark:text-slate-500 font-black opacity-80';
       if (this.phase === 'solved') {
-        if (this.gameState.solvedBy === this.player) return 'text-emerald-400';
-        return 'text-amber-400';
+        if (this.gameState.solvedBy === this.player) return 'text-emerald-600 dark:text-emerald-400 font-black';
+        return 'text-amber-600 dark:text-amber-400 font-black';
       }
-      return 'text-white';
+      return 'text-violet-600 dark:text-violet-400 font-black';
     },
     submitAnswer() {
       const answer = (this.userAnswer || '').trim();
