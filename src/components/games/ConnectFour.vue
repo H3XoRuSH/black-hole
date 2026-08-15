@@ -29,7 +29,7 @@
             :key="`drop-col-${colIndex - 1}`"
             @click="makeMove(colIndex - 1)"
             :disabled="!canPlayColumn(colIndex - 1)"
-            class="w-full flex items-center justify-center py-1 transition-transform cursor-pointer disabled:cursor-not-allowed"
+            class="w-full h-7 xs:h-8 sm:h-9 flex items-center justify-center transition-transform cursor-pointer disabled:cursor-not-allowed"
             :class="canPlayColumn(colIndex - 1) ? 'hover:scale-110 active:scale-95' : ''"
             :aria-label="`Drop disc in column ${colIndex}`"
           >
@@ -57,7 +57,7 @@
             <div
               v-for="rowIndex in 6"
               :key="`cell-${rowIndex - 1}-${colIndex - 1}`"
-              class="aspect-square rounded-full flex items-center justify-center relative overflow-hidden bg-neo-bg neo-border-2"
+              class="aspect-square rounded-full flex items-center justify-center relative bg-neo-bg neo-border-2"
             >
               <!-- Placed Disc -->
               <div
@@ -213,7 +213,7 @@ export default defineComponent({
     lastMoveClass(row: number, col: number) {
       if (!this.gameState.lastMove) return '';
       return this.gameState.lastMove.row === row && this.gameState.lastMove.col === col
-        ? 'ring-4 ring-yellow-400 dark:ring-yellow-300 ring-offset-2 dark:ring-offset-neo-card-bg'
+        ? 'ring-4 ring-yellow-400 dark:ring-yellow-300 ring-offset-2 dark:ring-offset-neo-card-bg z-20'
         : '';
     },
   },
