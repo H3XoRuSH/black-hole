@@ -5,6 +5,7 @@ export interface Player {
   name?: string;
   isAI?: boolean;
   difficulty?: 'easy' | 'medium' | 'hard';
+  sessionToken?: string;
 }
 
 interface CircleData {

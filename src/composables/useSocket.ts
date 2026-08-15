@@ -33,8 +33,17 @@ export function useSocket(router: any) {
     winner: '',
   });
 
-  function saveRoomData(key: string, p: number, gId: string) {
-    sessionStorage.setItem('roomData', JSON.stringify({ roomKey: key, player: p, gameId: gId }));
+  function saveRoomData(key: string, p: number, gId: string, token?: string) {
+    const existing = sessionStorage.getItem('roomData');
+    let sessionToken = token;
+    if (!sessionToken && existing) {
+      try {
+        sessionToken = JSON.parse(existing).sessionToken;
+      } catch {
+        // ignore
+      }
+    }
+    sessionStorage.setItem('roomData', JSON.stringify({ roomKey: key, player: p, gameId: gId, sessionToken }));
   }
 
   function clearRoomData() {
@@ -91,8 +100,8 @@ export function useSocket(router: any) {
       const saved = sessionStorage.getItem('roomData');
       if (saved) {
         try {
-          const { roomKey: savedKey, player: savedPlayer } = JSON.parse(saved);
-          socket.value?.emit('reconnect-room', { roomKey: savedKey, playerNumber: savedPlayer });
+          const { roomKey: savedKey, player: savedPlayer, sessionToken } = JSON.parse(saved);
+          socket.value?.emit('reconnect-room', { roomKey: savedKey, playerNumber: savedPlayer, sessionToken });
         } catch {
           clearRoomData();
         }
@@ -130,7 +139,7 @@ export function useSocket(router: any) {
       }
     });
 
-    socket.value.on('waiting-for-player', ({ roomKey: rk, player: p, gameId: gId, gameState: gs }: any) => {
+    socket.value.on('waiting-for-player', ({ roomKey: rk, player: p, gameId: gId, gameState: gs, sessionToken }: any) => {
       resetGameState();
       roomKey.value = rk;
       player.value = p;
@@ -139,29 +148,30 @@ export function useSocket(router: any) {
       if (gs) {
         gameState.value = gs;
       }
-      saveRoomData(rk, p, gameId.value);
+      saveRoomData(rk, p, gameId.value, sessionToken);
       router.isLeavingDueToDisconnect = true;
       router.push(`/${gameId.value}/lobby`).finally(() => {
         router.isLeavingDueToDisconnect = false;
       });
     });
 
-    socket.value.on('room-started', ({ roomKey: rk, player: p, gameId: gId, gameState: gs }: { roomKey: string; player: number; gameId: string; gameState: any }) => {
+    socket.value.on('room-started', ({ roomKey: rk, player: p, gameId: gId, gameState: gs, sessionToken }: { roomKey: string; player: number; gameId: string; gameState: any; sessionToken?: string }) => {
       roomKey.value = rk;
       player.value = p;
       gameId.value = gId || 'black-hole';
       gameState.value = gs;
       connectionStatus.value = '';
-      saveRoomData(rk, p, gameId.value);
+      saveRoomData(rk, p, gameId.value, sessionToken);
       router.push(`/${gameId.value}/game/${rk}`);
     });
 
-    socket.value.on('reconnect-success', ({ roomKey: rk, player: p, gameId: gId, gameState: gs, gameStarted }: any) => {
+    socket.value.on('reconnect-success', ({ roomKey: rk, player: p, gameId: gId, gameState: gs, gameStarted, sessionToken }: any) => {
       roomKey.value = rk;
       player.value = p;
       gameId.value = gId || 'black-hole';
       gameState.value = gs;
       connectionStatus.value = '';
+      saveRoomData(rk, p, gameId.value, sessionToken);
       const route = gameStarted ? `/${gameId.value}/game/${rk}` : `/${gameId.value}/lobby`;
       router.push(route);
     });
@@ -237,6 +247,16 @@ export function useSocket(router: any) {
     });
 
     socket.value.on('invalid-move', ({ message }: { message: string }) => {
+      const { showToast } = useToast();
+      showToast(message, 'error');
+    });
+
+    socket.value.on('trivia-options-error', ({ message }: { message: string }) => {
+      const { showToast } = useToast();
+      showToast(message, 'error');
+    });
+
+    socket.value.on('recap-error', ({ message }: { message: string }) => {
       const { showToast } = useToast();
       showToast(message, 'error');
     });

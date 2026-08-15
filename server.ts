@@ -4,6 +4,7 @@ import { Server, Socket } from 'socket.io';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import helmet from 'helmet';
 import * as blackHole from './server/games/blackHole.js';
 import * as connectFour from './server/games/connectFour.js';
 import * as dotsAndBoxes from './server/games/dotsAndBoxes.js';
@@ -20,6 +21,7 @@ import * as spotIt from './server/games/spotIt.js';
 import { createRoomManager } from './server/roomManager.js';
 import { evaluateBugReport, createGitHubIssue } from './server/services/bugReportService.js';
 import escapeRooms from './server/data/escape-rooms/rooms.js';
+import { globalRateLimiter } from './server/utils/rateLimiter.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -34,13 +36,54 @@ try {
   console.warn('dist/index.html not found, run `npm run build` first');
 }
 
+const isProd = process.env.NODE_ENV === 'production';
+const allowedOrigin = process.env.ALLOWED_ORIGIN;
+const corsOrigin = isProd && allowedOrigin ? allowedOrigin : '*';
+
+if (isProd && !allowedOrigin) {
+  console.warn('[SECURITY] Running in production mode without ALLOWED_ORIGIN configured. CORS is defaulting to "*".');
+}
+
+const trustProxy = process.env.TRUST_PROXY === 'true' || process.env.TRUST_PROXY === '1';
+
+if (isProd && !trustProxy) {
+  console.info('[INFO] TRUST_PROXY is not enabled. If running behind a reverse proxy (e.g. Nginx, Cloudflare), set TRUST_PROXY=true to ensure proper client IP rate limiting.');
+}
+
 const app = express();
+if (trustProxy) {
+  app.set('trust proxy', 1);
+}
+
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false,
+}));
+
 const server = createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: '*',
+    origin: corsOrigin,
     methods: ['GET', 'POST'],
   },
+});
+
+function getClientIp(socket: Socket): string {
+  if (trustProxy) {
+    const forwarded = socket.handshake.headers['x-forwarded-for'];
+    if (typeof forwarded === 'string') {
+      return forwarded.split(',')[0].trim();
+    }
+  }
+  return socket.handshake.address || socket.id;
+}
+
+io.use((socket, next) => {
+  const ip = getClientIp(socket);
+  if (!globalRateLimiter.consume(`conn:${ip}`, 120, 60000)) {
+    return next(new Error('Too many connection attempts. Please try again later.'));
+  }
+  next();
 });
 
 app.use('/assets', express.static(path.join(distPath, 'assets'), {
@@ -64,7 +107,7 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/api/escape-rooms', (req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', corsOrigin);
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   if (req.method === 'OPTIONS') {
@@ -86,7 +129,7 @@ app.get('/api/escape-rooms', (req, res) => {
       }));
     res.json(list);
   } catch (err: any) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Failed to fetch escape rooms.' });
   }
 });
 
@@ -100,7 +143,7 @@ app.get('/api/escape-rooms/:id', (req, res) => {
     }
     res.json(room);
   } catch (err: any) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: 'Failed to fetch escape room details.' });
   }
 });
 
@@ -133,15 +176,23 @@ io.on('connection', (socket: Socket) => {
   console.log('A player connected:', socket.id);
 
   socket.on('create-room', ({ gameId } = { gameId: 'black-hole' }) => {
-    const roomKey = rooms.createRoom(gameId, socket);
-    console.log(`Room created: ${roomKey}, Player 1: ${socket.id}, Game: ${gameId}`);
+    const ip = getClientIp(socket);
+    if (!globalRateLimiter.consume(`create:${ip}`, 10, 60000)) {
+      socket.emit('room-error', { message: 'Creating rooms too quickly. Please wait a moment.' });
+      return;
+    }
+    const safeGameId = typeof gameId === 'string' ? gameId : 'black-hole';
+    const roomKey = rooms.createRoom(safeGameId, socket);
+    console.log(`Room created: ${roomKey}, Player 1: ${socket.id}, Game: ${safeGameId}`);
   });
 
   socket.on('join-room', ({ roomKey, gameId }: { roomKey: string; gameId: string }) => {
+    if (typeof roomKey !== 'string') return;
     rooms.joinRoom(roomKey, gameId, socket, io);
   });
 
   socket.on('validate-room', ({ roomKey }: { roomKey: string }) => {
+    if (typeof roomKey !== 'string') return;
     rooms.validateRoom(roomKey, socket);
   });
 
@@ -150,86 +201,130 @@ io.on('connection', (socket: Socket) => {
   });
 
   socket.on('request-recap', ({ roomKey }: { roomKey: string }) => {
+    if (typeof roomKey !== 'string') return;
+    if (!globalRateLimiter.consume(`recap:${socket.id}`, 5, 60000)) {
+      socket.emit('recap-error', { message: 'Recap requested too frequently.' });
+      return;
+    }
     rooms.requestRecap(roomKey, socket);
   });
 
   socket.on('recap-question', ({ roomKey, question }: { roomKey: string; question: string }) => {
+    if (typeof roomKey !== 'string' || typeof question !== 'string') return;
+    if (!globalRateLimiter.consume(`ai-recap:${socket.id}`, 6, 60000)) {
+      socket.emit('recap-error', { message: 'Asking questions too fast. Please slow down.' });
+      return;
+    }
     rooms.recapQuestion(roomKey, socket, { question });
   });
 
   socket.on('new-game', ({ roomKey }: { roomKey: string }) => {
+    if (typeof roomKey !== 'string') return;
     rooms.newGame(roomKey, socket, io);
   });
 
   socket.on('leave-room', ({ roomKey }: { roomKey: string }) => {
+    if (typeof roomKey !== 'string') return;
     rooms.leaveRoom(roomKey, socket, io);
   });
 
   socket.on('toggle-ready', ({ roomKey }: { roomKey: string }) => {
+    if (typeof roomKey !== 'string') return;
     rooms.toggleReady(roomKey, socket, io);
   });
 
   socket.on('rename-player', ({ roomKey, name }: { roomKey: string; name: string }) => {
+    if (typeof roomKey !== 'string' || typeof name !== 'string') return;
     rooms.renamePlayer(roomKey, socket, name, io);
   });
 
   socket.on('start-game', ({ roomKey }: { roomKey: string }) => {
+    if (typeof roomKey !== 'string') return;
     rooms.startGame(roomKey, socket, io);
   });
 
   socket.on('add-ai', ({ roomKey, difficulty }: { roomKey: string; difficulty?: 'easy' | 'medium' | 'hard' }) => {
+    if (typeof roomKey !== 'string') return;
     rooms.addAI(roomKey, difficulty || 'hard', socket, io);
   });
 
   socket.on('change-difficulty', ({ roomKey, difficulty }: { roomKey: string; difficulty: 'easy' | 'medium' | 'hard' }) => {
+    if (typeof roomKey !== 'string') return;
     rooms.changeDifficulty(roomKey, difficulty, socket, io);
   });
 
   socket.on('remove-ai', ({ roomKey }: { roomKey: string }) => {
+    if (typeof roomKey !== 'string') return;
     rooms.removeAI(roomKey, socket, io);
   });
 
   socket.on('set-trivia-options', ({ roomKey, categorySlug, categoryName, difficulty, customTopic }: { roomKey: string; categorySlug?: string; categoryName?: string; difficulty?: string; customTopic?: string }) => {
+    if (typeof roomKey !== 'string') return;
     rooms.setTriviaOptions(roomKey, socket, { categorySlug, categoryName, difficulty, customTopic }, io);
   });
 
   socket.on('generate-ai-trivia-questions', ({ roomKey, customTopic }: { roomKey: string; customTopic: string }) => {
+    if (typeof roomKey !== 'string') return;
+    if (!globalRateLimiter.consume(`ai-trivia:${socket.id}`, 5, 60000)) {
+      socket.emit('trivia-options-error', { message: 'Generating questions too frequently. Please wait a minute.' });
+      return;
+    }
     rooms.generateAiTriviaQuestions(roomKey, socket, { customTopic }, io);
   });
 
   socket.on('set-pictionary-options', ({ roomKey, timerDuration, roundsPerPlayer }: { roomKey: string; timerDuration: number; roundsPerPlayer?: number }) => {
+    if (typeof roomKey !== 'string') return;
     rooms.setPictionaryOptions(roomKey, socket, { timerDuration, roundsPerPlayer }, io);
   });
 
   socket.on('set-escape-room-options', ({ roomKey, roomId }: { roomKey: string; roomId: string }) => {
+    if (typeof roomKey !== 'string') return;
     rooms.setEscapeRoomOptions(roomKey, socket, { roomId }, io);
   });
 
   socket.on('set-snakes-ladders-options', ({ roomKey, boardType, gridSize, snakesCount, laddersCount }: { roomKey: string; boardType: 'classic' | 'random'; gridSize: number; snakesCount: number; laddersCount: number }) => {
+    if (typeof roomKey !== 'string') return;
     rooms.setSnakesLaddersOptions(roomKey, socket, { boardType, gridSize, snakesCount, laddersCount }, io);
   });
 
   socket.on('set-jigsaw-options', ({ roomKey, gridSize }: { roomKey: string; gridSize: 4 | 6 | 8 }) => {
+    if (typeof roomKey !== 'string') return;
     rooms.setJigsawOptions(roomKey, socket, { gridSize }, io);
   });
 
   socket.on('send-chat', ({ roomKey, text }: { roomKey: string; text: string }) => {
+    if (typeof roomKey !== 'string') return;
+    if (!globalRateLimiter.consume(`chat:${socket.id}`, 30, 10000)) {
+      return;
+    }
     rooms.sendChat(roomKey, socket, { text }, io);
   });
 
   socket.on('get-chat', ({ roomKey }: { roomKey: string }) => {
+    if (typeof roomKey !== 'string') return;
     rooms.getChatMessages(roomKey, socket);
   });
 
   socket.on('draw-stroke', ({ roomKey, stroke }: { roomKey: string; stroke: any }) => {
+    if (typeof roomKey !== 'string' || !stroke) return;
+    const roomInfo = rooms.getSocketRoom(socket.id);
+    if (!roomInfo || roomInfo.roomKey !== roomKey) return;
     socket.to(roomKey).emit('draw-stroke', { stroke });
   });
 
   socket.on('clear-canvas', ({ roomKey }: { roomKey: string }) => {
+    if (typeof roomKey !== 'string') return;
+    const roomInfo = rooms.getSocketRoom(socket.id);
+    if (!roomInfo || roomInfo.roomKey !== roomKey) return;
     socket.to(roomKey).emit('clear-canvas');
   });
 
   socket.on('report-bug', async (data) => {
+    const ip = getClientIp(socket);
+    if (!globalRateLimiter.consume(`bug:${ip}`, 2, 120000) || !globalRateLimiter.consume(`bug:${socket.id}`, 2, 120000)) {
+      socket.emit('bug-report-error', { message: 'Too many bug reports submitted. Please wait a couple minutes.' });
+      return;
+    }
     try {
       const result = await evaluateBugReport(data);
       if (result.rejected) {
@@ -239,17 +334,18 @@ io.on('connection', (socket: Socket) => {
       const issue = await createGitHubIssue({
         title: result.formattedTitle!,
         body: result.formattedBody!,
-        labels: ['bug', data.category.toLowerCase().replace(/\s+/g, '-')]
+        labels: ['bug', (data?.category || 'other').toString().toLowerCase().replace(/\s+/g, '-')]
       });
       socket.emit('bug-report-success', { issueUrl: issue.html_url });
     } catch (err: any) {
       console.error('Error reporting bug:', err);
-      socket.emit('bug-report-error', { message: err.message || 'Failed to process bug report.' });
+      socket.emit('bug-report-error', { message: 'Failed to submit bug report. Please try again later.' });
     }
   });
 
-  socket.on('reconnect-room', ({ roomKey, playerNumber }: { roomKey: string; playerNumber: number }) => {
-    rooms.reconnectRoom(roomKey, playerNumber, socket, io);
+  socket.on('reconnect-room', ({ roomKey, playerNumber, sessionToken }: { roomKey: string; playerNumber: number; sessionToken?: string }) => {
+    if (typeof roomKey !== 'string') return;
+    rooms.reconnectRoom(roomKey, playerNumber, socket, io, sessionToken);
   });
 
   socket.on('disconnect', () => {

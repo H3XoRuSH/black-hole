@@ -1,4 +1,5 @@
 import { Socket, Server as SocketIOServer } from 'socket.io';
+import { randomUUID } from 'crypto';
 import type { Room, TriviaGameState as TGS, ChatMessage } from '../src/types/shared.js';
 import { readFileSync } from 'fs';
 import path from 'path';
@@ -266,6 +267,14 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
     const gs = { ...room.gameState };
     delete gs.moveHistory;
 
+    if (Array.isArray(gs.players)) {
+      gs.players = gs.players.map((p: any) => {
+        if (!p) return p;
+        const { sessionToken, ...rest } = p;
+        return rest;
+      });
+    }
+
     if (room.gameId === 'battleship') {
       const bs = gamesRegistry['battleship'] as any;
       return bs.getFilteredState(gs, playerNum);
@@ -406,12 +415,14 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       initialGameState.minPlayers = gameConfig?.minPlayers ?? 2;
       initialGameState.maxPlayers = gameConfig?.maxPlayers ?? 2;
 
+      const sessionToken = randomUUID();
       initialGameState.players[0].name = initialGameState.players[0].name || 'Player 1';
+      initialGameState.players[0].sessionToken = sessionToken;
       rooms.set(roomKey, { gameId, gameState: initialGameState, gameStarted: false, recaps: new Map(), recapConversations: new Map(), chatMessages: [] });
       socket.join(roomKey);
       socketRooms.set(socket.id, { roomKey, playerNumber: 1 });
       const room = rooms.get(roomKey)!;
-      socket.emit('waiting-for-player', { roomKey, player: 1, gameId, gameState: getFilteredState(room, 1) });
+      socket.emit('waiting-for-player', { roomKey, player: 1, gameId, gameState: getFilteredState(room, 1), sessionToken });
       return roomKey;
     },
 
@@ -431,12 +442,13 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
         socket.emit('room-error', { message: 'Room is full.' });
         return;
       }
+      const sessionToken = randomUUID();
       const playerNumber = room.gameState.players.length + 1;
-      room.gameState.players.push({ id: socket.id, player: playerNumber, ready: false, name: `Player ${playerNumber}` });
+      room.gameState.players.push({ id: socket.id, player: playerNumber, ready: false, name: `Player ${playerNumber}`, sessionToken });
       socket.join(roomKey);
       socketRooms.set(socket.id, { roomKey, playerNumber });
 
-      socket.emit('waiting-for-player', { roomKey, player: playerNumber, gameId: room.gameId, gameState: getFilteredState(room, playerNumber), chatMessages: room.chatMessages || [] });
+      socket.emit('waiting-for-player', { roomKey, player: playerNumber, gameId: room.gameId, gameState: getFilteredState(room, playerNumber), chatMessages: room.chatMessages || [], sessionToken });
       broadcastGameState(roomKey, room, io);
     },
 
@@ -455,7 +467,9 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       const room = rooms.get(roomKey)!;
       const player = room.gameState.players.find((p: any) => p.id === socket.id);
       if (player) {
-        player.name = name.trim().slice(0, 10) || player.name;
+        if (typeof name !== 'string') return;
+        const sanitized = name.trim().slice(0, 15).replace(/[<>]/g, '');
+        player.name = sanitized || player.name;
         broadcastGameState(roomKey, room, io);
       }
     },
@@ -583,7 +597,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       socketRooms.delete(socket.id);
     },
 
-    reconnectRoom(roomKey: string, playerNumber: number, socket: Socket, io: SocketIOServer) {
+    reconnectRoom(roomKey: string, playerNumber: number, socket: Socket, io: SocketIOServer, sessionToken?: string) {
       if (!rooms.has(roomKey)) {
         socket.emit('reconnect-fail', { message: 'That room is no longer available.' });
         return;
@@ -594,10 +608,21 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
         socket.emit('reconnect-fail', { message: 'Could not find your player slot.' });
         return;
       }
+      if (player.isAI) {
+        socket.emit('reconnect-fail', { message: 'Cannot reconnect to an AI player slot.' });
+        return;
+      }
+      if (!player.sessionToken || player.sessionToken !== sessionToken) {
+        socket.emit('reconnect-fail', { message: 'Authentication failed. Invalid session token.' });
+        return;
+      }
       const timer = disconnectTimers.get(roomKey);
       if (timer) {
         clearTimeout(timer);
         disconnectTimers.delete(roomKey);
+      }
+      if (player.id && player.id !== socket.id) {
+        socketRooms.delete(player.id);
       }
       player.id = socket.id;
       socket.join(roomKey);
@@ -611,6 +636,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
         gameState: getFilteredState(room, playerNumber),
         gameStarted,
         chatMessages: room.chatMessages || [],
+        sessionToken: player.sessionToken,
       });
       socket.to(roomKey).emit('player-reconnected', {
         message: 'Your opponent has reconnected!',
@@ -1142,7 +1168,8 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       const room = rooms.get(roomKey)!;
       const player = room.gameState.players.find((p: any) => p.id === socket.id);
       if (!player) return;
-      const text = (data.text || '').trim().slice(0, 200);
+      if (!data || typeof data.text !== 'string') return;
+      const text = data.text.trim().slice(0, 200);
       if (!text) return;
       const message: ChatMessage = {
         player: player.player,
@@ -1152,6 +1179,9 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       };
       if (!room.chatMessages) room.chatMessages = [];
       room.chatMessages.push(message);
+      if (room.chatMessages.length > 100) {
+        room.chatMessages.shift();
+      }
       io.to(roomKey).emit('chat-message', message);
     },
 

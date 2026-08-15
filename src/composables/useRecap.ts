@@ -95,10 +95,19 @@ export function useRecap(socket: Ref<any>, roomKey: Ref<string>) {
       recapQuestionAsked.value = true;
     };
 
+    const onRecapError = ({ message }: { message: string }) => {
+      recapLoading.value = false;
+      recapAskLoading.value = false;
+      if (showRecapModal.value) {
+        recapConversation.value.push({ role: 'assistant', content: `Error: ${message}` });
+      }
+    };
+
     socket.value.on('recap-loading', onRecapLoading);
     socket.value.on('recap-generated', onRecapGenerated);
     socket.value.on('recap-answering', onRecapAnswering);
     socket.value.on('recap-answer', onRecapAnswer);
+    socket.value.on('recap-error', onRecapError);
 
     return () => {
       if (socket.value) {
@@ -106,6 +115,7 @@ export function useRecap(socket: Ref<any>, roomKey: Ref<string>) {
         socket.value.off('recap-generated', onRecapGenerated);
         socket.value.off('recap-answering', onRecapAnswering);
         socket.value.off('recap-answer', onRecapAnswer);
+        socket.value.off('recap-error', onRecapError);
       }
     };
   }
