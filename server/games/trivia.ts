@@ -88,6 +88,70 @@ export const prepareNextQuestion = (room: Room): void => {
   gameState.phase = 'question-intro';
 };
 
+export function normalizeAnswer(text: string): string {
+  return (text || '')
+    .toLowerCase()
+    .replace(/^(the|a|an)\s+/i, '')
+    .replace(/[^\w\s]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+export function levenshteinDistance(a: string, b: string): number {
+  if (a === b) return 0;
+  if (a.length === 0) return b.length;
+  if (b.length === 0) return a.length;
+
+  const matrix: number[][] = [];
+  for (let i = 0; i <= b.length; i++) {
+    matrix[i] = [i];
+  }
+  for (let j = 0; j <= a.length; j++) {
+    matrix[0][j] = j;
+  }
+
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      if (b.charAt(i - 1) === a.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j - 1] + 1,
+          matrix[i][j - 1] + 1,
+          matrix[i - 1][j] + 1
+        );
+      }
+    }
+  }
+
+  return matrix[b.length][a.length];
+}
+
+export function isAnswerMatch(submittedText: string, targetAnswer: string): boolean {
+  const normSubmitted = normalizeAnswer(submittedText);
+  const normTarget = normalizeAnswer(targetAnswer);
+
+  if (!normSubmitted || !normTarget) return false;
+  if (normSubmitted === normTarget) return true;
+
+  // Typo tolerance (Levenshtein distance <= 1) for target answers with length >= 5
+  if (normTarget.length >= 5 && levenshteinDistance(normSubmitted, normTarget) <= 1) {
+    return true;
+  }
+
+  return false;
+}
+
+export function checkTriviaAnswer(submitted: string, question: TriviaQuestion): boolean {
+  if (isAnswerMatch(submitted, question.correctAnswer)) {
+    return true;
+  }
+  if (question.acceptableAnswers && Array.isArray(question.acceptableAnswers)) {
+    return question.acceptableAnswers.some((alias) => isAnswerMatch(submitted, alias));
+  }
+  return false;
+}
+
 export const makeMove = (
   room: Room,
   socket: any,
@@ -119,9 +183,8 @@ export const makeMove = (
       socket.emit('invalid-move', { message: 'No active question.' });
       return false;
     }
-    const submitted = (data.answer || '').trim().toLowerCase();
-    const correct = currentQ.correctAnswer.trim().toLowerCase();
-    if (submitted === correct) {
+    const submitted = data.answer || '';
+    if (checkTriviaAnswer(submitted, currentQ)) {
       gameState.solvedBy = player.player;
       gameState.scores[player.player] = (gameState.scores[player.player] || 0) + 1;
       gameState.phase = 'solved';

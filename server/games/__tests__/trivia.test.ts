@@ -140,9 +140,54 @@ describe('makeMove - submit-answer', () => {
     const socket = createSocketMock('p1');
     expect(makeMove(room, socket, { action: 'submit-answer', answer: 'apple' })).toBe(false);
   });
+
+  it('accepts answers with leading articles and punctuation stripped', () => {
+    const state = stateWithPlayers({
+      questions: [
+        { category: 'Music', difficulty: 'easy', question: 'Who sang Yesterday?', correctAnswer: 'The Beatles' },
+      ],
+    });
+    const room = createRoom('trivia', state);
+    const socket = createSocketMock('p1');
+    expect(makeMove(room, socket, { action: 'submit-answer', answer: 'beatles!' })).toBe(true);
+    expect(state.solvedBy).toBe(1);
+    expect(state.answerDisplay).toBe('The Beatles');
+  });
+
+  it('accepts answers matching acceptableAnswers alias', () => {
+    const state = stateWithPlayers({
+      questions: [
+        {
+          category: 'Art',
+          difficulty: 'medium',
+          question: 'Who painted Mona Lisa?',
+          correctAnswer: 'Leonardo da Vinci',
+          acceptableAnswers: ['da Vinci', 'Leonardo'],
+        },
+      ],
+    });
+    const room = createRoom('trivia', state);
+    const socket = createSocketMock('p1');
+    expect(makeMove(room, socket, { action: 'submit-answer', answer: 'da vinci' })).toBe(true);
+    expect(state.solvedBy).toBe(1);
+    expect(state.answerDisplay).toBe('Leonardo da Vinci');
+  });
+
+  it('tolerates single-character typos on answers of 5 or more characters', () => {
+    const state = stateWithPlayers({
+      questions: [
+        { category: 'Science', difficulty: 'hard', question: 'Powerhouse of the cell?', correctAnswer: 'Mitochondria' },
+      ],
+    });
+    const room = createRoom('trivia', state);
+    const socket = createSocketMock('p1');
+    // "Mitochondra" has distance 1 from "Mitochondria"
+    expect(makeMove(room, socket, { action: 'submit-answer', answer: 'mitochondra' })).toBe(true);
+    expect(state.solvedBy).toBe(1);
+  });
 });
 
-describe('validateAndCleanQuestions anti-leak filter', () => {
+describe('validateAndCleanQuestions anti-leak and deduplication', () => {
   it('filters out questions that leak the answer in the question string', () => {
     const raw = [
       { question: 'What term refers to the tradition of merienda?', correctAnswer: 'merienda', difficulty: 'easy' },
@@ -155,5 +200,19 @@ describe('validateAndCleanQuestions anti-leak filter', () => {
     const cleaned = validateAndCleanQuestions(raw, 'Philippines');
     expect(cleaned).toHaveLength(5);
     expect(cleaned.some((q) => q.question.includes('tradition of merienda'))).toBe(false);
+  });
+
+  it('filters duplicates against existing questions and cleans acceptableAnswers', () => {
+    const existing: TriviaQuestion[] = [
+      { category: 'Anime', difficulty: 'easy', question: 'Who is Goku?', correctAnswer: 'Saiyan' },
+    ];
+    const raw = [
+      { question: 'Who is Goku?', correctAnswer: 'Saiyan' },
+      { question: 'What is Luffy searching for?', correctAnswer: 'One Piece', acceptableAnswers: ['The One Piece', 'One Piece'] },
+    ];
+    const cleaned = validateAndCleanQuestions(raw, 'Anime', existing);
+    expect(cleaned).toHaveLength(1);
+    expect(cleaned[0].question).toBe('What is Luffy searching for?');
+    expect(cleaned[0].acceptableAnswers).toEqual(['The One Piece']);
   });
 });

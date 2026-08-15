@@ -186,6 +186,7 @@ export interface TriviaQuestion {
   difficulty: string;
   question: string;
   correctAnswer: string;
+  acceptableAnswers?: string[];
 }
 
 export interface TriviaOptions {

@@ -237,7 +237,7 @@
                 </button>
               </div>
             </div>
-            
+
             <!-- TAB 1: AI Custom Topic -->
             <div v-if="triviaTab === 'ai'" class="bg-violet-50 dark:bg-violet-950/40 p-3 border-2 border-black text-left space-y-3">
               <div>
@@ -247,7 +247,7 @@
                   </label>
                   <span class="text-[10px] font-mono font-bold text-gray-500">{{ (customTopic || '').length }}/40</span>
                 </div>
-                
+
                 <div class="flex gap-2">
                   <input
                     v-model="customTopic"
@@ -259,32 +259,20 @@
                   <button
                     type="button"
                     @click="generateAiTrivia"
-                    :disabled="!customTopic.trim() || isGeneratingAiTrivia || isAiQuestionsGeneratedForCurrentTopic"
+                    :disabled="!customTopic.trim() || isGeneratingAiTrivia"
                     class="px-3 py-2 bg-neo-accent text-white font-black text-xs uppercase neo-btn rounded-none flex items-center gap-1.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 flex-shrink-0"
                   >
                     <template v-if="isGeneratingAiTrivia">
                       <WaitingIndicator /> <span>Generating</span>
+                    </template>
+                    <template v-else-if="isAiQuestionsGeneratedForCurrentTopic">
+                      <span>Regenerate</span>
                     </template>
                     <template v-else>
                       <span>Generate AI</span>
                     </template>
                   </button>
                 </div>
-              </div>
-
-              <!-- AI Topic Difficulty Selection -->
-              <div>
-                <label class="text-[10px] font-black uppercase tracking-wider text-violet-900 dark:text-violet-200 mb-1 block">Difficulty</label>
-                <select
-                  v-model="triviaDifficulty"
-                  @change="updateTriviaOptions"
-                  class="w-full text-xs font-bold py-2 px-3 neo-input rounded-none cursor-pointer bg-white dark:bg-neo-card-bg"
-                >
-                  <option value="">Any Difficulty</option>
-                  <option value="easy">Easy</option>
-                  <option value="medium">Medium</option>
-                  <option value="hard">Hard</option>
-                </select>
               </div>
 
               <!-- Status Feedback -->
@@ -839,7 +827,7 @@ export default defineComponent({
         roomKey: this.roomKey,
         categorySlug,
         categoryName,
-        difficulty: this.triviaDifficulty || undefined,
+        difficulty: !isAi ? (this.triviaDifficulty || undefined) : undefined,
         customTopic,
       });
     },

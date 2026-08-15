@@ -192,10 +192,18 @@ export function sanitizeTopic(input: string): string {
     .slice(0, 40);
 }
 
-export function validateAndCleanQuestions(rawQuestions: any[], topic: string): TriviaQuestion[] {
+export function validateAndCleanQuestions(
+  rawQuestions: any[],
+  topic: string,
+  existingQuestions: TriviaQuestion[] = []
+): TriviaQuestion[] {
   if (!Array.isArray(rawQuestions) || rawQuestions.length === 0) {
     throw new Error('LLM output must be a non-empty array of questions.');
   }
+
+  const existingTextSet = new Set(
+    existingQuestions.map((q) => q.question.trim().toLowerCase())
+  );
 
   const cleaned: TriviaQuestion[] = [];
   for (const item of rawQuestions) {
@@ -204,6 +212,11 @@ export function validateAndCleanQuestions(rawQuestions: any[], topic: string): T
 
     const questionText = item.question.trim();
     const answerText = item.correctAnswer.trim();
+    const qLower = questionText.toLowerCase();
+    const aLower = answerText.toLowerCase();
+
+    // Prevent duplicates against existing questions or previously added in this batch
+    if (existingTextSet.has(qLower)) continue;
 
     const wordCount = answerText.split(/\s+/).filter(Boolean).length;
     if (wordCount > 3) {
@@ -211,23 +224,38 @@ export function validateAndCleanQuestions(rawQuestions: any[], topic: string): T
     }
 
     // Anti-leak guard: skip questions that contain the answer word inside the question text
-    const qLower = questionText.toLowerCase();
-    const aLower = answerText.toLowerCase();
     if (aLower.length >= 3 && qLower.includes(aLower)) {
       console.warn(`Filtering out question that leaks answer "${answerText}": "${questionText}"`);
       continue;
     }
 
+    // Validate and clean acceptable alternate answers if provided
+    let acceptableAnswers: string[] | undefined = undefined;
+    if (Array.isArray(item.acceptableAnswers)) {
+      const validAlternates = item.acceptableAnswers
+        .filter((alt: any) => typeof alt === 'string')
+        .map((alt: string) => alt.trim())
+        .filter((alt: string) => {
+          if (!alt || alt.toLowerCase() === aLower) return false;
+          const altWords = alt.split(/\s+/).filter(Boolean).length;
+          if (altWords > 3) return false;
+          // Also verify alternate doesn't leak into question
+          if (alt.length >= 3 && qLower.includes(alt.toLowerCase())) return false;
+          return true;
+        });
+      if (validAlternates.length > 0) {
+        acceptableAnswers = validAlternates;
+      }
+    }
+
+    existingTextSet.add(qLower);
     cleaned.push({
       category: topic,
       difficulty: (['easy', 'medium', 'hard'].includes(item.difficulty) ? item.difficulty : 'medium'),
       question: questionText,
       correctAnswer: answerText,
+      ...(acceptableAnswers ? { acceptableAnswers } : {}),
     });
-  }
-
-  if (cleaned.length < 5) {
-    throw new Error(`Only ${cleaned.length} valid questions produced; expected at least 5.`);
   }
 
   return cleaned;
@@ -253,7 +281,7 @@ SECURITY MANDATE:
 
 STEP 1: Brainstorm 4 distinct, creative, and non-overlapping sub-perspectives/facets tailored specifically to the topic "${topic}" (e.g. for a country/culture: 1. Geography & Wildlife, 2. Culinary traditions & Street food, 3. Historical milestones & National figures, 4. Pop culture, Music & Modern trends). Ensure these angles offer fresh, varied perspectives.
 
-STEP 2: Generate ${amount} trivia questions evenly distributed across your 4 brainstormed sub-perspectives.
+STEP 2: Generate ${amount} trivia questions with a mixed difficulty distribution (easy, medium, and hard) evenly distributed across your 4 brainstormed sub-perspectives.
 
 ANTI-LEAK CONSTRAINTS:
 - ABSOLUTELY NEVER include the answer word or root stem of the answer inside the question text!
@@ -266,6 +294,7 @@ ANTI-CLICHÉ & DIVERSITY CONSTRAINTS:
 
 ANSWER CONSTRAINTS:
 - "correctAnswer" MUST be concise: 1 to 3 words maximum!
+- Optional "acceptableAnswers": provide 1-2 valid alternative spellings, common aliases, or surnames where applicable (1-3 words max each).
 - Answers will be typed letter-by-letter by players, so avoid long sentences or verbose explanations.
 
 Format requirement: Output ONLY a JSON array of objects with schema:
@@ -274,38 +303,61 @@ Format requirement: Output ONLY a JSON array of objects with schema:
     "category": "${topic}",
     "difficulty": "easy" | "medium" | "hard",
     "question": "The trivia question text?",
-    "correctAnswer": "Answer"
+    "correctAnswer": "Canonical Answer",
+    "acceptableAnswers": ["Alternate Name", "Alias"]
   }
 ]`;
 
-  const messages = [
+  const messages: Array<{ role: string; content: string }> = [
     { role: 'system', content: systemPrompt },
     { role: 'user', content: userPrompt },
   ];
 
+  const accumulated: TriviaQuestion[] = [];
   let lastError: Error | null = null;
+
   for (let attempt = 0; attempt <= 2; attempt++) {
     try {
       const response = await callDeepSeek({
         messages,
         temperature: 0.85,
-        maxTokens: 1600,
+        maxTokens: 1800,
       });
 
       const jsonMatch = response.match(/```(?:json)?\s*([\s\S]*?)\s*```/) || [null, response];
       const jsonString = (jsonMatch[1] || response).trim();
       const parsed = JSON.parse(jsonString);
 
-      const validQuestions = validateAndCleanQuestions(parsed, topic);
-      return validQuestions.slice(0, amount);
+      const validBatch = validateAndCleanQuestions(parsed, topic, accumulated);
+      accumulated.push(...validBatch);
+
+      if (accumulated.length >= amount) {
+        return accumulated.slice(0, amount);
+      }
+
+      // If we got some valid questions but need more to reach amount, construct a replenishment prompt
+      const remainingNeeded = amount - accumulated.length;
+      messages.push({ role: 'assistant', content: response });
+      messages.push({
+        role: 'user',
+        content: `We need ${remainingNeeded} more unique trivia questions for topic "${topic}".
+DO NOT duplicate or repeat any of the following questions already generated:
+${accumulated.map((q, idx) => `${idx + 1}. ${q.question} (Answer: ${q.correctAnswer})`).join('\n')}
+
+Generate the remaining ${remainingNeeded} questions now. Ensure answers are 1-3 words max and output ONLY a JSON array.`,
+      });
     } catch (err: any) {
       console.warn(`AI Trivia deck generation attempt ${attempt + 1} failed: ${err.message}`);
       lastError = err;
       messages.push({
         role: 'user',
-        content: `Your previous JSON output failed validation with error: "${err.message}". Please fix the issue and return ONLY a valid JSON array matching the required schema. Ensure answers are 1-3 words max.`,
+        content: `Your previous output failed validation with error: "${err.message}". Please fix the issue and return ONLY a valid JSON array matching the required schema. Ensure answers are 1-3 words max.`,
       });
     }
+  }
+
+  if (accumulated.length >= 5) {
+    return accumulated.slice(0, amount);
   }
 
   throw new Error(`Failed to generate AI trivia questions for topic "${topic}": ${lastError?.message || 'Invalid format'}`);

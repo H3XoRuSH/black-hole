@@ -78,14 +78,12 @@
           </div>
         </div>
 
-        <button
-          @click="handlePlayAgain"
-          :disabled="waiting"
-          class="bg-neo-accent text-white font-black py-2.5 px-8 rounded-none transition-all duration-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 cursor-pointer neo-btn uppercase tracking-wider w-full"
+        <router-link
+          to="/menu"
+          class="bg-neo-accent text-white font-black py-2.5 px-8 rounded-none transition-all duration-100 cursor-pointer neo-btn uppercase tracking-wider w-full block text-center"
         >
-          <span v-if="waiting" class="flex items-center gap-1.5 justify-center">Waiting<WaitingIndicator /></span>
-          <span v-else>Play Again</span>
-        </button>
+          Main Menu
+        </router-link>
       </div>
 
       <!-- Loading State -->
@@ -182,20 +180,6 @@
       </div>
     </div>
 
-    <div v-if="gameOver" class="flex-shrink-0 w-full max-w-lg flex flex-col items-center py-3 space-y-3 animate-slide-up">
-      <div class="text-lg font-bold" :class="winnerTextClass">
-        {{ gameState.winner }}
-      </div>
-      <button
-        @click="handlePlayAgain"
-        :disabled="waiting"
-        class="bg-neo-accent text-white font-black py-2.5 px-8 rounded-none transition-all duration-100 disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none disabled:translate-x-0 disabled:translate-y-0 cursor-pointer neo-btn uppercase tracking-wider"
-      >
-        <span v-if="waiting">Waiting<WaitingIndicator /></span>
-        <span v-else>Play Again</span>
-      </button>
-    </div>
-
     <HowToPlayModal
       :is-open="isHowToPlayOpen"
       game-id="trivia"
@@ -213,12 +197,11 @@ import { Socket } from 'socket.io-client';
 import { useGame } from '../../composables/useGame.js';
 import { useConfetti } from '../../composables/useConfetti.js';
 import type { TriviaGameState as GameState } from '../../types/shared.js';
-import WaitingIndicator from '../ui/WaitingIndicator.vue';
 import HowToPlayModal from '../modals/HowToPlayModal.vue';
 
 export default defineComponent({
   name: 'Trivia',
-  components: { WaitingIndicator, HowToPlayModal },
+  components: { HowToPlayModal },
   emits: ['update-connection-status', 'update-player', 'update-room-key'],
   props: {
     socket: { type: Object as PropType<Socket>, required: true },
@@ -246,7 +229,6 @@ export default defineComponent({
       }
     );
 
-    const waiting = ref(false);
     const isHowToPlayOpen = ref(false);
     const openHowToPlay = () => {
       isHowToPlayOpen.value = true;
@@ -297,16 +279,12 @@ export default defineComponent({
       lobbyRoute: '/trivia/lobby',
       onGameState: (newState: any) => {
         gameState.value = newState;
-        if (newState.totalMoves === 0) {
-          waiting.value = false;
-        }
       },
     });
 
     return {
       ...game,
       gameState,
-      waiting,
       isHowToPlayOpen,
       openHowToPlay,
       closeHowToPlay,
@@ -427,11 +405,6 @@ export default defineComponent({
         action: 'submit-answer',
         answer,
       });
-    },
-    handlePlayAgain() {
-      if (this.waiting || !this.socket) return;
-      this.waiting = true;
-      this.socket.emit('new-game', { roomKey: this.roomKey });
     },
   },
 });
