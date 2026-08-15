@@ -2,6 +2,8 @@ import type { Player, Room } from '../../src/types/shared.js';
 import type { Socket } from 'socket.io';
 import type { JigsawGameState, JigsawPiece } from '../../src/types/shared.js';
 
+export const noTurns = true;
+
 const CURATED_IMAGES = [
   'fantasy-castle',
   'ocean-reef',

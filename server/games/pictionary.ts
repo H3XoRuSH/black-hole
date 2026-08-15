@@ -1,6 +1,8 @@
 import type { Player, Room } from '../../src/types/shared.js';
 import { pickWords, shuffleArray } from './pictionaryWords.js';
 
+export const noTurns = true;
+
 export interface PictionaryGameState {
   phase: 'lobby' | 'choosing' | 'drawing' | 'reveal' | 'game-over';
   currentDrawer: number;

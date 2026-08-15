@@ -3,6 +3,8 @@ import escapeRooms from '../data/escape-rooms/rooms.js';
 
 export type { Player, EscapeRoomGameState, Room };
 
+export const noTurns = true;
+
 const PORT = process.env.PORT || 3000;
 const API_URL = process.env.ESCAPE_ROOMS_API_URL || `http://localhost:${PORT}/api/escape-rooms`;
 

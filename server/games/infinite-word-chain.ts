@@ -3,6 +3,8 @@ import { generateCompoundPairs } from '../services/wordChainService.js';
 
 export type { InfiniteWordChainGameState };
 
+export const noTurns = true;
+
 const BATCH_SIZE = 30;
 
 function isHiddenChar(ch: string): boolean {

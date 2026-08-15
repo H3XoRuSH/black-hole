@@ -1,5 +1,7 @@
 import type { Player, Room } from '../../src/types/shared.js';
 
+export const noTurns = true;
+
 export interface BingoGameState {
   cards: Record<number, number[][]>;
   daubed: Record<number, string[]>;
