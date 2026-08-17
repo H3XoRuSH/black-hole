@@ -1,72 +1,195 @@
-# Gab's Arcade
+<div align="center">
+  <h1 align="center">GAB'S ARCADE</h1>
+  <p align="center">
+    <strong>A real-time, multiplayer web arcade featuring strategic board games, puzzles, and interactive party experiences.</strong>
+  </p>
+  <p align="center">
+    <a href="https://vuejs.org/"><img src="https://img.shields.io/badge/Vue.js-3.5-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white" alt="Vue 3"></a>
+    <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.4-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript"></a>
+    <a href="https://vitejs.dev/"><img src="https://img.shields.io/badge/Vite-7.0-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite"></a>
+    <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind_CSS-v4.1-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS"></a>
+    <a href="https://socket.io/"><img src="https://img.shields.io/badge/Socket.io-4.8-010101?style=for-the-badge&logo=socketdotio&logoColor=white" alt="Socket.io"></a>
+    <a href="https://expressjs.com/"><img src="https://img.shields.io/badge/Express-4.21-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express"></a>
+  </p>
+</div>
 
-A real-time, multiplayer online arcade featuring classic strategic board and pen-and-paper games. Neo-brutalist design with page transitions, board animations, and confetti celebrations.
+---
 
-## Playable Games
+## 📑 Table of Contents
 
-- <img src="public/icons/black-hole.svg" width="20" height="20" style="vertical-align: middle; margin-right: 8px;" alt=""> **Black Hole**: A strategic 2-player game of calculation and gravity. Place numbered tiles on a triangular grid and try to keep your highest numbers away from the final empty circle (the black hole)!
-- <img src="public/icons/connect-four.svg" width="20" height="20" style="vertical-align: middle; margin-right: 8px;" alt=""> **Connect Four**: The classic connection game. Take turns dropping colored discs into a 7x6 vertical grid to align four in a row horizontally, vertically, or diagonally.
-- <img src="public/icons/dots-and-boxes.svg" width="20" height="20" style="vertical-align: middle; margin-right: 8px;" alt=""> **Dots and Boxes**: A classic 2-player pen-and-paper game. Connect adjacent dots to complete boxes; capturing a box gains you a point and grants you an extra turn!
-- <img src="public/icons/battleship.svg" width="20" height="20" style="vertical-align: middle; margin-right: 8px;" alt=""> **Battleship**: A strategic naval guessing game. Place your fleet of ships on a 6x6 grid, and take turns firing shots to locate and sink the opponent's hidden ships.
-- <img src="public/icons/checkers.svg" width="20" height="20" style="vertical-align: middle; margin-right: 8px;" alt=""> **Checkers**: Classic American draughts on an 8x8 board. Capture your opponent's pieces by jumping over them. Mandatory jumps, multi-jump chains, and king promotion included.
-- <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="vertical-align: middle; margin-right: 8px;"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg> **Escape Room**: A cooperative puzzle-solving adventure for 1-8 players. Work together to decipher codes, solve riddles, and unravel mysteries to escape beautifully themed rooms. Features multiple unique escape rooms with narrative-driven puzzles, sound puzzles, and a hint system.
-- <img src="public/icons/bingo.svg" width="20" height="20" style="vertical-align: middle; margin-right: 8px;" alt=""> **Bingo**: A classic multiplayer game for 2-8 players. The host draws numbers and players daub their unique 5x5 cards. First to complete a row, column, or diagonal calls BINGO!
-- <img src="public/icons/trivia.svg" width="20" height="20" style="vertical-align: middle; margin-right: 8px;" alt=""> **Trivia**: A real-time quiz game for 1-8 players. Questions are fetched from Open Trivia DB across multiple categories and difficulties. Each answer starts fully hidden — letters are gradually revealed and the first player to type the correct answer scores a point. Most points after 10 questions wins!
-- <img src="public/icons/infinite-word-chain.svg" width="20" height="20" style="vertical-align: middle; margin-right: 8px;" alt=""> **Infinite Word Chain**: A single-player word chain game powered by AI. Guess the missing word that completes a common two-word phrase. Wrong guesses reveal more letters as hints. Each correct answer continues the chain infinitely — how many can you get?
-- <img src="public/icons/pictionary.svg" width="20" height="20" style="vertical-align: middle; margin-right: 8px;" alt=""> **Pictionary**: A cooperative drawing and guessing game for 2-4 players. Take turns drawing a secret word while everyone else guesses. Work together to score as many points as possible!
-- <img src="public/icons/pattern-hunt.svg" width="20" height="20" style="vertical-align: middle; margin-right: 8px;" alt=""> **Pattern Hunt**: A fast multiplayer visual matching race for 2-8 players. Find the one image shared by your card and the center card before anyone else!
-  
-## Tech Stack
+- [Overview](#-overview)
+- [Key Features](#-key-features)
+- [Playable Games](#-playable-games)
+- [Repository Structure](#-repository-structure)
+- [Modules & Architecture](#-modules--architecture)
+- [Getting Started](#-getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Environment Configuration](#environment-configuration)
+  - [Running Locally](#running-locally)
+  - [Production Build](#production-build)
+- [Contributing](#-contributing)
+- [License](#-license)
 
-- **Frontend**: Vue 3, Vite, TailwindCSS
-- **Backend**: Node.js, Express, Socket.io
-- **Routing**: Vue Router
+---
 
-## Getting Started
+## 🌌 Overview
 
-### 1. Setup Dependencies
+**Gab's Arcade** is an open-source, full-stack multiplayer arcade application built for fast, low-latency browser gaming. It blends retro game mechanics with a bold neo-brutalist aesthetic, snappy page transitions, and sound design. 
 
-```sh
-npm install
+All multiplayer games operate under a **server-authoritative model** over WebSockets (Socket.io) to ensure validated moves, synchronized state, reconnect tolerance, and hidden-information mechanics (e.g. fog of war in Battleship).
+
+---
+
+## ✨ Key Features
+
+- **⚡ Real-Time Multiplayer:** Instant synchronization via Socket.io with room code sharing and QR code scanning for mobile handoff.
+- **🛡️ Server-Authoritative Logic:** Centralized state management and move validation preventing client-side desyncs and tampering.
+- **🎨 Neo-Brutalist UI:** High-contrast borders, playful micro-animations, confetti celebrations, and responsive viewports.
+- **🧩 Cooperative & Versus Modes:** Support for 1 to 8 players across strategy, drawing, guessing, trivia, pattern matching, and escape room formats.
+- **🤖 Smart Fallbacks:** Graceful degradation and local mocks for LLM-powered features (such as AI game recaps and word chains) when optional API keys are omitted.
+
+---
+
+## 🎮 Playable Games
+
+| Game | Players | Mode | Description |
+| :--- | :---: | :---: | :--- |
+| **Black Hole** | 2 | Versus | Place numbered tiles on a triangular grid; avoid letting your highest numbers get sucked into the black hole! |
+| **Connect Four** | 2 | Versus | Drop colored discs into a 7x6 grid to align 4-in-a-row horizontally, vertically, or diagonally. |
+| **Dots and Boxes** | 2 | Versus | Connect adjacent grid dots to close boxes. Capturing a box scores a point and awards a bonus turn. |
+| **Battleship** | 2 | Versus | Position your naval fleet on a 6x6 grid, call coordinates, and sink your opponent's ships with fog-of-war secrecy. |
+| **Checkers** | 2 | Versus | American draughts on an 8x8 board with mandatory jumps, multi-jump chains, and king promotions. |
+| **Escape Room** | 1–8 | Co-op | Decipher clues, solve audio/visual riddles, and unlock narrative-driven themed escape rooms collaboratively. |
+| **Bingo** | 2–8 | Party | Host-called numbers with interactive 5x5 player daubing cards. Complete lines to call BINGO. |
+| **Trivia** | 1–8 | Party | Fast-paced quiz game powered by Open Trivia DB. Letters reveal over time; first correct answer scores! |
+| **Pattern Hunt** | 2–8 | Party | Fast multiplayer visual matching race. Find the one matching icon shared between your card and the center pile! |
+| **Infinite Word Chain** | 1 | Solo | Complete two-word common phrases powered by AI. Chains continue infinitely with letter hints. |
+| **Pictionary** | 2–4 | Co-op / Party | Real-time synchronized canvas drawing and secret word guessing with live scoring. |
+
+---
+
+## 📁 Repository Structure
+
+```tree
+black-hole/
+├── public/                     # Static assets, SVG game icons, SFX audio files
+├── server/                     # Backend server logic
+│   ├── games/                  # Game engine modules (state, rules, move validation)
+│   ├── roomManager.ts          # Room lifecycles, matchmaking, and player connections
+│   ├── routes.ts               # REST API endpoints (trivia proxy, AI recaps)
+│   └── types.ts                # Server-specific types
+├── src/                        # Vue 3 frontend source
+│   ├── assets/                 # Global styles and sound effects
+│   ├── components/             # Reusable UI components (Modals, QR, Toasts, Indicators)
+│   ├── composables/            # Shared logic (useSocket, useGame, useSound, useToast)
+│   ├── router/                 # Vue Router configuration
+│   ├── types/                  # Shared TypeScript interfaces (client + server)
+│   ├── views/                  # Game views, lobby views, and main menu
+│   ├── App.vue                 # Root Vue application
+│   └── main.ts                 # Frontend entry point
+├── server.ts                   # Express & Socket.io server bootstrap
+├── vite.config.ts              # Vite bundler configuration
+└── package.json                # Project dependencies and npm scripts
 ```
 
-### 2. Configure Environment Variables
+---
 
-Create a `.env` file in the root directory to configure the local environment:
+## ⚙️ Modules & Architecture
+
+| Module | Location | Description |
+| :--- | :--- | :--- |
+| **Room Manager** | `server/roomManager.ts` | Handles 6-character room codes, socket lifecycles, disconnect grace periods, and game dispatching. |
+| **Game Engines** | `server/games/*.ts` | Modular game rules implementing `createInitialState`, `makeMove`, and `resetState`. |
+| **Socket Composable** | `src/composables/useSocket.ts` | Reactive wrapper managing WebSocket connection events, player identity, and state sync. |
+| **Lifecycle Composable** | `src/composables/useGame.ts` | Standardized game lifecycle hooks, route guards, and rematch listeners. |
+| **Audio System** | `src/composables/useSound.ts` | Web Audio API / HTML5 Audio manager for sound effects and volume control. |
+| **Toast Store** | `src/composables/useToast.ts` | Non-blocking reactive alert system for errors, game announcements, and notices. |
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- **Node.js**: `^20.19.0` or `>=22.12.0`
+- **npm**: `>=10.0.0`
+
+### Installation
+
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/your-username/black-hole.git
+   cd black-hole
+   ```
+
+2. Install dependencies:
+   ```sh
+   npm install
+   ```
+
+### Environment Configuration
+
+Create a `.env` file in the root directory:
 
 ```env
-# Optional: Backend API keys (simulated fallbacks are used if omitted)
-DEEPSEEK_API_KEY=your_deepseek_api_key
-OPENROUTER_API_KEY=your_openrouter_api_key
-GITHUB_TOKEN=your_github_personal_access_token
+# Server Port
+PORT=3000
 
 # Optional: Frontend target backend URL (defaults to relative proxy if omitted)
 VITE_BACKEND_URL=http://localhost:3000
+
+# Optional: AI Features (simulated local fallbacks are active if omitted)
+DEEPSEEK_API_KEY=your_deepseek_api_key
+OPENROUTER_API_KEY=your_openrouter_api_key
+GITHUB_TOKEN=your_github_token
 ```
 
 > [!NOTE]
-> All API keys (such as `DEEPSEEK_API_KEY`, `OPENROUTER_API_KEY`, and `GITHUB_TOKEN`) are entirely **optional** for running the game. If they are omitted, the application will gracefully fall back to local mock behavior (e.g., providing simulated AI game recaps).
+> All AI API keys are **optional**. If omitted, the game gracefully falls back to deterministic local mock handlers.
 
-### 3. Run the Servers
+### Running Locally
 
-Start the Express / Socket.io game backend server (runs on port `3000`):
+Start the backend server and frontend client in separate terminals:
 
 ```sh
+# Terminal 1: Start Backend (Port 3000 with hot reloading)
 npm run server-dev
-```
 
-In a separate terminal, start the Vite client frontend server (runs on port `5173`):
-
-```sh
+# Terminal 2: Start Frontend (Port 5173 with Vite HMR)
 npm run dev
 ```
 
-*Note: With `VITE_BACKEND_URL` set in your `.env`, the frontend client on port `5173` will connect directly to the backend server on port `3000`.*
+Visit [`http://localhost:5173`](http://localhost:5173) in your browser.
 
-### 4. Production Build
+### Production Build
 
-Compile production assets:
+Build the client bundle for production:
 
 ```sh
 npm run build
 ```
+
+To run the production server:
+
+```sh
+npm start
+```
+
+---
+
+## 🤝 Contributing
+
+Contributions, game suggestions, and bug reports are welcome!
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-game`)
+3. Commit your changes (`git commit -m 'Add amazing game'`)
+4. Push to the branch (`git push origin feature/amazing-game`)
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is open source and available under the [MIT License](LICENSE).
