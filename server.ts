@@ -128,7 +128,7 @@ app.get('/api/escape-rooms', (req, res) => {
         difficulty: r.difficulty,
       }));
     res.json(list);
-  } catch (err: any) {
+  } catch {
     res.status(500).json({ error: 'Failed to fetch escape rooms.' });
   }
 });
@@ -142,7 +142,7 @@ app.get('/api/escape-rooms/:id', (req, res) => {
       return;
     }
     res.json(room);
-  } catch (err: any) {
+  } catch {
     res.status(500).json({ error: 'Failed to fetch escape room details.' });
   }
 });

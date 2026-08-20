@@ -378,7 +378,9 @@ export default defineComponent({
     window.removeEventListener('resize', this.checkMobile);
     window.removeEventListener('keydown', this.handleKeyDown);
     if (this.socket) {
-      this.socket.emit('leave-room', { roomKey: this.roomKey });
+      if (!this.isLeavingDueToDisconnect && !this.router.isLeavingDueToDisconnect && this.roomKey) {
+        this.socket.emit('leave-room', { roomKey: this.roomKey });
+      }
       this.socket.off('game-state', this.handleGameState);
       this.socket.off('player-ready', this.handlePlayerReady);
     }

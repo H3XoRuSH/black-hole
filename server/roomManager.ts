@@ -36,8 +36,6 @@ const generateRoomKey = (): string => {
   return key;
 };
 
-const RECONNECT_TIMEOUT = 60000;
-
 export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
   const rooms = new Map<string, Room>();
   const socketRooms = new Map<string, { roomKey: string; playerNumber: number }>();
@@ -270,8 +268,9 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
     if (Array.isArray(gs.players)) {
       gs.players = gs.players.map((p: any) => {
         if (!p) return p;
-        const { sessionToken, ...rest } = p;
-        return rest;
+        const sanitized = { ...p };
+        delete sanitized.sessionToken;
+        return sanitized;
       });
     }
 
@@ -436,6 +435,10 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
         socket.emit('room-error', { message: 'This room is for a different game.' });
         return;
       }
+      if (room.gameStarted) {
+        socket.emit('room-error', { message: 'Game has already started.' });
+        return;
+      }
       const gameConfig = gamesConfig.find((g: any) => g.id === room.gameId);
       const maxPlayers = gameConfig?.maxPlayers ?? 2;
       if (room.gameState.players.length >= maxPlayers) {
@@ -455,6 +458,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
     toggleReady(roomKey: string, socket: Socket, io: SocketIOServer) {
       if (!rooms.has(roomKey)) return;
       const room = rooms.get(roomKey)!;
+      if (room.gameStarted) return;
       const player = room.gameState.players.find((p: any) => p.id === socket.id);
       if (player) {
         player.ready = !player.ready;
@@ -465,6 +469,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
     renamePlayer(roomKey: string, socket: Socket, name: string, io: SocketIOServer) {
       if (!rooms.has(roomKey)) return;
       const room = rooms.get(roomKey)!;
+      if (room.gameStarted) return;
       const player = room.gameState.players.find((p: any) => p.id === socket.id);
       if (player) {
         if (typeof name !== 'string') return;
@@ -541,6 +546,10 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
         return;
       }
       const room = rooms.get(uppercaseKey)!;
+      if (room.gameStarted) {
+        socket.emit('room-validation-error', { message: 'Game has already started.' });
+        return;
+      }
       const gameConfig = gamesConfig.find((g: any) => g.id === room.gameId);
       const maxPlayers = gameConfig?.maxPlayers ?? 2;
       if (room.gameState.players.length >= maxPlayers) {
@@ -654,54 +663,33 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
       if (!rooms.has(roomKey)) return;
       const room = rooms.get(roomKey)!;
 
-      if (!disconnectTimers.has(roomKey)) {
-        const timer = setTimeout(() => {
-          const r = rooms.get(roomKey);
-          if (r) {
-            if (!r.gameStarted) {
-              if (playerNumber === 1) {
-                io.in(roomKey).emit('room-closed', {
-                  message: 'The host has disconnected.',
-                });
-                rooms.delete(roomKey);
-                stopBingoTimer(roomKey);
-                stopTriviaTimers(roomKey);
-              } else {
-                const idx = r.gameState.players.findIndex((p: any) => p.player === playerNumber);
-                if (idx !== -1) {
-                  r.gameState.players.splice(idx, 1);
-                  r.gameState.players.forEach((p: any, i: number) => {
-                    p.player = i + 1;
-                    p.ready = false;
-                    socketRooms.set(p.id, { roomKey, playerNumber: p.player });
-                    io.to(p.id).emit('player-role', { player: p.player });
-                  });
-                  broadcastGameState(roomKey, r, io);
-                }
-              }
-            } else {
-              io.in(roomKey).emit('player-disconnected', {
-                message: 'A player has disconnected. Returning to lobby.',
-                gameId: r.gameId,
-              });
-              rooms.delete(roomKey);
-              stopBingoTimer(roomKey);
-              stopTriviaTimers(roomKey);
-            }
-          }
-          disconnectTimers.delete(roomKey);
-        }, RECONNECT_TIMEOUT);
-        disconnectTimers.set(roomKey, timer);
-
-        if (room.gameState.players.length >= 2) {
-          const otherPlayer = room.gameState.players.find((p: any) => p.player !== playerNumber);
-          if (otherPlayer) {
-            const roleName = playerNumber === 1 ? 'host' : 'opponent';
-            io.to(otherPlayer.id).emit('player-disconnected', {
-              message: `The ${roleName} disconnected. Waiting for reconnection...`,
-              gameId: room.gameId,
-              canReconnect: true,
+      if (room.gameStarted) {
+        io.in(roomKey).emit('player-disconnected', {
+          message: 'A player has disconnected. Returning to lobby.',
+          gameId: room.gameId,
+        });
+        rooms.delete(roomKey);
+        stopBingoTimer(roomKey);
+        stopTriviaTimers(roomKey);
+      } else {
+        if (playerNumber === 1) {
+          io.in(roomKey).emit('room-closed', {
+            message: 'The host has disconnected.',
+          });
+          rooms.delete(roomKey);
+          stopBingoTimer(roomKey);
+          stopTriviaTimers(roomKey);
+        } else {
+          const idx = room.gameState.players.findIndex((p: any) => p.player === playerNumber);
+          if (idx !== -1) {
+            room.gameState.players.splice(idx, 1);
+            room.gameState.players.forEach((p: any, i: number) => {
+              p.player = i + 1;
+              p.ready = false;
+              socketRooms.set(p.id, { roomKey, playerNumber: p.player });
+              io.to(p.id).emit('player-role', { player: p.player });
             });
+            broadcastGameState(roomKey, room, io);
           }
         }
       }
@@ -974,6 +962,10 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
         return;
       }
       const room = rooms.get(roomKey)!;
+      if (room.gameStarted) {
+        socket.emit('room-error', { message: 'Game has already started.' });
+        return;
+      }
       if (room.gameId === 'spot-it') {
         socket.emit('room-error', { message: 'AI opponents are not available for Pattern Hunt.' });
         return;
@@ -1012,6 +1004,7 @@ export function createRoomManager(gamesRegistry: Record<string, GameModule>) {
     removeAI(roomKey: string, socket: Socket, io: SocketIOServer) {
       if (!rooms.has(roomKey)) return;
       const room = rooms.get(roomKey)!;
+      if (room.gameStarted) return;
       const playerIndex = room.gameState.players.findIndex((p: any) => p.isAI);
       if (playerIndex !== -1) {
         room.gameState.players.splice(playerIndex, 1);

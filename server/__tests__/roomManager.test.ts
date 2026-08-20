@@ -207,4 +207,73 @@ describe('roomManager.makeMove turn checking', () => {
     expect(chatHistoryCall[1][0].text).toBe('Message 10');
     expect(chatHistoryCall[1][99].text).toBe('Message 109');
   });
+
+  it('rejects joinRoom, validateRoom, and addAI when the game has already started', () => {
+    const rm = createRoomManager({
+      'black-hole': blackHole as any,
+    });
+    const socketP1 = createMockSocket('p1-socket-id');
+    const socketP2 = createMockSocket('p2-socket-id');
+    const socketP3 = createMockSocket('p3-socket-id');
+
+    const roomKey = rm.createRoom('black-hole', socketP1);
+    rm.joinRoom(roomKey, 'black-hole', socketP2, mockIo);
+    rm.toggleReady(roomKey, socketP1, mockIo);
+    rm.toggleReady(roomKey, socketP2, mockIo);
+    rm.startGame(roomKey, socketP1, mockIo);
+
+    // Attempt to validate room
+    socketP3.emit.mockClear();
+    rm.validateRoom(roomKey, socketP3);
+    expect(socketP3.emit).toHaveBeenCalledWith('room-validation-error', {
+      message: 'Game has already started.',
+    });
+
+    // Attempt to join room
+    socketP3.emit.mockClear();
+    rm.joinRoom(roomKey, 'black-hole', socketP3, mockIo);
+    expect(socketP3.emit).toHaveBeenCalledWith('room-error', {
+      message: 'Game has already started.',
+    });
+
+    // Attempt to add AI
+    socketP1.emit.mockClear();
+    rm.addAI(roomKey, 'hard', socketP1, mockIo);
+    expect(socketP1.emit).toHaveBeenCalledWith('room-error', {
+      message: 'Game has already started.',
+    });
+  });
+
+  it('immediately shuts down room and notifies players when a player disconnects during a game', () => {
+    const rm = createRoomManager({
+      'black-hole': blackHole as any,
+    });
+    const socketP1 = createMockSocket('p1-socket-id');
+    const socketP2 = createMockSocket('p2-socket-id');
+
+    const roomKey = rm.createRoom('black-hole', socketP1);
+
+    rm.joinRoom(roomKey, 'black-hole', socketP2, mockIo);
+    rm.toggleReady(roomKey, socketP1, mockIo);
+    rm.toggleReady(roomKey, socketP2, mockIo);
+    rm.startGame(roomKey, socketP1, mockIo);
+
+    // P1 disconnects
+    const mockIoCustom = {
+      in: vi.fn((_room: string) => ({
+        emit: vi.fn(),
+      })),
+      emit: vi.fn(),
+    } as any;
+
+    rm.handleDisconnect('p1-socket-id', mockIoCustom);
+    expect(mockIoCustom.in).toHaveBeenCalledWith(roomKey);
+
+    // Subsequent validate should fail because room is deleted
+    const socketP3 = createMockSocket('p3-socket-id');
+    rm.validateRoom(roomKey, socketP3);
+    expect(socketP3.emit).toHaveBeenCalledWith('room-validation-error', {
+      message: 'Room does not exist.',
+    });
+  });
 });

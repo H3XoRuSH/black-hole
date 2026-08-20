@@ -6,6 +6,7 @@ const SPOT_IT_ORDER = 7;
 export const SPOT_IT_CARD_COUNT = SPOT_IT_ORDER ** 2 + SPOT_IT_ORDER + 1;
 export const SPOT_IT_IMAGES_PER_CARD = SPOT_IT_ORDER + 1;
 export const WRONG_CLAIM_PENALTY_MS = 3000;
+export const CLAIM_GRACE_PERIOD_MS = 1200;
 
 const AFFINE_IMAGE_COUNT = SPOT_IT_ORDER ** 2;
 const SLOPE_IMAGE_START = AFFINE_IMAGE_COUNT;
@@ -169,6 +170,14 @@ export const makeMove = (
     return emitInvalidMove(socket, `Penalty active. Wait ${seconds} second${seconds === 1 ? '' : 's'}.`);
   }
   if (!data.imageId || !activeCard.imageIds.includes(data.imageId) || !centerCard.imageIds.includes(data.imageId)) {
+    const isRecentClaimByOther = !!(
+      gameState.lastClaim
+      && gameState.lastClaim.player !== player.player
+      && now - gameState.lastClaim.timestamp < CLAIM_GRACE_PERIOD_MS
+    );
+    if (isRecentClaimByOther) {
+      return emitInvalidMove(socket, 'Another player just claimed that card.');
+    }
     gameState.penaltyUntil[player.player] = now + WRONG_CLAIM_PENALTY_MS;
     socket.emit('penalty-applied', { durationMs: WRONG_CLAIM_PENALTY_MS });
     return emitInvalidMove(socket, 'That image is not the match.');

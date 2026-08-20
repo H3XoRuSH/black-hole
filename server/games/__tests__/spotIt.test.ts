@@ -8,6 +8,7 @@ import {
   SPOT_IT_CARD_COUNT,
   SPOT_IT_IMAGES_PER_CARD,
   WRONG_CLAIM_PENALTY_MS,
+  CLAIM_GRACE_PERIOD_MS,
 } from '../spotIt.js';
 import type { SpotItGameState } from '../../../src/types/shared.js';
 import { createRoom, createSocketMock } from './helpers.js';
@@ -172,6 +173,56 @@ describe('Spot It claims', () => {
 
     expect(state.scores).toEqual({ 1: 1, 2: 0 });
     expect(state.centerCard?.id).toBe('center-2');
+  });
+
+  it('does not penalize a player who claims during the grace period after another player claims', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1000);
+
+    try {
+      const state = claimState({ drawPile: [{ id: 'center-2', imageIds: ['image-f', 'image-g'] }] });
+      const firstSocket = createSocketMock('p1');
+      const secondSocket = createSocketMock('p2');
+      const room = createRoom('spot-it', state);
+
+      // Player 1 claims center-1 at t=1000
+      expect(makeMove(room, firstSocket, {
+        action: 'claim',
+        imageId: 'image-b',
+        activeCardId: 'active-1',
+        centerCardId: 'center-1',
+      })).toBe(true);
+
+      // Player 2 clicks near-simultaneously (t=1200, within grace period) with wrong image
+      vi.advanceTimersByTime(200);
+      expect(makeMove(room, secondSocket, {
+        action: 'claim',
+        imageId: 'image-c',
+        activeCardId: 'active-2',
+        centerCardId: 'center-2',
+      })).toBe(false);
+
+      // No penalty applied to Player 2
+      expect(state.penaltyUntil[2] || 0).toBe(0);
+      expect(secondSocket.emitted).not.toContainEqual(expect.objectContaining({ event: 'penalty-applied' }));
+      expect(secondSocket.emitted).toContainEqual(expect.objectContaining({
+        event: 'invalid-move',
+        payload: { message: 'Another player just claimed that card.' },
+      }));
+
+      // Later outside grace period (t=1000 + CLAIM_GRACE_PERIOD_MS + 100), wrong guess DOES penalize
+      vi.advanceTimersByTime(CLAIM_GRACE_PERIOD_MS);
+      expect(makeMove(room, secondSocket, {
+        action: 'claim',
+        imageId: 'image-c',
+        activeCardId: 'active-2',
+        centerCardId: 'center-2',
+      })).toBe(false);
+
+      expect(state.penaltyUntil[2]).toBe(1000 + 200 + CLAIM_GRACE_PERIOD_MS + WRONG_CLAIM_PENALTY_MS);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('finishes with a winner when the final center card is claimed', () => {

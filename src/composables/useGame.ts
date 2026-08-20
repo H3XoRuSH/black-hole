@@ -106,7 +106,7 @@ export function useGame(options: UseGameOptions) {
       if (options.enableBeforeUnload !== false) {
         window.removeEventListener('beforeunload', handleBeforeUnload);
       }
-      if (options.roomKey) {
+      if (options.roomKey && !isLeavingDueToDisconnect.value && !router.isLeavingDueToDisconnect) {
         options.socket?.emit('leave-room', { roomKey: options.roomKey });
       }
       if (gameStateHandler) {

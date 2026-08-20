@@ -76,7 +76,10 @@ export default defineComponent({
   },
   mounted() {
     if (this.socket && this.socket.connected) {
-      this.$router.push('/menu');
+      const saved = sessionStorage.getItem('roomData');
+      if (!saved) {
+        this.$router.push('/menu');
+      }
     }
   },
   methods: {

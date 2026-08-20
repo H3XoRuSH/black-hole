@@ -97,6 +97,40 @@ export function normalizeAnswer(text: string): string {
     .trim();
 }
 
+const QWERTY_NEIGHBORS: Record<string, string[]> = {
+  q: ['w', 'a', 's', '1', '2'],
+  w: ['q', 'e', 'a', 's', 'd', '2', '3'],
+  e: ['w', 'r', 's', 'd', 'f', '3', '4'],
+  r: ['e', 't', 'd', 'f', 'g', '4', '5'],
+  t: ['r', 'y', 'f', 'g', 'h', '5', '6'],
+  y: ['t', 'u', 'g', 'h', 'j', '6', '7'],
+  u: ['y', 'i', 'h', 'j', 'k', '7', '8'],
+  i: ['u', 'o', 'j', 'k', 'l', '8', '9'],
+  o: ['i', 'p', 'k', 'l', '9', '0'],
+  p: ['o', 'l', '0'],
+  a: ['q', 'w', 's', 'z'],
+  s: ['a', 'w', 'e', 'd', 'x', 'z'],
+  d: ['s', 'e', 'r', 'f', 'c', 'x'],
+  f: ['d', 'r', 't', 'g', 'v', 'c'],
+  g: ['f', 't', 'y', 'h', 'b', 'v'],
+  h: ['g', 'y', 'u', 'j', 'n', 'b'],
+  j: ['h', 'u', 'i', 'k', 'm', 'n'],
+  k: ['j', 'i', 'o', 'l', 'm'],
+  l: ['k', 'o', 'p'],
+  z: ['a', 's', 'x'],
+  x: ['z', 's', 'd', 'c'],
+  c: ['x', 'd', 'f', 'v'],
+  v: ['c', 'f', 'g', 'b'],
+  b: ['v', 'g', 'h', 'n'],
+  n: ['b', 'h', 'j', 'm'],
+  m: ['n', 'j', 'k'],
+};
+
+export function isQwertyNeighbor(a: string, b: string): boolean {
+  if (a === b) return true;
+  return QWERTY_NEIGHBORS[a]?.includes(b) || false;
+}
+
 export function levenshteinDistance(a: string, b: string): number {
   if (a === b) return 0;
   if (a.length === 0) return b.length;
@@ -134,9 +168,24 @@ export function isAnswerMatch(submittedText: string, targetAnswer: string): bool
   if (!normSubmitted || !normTarget) return false;
   if (normSubmitted === normTarget) return true;
 
-  // Typo tolerance (Levenshtein distance <= 1) for target answers with length >= 5
-  if (normTarget.length >= 5 && levenshteinDistance(normSubmitted, normTarget) <= 1) {
+  // Short words (length <= 4) require exact match to prevent collisions (e.g. cat/fat, dog/fog)
+  if (normTarget.length <= 4) return false;
+
+  // First letter must match to prevent guessing different words (e.g. callback vs fallback)
+  if (normSubmitted[0] !== normTarget[0]) return false;
+
+  const lenDiff = Math.abs(normSubmitted.length - normTarget.length);
+  const dist = levenshteinDistance(normSubmitted, normTarget);
+
+  // Length 5-7: Allow 1 typo (missing/extra letter, adjacent swap, or substitution)
+  if (normTarget.length >= 5 && normTarget.length <= 7 && lenDiff <= 1 && dist <= 1) {
     return true;
+  }
+
+  // Length >= 8: Allow up to 1 typo, or 2 typos for longer answers (length >= 10)
+  if (normTarget.length >= 8 && lenDiff <= 2) {
+    if (dist <= 1) return true;
+    if (dist === 2 && normTarget.length >= 10) return true;
   }
 
   return false;

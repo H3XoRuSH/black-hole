@@ -185,6 +185,30 @@ describe('makeMove - submit-answer', () => {
     expect(makeMove(room, socket, { action: 'submit-answer', answer: 'mitochondra' })).toBe(true);
     expect(state.solvedBy).toBe(1);
   });
+
+  it('rejects different words differing by 1 first letter (e.g. callback vs fallback)', () => {
+    const state = stateWithPlayers({
+      questions: [
+        { category: 'Programming', difficulty: 'medium', question: 'Function passed as an argument?', correctAnswer: 'callback' },
+      ],
+    });
+    const room = createRoom('trivia', state);
+    const socket = createSocketMock('p1');
+    expect(makeMove(room, socket, { action: 'submit-answer', answer: 'fallback' })).toBe(false);
+    expect(state.solvedBy).toBeNull();
+  });
+
+  it('requires exact match for short words of length 4 or less', () => {
+    const state = stateWithPlayers({
+      questions: [
+        { category: 'Animals', difficulty: 'easy', question: 'Feline pet?', correctAnswer: 'cat' },
+      ],
+    });
+    const room = createRoom('trivia', state);
+    const socket = createSocketMock('p1');
+    expect(makeMove(room, socket, { action: 'submit-answer', answer: 'fat' })).toBe(false);
+    expect(state.solvedBy).toBeNull();
+  });
 });
 
 describe('validateAndCleanQuestions anti-leak and deduplication', () => {
@@ -200,6 +224,16 @@ describe('validateAndCleanQuestions anti-leak and deduplication', () => {
     const cleaned = validateAndCleanQuestions(raw, 'Philippines');
     expect(cleaned).toHaveLength(5);
     expect(cleaned.some((q) => q.question.includes('tradition of merienda'))).toBe(false);
+  });
+
+  it('filters out questions with stem leaks (e.g. filtering vs filter)', () => {
+    const raw = [
+      { question: 'What JS function is used for filtering arrays?', correctAnswer: 'filter', difficulty: 'easy' },
+      { question: 'Which Array method creates a new array with elements that pass a test?', correctAnswer: 'filter', difficulty: 'easy' },
+    ];
+    const cleaned = validateAndCleanQuestions(raw, 'JavaScript');
+    expect(cleaned).toHaveLength(1);
+    expect(cleaned[0].question).toContain('Which Array method creates a new array');
   });
 
   it('filters duplicates against existing questions and cleans acceptableAnswers', () => {

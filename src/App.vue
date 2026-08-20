@@ -108,7 +108,8 @@ export default defineComponent({
     $route(to: any) {
       const isLobby = to.path.endsWith('/lobby');
       const isGame = to.path.includes('/game/');
-      if (!isLobby && !isGame) {
+      const isOffline = to.path === '/offline';
+      if (!isLobby && !isGame && !isOffline) {
         sessionStorage.removeItem('roomData');
         this.roomKey = '';
         this.player = null;

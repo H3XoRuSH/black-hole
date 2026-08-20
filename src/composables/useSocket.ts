@@ -90,13 +90,6 @@ export function useSocket(router: any) {
       }
       connectionStatus.value = '';
 
-      if (router.currentRoute.value.path === '/offline') {
-        const { showToast } = useToast();
-        showToast('Connected! Welcome back to the arcade.', 'success');
-        router.push('/menu');
-        return;
-      }
-
       const saved = sessionStorage.getItem('roomData');
       if (saved) {
         try {
@@ -105,6 +98,13 @@ export function useSocket(router: any) {
         } catch {
           clearRoomData();
         }
+        return;
+      }
+
+      if (router.currentRoute.value.path === '/offline') {
+        const { showToast } = useToast();
+        showToast('Connected! Welcome back to the arcade.', 'success');
+        router.push('/menu');
         return;
       }
 

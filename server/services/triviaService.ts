@@ -192,6 +192,25 @@ export function sanitizeTopic(input: string): string {
     .slice(0, 40);
 }
 
+export function checkStemLeak(questionLower: string, answerLower: string): boolean {
+  const qWords = questionLower.replace(/[^\w\s]/g, '').split(/\s+/).filter(Boolean);
+  const aWords = answerLower.replace(/[^\w\s]/g, '').split(/\s+/).filter(Boolean);
+  for (const aWord of aWords) {
+    if (aWord.length < 3) continue;
+    if (questionLower.includes(aWord)) return true;
+    const aStem = aWord.length >= 5 ? aWord.slice(0, 4) : aWord;
+    for (const qWord of qWords) {
+      if (
+        qWord.length >= 4
+        && (qWord.startsWith(aStem) || (aWord.length >= 4 && aWord.startsWith(qWord.slice(0, 4))))
+      ) {
+        return true;
+      }
+    }
+  }
+  return false;
+}
+
 export function validateAndCleanQuestions(
   rawQuestions: any[],
   topic: string,
@@ -223,8 +242,8 @@ export function validateAndCleanQuestions(
       continue;
     }
 
-    // Anti-leak guard: skip questions that contain the answer word inside the question text
-    if (aLower.length >= 3 && qLower.includes(aLower)) {
+    // Anti-leak guard: skip questions that contain the answer word or root stem inside the question text
+    if (checkStemLeak(qLower, aLower)) {
       console.warn(`Filtering out question that leaks answer "${answerText}": "${questionText}"`);
       continue;
     }
@@ -240,7 +259,7 @@ export function validateAndCleanQuestions(
           const altWords = alt.split(/\s+/).filter(Boolean).length;
           if (altWords > 3) return false;
           // Also verify alternate doesn't leak into question
-          if (alt.length >= 3 && qLower.includes(alt.toLowerCase())) return false;
+          if (checkStemLeak(qLower, alt.toLowerCase())) return false;
           return true;
         });
       if (validAlternates.length > 0) {
@@ -285,8 +304,12 @@ STEP 2: Generate ${amount} trivia questions with a mixed difficulty distribution
 
 ANTI-LEAK CONSTRAINTS:
 - ABSOLUTELY NEVER include the answer word or root stem of the answer inside the question text!
+- NEVER use morphological variations, cognates, or root derivatives of the answer in the question (e.g. do NOT ask "What JS function for filtering..." when the answer is "filter", "What method is used to sort items?" for "sort", or "What command maps elements?" for "map").
+- Frame technical questions around behavior, parameters, return values, specifications, or historical facts rather than simplistic "what thing does X" tautologies.
 - Example Violation (BAD): "What term refers to the tradition of 'merienda'?" -> Answer: "merienda"
 - Example Correction (GOOD): "What traditional light meal or afternoon snack is popular in the Philippines?" -> Answer: "merienda"
+- Example Violation (BAD): "What JavaScript method is used for filtering elements in an array?" -> Answer: "filter"
+- Example Correction (GOOD): "Which Array prototype method creates a new shallow copy containing only elements that pass a provided testing function?" -> Answer: "filter"
 
 ANTI-CLICHÉ & DIVERSITY CONSTRAINTS:
 - AVOID overused surface-level cliché questions (such as basic capital city, country flag color, or elementary textbook facts) unless explicitly required for easy difficulty.
